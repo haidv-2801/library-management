@@ -49,4 +49,10 @@
   &-left-icon {
     margin-right: 8px;
   }
+
+  &--disabled {
+    pointer-events: none;
+    background-color: #bbbbbb;
+    color: #969696;
+  }
 }

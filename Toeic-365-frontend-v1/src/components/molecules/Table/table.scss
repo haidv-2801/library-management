@@ -1,0 +1,102 @@
+.toe-table {
+  border-radius: 8px;
+  overflow: hidden;
+
+  & .p-datatable-thead {
+    & .toe-table__th {
+      border-right: 1px solid #e9ebee !important;
+
+      &:hover {
+        & .p-sortable-column-icon {
+          color: #43c1c9;
+        }
+      }
+
+      &:focus {
+        & .p-sortable-column-icon {
+          color: #43c1c9;
+        }
+      }
+    }
+
+    & > tr > th {
+      color: #000000;
+    }
+  }
+
+  & .p-checkbox .p-checkbox-box.p-highlight {
+    background-color: #43c1c9;
+    border: #43c1c9;
+
+    &:hover {
+      background-color: #43c1c9;
+    }
+  }
+
+  & .p-datatable .p-sortable-column.p-highlight {
+    color: #43c1c9;
+
+    &:hover {
+      color: #43c1c9;
+    }
+
+    & .p-sortable-column-icon {
+      color: #43c1c9;
+
+      &:hover {
+        color: #43c1c9;
+      }
+    }
+  }
+
+  & .p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box:hover {
+    border-color: #43c1c9;
+  }
+
+  & .p-datatable .p-sortable-column:focus {
+    box-shadow: inset 0 0 0 1px #43c1c9;
+  }
+
+  & .toe-refresh-button {
+    &:focus {
+      box-shadow: none;
+    }
+  }
+
+  & .toe-pagination {
+    & button {
+      font-size: 14px;
+      color: #454545;
+
+      &:focus {
+        box-shadow: none;
+      }
+    }
+
+    & .p-paginator-current {
+      color: #454545;
+    }
+
+    & .p-dropdown {
+      font-size: 14px;
+      height: 40px;
+      box-shadow: none;
+
+      & .p-dropdown-label.p-inputtext {
+        font-size: 14px;
+        padding: 8px 16px;
+      }
+    }
+  }
+}
+
+.p-dropdown-items-wrapper {
+  & .p-dropdown-items {
+    font-size: 14px;
+    font-family: 'OpenSans-Regular';
+  }
+
+  & .p-dropdown-item {
+    font-size: 14px;
+  }
+}

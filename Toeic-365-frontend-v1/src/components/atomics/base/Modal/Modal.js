@@ -55,14 +55,18 @@ function Modal(props) {
         <div className="toe-modal__body toe-font-body">{children}</div>
         <div className="toe-modal__foot">
           <div className="toe-modal__foot-left">
-            {footerLeft.map((item) => (
-              <div style={{ marginRight: 16 }}>{item}</div>
+            {footerLeft.map((item, _) => (
+              <div key={_} style={{ marginRight: 16 }}>
+                {item}
+              </div>
             ))}
           </div>
           <div className="toe-modal__foot-right">
             {' '}
-            {footerRight.map((item) => (
-              <div style={{ marginLeft: 16 }}>{item}</div>
+            {footerRight.map((item, _) => (
+              <div key={_} style={{ marginLeft: 16 }}>
+                {item}
+              </div>
             ))}
           </div>
         </div>

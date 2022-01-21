@@ -6,6 +6,7 @@ import RegisterPage from './components/pages/admin/RegisterPage/RegisterPage';
 
 import Test from './components/pages/test/Test';
 import Layout from './components/sections/Admin/Layout/Layout';
+import './main.scss';
 
 function App() {
   useEffect(() => {
@@ -15,16 +16,21 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route exact tpath="/">
-          <Route path="login" element={<LoginPage />} />
-          <Route path="register" element={<RegisterPage />} />
-        </Route>
-
         <Route
           exact
           path="/admin"
           element={true ? <Navigate exact to="/admin/dashboard" /> : null}
         />
+
+        <Route exact path="/">
+          <Route exact path="login" element={<LoginPage />} />
+          <Route exact path="register" element={<RegisterPage />} />
+          <Route
+            exact
+            path=""
+            element={true ? <Navigate exact to="/login" /> : null}
+          />
+        </Route>
 
         <Route path="/admin">
           <Route path="dashboard" element={<Layout />} />

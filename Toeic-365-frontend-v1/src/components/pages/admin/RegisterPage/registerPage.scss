@@ -11,6 +11,12 @@
     align-items: center;
     top: 44px;
     left: 44px;
+    z-index: 10;
+
+    &:hover {
+      cursor: pointer;
+      animation: shake 0.8s;
+    }
 
     & img {
       width: 50px;
@@ -35,7 +41,8 @@
 
   &__modal {
     background-color: rgba(0, 0, 0, 0.5);
-    height: 470px;
+    min-height: 470px;
+    animation: main-appear 0.5s ease-out forwards;
 
     & .toe-modal__head {
       border-bottom: none;

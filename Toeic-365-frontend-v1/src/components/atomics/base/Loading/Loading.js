@@ -7,30 +7,35 @@ Loading.propTypes = {
   id: PropTypes.string,
   className: PropTypes.string,
   style: PropTypes.object,
+  show: PropTypes.bool,
 };
 
 Loading.defaultProps = {
   id: '',
   className: '',
   style: {},
-  name: '',
+  show: false,
 };
 
 function Loading(props) {
-  const { id, style, className } = props;
+  const { id, style, className, show } = props;
   return (
-    <div
-      id={id}
-      style={style}
-      className={buildClass(['toe-loading-app', className])}
-    >
-      <div className="toe-loading-app_wrapper">
-        <div className="ball1"></div>
-        <div className="ball2"></div>
-        <div className="ball3"></div>
-        <div className="ball4"></div>
-      </div>
-    </div>
+    <>
+      {show && (
+        <div
+          id={id}
+          style={style}
+          className={buildClass(['toe-loading-app', className])}
+        >
+          <div className="toe-loading-app_wrapper">
+            <div className="ball1"></div>
+            <div className="ball2"></div>
+            <div className="ball3"></div>
+            <div className="ball4"></div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 

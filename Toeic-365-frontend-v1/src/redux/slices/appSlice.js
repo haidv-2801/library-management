@@ -11,7 +11,7 @@ const App = createSlice({
 
   reducers: {
     toggleLoading: (state, action) => {
-      state.isLoading = action.payload;
+      state.isLoadingApp = action.payload;
     },
   },
 });

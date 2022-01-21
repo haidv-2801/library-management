@@ -162,9 +162,10 @@
       }
 
       &__body {
-        padding: 0px 24px;
+        padding: 24px 24px;
         flex: 1;
-        overflow-y: auto;
+        overflow-y: scroll;
+        max-height: calc(100vh - 64px - 62px);
       }
     }
   }

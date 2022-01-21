@@ -21,6 +21,8 @@ import { buildClass } from '../../../../constants/commonFunction';
 import MainLogo from '../../../../assets/images/toeiclogo.png';
 import Avatar from '../../../../assets/images/me.jpg';
 import useWindowResize from '../../../../hooks/useWindowResize';
+import Table from '../../../molecules/Table/Table';
+import { Loading } from '../../../atomics/base/Loading/Loading';
 
 const { Header, Sider, Content } = LayoutAntd;
 const { SubMenu } = Menu;
@@ -140,6 +142,70 @@ function Layout(props) {
     setmenuItemSelected(data?.domEvent?.currentTarget?.innerText);
   };
 
+  //#region
+  const COLUMNS = [
+    {
+      field: 'checkbox',
+      selectionMode: 'multiple',
+      headerStyle: { width: '3em' },
+    },
+    {
+      field: 'name',
+      sortable: true,
+      header: 'Họ và tên',
+      filterField: 'name',
+      body: (row) => {
+        return <div className="toe-font-body">{row?.name}</div>;
+      },
+    },
+    {
+      field: 'age',
+      sortable: true,
+      header: 'Tuổi',
+      filterField: 'age',
+      body: (row) => {
+        return <div className="toe-font-body">{row?.age}</div>;
+      },
+    },
+    {
+      field: 'address',
+      sortable: true,
+      header: 'Địa chỉ',
+      filterField: 'address',
+      body: (row) => {
+        return <div className="toe-font-body">{row?.address}</div>;
+      },
+    },
+  ];
+
+  const [selected, setSelected] = useState([]);
+  const [lazyParams, setLazyParams] = useState({});
+
+  const CONFIGS = {
+    onSort: (event) => {
+      console.log(event);
+    },
+    resizableColumns: true,
+    dataKey: 'id',
+    totalRecords: fake.length,
+    selectionMode: 'checkbox',
+    onSelectionChange: (event) => {
+      setSelected(event.value);
+    },
+    onSort: (event) => {
+      console.log(event);
+      setLazyParams(event);
+    },
+    onPage: (event) => {
+      console.log(event);
+      setLazyParams(event);
+    },
+    sortField: lazyParams?.sortField,
+    sortOrder: lazyParams?.sortOrder,
+    selection: selected,
+  };
+  //#endregion
+
   return (
     <LayoutAntd>
       <div className="toe-layout-user-page-container">
@@ -187,7 +253,8 @@ function Layout(props) {
               </div>
             </div>
             <div className="toe-layout-user-page-container__body-right__body">
-              {children}
+              {/* {children} */}
+              <Table data={fake} configs={CONFIGS} columns={COLUMNS} />
             </div>
           </div>
         </div>

@@ -23,6 +23,11 @@ import PopupSelection from '../../../atomics/base/PopupSelection/PopupSelection'
 import MainLogo from '../../../../assets/images/toeiclogo.png';
 import Avatar from '../../../../assets/images/me.jpg';
 import useWindowResize from '../../../../hooks/useWindowResize';
+import Loading from '../../../atomics/base/Loading/Loading';
+import Table from '../../../molecules/Table/Table';
+import SmartText from '../../../atomics/base/SmartText/SmartText';
+import { fake } from '../../../pages/test/Test';
+import { useDispatch, useSelector } from 'react-redux';
 
 const { Header, Sider, Content } = LayoutAntd;
 const { SubMenu } = Menu;
@@ -40,10 +45,12 @@ Layout.defaultProps = {
 function Layout(props) {
   const { title, rightButtons, children } = props;
   const history = useNavigate();
+  const appSelector = useSelector((store) => store.app);
 
   //#region constant
   const DEFAULT_ITEM = '/admin/dashboard';
   const DEFAULT_TITLE = 'Tổng quan';
+  const SCREEN_WIDTH = 1366;
 
   const MENU = [
     {
@@ -81,9 +88,20 @@ function Layout(props) {
     },
   ];
 
+  const POPUP_SELECTION_VALUES = {
+    LOGOUT: 1,
+    USER_INFOMATION: 2,
+  };
+
   const POPUP_SELECTION_OPTIONS = [
-    { label: 'Thông tin người dùng', value: 1 },
-    { label: <span style={{ color: 'red' }}>Đăng xuất</span>, value: 2 },
+    {
+      label: 'Thông tin người dùng',
+      value: POPUP_SELECTION_VALUES.USER_INFOMATION,
+    },
+    {
+      label: <span style={{ color: 'red' }}>Đăng xuất</span>,
+      value: POPUP_SELECTION_VALUES.LOGOUT,
+    },
   ];
   //#endregion
   const popupSelectionRef = useRef();
@@ -110,7 +128,7 @@ function Layout(props) {
   }, []);
 
   useEffect(() => {
-    if (width < 1366) {
+    if (width < SCREEN_WIDTH) {
       setCollapsedMenu(true);
     } else {
       setCollapsedMenu(false);
@@ -122,9 +140,9 @@ function Layout(props) {
   };
 
   const renderMenu = () => {
-    return MENU.map((item) => {
+    return MENU.map((item, _) => {
       if (item?.key === 'separator') {
-        return <div className="toe-line-separator"></div>;
+        return <div key={_} className="toe-line-separator"></div>;
       }
       if (item?.children) {
         return (
@@ -169,11 +187,83 @@ function Layout(props) {
   };
   //#endregion
 
+  //#region
+  const COLUMNS = [
+    {
+      field: 'checkbox',
+      selectionMode: 'multiple',
+      headerStyle: { width: '3em' },
+    },
+    {
+      field: 'name',
+      sortable: true,
+      header: 'Họ và tên',
+      filterField: 'name',
+      body: (row) => {
+        return <SmartText>{row?.name}</SmartText>;
+      },
+      style: { width: 300, maxWidth: 300 },
+    },
+    {
+      field: 'age',
+      sortable: true,
+      header: 'Tuổi',
+      filterField: 'age',
+      body: (row) => {
+        return <div className="toe-font-body">{row?.age}</div>;
+      },
+    },
+    {
+      field: 'address',
+      sortable: true,
+      header: 'Địa chỉ',
+      filterField: 'address',
+      body: (row) => {
+        return <div className="toe-font-body">{row?.address}</div>;
+      },
+    },
+  ];
+
+  const [selected, setSelected] = useState([]);
+  const [lazyParams, setLazyParams] = useState({ page: 1, rows: 10 });
+
+  const CONFIGS = {
+    onSort: (event) => {
+      console.log(event);
+    },
+    resizableColumns: false,
+    dataKey: 'id',
+    totalRecords: fake.length,
+    selectionMode: 'checkbox',
+    onSelectionChange: (event) => {
+      setSelected(event.value);
+    },
+    onSort: (event) => {
+      console.log(event);
+      setLazyParams(event);
+    },
+    onPage: (event) => {
+      console.log(event);
+      setLazyParams(event);
+    },
+    sortField: lazyParams?.sortField,
+    sortOrder: lazyParams?.sortOrder,
+    selection: selected,
+    rows: lazyParams?.rows,
+    reorderableColumns: true,
+  };
+  //#endregion
+
   return (
     <LayoutAntd>
       <div className="toe-layout-admin-page-container">
         <div className="toe-layout-admin-page-container__header">
-          <div className="toe-layout-admin-page-container__header-left">
+          <div
+            onClick={() => {
+              history('/');
+            }}
+            className="toe-layout-admin-page-container__header-left"
+          >
             <img className="logo-app" src={MainLogo} alt="toeic-365" />
             <b className="name-app">
               TOEIC<span style={{ color: '#43c1c9' }}>365</span>
@@ -190,6 +280,13 @@ function Layout(props) {
                   defaultValue={userSelectValue}
                   onChange={(data) => {
                     setUserSelectValue(data.value);
+                    if (data.value === POPUP_SELECTION_VALUES.LOGOUT) {
+                      history('/login');
+                    } else if (
+                      data.value === POPUP_SELECTION_VALUES.USER_INFOMATION
+                    ) {
+                      //
+                    }
                     setIsShowPopupSelection(false);
                   }}
                   options={POPUP_SELECTION_OPTIONS}
@@ -228,11 +325,13 @@ function Layout(props) {
               </div>
             </div>
             <div className="toe-layout-admin-page-container__body-right__body">
-              {children}
+              {/* {children} */}
+              <Table data={fake} configs={CONFIGS} columns={COLUMNS} />
             </div>
           </div>
         </div>
       </div>
+      <Loading />
     </LayoutAntd>
   );
 }

@@ -25,7 +25,7 @@ Button.propTypes = {
     BUTTON_THEME.THEME_2,
     BUTTON_THEME.THEME_3,
   ]),
-
+  disabled: PropTypes.bool,
   onClick: PropTypes.func,
 };
 
@@ -39,6 +39,7 @@ Button.defaultProps = {
   type: BUTTON_TYPE.NORMAL,
   theme: BUTTON_THEME.THEME_1,
   onClick: () => {},
+  disabled: false,
 };
 
 function Button(props) {
@@ -52,6 +53,7 @@ function Button(props) {
     rightIcon,
     name,
     onClick,
+    disabled,
   } = props;
   return (
     <div
@@ -65,6 +67,7 @@ function Button(props) {
         theme == BUTTON_THEME.THEME_1 && 'toe-btn-theme-1',
         theme == BUTTON_THEME.THEME_2 && 'toe-btn-theme-2',
         theme == BUTTON_THEME.THEME_3 && 'toe-btn-theme-3',
+        disabled && 'toe-btn--disabled',
         className,
       ])}
       onClick={onClick}

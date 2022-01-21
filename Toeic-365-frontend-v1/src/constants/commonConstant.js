@@ -16,4 +16,14 @@ const BUTTON_THEME = {
   THEME_3: 3, //nền trắng viền đen
 };
 
-export { TEXT_FALL_BACK, BUTTON_THEME, BUTTON_TYPE };
+const REGEX = {
+  EMAIL:
+    /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
+  PASSWORD: /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])([a-zA-Z0-9]{8,})$/, //ít nhất 8 kí tự
+};
+
+const KEY_CODE = {
+  ENTER: 13,
+};
+
+export { TEXT_FALL_BACK, BUTTON_THEME, BUTTON_TYPE, REGEX, KEY_CODE };
