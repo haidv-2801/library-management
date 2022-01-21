@@ -1,0 +1,10 @@
+.toe-textarea {
+  border-radius: 8px;
+  width: 100%;
+  resize: vertical;
+  padding: 8px 0px 8px 12px;
+
+  &:focus {
+    outline: none;
+  }
+}

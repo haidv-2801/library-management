@@ -1,0 +1,52 @@
+.toe-btn {
+  padding: 8px 16px;
+  width: fit-content;
+  border-radius: 8px;
+  min-width: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  &:active {
+    opacity: 0.7;
+  }
+
+  &-theme-1 {
+    background-color: #43c1c9;
+    color: #fff;
+  }
+
+  &-theme-2 {
+    background-color: #fff;
+    color: #43c1c9;
+    border: 1px solid #43c1c9;
+
+    &:hover {
+      background-color: #43c1c9;
+      color: #fff;
+    }
+  }
+
+  &-theme-3 {
+    background-color: #fff;
+    border: 1px solid #bbbbbb;
+    color: #454545;
+
+    &:hover {
+      background-color: #e5e5e5;
+    }
+  }
+
+  &-right-icon {
+    margin-left: 8px;
+  }
+
+  &-left-icon {
+    margin-right: 8px;
+  }
+}
