@@ -7,7 +7,17 @@ let header = {
 
 const axiosClient = axios.create({
   headers: { ...header },
+  timeout: 60 * 1000, //timeout khi request chạm đến -> hủy bỏ request
 });
+
+axiosClient.interceptors.request.use(
+  (config) => {
+    return config;
+  },
+  (err) => {
+    return Promise.reject(err);
+  }
+);
 
 axiosClient.interceptors.response.use(
   (res) => {
@@ -17,7 +27,7 @@ axiosClient.interceptors.response.use(
     return res;
   },
   (err) => {
-    throw err;
+    return Promise.reject(err);
   }
 );
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Layout as LayoutAntd, Menu } from 'antd';
 import 'antd/dist/antd.css';
 import {
@@ -16,7 +16,6 @@ import {
   DashboardOutlined,
   QuestionCircleOutlined,
 } from '@ant-design/icons';
-import './layout.scss';
 import { buildClass } from '../../../../constants/commonFunction';
 import useOnClickOutside from '../../../../hooks/useClickOutSide';
 import PopupSelection from '../../../atomics/base/PopupSelection/PopupSelection';
@@ -28,6 +27,7 @@ import Table from '../../../molecules/Table/Table';
 import SmartText from '../../../atomics/base/SmartText/SmartText';
 import { fake } from '../../../pages/test/Test';
 import { useDispatch, useSelector } from 'react-redux';
+import './layout.scss';
 
 const { Header, Sider, Content } = LayoutAntd;
 const { SubMenu } = Menu;
@@ -44,8 +44,6 @@ Layout.defaultProps = {
 
 function Layout(props) {
   const { title, rightButtons, children } = props;
-  const history = useNavigate();
-  const appSelector = useSelector((store) => store.app);
 
   //#region constant
   const DEFAULT_ITEM = '/admin/dashboard';
@@ -82,7 +80,7 @@ function Layout(props) {
     },
     { key: 'separator' },
     {
-      key: '/admin/tai-khoan',
+      key: '/admin/user',
       title: 'Quản lý tài khoản',
       icon: <UserOutlined />,
     },
@@ -110,6 +108,9 @@ function Layout(props) {
   //#endregion
 
   //#region  state
+  const history = useNavigate(DEFAULT_ITEM);
+  const location = useLocation();
+  const appSelector = useSelector((store) => store.app);
   const [collapsedMenu, setCollapsedMenu] = useState(false);
   const [isShowPopupSelection, setIsShowPopupSelection] = useState(false);
   const [menuItemSelected, setmenuItemSelected] = useState(DEFAULT_TITLE);
@@ -177,80 +178,13 @@ function Layout(props) {
   };
 
   const handleSelectMenuItem = (data) => {
-    // history(data.key);
+    history(data.key);
     setmenuItemSelected(data?.domEvent?.currentTarget?.innerText);
   };
 
   const handleShowOption = () => {
     setUserSelectValue(null);
     setIsShowPopupSelection(true);
-  };
-  //#endregion
-
-  //#region
-  const COLUMNS = [
-    {
-      field: 'checkbox',
-      selectionMode: 'multiple',
-      headerStyle: { width: '3em' },
-    },
-    {
-      field: 'name',
-      sortable: true,
-      header: 'Họ và tên',
-      filterField: 'name',
-      body: (row) => {
-        return <SmartText>{row?.name}</SmartText>;
-      },
-      style: { width: 300, maxWidth: 300 },
-    },
-    {
-      field: 'age',
-      sortable: true,
-      header: 'Tuổi',
-      filterField: 'age',
-      body: (row) => {
-        return <div className="toe-font-body">{row?.age}</div>;
-      },
-    },
-    {
-      field: 'address',
-      sortable: true,
-      header: 'Địa chỉ',
-      filterField: 'address',
-      body: (row) => {
-        return <div className="toe-font-body">{row?.address}</div>;
-      },
-    },
-  ];
-
-  const [selected, setSelected] = useState([]);
-  const [lazyParams, setLazyParams] = useState({ page: 1, rows: 10 });
-
-  const CONFIGS = {
-    onSort: (event) => {
-      console.log(event);
-    },
-    resizableColumns: false,
-    dataKey: 'id',
-    totalRecords: fake.length,
-    selectionMode: 'checkbox',
-    onSelectionChange: (event) => {
-      setSelected(event.value);
-    },
-    onSort: (event) => {
-      console.log(event);
-      setLazyParams(event);
-    },
-    onPage: (event) => {
-      console.log(event);
-      setLazyParams(event);
-    },
-    sortField: lazyParams?.sortField,
-    sortOrder: lazyParams?.sortOrder,
-    selection: selected,
-    rows: lazyParams?.rows,
-    reorderableColumns: true,
   };
   //#endregion
 
@@ -281,7 +215,9 @@ function Layout(props) {
                   onChange={(data) => {
                     setUserSelectValue(data.value);
                     if (data.value === POPUP_SELECTION_VALUES.LOGOUT) {
-                      history('/login');
+                      // history('/login');
+                      //Xóa cache chrome
+                      window.location.replace('/login');
                     } else if (
                       data.value === POPUP_SELECTION_VALUES.USER_INFOMATION
                     ) {
@@ -306,7 +242,7 @@ function Layout(props) {
               <Menu
                 onSelect={handleSelectMenuItem}
                 theme="dark"
-                defaultSelectedKeys={[DEFAULT_ITEM]}
+                defaultSelectedKeys={[location?.pathname]}
                 mode="inline"
               >
                 {renderMenu()}
@@ -325,8 +261,7 @@ function Layout(props) {
               </div>
             </div>
             <div className="toe-layout-admin-page-container__body-right__body">
-              {/* {children} */}
-              <Table data={fake} configs={CONFIGS} columns={COLUMNS} />
+              {children}
             </div>
           </div>
         </div>

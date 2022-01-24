@@ -1,15 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
-
 import RegisterBg from '../../../../assets/images/register.svg';
+import RegisterBg1 from '../../../../assets/images/boy_bg_new_year_20_opt.gif';
+import { useNavigate } from 'react-router-dom';
 import { buildClass } from '../../../../constants/commonFunction';
-import MainLogo from '../../../../assets/images/toeiclogo.png';
-import Modal from '../../../atomics/base/Modal/Modal';
-import Button from '../../../atomics/base/Button/Button';
 import { LoginOutlined, LoadingOutlined } from '@ant-design/icons';
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
+import MainLogo from '../../../../assets/images/toeiclogo.png';
+import Modal from '../../../atomics/base/Modal/Modal';
+import Button from '../../../atomics/base/Button/Button';
 import baseApi from '../../../../api/baseApi';
 import { ADMIN_ENDPOINT } from '../../../../constants/endpoint';
 import 'primeicons/primeicons.css';
@@ -58,6 +58,15 @@ function RegisterPage() {
       !validate.userName
     )
       return;
+
+    if (
+      !isEmail(registerInfo?.email) ||
+      !isPassw(registerInfo?.password) ||
+      registerInfo?.password !== registerInfo?.rePassword ||
+      !registerInfo?.userName?.toString()?.trim()?.length
+    )
+      return;
+
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);
@@ -125,7 +134,7 @@ function RegisterPage() {
         children={
           <div className="toe-register-page__modal-body">
             <div className="toe-register-page__modal-body__des toe-font-body">
-              Vui lòng đăng kí tài khoản để trải nghiệm website!{' '}
+              Vui lòng đăng kí tài khoản để trải nghiệm website 🚀!{' '}
               <span
                 className="text-high-light"
                 onClick={() => navigate('/login')}

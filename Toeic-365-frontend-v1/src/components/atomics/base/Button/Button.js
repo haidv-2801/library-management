@@ -12,7 +12,7 @@ Button.propTypes = {
   className: PropTypes.string,
   style: PropTypes.object,
 
-  name: PropTypes.string,
+  name: PropTypes.any,
   leftIcon: PropTypes.any,
   rightIcon: PropTypes.any,
   type: PropTypes.oneOf([
@@ -67,6 +67,8 @@ function Button(props) {
         theme == BUTTON_THEME.THEME_1 && 'toe-btn-theme-1',
         theme == BUTTON_THEME.THEME_2 && 'toe-btn-theme-2',
         theme == BUTTON_THEME.THEME_3 && 'toe-btn-theme-3',
+        theme == BUTTON_THEME.THEME_4 && 'toe-btn-theme-4',
+        theme == BUTTON_THEME.THEME_5 && 'toe-btn-theme-5',
         disabled && 'toe-btn--disabled',
         className,
       ])}

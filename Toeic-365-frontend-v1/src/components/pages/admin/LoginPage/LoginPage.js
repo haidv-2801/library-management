@@ -36,7 +36,9 @@ LoginPage.defaultProps = {
   style: {},
 };
 
-function LoginPage() {
+function LoginPage(props) {
+  const { id, className, style } = props;
+
   const [loginInfo, setloginInfo] = useState({});
   const [validate, setvalidate] = useState({ email: true, password: true });
   const [isLoading, setIsLoading] = useState(false);
@@ -90,7 +92,7 @@ function LoginPage() {
         children={
           <div className="toe-login-page__modal-body">
             <div className="toe-login-page__modal-body__des toe-font-body">
-              Vui lòng đăng nhập để trải nghiệm website!{' '}
+              Vui lòng đăng nhập để trải nghiệm website 🚀!{' '}
               <span
                 className="text-high-light"
                 onClick={() => navigate('/register')}

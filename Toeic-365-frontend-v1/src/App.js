@@ -3,8 +3,11 @@ import { Route, Routes, Link, BrowserRouter, Navigate } from 'react-router-dom';
 import LoginPage from './components/pages/admin/LoginPage/LoginPage';
 import NotFoundPage from './components/pages/admin/NotFoundPage/NotFoundPage';
 import RegisterPage from './components/pages/admin/RegisterPage/RegisterPage';
+import UserPage from './components/pages/admin/UserPage/UserPage';
 
 import Test from './components/pages/test/Test';
+import HomePage from './components/pages/user/HomePage/HomePage';
+import ExamPage from './components/pages/user/ExamPage/ExamPage';
 import Layout from './components/sections/Admin/Layout/Layout';
 import './main.scss';
 
@@ -19,12 +22,20 @@ function App() {
         <Route
           exact
           path="/admin"
-          element={true ? <Navigate exact to="/admin/dashboard" /> : null}
+          element={
+            true ? (
+              <Navigate exact to="/admin/dashboard" />
+            ) : (
+              <Navigate exact to="/home" />
+            )
+          }
         />
 
         <Route exact path="/">
           <Route exact path="login" element={<LoginPage />} />
           <Route exact path="register" element={<RegisterPage />} />
+          <Route exact path="home" element={<HomePage />} />
+          <Route exact path="exam" element={<ExamPage />} />
           <Route
             exact
             path=""
@@ -33,7 +44,8 @@ function App() {
         </Route>
 
         <Route path="/admin">
-          <Route path="dashboard" element={<Layout />} />
+          {/* <Route path="dashboard" element={<Layout />} /> */}
+          <Route path="user" element={<UserPage />} />
         </Route>
 
         <Route path="/test" element={<Test />} />

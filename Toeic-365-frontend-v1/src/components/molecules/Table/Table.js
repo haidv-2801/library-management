@@ -66,7 +66,6 @@ function Table(props) {
           value={data}
           rowHover
           responsiveLayout="scroll"
-          paginator
           paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
           currentPageReportTemplate="Hiển thị {first}-{last}/{totalRecords} bản ghi"
           paginatorClassName="toe-font-label toe-pagination"

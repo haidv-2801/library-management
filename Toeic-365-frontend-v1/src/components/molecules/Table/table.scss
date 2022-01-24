@@ -24,6 +24,12 @@
     }
   }
 
+  & .p-column-header-content {
+    & .p-sortable-column-icon {
+      font-size: 14px;
+    }
+  }
+
   & .p-checkbox .p-checkbox-box.p-highlight {
     background-color: #43c1c9;
     border: #43c1c9;

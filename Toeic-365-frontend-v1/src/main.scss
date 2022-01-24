@@ -10,6 +10,19 @@
   }
 }
 
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    -webkit-transform: translate3d(0, 100%, 0);
+    transform: translate3d(0, 100%, 0);
+  }
+  100% {
+    opacity: 1;
+    -webkit-transform: none;
+    transform: none;
+  }
+}
+
 @keyframes shake {
   0% {
     transform: translateX(0);
@@ -30,7 +43,7 @@
 
 .toe-label-validate {
   color: rgb(255, 28, 28);
-  font-size: 14px;
+  font-size: 12px;
   margin-top: 4px;
   background-color: whitesmoke;
   padding: 2px 2px;
@@ -60,4 +73,9 @@
 
 *::selection {
   background: #5edce6;
+}
+
+.p-placeholder {
+  font-size: 12px !important;
+  color: #bbbbbb !important;
 }
