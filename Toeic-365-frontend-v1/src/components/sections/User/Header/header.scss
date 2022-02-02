@@ -1,0 +1,56 @@
+.toe-layout-user-page-container__header {
+  width: 100%;
+  padding: 0px 15%;
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #fff;
+  border: 1px solid #e9ebee;
+  flex-shrink: 0;
+  position: absolute;
+  z-index: 10;
+
+  &.header--box-shadow {
+    transition: all 0.2s linear;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  }
+
+  &-left {
+    display: flex;
+    align-items: center;
+
+    & .name-app {
+      font-size: 20px;
+      margin-left: 8px;
+    }
+
+    & .logo-app {
+      width: 40px;
+    }
+  }
+
+  &-right {
+    display: flex;
+    align-items: center;
+
+    & .user-name {
+      margin-right: 8px;
+      margin-left: 16px;
+    }
+
+    & .user-avatar {
+      width: 40px;
+      height: 40px;
+      overflow: hidden;
+      border-radius: 50%;
+      border: 1px solid #e9e5ee;
+      cursor: pointer;
+
+      & > img {
+        width: 36px;
+        height: 36px;
+      }
+    }
+  }
+}

@@ -24,6 +24,8 @@ Button.propTypes = {
     BUTTON_THEME.THEME_1,
     BUTTON_THEME.THEME_2,
     BUTTON_THEME.THEME_3,
+    BUTTON_THEME.THEME_4,
+    BUTTON_THEME.THEME_5,
   ]),
   disabled: PropTypes.bool,
   onClick: PropTypes.func,
