@@ -12,6 +12,10 @@ Input.propTypes = {
   bottomMessage: PropTypes.string,
   placeholder: PropTypes.any,
   rightIcon: PropTypes.any,
+  label: PropTypes.any,
+  autoFocus: PropTypes.bool,
+  hasRequiredLabel: PropTypes.bool,
+  onChange: PropTypes.func,
 };
 
 Input.defaultProps = {
@@ -22,11 +26,26 @@ Input.defaultProps = {
   bottomMessage: null,
   placeholder: 'Nhập thông tin',
   rightIcon: null,
+  label: null,
+  autoFocus: false,
+  hasRequiredLabel: false,
+  onChange: () => {},
 };
 
 function Input(props) {
-  const { id, style, className, valid, bottomMessage, placeholder, rightIcon } =
-    props;
+  const {
+    id,
+    style,
+    className,
+    valid,
+    bottomMessage,
+    placeholder,
+    rightIcon,
+    label,
+    onChange,
+    autoFocus,
+    hasRequiredLabel,
+  } = props;
 
   return (
     <>
@@ -37,12 +56,29 @@ function Input(props) {
           'toe-input',
           !valid && 'toe-input-warning',
           rightIcon && 'p-input-icon-right',
+          label && 'toe-input-has-label',
           className,
           'toe-font-body',
         ])}
       >
         {rightIcon}
-        <InputText placeholder={placeholder} />
+        {label ? (
+          <label
+            className={buildClass([
+              'toe-input-label toe-font-label',
+              hasRequiredLabel && 'toe-input-label--required',
+            ])}
+          >
+            {label}
+            {hasRequiredLabel ? <span style={{ color: 'red' }}>*</span> : null}
+          </label>
+        ) : null}
+
+        <InputText
+          autoFocus={autoFocus}
+          onChange={onChange}
+          placeholder={placeholder}
+        />
       </div>
       {bottomMessage && !valid && (
         <div className="toe-input-message">{bottomMessage}</div>

@@ -72,12 +72,26 @@
     }
   }
 
+  &-theme-6 {
+    background-color: #fff;
+    color: #454545;
+
+    &:hover {
+      background-color: #e5e5e5;
+    }
+  }
+
   &-right-icon {
     margin-left: 8px;
+    display: flex;
   }
 
   &-left-icon {
-    margin-right: 8px;
+    & > .toe-btn-left-icon {
+      width: 20px;
+    }
+
+    display: flex;
   }
 
   &--disabled {

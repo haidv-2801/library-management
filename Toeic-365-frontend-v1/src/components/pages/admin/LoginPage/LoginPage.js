@@ -65,10 +65,10 @@ function LoginPage(props) {
   const handleChangeControl = (e) => {
     switch (e.target.name) {
       case 'email':
-        setvalidate({ ...validate, email: isEmail(e.target.value) });
+        // setvalidate({ ...validate, email: isEmail(e.target.value) });
         break;
       case 'password':
-        setvalidate({ ...validate, password: isPassw(e.target.value) });
+        // setvalidate({ ...validate, password: isPassw(e.target.value) });
         break;
     }
     setloginInfo({
@@ -164,7 +164,9 @@ function LoginPage(props) {
             type={BUTTON_TYPE.RIGHT_ICON}
             name="Đăng nhập"
             disabled={
-              !isEmail(loginInfo?.email) || !isPassw(loginInfo?.password)
+              !loginInfo?.email?.trim().length > 0 ||
+              !loginInfo?.password?.trim().length > 0
+              // !isEmail(loginInfo?.email) || !isPassw(loginInfo?.password)
             }
           />,
         ]}

@@ -18,16 +18,18 @@ Header.propTypes = {
   id: PropTypes.string,
   className: PropTypes.string,
   style: PropTypes.object,
+  showNav: PropTypes.bool,
 };
 
 Header.defaultProps = {
   id: '',
   className: '',
   style: {},
+  showNav: true,
 };
 
 function Header(props) {
-  const { id, style, className } = props;
+  const { id, style, className, showNav } = props;
 
   const MENU = [
     {
@@ -93,32 +95,36 @@ function Header(props) {
         </b>
       </div>
       <div className="toe-layout-user-page-container__header-right">
-        {renderMenu()}
-        {!isLoggedIn && (
+        {showNav && (
           <>
+            {renderMenu()}
+            {!isLoggedIn && (
+              <>
+                <Button
+                  className="toe-btn-login"
+                  style={{ marginLeft: 16 }}
+                  name="Đăng nhập"
+                  theme={BUTTON_THEME.THEME_5}
+                  onClick={handleLogin}
+                />
+                <Button
+                  className="toe-btn-register"
+                  style={{ marginLeft: 16 }}
+                  name="Đăng ký"
+                  theme={BUTTON_THEME.THEME_4}
+                  onClick={handleRegister}
+                />
+              </>
+            )}
             <Button
-              className="toe-btn-login"
-              style={{ marginLeft: 16 }}
-              name="Đăng nhập"
-              theme={BUTTON_THEME.THEME_5}
-              onClick={handleLogin}
-            />
-            <Button
-              className="toe-btn-register"
-              style={{ marginLeft: 16 }}
-              name="Đăng ký"
+              className="toe-btn-toggle"
+              leftIcon={<i className="pi pi-bars" />}
+              type={BUTTON_TYPE.LEFT_ICON}
               theme={BUTTON_THEME.THEME_4}
-              onClick={handleRegister}
+              onClick={handleExpanedMenu}
             />
           </>
         )}
-        <Button
-          className="toe-btn-toggle"
-          leftIcon={<i className="pi pi-bars" />}
-          type={BUTTON_TYPE.LEFT_ICON}
-          theme={BUTTON_THEME.THEME_4}
-          onClick={handleExpanedMenu}
-        />
       </div>
     </div>
   );

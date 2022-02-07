@@ -16,6 +16,7 @@ const BUTTON_THEME = {
   THEME_3: 3, //nền trắng viền đen
   THEME_4: 4, //nền trắng viền đỏ chữ xanh
   THEME_5: 5, //nền đỏ chữ trắng hover-> nền trắng viền đỏ chữ xanh
+  THEME_6: 6, //nền trắng không viền
 };
 
 const REGEX = {

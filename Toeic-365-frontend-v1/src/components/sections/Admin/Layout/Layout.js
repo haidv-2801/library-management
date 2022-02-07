@@ -252,9 +252,9 @@ function Layout(props) {
           <div className="toe-layout-admin-page-container__body-right">
             <div className="toe-layout-admin-page-container__body-right__head">
               <div className="toe-layout-admin-page-container__body-right__head-title">
-                {title || (
-                  <div className="toe-font-large-title">{menuItemSelected}</div>
-                )}
+                <div className="toe-font-large-title">
+                  {title || menuItemSelected}
+                </div>
               </div>
               <div className="toe-layout-admin-page-container__body-right__head-btns">
                 {renderRightButtons()}

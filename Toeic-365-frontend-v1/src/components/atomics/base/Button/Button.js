@@ -26,6 +26,7 @@ Button.propTypes = {
     BUTTON_THEME.THEME_3,
     BUTTON_THEME.THEME_4,
     BUTTON_THEME.THEME_5,
+    BUTTON_THEME.THEME_6,
   ]),
   disabled: PropTypes.bool,
   onClick: PropTypes.func,
@@ -71,6 +72,7 @@ function Button(props) {
         theme == BUTTON_THEME.THEME_3 && 'toe-btn-theme-3',
         theme == BUTTON_THEME.THEME_4 && 'toe-btn-theme-4',
         theme == BUTTON_THEME.THEME_5 && 'toe-btn-theme-5',
+        theme == BUTTON_THEME.THEME_6 && 'toe-btn-theme-6',
         disabled && 'toe-btn--disabled',
         className,
       ])}

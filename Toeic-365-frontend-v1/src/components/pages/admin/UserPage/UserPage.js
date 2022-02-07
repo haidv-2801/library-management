@@ -17,11 +17,14 @@ import {
   BUTTON_TYPE,
   REGEX,
   KEY_CODE,
+  BUTTON_THEME,
 } from '../../../../constants/commonConstant';
+import { PlusOutlined } from '@ant-design/icons';
 import { fake } from '../../test/Test';
 import Table from '../../../molecules/Table/Table';
 import SmartText from '../../../atomics/base/SmartText/SmartText';
 import './userPage.scss';
+import PopupCreateUser from './PopupCreateUser/PopupCreateUser';
 
 UserPage.propTypes = {
   id: PropTypes.string,
@@ -53,7 +56,7 @@ function UserPage(props) {
       body: (row) => {
         return <SmartText>{row?.name}</SmartText>;
       },
-      style: { width: 300, maxWidth: 300 },
+      style: { width: 400, maxWidth: 400 },
     },
     {
       field: 'age',
@@ -74,9 +77,15 @@ function UserPage(props) {
       },
     },
   ];
+  const POPUP_MODE = {
+    EDIT: 0,
+    ADD: 1,
+  };
   const MIN_PAGE_SIZE = 10;
 
   const [selected, setSelected] = useState([]);
+  const [popupMode, setpopupMode] = useState();
+  const [isShowPopupCreateUser, setIsShowPopupCreateUser] = useState(false);
   const [lazyParams, setLazyParams] = useState({ page: 1, rows: 10 });
 
   const CONFIGS = {
@@ -105,16 +114,63 @@ function UserPage(props) {
     reorderableColumns: true,
     paginator: fake.length > MIN_PAGE_SIZE,
   };
+
+  const getPopupCreateUserPops = () => {
+    if (popupMode === POPUP_MODE.ADD) {
+      return {
+        title: 'Thêm mới tài khoản',
+        footerRight: [
+          <Button
+            onClick={() => setIsShowPopupCreateUser(false)}
+            theme={BUTTON_THEME.THEME_6}
+            name="Hủy"
+          />,
+          <Button name="Thêm" onClick={() => {}} />,
+        ],
+      };
+    } else if (popupMode === POPUP_MODE.EDIT) {
+      return {
+        title: 'Sửa tài khoản',
+        footerRight: [
+          <Button
+            onClick={() => setIsShowPopupCreateUser(false)}
+            name="Hủy"
+            theme={BUTTON_THEME.THEME_6}
+          />,
+          <Button name="Cập nhập" onClick={() => {}} />,
+        ],
+      };
+    }
+  };
   //#endregion
 
   return (
-    <Layout>
+    <Layout
+      title="Quản lý tài khoản"
+      rightButtons={[
+        <Button
+          onClick={() => {
+            setpopupMode(POPUP_MODE.ADD);
+            setIsShowPopupCreateUser(true);
+          }}
+          leftIcon={<PlusOutlined />}
+          type={BUTTON_TYPE.LEFT_ICON}
+          name="Thêm tài khoản"
+        />,
+      ]}
+    >
       <div
         id={id}
         style={style}
         className={buildClass(['toe-admin-user-page', className])}
       >
         <Table data={fake} configs={CONFIGS} columns={COLUMNS} />
+        {isShowPopupCreateUser ? (
+          <PopupCreateUser
+            onClose={() => setIsShowPopupCreateUser(false)}
+            {...getPopupCreateUserPops()}
+          />
+        ) : null}
       </div>
     </Layout>
   );

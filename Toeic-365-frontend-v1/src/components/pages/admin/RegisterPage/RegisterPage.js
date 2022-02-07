@@ -106,9 +106,8 @@ function RegisterPage() {
         setValidate({
           ...validate,
           rePassword:
-            isPassw(val) &&
             registerObjectRef.current?.rePassword ===
-              registerObjectRef.current?.password,
+            registerObjectRef.current?.password,
         });
         break;
     }

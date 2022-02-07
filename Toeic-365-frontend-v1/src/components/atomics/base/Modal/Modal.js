@@ -10,6 +10,7 @@ Modal.propTypes = {
   className: PropTypes.string,
   style: PropTypes.object,
   onClose: PropTypes.func,
+  onClickOutSide: PropTypes.func,
   title: PropTypes.any,
   footerLeft: PropTypes.array,
   footerRight: PropTypes.array,
@@ -21,6 +22,7 @@ Modal.defaultProps = {
   className: '',
   style: {},
   onClose: () => {},
+  onClickOutSide: () => {},
   title: '',
   footerLeft: [],
   footerRight: [],
@@ -33,14 +35,16 @@ function Modal(props) {
     style,
     className,
     onClose,
+    onClickOutSide,
     title,
     footerLeft,
     footerRight,
     noXIcon,
     children,
   } = props;
+
   return (
-    <Overlay onClick={onClose}>
+    <Overlay onClick={onClickOutSide}>
       <div
         id={id}
         style={style}

@@ -8,6 +8,7 @@ import UserPage from './components/pages/admin/UserPage/UserPage';
 import Test from './components/pages/test/Test';
 import HomePage from './components/pages/user/HomePage/HomePage';
 import ExamPage from './components/pages/user/ExamPage/ExamPage';
+import IntroPage from './components/pages/user/IntroPage/IntroPage';
 import Layout from './components/sections/Admin/Layout/Layout';
 import './main.scss';
 
@@ -35,7 +36,9 @@ function App() {
           <Route exact path="login" element={<LoginPage />} />
           <Route exact path="register" element={<RegisterPage />} />
           <Route exact path="home" element={<HomePage />} />
-          <Route exact path="exam" element={<ExamPage />} />
+          <Route exact path="exam" element={<ExamPage />}>
+            <Route exact path="intro:id" element={<IntroPage />} />
+          </Route>
           <Route
             exact
             path=""
