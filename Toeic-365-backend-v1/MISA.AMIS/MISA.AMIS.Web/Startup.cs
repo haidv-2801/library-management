@@ -6,17 +6,17 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using MISA.AMIS.ApplicationCore;
-using MISA.AMIS.ApplicationCore.Interfaces;
-using MISA.AMIS.ApplicationCore.Interfaces.IRepositories;
-using MISA.AMIS.ApplicationCore.MiddleWare;
-using MISA.AMIS.Infrastructure;
+using TOE.TOEIC.ApplicationCore;
+using TOE.TOEIC.ApplicationCore.Interfaces;
+using TOE.TOEIC.ApplicationCore.Interfaces.IRepositories;
+using TOE.TOEIC.ApplicationCore.MiddleWare;
+using TOE.TOEIC.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MISA.AMIS.Web
+namespace TOE.TOEIC.Web
 {
     public class Startup
     {

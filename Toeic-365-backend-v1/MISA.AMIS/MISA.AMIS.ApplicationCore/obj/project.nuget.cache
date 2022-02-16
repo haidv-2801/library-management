@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "zCdTDjcVr4kwMtyzjBsLJmuPsftz/y9UEosCItIrx5QRZZNLfEBmaTD1+9mM/8Txm49jQ7GBqUzg6WZR6IdfeQ==",
+  "dgSpecHash": "PlRO8arqT1VC73BGTekjnbNKvsRHjJTvbgrOXIlQa1GabefGBXuDA6h5pQLPslg7tXT9hgGAEbXNoOxVDQZiDg==",
   "success": true,
-  "projectFilePath": "D:\\nam4ki2\\DATN\\DA\\MISA.AMIS\\web05b-mf866-dvhai\\backend\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\MISA.AMIS.ApplicationCore.csproj",
+  "projectFilePath": "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\TOE.TOEIC.ApplicationCore.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Admin\\.nuget\\packages\\closedxml\\0.95.4\\closedxml.0.95.4.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\documentformat.openxml\\2.7.2\\documentformat.openxml.2.7.2.nupkg.sha512",

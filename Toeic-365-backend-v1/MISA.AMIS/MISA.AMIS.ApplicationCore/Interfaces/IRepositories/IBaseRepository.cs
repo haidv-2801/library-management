@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 
-namespace MISA.AMIS.ApplicationCore.Interfaces
+namespace TOE.TOEIC.ApplicationCore.Interfaces
 {
     public interface IBaseRepository<TEntity>
     {

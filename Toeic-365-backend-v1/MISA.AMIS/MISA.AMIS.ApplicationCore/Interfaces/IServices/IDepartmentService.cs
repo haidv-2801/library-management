@@ -1,10 +1,10 @@
-﻿using MISA.AMIS.ApplicationCoore.Entities;
-using MISA.AMIS.ApplicationCore.Entities;
+﻿using TOE.TOEIC.ApplicationCoore.Entities;
+using TOE.TOEIC.ApplicationCore.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MISA.AMIS.ApplicationCore.Interfaces
+namespace TOE.TOEIC.ApplicationCore.Interfaces
 {
     public interface IDepartmentService : IBaseService<Department>
     {

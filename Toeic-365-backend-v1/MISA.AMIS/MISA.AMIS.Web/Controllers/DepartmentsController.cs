@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 using Dapper;
 using MySqlConnector;
 using System.Data;
-using MISA.AMIS.ApplicationCore;
-using MISA.AMIS.ApplicationCore.Interfaces;
-using MISA.AMIS.ApplicationCore.Entities;
-using MISA.AMIS.Web.Controllers;
-using MISA.AMIS.ApplicationCoore.Entities;
+using TOE.TOEIC.ApplicationCore;
+using TOE.TOEIC.ApplicationCore.Interfaces;
+using TOE.TOEIC.ApplicationCore.Entities;
+using TOE.TOEIC.Web.Controllers;
+using TOE.TOEIC.ApplicationCoore.Entities;
 using Microsoft.AspNetCore.Cors;
 
 namespace MISA.CukCuk.Web.Controllers

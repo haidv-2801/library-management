@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
-using MISA.AMIS.ApplicationCore.Entities;
-using MISA.AMIS.ApplicationCore.Interfaces;
-using MISA.AMIS.Entities;
+using TOE.TOEIC.ApplicationCore.Entities;
+using TOE.TOEIC.ApplicationCore.Interfaces;
+using TOE.TOEIC.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,7 +14,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MISA.AMIS.ApplicationCore
+namespace TOE.TOEIC.ApplicationCore
 {
     /// <summary>
     /// Service dùng chung

@@ -8,10 +8,10 @@ using System.Reflection;
 using System.Text;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.Configuration;
-using MISA.AMIS.Entities;
-using MISA.AMIS.ApplicationCore.Entities;
+using TOE.TOEIC.Entities;
+using TOE.TOEIC.ApplicationCore.Entities;
 
-namespace MISA.AMIS.ApplicationCore.Interfaces
+namespace TOE.TOEIC.ApplicationCore.Interfaces
 {
     public class BaseRepository<TEntity> : IBaseRepository<TEntity>, IDisposable where TEntity : BaseEntity
     {

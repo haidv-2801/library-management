@@ -35,6 +35,11 @@ import Dropdown from '../../molecules/Dropdown/Dropdown';
 import { Skeleton } from 'primereact/skeleton';
 import { Button as PrimeButton } from 'primereact/button';
 import { BUTTON_THEME, BUTTON_TYPE } from '../../../constants/commonConstant';
+import AudioPlay from '../../molecules/AudioPlay/AudioPlay';
+import QuestionCheckbox from '../../molecules/QuestionCheckbox/QuestionCheckbox';
+import GroupCheck from '../../molecules/GroupCheck/GroupCheck';
+import ExamItem from '../../molecules/ExamItem/ExamItem';
+import Spinner from '../../atomics/base/Spinner/Spinner';
 
 const fake = [
   {
@@ -302,43 +307,45 @@ const Test = () => {
   ];
 
   const [dropdown, setDropdown] = useState();
+  const test = {
+    questionNumber: 4,
+    questionContent: 'Who wants to organize the patient files?',
+    questionImg: '',
+    option1: 'Min-Su would like to. ',
+    option2: 'Our phone number has changed.',
+    option3: ' A well-run organization.',
+    option4: '',
+    correctAnswer: 'A',
+  };
   return (
     <div className="toe-test">
-      <PrimeButton
-        className="toe-prime-btn"
-        label="Lưu"
-        tooltip="Lưu thông tin"
-        iconPos="right"
-        loading={true}
-      />
-      {/* <Dropdown
-        options={value}
-        onChange={(data) => {
-          setDropdown(data.value);
-        }}
-        defaultValue={dropdown}
+      {/* <AudioPlay
+        src={
+          '../../../../../Toeic-365-backend/fileFolders/ets_2020_01_part1.mp3'
+        }
       /> */}
-      {/* <Input
-        valid={false}
-        bottomMessage="Nhập đúng định dạng email"
-        clearable
-      /> */}
-      {/* <Table data={fake} configs={CONFIGS} columns={COLUMNS} /> */}
-      {/* <RegisterPage /> */}
-      {/* <Modal /> */}
-      {/* <Loading /> */}
-      {/* <Layout /> */}
-      {/* <PopupSelection
-        options={[
-          { label: 'A', value: 1 },
-          { label: 'B', value: 2 },
-          { label: 'C', value: 3 },
+      {/* <QuestionCheckbox
+        questionName={test.questionNumber + '. ' + test.questionContent}
+        answers={[
+          { label: 'A.' + test.option1.trim(), value: 'A' },
+          { label: 'B.' + test.option2.trim(), value: 'B' },
+          { label: 'C.' + test.option3.trim(), value: 'C' },
+          {
+            label: 'D.' + test.option4.trim(),
+            value: 'D',
+            onHide: (item) => test.option4.trim() === '',
+          },
         ]}
-        defaultValue={value}
-        onChange={(item) => {
-          setValue(item.value);
+        imgSrc={test.questionImg}
+        defaultValue={dropdown}
+        onChange={(res) => {
+          setDropdown(res);
         }}
-      /> */}
+      />
+
+      <GroupCheck /> */}
+      {/* <ExamItem /> */}
+      <Spinner show={true} />
     </div>
   );
 };

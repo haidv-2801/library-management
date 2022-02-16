@@ -1,4 +1,4 @@
-﻿using MISA.AMIS.ApplicationCore.Interfaces;
+﻿using TOE.TOEIC.ApplicationCore.Interfaces;
 using MySqlConnector;
 using System;
 using System.Collections.Generic;
@@ -7,10 +7,10 @@ using System.Text;
 using Dapper;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
-using MISA.AMIS.ApplicationCoore.Entities;
-using MISA.AMIS.ApplicationCore.Entities;
+using TOE.TOEIC.ApplicationCoore.Entities;
+using TOE.TOEIC.ApplicationCore.Entities;
 
-namespace MISA.AMIS.Infrastructure
+namespace TOE.TOEIC.Infrastructure
 {
     /// <summary>
     /// Repository danh mục nhân viên

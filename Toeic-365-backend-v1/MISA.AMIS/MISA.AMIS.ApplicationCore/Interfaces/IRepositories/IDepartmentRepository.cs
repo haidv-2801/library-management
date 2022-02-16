@@ -1,9 +1,9 @@
-﻿using MISA.AMIS.ApplicationCoore.Entities;
+﻿using TOE.TOEIC.ApplicationCoore.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MISA.AMIS.ApplicationCore.Interfaces.IRepositories
+namespace TOE.TOEIC.ApplicationCore.Interfaces.IRepositories
 {
     public interface IDepartmentRepository : IBaseRepository<Department>
     {

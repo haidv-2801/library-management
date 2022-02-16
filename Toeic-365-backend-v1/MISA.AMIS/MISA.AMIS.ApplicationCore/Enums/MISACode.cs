@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MISA.AMIS.Entities
+namespace TOE.TOEIC.Entities
 {
     public enum MISACode
     {

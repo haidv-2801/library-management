@@ -120,7 +120,10 @@ function RegisterPage() {
 
   return (
     <div className={buildClass(['toe-register-page'])}>
-      <div className="toe-register-page__head">
+      <div
+        className="toe-register-page__head"
+        onClick={() => navigate('/home')}
+      >
         <img src={MainLogo} alt="logo" />
         <b className="name-app">
           TOEIC<span style={{ color: '#43c1c9' }}>365</span>

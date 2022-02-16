@@ -140,7 +140,6 @@ function UpLoadImage(props) {
 
   useEffect(() => {
     let test = document.getElementById('image')?.value;
-    debugger;
   }, [image]);
 
   const onImageChange = (event) => {

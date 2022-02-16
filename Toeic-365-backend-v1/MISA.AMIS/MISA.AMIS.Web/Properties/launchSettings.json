@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "MISA.AMIS.Web": {
+    "TOE.TOEIC.Web": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",

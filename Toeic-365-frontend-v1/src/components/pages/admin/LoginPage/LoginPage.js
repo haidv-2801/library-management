@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 
 import LoginBg from '../../../../assets/images/login.svg';
@@ -9,8 +9,21 @@ import Button from '../../../atomics/base/Button/Button';
 import { LoginOutlined, LoadingOutlined } from '@ant-design/icons';
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
+import { message } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
+import store from '../../../../redux/store';
 import baseApi from '../../../../api/baseApi';
-import { ADMIN_ENDPOINT } from '../../../../constants/endpoint';
+import END_POINT, { ADMIN_ENDPOINT } from '../../../../constants/endpoint';
+import {
+  setCookie,
+  getCookie,
+  setLocalStorage,
+  getLocalStorage,
+  TOKEN_KEY,
+  USER_INFO,
+  AuthContext,
+} from '../../../../contexts/authContext';
+import { appAction } from '../../../../redux/slices/appSlice';
 import 'primeicons/primeicons.css';
 import 'primereact/resources/themes/lara-light-indigo/theme.css';
 import 'primereact/resources/primereact.css';
@@ -21,6 +34,7 @@ import {
   BUTTON_TYPE,
   REGEX,
   KEY_CODE,
+  PATH_NAME,
 } from '../../../../constants/commonConstant';
 import { useNavigate } from 'react-router-dom';
 
@@ -39,6 +53,9 @@ LoginPage.defaultProps = {
 function LoginPage(props) {
   const { id, className, style } = props;
 
+  const authCtx = useContext(AuthContext);
+  const dispatch = useDispatch();
+  const selector = useSelector((store) => store.app);
   const [loginInfo, setloginInfo] = useState({});
   const [validate, setvalidate] = useState({ email: true, password: true });
   const [isLoading, setIsLoading] = useState(false);
@@ -47,11 +64,61 @@ function LoginPage(props) {
 
   const handleLogin = () => {
     if (!validate.email || !validate.password) return;
-    setIsLoading(true);
+
+    //login
+    callApiLogin();
+
+    // setIsLoading(true);
+    // setTimeout(() => {
+    //   setIsLoading(false);
+    //   navigate('/admin');
+    // }, 1000);
+  };
+
+  const callApiLogin = () => {
+    const fake = {
+      token: 'bnh5yzdirjinqaorq0ox1tf383nb3xr',
+      userInfo: { fullName: 'DOVANHAI', roles: ['ROLE_ADMIN'] },
+    };
+    authCtx.login(fake.token, fake.userInfo);
+    // window.history.back();
+    const path = selector.history;
+    if (path?.length) {
+      navigate(path[0]);
+      return;
+    }
+
+    navigate('/admin');
+
     setTimeout(() => {
-      setIsLoading(false);
-      navigate('/admin');
-    }, 1000);
+      dispatch(appAction.changeHistory([]));
+    }, 0);
+    // baseApi.post(
+    //   (res) => {
+    //     authCtx.login(res.token, res.userInfo);
+    //     // window.history.back();
+    //     const path = selector.history;
+    //     if (path?.length) {
+    //       navigate(path[0]);
+    //       return;
+    //     }
+
+    //     navigate('/admin');
+
+    //     setTimeout(() => {
+    //       dispatch(appAction.changeHistory([]));
+    //     }, 0);
+    //   },
+    //   (err) => {
+    //     message.error('Tài khoản hoặc mật khẩu không đúng', 3);
+    //     setIsLoading(false);
+    //   },
+    //   () => {
+    //     setIsLoading(true);
+    //   },
+    //   END_POINT.TOE_LOGIN,
+    //   loginInfo
+    // );
   };
 
   const isEmail = (email) => {
@@ -79,7 +146,12 @@ function LoginPage(props) {
 
   return (
     <div className={buildClass(['toe-login-page'])}>
-      <div className="toe-login-page__head">
+      <div
+        className="toe-login-page__head"
+        onClick={() => {
+          navigate(PATH_NAME.HOME);
+        }}
+      >
         <img src={MainLogo} alt="logo" />
         <b className="name-app">
           TOEIC<span style={{ color: '#43c1c9' }}>365</span>
@@ -95,7 +167,7 @@ function LoginPage(props) {
               Vui lòng đăng nhập để trải nghiệm website 🚀!{' '}
               <span
                 className="text-high-light"
-                onClick={() => navigate('/register')}
+                onClick={() => navigate(PATH_NAME.REGISTER)}
               >
                 Tôi chưa có tài khoản
               </span>

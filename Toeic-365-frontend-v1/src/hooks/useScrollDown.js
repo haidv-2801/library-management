@@ -46,9 +46,9 @@ export const useScroll = (
         callbackTop && callbackTop();
       }
     };
-    node && node.current.addEventListener('scroll', callBackInside);
+    node?.current && node.current.addEventListener('scroll', callBackInside);
     return () => {
-      node && node.current.removeEventListener('scroll');
+      node?.current && node.current.removeEventListener('scroll');
     };
   }, [node]);
 

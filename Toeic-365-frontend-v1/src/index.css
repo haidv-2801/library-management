@@ -31,3 +31,8 @@ body {
 *::-webkit-scrollbar-thumb:active {
   background: rgba(0, 0, 0, 0.9);
 }
+
+.ant-message-custom-content {
+  display: flex;
+  align-items: center;
+}

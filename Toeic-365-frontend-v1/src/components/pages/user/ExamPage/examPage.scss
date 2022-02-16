@@ -4,4 +4,24 @@
   .link-wrap {
     cursor: pointer;
   }
+
+  .toe-exam-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .button-see-more {
+    align-items: flex-end;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+
+    .toe-btn-theme-1 {
+      background-color: #e5e5e5;
+      color: #454545;
+      border-radius: 2px;
+    }
+  }
 }

@@ -4,6 +4,12 @@ const TEXT_FALL_BACK = {
   TYPE_3: '- -',
 };
 
+const PATH_NAME = {
+  HOME: '/home',
+  REGISTER: '/register',
+  LOGIN: '/login',
+};
+
 const BUTTON_TYPE = {
   NORMAL: 1,
   LEFT_ICON: 2,
@@ -29,4 +35,17 @@ const KEY_CODE = {
   ENTER: 13,
 };
 
-export { TEXT_FALL_BACK, BUTTON_THEME, BUTTON_TYPE, REGEX, KEY_CODE };
+const CHECKBOX_TYPE = {
+  CIRCLE: 1,
+  SQUARE: 2,
+};
+
+export {
+  TEXT_FALL_BACK,
+  BUTTON_THEME,
+  BUTTON_TYPE,
+  REGEX,
+  KEY_CODE,
+  PATH_NAME,
+  CHECKBOX_TYPE,
+};

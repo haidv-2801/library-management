@@ -1,10 +1,10 @@
-﻿using MISA.AMIS.ApplicationCore.Entities;
+﻿using TOE.TOEIC.ApplicationCore.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace MISA.AMIS.ApplicationCoore.Entities
+namespace TOE.TOEIC.ApplicationCoore.Entities
 {
     /// <summary>
     /// Thực thể người dùng

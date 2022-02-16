@@ -12,15 +12,19 @@ import './layout.scss';
 Layout.propTypes = {
   title: PropTypes.any,
   rightButtons: PropTypes.array,
+  showNav: PropTypes.bool,
+  bodyClass: PropTypes.string,
 };
 
 Layout.defaultProps = {
   title: null,
   rightButtons: [],
+  showNav: true,
+  bodyClass: '',
 };
 
 function Layout(props) {
-  const { title, rightButtons, children } = props;
+  const { title, rightButtons, children, showNav, bodyClass } = props;
   const history = useNavigate();
 
   const homeRef = useScroll({
@@ -62,8 +66,14 @@ function Layout(props) {
           width <= SCREEN_WIDTH && 'toe-layout-user-page-container__1024',
         ])}
       >
-        <Header />
-        <div ref={homeRef} className="toe-layout-user-page-container__body">
+        <Header showNav={showNav} />
+        <div
+          ref={homeRef}
+          className={buildClass([
+            'toe-layout-user-page-container__body',
+            bodyClass,
+          ])}
+        >
           {children}
         </div>
       </div>

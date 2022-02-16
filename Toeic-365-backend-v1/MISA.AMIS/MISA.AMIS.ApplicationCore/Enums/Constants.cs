@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MISA.AMIS.ApplicationCore.Enums
+namespace TOE.TOEIC.ApplicationCore.Enums
 {
     public static class DataType
     {

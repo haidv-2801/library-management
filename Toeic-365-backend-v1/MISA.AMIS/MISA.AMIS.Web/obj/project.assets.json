@@ -1809,7 +1809,7 @@
           "lib/netstandard1.3/System.Xml.XPath.XmlDocument.dll": {}
         }
       },
-      "MISA.AMIS.ApplicationCore/1.0.0": {
+      "TOE.TOEIC.ApplicationCore/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v3.1",
         "dependencies": {
@@ -1820,26 +1820,26 @@
           "Newtonsoft.Json": "13.0.1"
         },
         "compile": {
-          "bin/placeholder/MISA.AMIS.ApplicationCore.dll": {}
+          "bin/placeholder/TOE.TOEIC.ApplicationCore.dll": {}
         },
         "runtime": {
-          "bin/placeholder/MISA.AMIS.ApplicationCore.dll": {}
+          "bin/placeholder/TOE.TOEIC.ApplicationCore.dll": {}
         }
       },
-      "MISA.AMIS.Infarstructure/1.0.0": {
+      "TOE.TOEIC.Infarstructure/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v3.1",
         "dependencies": {
           "Dapper": "2.0.90",
-          "MISA.AMIS.ApplicationCore": "1.0.0",
           "Microsoft.Extensions.Configuration.Abstractions": "5.0.0",
-          "MySqlConnector": "1.4.0-beta.1"
+          "MySqlConnector": "1.4.0-beta.1",
+          "TOE.TOEIC.ApplicationCore": "1.0.0"
         },
         "compile": {
-          "bin/placeholder/MISA.AMIS.Infarstructure.dll": {}
+          "bin/placeholder/TOE.TOEIC.Infarstructure.dll": {}
         },
         "runtime": {
-          "bin/placeholder/MISA.AMIS.Infarstructure.dll": {}
+          "bin/placeholder/TOE.TOEIC.Infarstructure.dll": {}
         }
       }
     }
@@ -6528,22 +6528,22 @@
         "system.xml.xpath.xmldocument.nuspec"
       ]
     },
-    "MISA.AMIS.ApplicationCore/1.0.0": {
+    "TOE.TOEIC.ApplicationCore/1.0.0": {
       "type": "project",
-      "path": "../MISA.AMIS.ApplicationCore/MISA.AMIS.ApplicationCore.csproj",
-      "msbuildProject": "../MISA.AMIS.ApplicationCore/MISA.AMIS.ApplicationCore.csproj"
+      "path": "../MISA.AMIS.ApplicationCore/TOE.TOEIC.ApplicationCore.csproj",
+      "msbuildProject": "../MISA.AMIS.ApplicationCore/TOE.TOEIC.ApplicationCore.csproj"
     },
-    "MISA.AMIS.Infarstructure/1.0.0": {
+    "TOE.TOEIC.Infarstructure/1.0.0": {
       "type": "project",
-      "path": "../MISA.AMIS.Infarstructure/MISA.AMIS.Infarstructure.csproj",
-      "msbuildProject": "../MISA.AMIS.Infarstructure/MISA.AMIS.Infarstructure.csproj"
+      "path": "../MISA.AMIS.Infarstructure/TOE.TOEIC.Infarstructure.csproj",
+      "msbuildProject": "../MISA.AMIS.Infarstructure/TOE.TOEIC.Infarstructure.csproj"
     }
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v3.1": [
-      "MISA.AMIS.ApplicationCore >= 1.0.0",
-      "MISA.AMIS.Infarstructure >= 1.0.0",
-      "Swashbuckle.AspNetCore >= 5.6.3"
+      "Swashbuckle.AspNetCore >= 5.6.3",
+      "TOE.TOEIC.ApplicationCore >= 1.0.0",
+      "TOE.TOEIC.Infarstructure >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -6552,11 +6552,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\nam4ki2\\DATN\\DA\\MISA.AMIS\\web05b-mf866-dvhai\\backend\\MISA.AMIS\\MISA.AMIS.Web\\MISA.AMIS.Web.csproj",
-      "projectName": "MISA.AMIS.Web",
-      "projectPath": "D:\\nam4ki2\\DATN\\DA\\MISA.AMIS\\web05b-mf866-dvhai\\backend\\MISA.AMIS\\MISA.AMIS.Web\\MISA.AMIS.Web.csproj",
+      "projectUniqueName": "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.Web\\TOE.TOEIC.Web.csproj",
+      "projectName": "TOE.TOEIC.Web",
+      "projectPath": "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.Web\\TOE.TOEIC.Web.csproj",
       "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "D:\\nam4ki2\\DATN\\DA\\MISA.AMIS\\web05b-mf866-dvhai\\backend\\MISA.AMIS\\MISA.AMIS.Web\\obj\\",
+      "outputPath": "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.Web\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -6573,11 +6573,11 @@
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
           "projectReferences": {
-            "D:\\nam4ki2\\DATN\\DA\\MISA.AMIS\\web05b-mf866-dvhai\\backend\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\MISA.AMIS.ApplicationCore.csproj": {
-              "projectPath": "D:\\nam4ki2\\DATN\\DA\\MISA.AMIS\\web05b-mf866-dvhai\\backend\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\MISA.AMIS.ApplicationCore.csproj"
+            "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\TOE.TOEIC.ApplicationCore.csproj": {
+              "projectPath": "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\TOE.TOEIC.ApplicationCore.csproj"
             },
-            "D:\\nam4ki2\\DATN\\DA\\MISA.AMIS\\web05b-mf866-dvhai\\backend\\MISA.AMIS\\MISA.AMIS.Infarstructure\\MISA.AMIS.Infarstructure.csproj": {
-              "projectPath": "D:\\nam4ki2\\DATN\\DA\\MISA.AMIS\\web05b-mf866-dvhai\\backend\\MISA.AMIS\\MISA.AMIS.Infarstructure\\MISA.AMIS.Infarstructure.csproj"
+            "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.Infarstructure\\TOE.TOEIC.Infarstructure.csproj": {
+              "projectPath": "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.Infarstructure\\TOE.TOEIC.Infarstructure.csproj"
             }
           }
         }

@@ -1,9 +1,9 @@
-﻿using MISA.AMIS.Entities;
+﻿using TOE.TOEIC.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MISA.AMIS.ApplicationCore.Entities
+namespace TOE.TOEIC.ApplicationCore.Entities
 {
     [AttributeUsage(AttributeTargets.Property)]
     public class IRequired : Attribute

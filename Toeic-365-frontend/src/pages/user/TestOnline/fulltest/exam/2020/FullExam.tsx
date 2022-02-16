@@ -248,7 +248,6 @@ function FullExam() {
                 }
             }
         } catch (error) {
-            console.log(error.message);
         }
     };
 
@@ -264,7 +263,6 @@ function FullExam() {
             setUser(response.data);
             console.log(response.data);
         } catch (error) {
-            console.log(error.message);
         }
     };
 
@@ -753,17 +751,17 @@ function FullExam() {
                                                 })}
 
                                                 <p className="text-justify">
-                                                    <b>{exam && exam.part.length && exam.part[2].groupQuestion[1].title}</b>
+                                                    <b>{exam && exam.part.length && exam.part[2].groupQuestion[0].title}</b>
                                                 </p>
                                                 <hr/>
-                                                <p dangerouslySetInnerHTML={{__html: exam && exam.part.length && exam.part[2].groupQuestion[1].groupQuestionDesc}}/>
+                                                <p dangerouslySetInnerHTML={{__html: exam && exam.part.length && exam.part[2].groupQuestion[0].groupQuestionDesc}}/>
                                                 <p><b>Audio:</b></p>
                                                 <audio preload="auto" controls style={{width: '100%'}}>
                                                     <source
-                                                        src={`${baseUrl()}/fileFolders/${exam.part[2].groupQuestion[1].audio}`}/>
+                                                        src={`${baseUrl()}/fileFolders/${exam.part[2].groupQuestion[0].audio}`}/>
                                                 </audio>
 
-                                                {exam && exam.part.length && exam.part[2].groupQuestion[1].question.map((element: any) => {
+                                                {exam && exam.part.length && exam.part[2].groupQuestion[0].question.map((element: any) => {
                                                     return (
                                                         <div key={element.questionNumber}>
                                                             <input className="hidden" id="correctAnswer"
@@ -812,17 +810,17 @@ function FullExam() {
                                                 })}
 
                                                 <p className="text-justify">
-                                                    <b>{exam && exam.part.length && exam.part[2].groupQuestion[2].title}</b>
+                                                    <b>{exam && exam.part.length && exam.part[2].groupQuestion[0].title}</b>
                                                 </p>
                                                 <hr/>
-                                                <p dangerouslySetInnerHTML={{__html: exam && exam.part.length && exam.part[2].groupQuestion[2].groupQuestionDesc}}/>
+                                                <p dangerouslySetInnerHTML={{__html: exam && exam.part.length && exam.part[2].groupQuestion[0].groupQuestionDesc}}/>
                                                 <p><b>Audio:</b></p>
                                                 <audio preload="auto" controls style={{width: '100%'}}>
                                                     <source
-                                                        src={`${baseUrl()}/fileFolders/${exam.part[2].groupQuestion[2].audio}`}/>
+                                                        src={`${baseUrl()}/fileFolders/${exam.part[2].groupQuestion[0].audio}`}/>
                                                 </audio>
 
-                                                {exam && exam.part.length && exam.part[2].groupQuestion[2].question.map((element: any) => {
+                                                {exam && exam.part.length && exam.part[2].groupQuestion[0].question.map((element: any) => {
                                                     return (
                                                         <div key={element.questionNumber}>
                                                             <input className="hidden" id="correctAnswer"
@@ -1176,17 +1174,17 @@ function FullExam() {
                                                 })}
 
                                                 <p className="text-justify">
-                                                    <b>{exam && exam.part.length && exam.part[3].groupQuestion[1].title}</b>
+                                                    <b>{exam && exam.part.length && exam.part[3].groupQuestion[0].title}</b>
                                                 </p>
                                                 <hr/>
-                                                <p dangerouslySetInnerHTML={{__html: exam && exam.part.length && exam.part[3].groupQuestion[1].groupQuestionDesc}}/>
+                                                <p dangerouslySetInnerHTML={{__html: exam && exam.part.length && exam.part[3].groupQuestion[0].groupQuestionDesc}}/>
                                                 <p><b>Audio:</b></p>
                                                 <audio preload="auto" controls style={{width: '100%'}}>
                                                     <source
-                                                        src={`${baseUrl()}/fileFolders/${exam.part[3].groupQuestion[1].audio}`}/>
+                                                        src={`${baseUrl()}/fileFolders/${exam.part[3].groupQuestion[0].audio}`}/>
                                                 </audio>
 
-                                                {exam && exam.part.length && exam.part[3].groupQuestion[1].question.map((element: any) => {
+                                                {exam && exam.part.length && exam.part[3].groupQuestion[0].question.map((element: any) => {
                                                     return (
                                                         <div key={element.questionNumber}>
                                                             <input className="hidden" id="correctAnswer"
@@ -1235,17 +1233,17 @@ function FullExam() {
                                                 })}
 
                                                 <p className="text-justify">
-                                                    <b>{exam && exam.part.length && exam.part[3].groupQuestion[2].title}</b>
+                                                    <b>{exam && exam.part.length && exam.part[3].groupQuestion[0].title}</b>
                                                 </p>
                                                 <hr/>
-                                                <p dangerouslySetInnerHTML={{__html: exam && exam.part.length && exam.part[3].groupQuestion[2].groupQuestionDesc}}/>
+                                                <p dangerouslySetInnerHTML={{__html: exam && exam.part.length && exam.part[3].groupQuestion[0].groupQuestionDesc}}/>
                                                 <p><b>Audio:</b></p>
                                                 <audio preload="auto" controls style={{width: '100%'}}>
                                                     <source
-                                                        src={`${baseUrl()}/fileFolders/${exam.part[3].groupQuestion[2].audio}`}/>
+                                                        src={`${baseUrl()}/fileFolders/${exam.part[3].groupQuestion[0].audio}`}/>
                                                 </audio>
 
-                                                {exam && exam.part.length && exam.part[3].groupQuestion[2].question.map((element: any) => {
+                                                {exam && exam.part.length && exam.part[3].groupQuestion[0].question.map((element: any) => {
                                                     return (
                                                         <div key={element.questionNumber}>
                                                             <input className="hidden" id="correctAnswer"
@@ -1542,14 +1540,14 @@ function FullExam() {
 
                                                 <p className="text-justify">
                                                     {exam.part[0].groupQuestion.length ?
-                                                        <b>{exam.part[5].groupQuestion[1].title}</b> : <></>}
+                                                        <b>{exam.part[5].groupQuestion[0].title}</b> : <></>}
                                                 </p>
                                                 <hr/>
                                                 {exam.part[0].groupQuestion.length ?
-                                                    <p dangerouslySetInnerHTML={{__html: exam.part[5].groupQuestion[1].groupQuestionDesc}}/> : <></>}
-                                                <p dangerouslySetInnerHTML={{__html: exam.part[5].groupQuestion[1].paragraph}}/>
+                                                    <p dangerouslySetInnerHTML={{__html: exam.part[5].groupQuestion[0].groupQuestionDesc}}/> : <></>}
+                                                <p dangerouslySetInnerHTML={{__html: exam.part[5].groupQuestion[0].paragraph}}/>
 
-                                                {exam && exam.part.length && exam.part[5].groupQuestion[1].question.map((element: any) => {
+                                                {exam && exam.part.length && exam.part[5].groupQuestion[0].question.map((element: any) => {
                                                     return (
                                                         <div key={element.questionNumber}>
                                                             <input className="hidden" id="correctAnswer"
@@ -1663,14 +1661,15 @@ function FullExam() {
 
                                                 <p className="text-justify">
                                                     {exam.part[6].groupQuestion.length ?
-                                                        <b>{exam.part[6].groupQuestion[1].title}</b> : <></>}
+
+                                                        <b>{exam.part[6].groupQuestion[0]?.title}</b> : <></>}
                                                 </p>
                                                 <hr/>
                                                 {exam.part[0].groupQuestion.length ?
-                                                    <p dangerouslySetInnerHTML={{__html: exam.part[6].groupQuestion[1].groupQuestionDesc}}/> : <></>}
-                                                <p dangerouslySetInnerHTML={{__html: exam.part[6].groupQuestion[1].paragraph}}/>
+                                                    <p dangerouslySetInnerHTML={{__html: exam.part[6].groupQuestion[0].groupQuestionDesc}}/> : <></>}
+                                                <p dangerouslySetInnerHTML={{__html: exam.part[6].groupQuestion[0].paragraph}}/>
 
-                                                {exam && exam.part.length && exam.part[6].groupQuestion[1].question.map((element: any) => {
+                                                {exam && exam.part.length && exam.part[6].groupQuestion[0].question.map((element: any) => {
                                                     return (
                                                         <div key={element.questionNumber}>
                                                             <input className="hidden" id="correctAnswer"
@@ -1719,14 +1718,14 @@ function FullExam() {
 
                                                 <p className="text-justify">
                                                     {exam.part[6].groupQuestion.length ?
-                                                        <b>{exam.part[6].groupQuestion[2].title}</b> : <></>}
+                                                        <b>{exam.part[6].groupQuestion[0].title}</b> : <></>}
                                                 </p>
                                                 <hr/>
                                                 {exam.part[0].groupQuestion.length ?
-                                                    <p dangerouslySetInnerHTML={{__html: exam.part[6].groupQuestion[2].groupQuestionDesc}}/> : <></>}
-                                                <p dangerouslySetInnerHTML={{__html: exam.part[6].groupQuestion[2].paragraph}}/>
+                                                    <p dangerouslySetInnerHTML={{__html: exam.part[6].groupQuestion[0].groupQuestionDesc}}/> : <></>}
+                                                <p dangerouslySetInnerHTML={{__html: exam.part[6].groupQuestion[0].paragraph}}/>
 
-                                                {exam && exam.part.length && exam.part[6].groupQuestion[2].question.map((element: any) => {
+                                                {exam && exam.part.length && exam.part[6].groupQuestion[0].question.map((element: any) => {
                                                     return (
                                                         <div key={element.questionNumber}>
                                                             <input className="hidden" id="correctAnswer"
@@ -2342,14 +2341,14 @@ function FullExam() {
                                                                                        isSubmit && userAnswerChoose["question_" + element.questionNumber] ? "btn btn-default question-n bg-red" : userAnswerChoose["question_" + element.questionNumber] ? "btn btn-default question-n bg-green" : "btn btn-default question-n"}>{element.questionNumber}</a>
                                                                             )
                                                                         })}
-                                                                        {exam.part[2].groupQuestion[1].question.map((element: any) => {
+                                                                        {exam.part[2].groupQuestion[0].question.map((element: any) => {
                                                                             return (
                                                                                 <a href={`#question-${element.questionNumber}`}
                                                                                    className={isSubmit && userAnswerChoose["question_" + element.questionNumber] === correctAnswerSubmit[element.questionNumber - 1] ? "btn btn-default question-n bg-blue" :
                                                                                        isSubmit && userAnswerChoose["question_" + element.questionNumber] ? "btn btn-default question-n bg-red" : userAnswerChoose["question_" + element.questionNumber] ? "btn btn-default question-n bg-green" : "btn btn-default question-n"}>{element.questionNumber}</a>
                                                                             )
                                                                         })}
-                                                                        {exam.part[2].groupQuestion[2].question.map((element: any) => {
+                                                                        {exam.part[2].groupQuestion[0].question.map((element: any) => {
                                                                             return (
                                                                                 <a href={`#question-${element.questionNumber}`}
                                                                                    className={isSubmit && userAnswerChoose["question_" + element.questionNumber] === correctAnswerSubmit[element.questionNumber - 1] ? "btn btn-default question-n bg-blue" :
@@ -2401,14 +2400,14 @@ function FullExam() {
                                                                                        isSubmit && userAnswerChoose["question_" + element.questionNumber] ? "btn btn-default question-n bg-red" : userAnswerChoose["question_" + element.questionNumber] ? "btn btn-default question-n bg-green" : "btn btn-default question-n"}>{element.questionNumber}</a>
                                                                             )
                                                                         })}
-                                                                        {exam.part[3].groupQuestion[1].question.map((element: any) => {
+                                                                        {exam.part[3].groupQuestion[0].question.map((element: any) => {
                                                                             return (
                                                                                 <a href={`#question-${element.questionNumber}`}
                                                                                    className={isSubmit && userAnswerChoose["question_" + element.questionNumber] === correctAnswerSubmit[element.questionNumber - 1] ? "btn btn-default question-n bg-blue" :
                                                                                        isSubmit && userAnswerChoose["question_" + element.questionNumber] ? "btn btn-default question-n bg-red" : userAnswerChoose["question_" + element.questionNumber] ? "btn btn-default question-n bg-green" : "btn btn-default question-n"}>{element.questionNumber}</a>
                                                                             )
                                                                         })}
-                                                                        {exam.part[3].groupQuestion[2].question.map((element: any) => {
+                                                                        {exam.part[3].groupQuestion[0].question.map((element: any) => {
                                                                             return (
                                                                                 <a href={`#question-${element.questionNumber}`}
                                                                                    className={isSubmit && userAnswerChoose["question_" + element.questionNumber] === correctAnswerSubmit[element.questionNumber - 1] ? "btn btn-default question-n bg-blue" :
@@ -2471,7 +2470,7 @@ function FullExam() {
                                                                                        isSubmit && userAnswerChoose["question_" + element.questionNumber] ? "btn btn-default question-n bg-red" : userAnswerChoose["question_" + element.questionNumber] ? "btn btn-default question-n bg-green" : "btn btn-default question-n"}>{element.questionNumber}</a>
                                                                             )
                                                                         })}
-                                                                        {exam.part[5].groupQuestion[1].question.map((element: any) => {
+                                                                        {exam.part[5].groupQuestion[0].question.map((element: any) => {
                                                                             return (
                                                                                 <a href={`#question-${element.questionNumber}`}
                                                                                    className={isSubmit && userAnswerChoose["question_" + element.questionNumber] === correctAnswerSubmit[element.questionNumber - 1] ? "btn btn-default question-n bg-blue" :
@@ -2495,14 +2494,14 @@ function FullExam() {
                                                                                        isSubmit && userAnswerChoose["question_" + element.questionNumber] ? "btn btn-default question-n bg-red" : userAnswerChoose["question_" + element.questionNumber] ? "btn btn-default question-n bg-green" : "btn btn-default question-n"}>{element.questionNumber}</a>
                                                                             )
                                                                         })}
-                                                                        {exam.part[6].groupQuestion[1].question.map((element: any) => {
+                                                                        {exam.part[6].groupQuestion[0].question.map((element: any) => {
                                                                             return (
                                                                                 <a href={`#question-${element.questionNumber}`}
                                                                                    className={isSubmit && userAnswerChoose["question_" + element.questionNumber] === correctAnswerSubmit[element.questionNumber - 1] ? "btn btn-default question-n bg-blue" :
                                                                                        isSubmit && userAnswerChoose["question_" + element.questionNumber] ? "btn btn-default question-n bg-red" : userAnswerChoose["question_" + element.questionNumber] ? "btn btn-default question-n bg-green" : "btn btn-default question-n"}>{element.questionNumber}</a>
                                                                             )
                                                                         })}
-                                                                        {exam.part[6].groupQuestion[2].question.map((element: any) => {
+                                                                        {exam.part[6].groupQuestion[0].question.map((element: any) => {
                                                                             return (
                                                                                 <a href={`#question-${element.questionNumber}`}
                                                                                    className={isSubmit && userAnswerChoose["question_" + element.questionNumber] === correctAnswerSubmit[element.questionNumber - 1] ? "btn btn-default question-n bg-blue" :

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import Input from '../../../atomics/base/Input/Input';
 import Button from '../../../atomics/base/Button/Button';
@@ -6,13 +6,16 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { buildClass } from '../../../../constants/commonFunction';
 import Avatar from '../../../../assets/images/me.jpg';
 import useWindowResize from '../../../../hooks/useWindowResize';
+import { AuthContext } from '../../../../contexts/authContext';
 import MainLogo from '../../../../assets/images/toeiclogo.png';
+
 import {
   BUTTON_THEME,
   BUTTON_TYPE,
 } from '../../../../constants/commonConstant';
 
 import './header.scss';
+import UserInfo from '../../UserInfo/UserInfo';
 
 Header.propTypes = {
   id: PropTypes.string,
@@ -30,6 +33,7 @@ Header.defaultProps = {
 
 function Header(props) {
   const { id, style, className, showNav } = props;
+  const authCtx = useContext(AuthContext);
 
   const MENU = [
     {
@@ -98,7 +102,7 @@ function Header(props) {
         {showNav && (
           <>
             {renderMenu()}
-            {!isLoggedIn && (
+            {!authCtx.isLoggedIn ? (
               <>
                 <Button
                   className="toe-btn-login"
@@ -115,6 +119,8 @@ function Header(props) {
                   onClick={handleRegister}
                 />
               </>
+            ) : (
+              <UserInfo />
             )}
             <Button
               className="toe-btn-toggle"
@@ -124,6 +130,16 @@ function Header(props) {
               onClick={handleExpanedMenu}
             />
           </>
+        )}
+
+        {!showNav && (
+          <Button
+            type={BUTTON_TYPE.LEFT_ICON}
+            theme={BUTTON_THEME.THEME_6}
+            onClick={() => window.history.back()}
+            leftIcon={<i className="pi pi-angle-double-left"></i>}
+            name={'Danh sách bài test'}
+          />
         )}
       </div>
     </div>

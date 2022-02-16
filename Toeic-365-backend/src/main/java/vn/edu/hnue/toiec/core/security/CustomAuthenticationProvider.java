@@ -29,11 +29,11 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String username = authentication.getPrincipal().toString();
         String password = authentication.getCredentials().toString();
         if (!userRepository.existsByEmail(username)) {
-            throw new BadCredentialsException("Username not found!");
+            throw new BadCredentialsException("Tài khoản hoặc mật khẩu không đúng!");
         }
         User user = userRepository.findByEmail(username).get();
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new BadCredentialsException("Password not matched!");
+            throw new BadCredentialsException("Tài khoản hoặc mật khẩu không đúng!");
         }
 
         List<GrantedAuthority> authorities = user.getRoles().stream().map(role ->

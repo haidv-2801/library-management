@@ -4,10 +4,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using Microsoft.AspNetCore.Http;
-using MISA.AMIS.ApplicationCore.Entities;
+using TOE.TOEIC.ApplicationCore.Entities;
 using Newtonsoft.Json;
 
-namespace MISA.AMIS.ApplicationCore.MiddleWare
+namespace TOE.TOEIC.ApplicationCore.MiddleWare
 {
     public class ErrorHandlingMiddleWare
     {
@@ -42,7 +42,7 @@ namespace MISA.AMIS.ApplicationCore.MiddleWare
                         cusMsg = Properties.Resources.MISA_Error
                     },
                     Messasge = Properties.Resources.MISA_Error,
-                    MISACode = AMIS.Entities.MISACode.Exception
+                    MISACode = TOE.TOEIC.Entities.MISACode.Exception
                 }
                 );
 

@@ -1,8 +1,8 @@
 ﻿using ClosedXML.Excel;
-using MISA.AMIS.ApplicationCoore.Entities;
-using MISA.AMIS.ApplicationCore.Entities;
-using MISA.AMIS.ApplicationCore.Interfaces;
-using MISA.AMIS.Entities;
+using TOE.TOEIC.ApplicationCoore.Entities;
+using TOE.TOEIC.ApplicationCore.Entities;
+using TOE.TOEIC.ApplicationCore.Interfaces;
+using TOE.TOEIC.Entities;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using System;
@@ -16,7 +16,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 
-namespace MISA.AMIS.ApplicationCore.Interfaces
+namespace TOE.TOEIC.ApplicationCore.Interfaces
 {
     public class EmployeeService : BaseService<Employee>, IEmployeeService
     {

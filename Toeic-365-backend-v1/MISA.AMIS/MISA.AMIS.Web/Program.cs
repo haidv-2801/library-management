@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MISA.AMIS.Web
+namespace TOE.TOEIC.Web
 {
     public class Program
     {

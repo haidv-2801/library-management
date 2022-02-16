@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MISA.AMIS.ApplicationCore.Entities;
-using MISA.AMIS.ApplicationCore.Interfaces;
-using MISA.AMIS.Entities;
-using MISA.AMIS.Infrastructure;
+using TOE.TOEIC.ApplicationCore.Entities;
+using TOE.TOEIC.ApplicationCore.Interfaces;
+using TOE.TOEIC.Entities;
+using TOE.TOEIC.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +12,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MISA.AMIS.Web.Controllers
+namespace TOE.TOEIC.Web.Controllers
 {
     /// <summary>
     /// Controller base

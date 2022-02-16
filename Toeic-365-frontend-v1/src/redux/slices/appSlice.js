@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const defaultValue = {
   isLoadingApp: false,
+  history: [],
 };
 
 const App = createSlice({
@@ -12,6 +13,10 @@ const App = createSlice({
   reducers: {
     toggleLoading: (state, action) => {
       state.isLoadingApp = action.payload;
+    },
+
+    changeHistory: (state, action) => {
+      state.history = action.payload;
     },
   },
 });

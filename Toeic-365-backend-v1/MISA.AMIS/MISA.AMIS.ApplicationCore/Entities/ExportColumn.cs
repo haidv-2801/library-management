@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MISA.AMIS.ApplicationCore.Entities
+namespace TOE.TOEIC.ApplicationCore.Entities
 {
     /// <summary>
     /// Thực thể exportcolumn

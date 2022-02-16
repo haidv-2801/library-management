@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\nam4ki2\\DATN\\DA\\MISA.AMIS\\web05b-mf866-dvhai\\backend\\MISA.AMIS\\MISA.AMIS.Web\\MISA.AMIS.Web.csproj": {}
+    "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.Web\\MISA.AMIS.Web.csproj": {}
   },
   "projects": {
-    "D:\\nam4ki2\\DATN\\DA\\MISA.AMIS\\web05b-mf866-dvhai\\backend\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\MISA.AMIS.ApplicationCore.csproj": {
+    "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\TOE.TOEIC.ApplicationCore.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\nam4ki2\\DATN\\DA\\MISA.AMIS\\web05b-mf866-dvhai\\backend\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\MISA.AMIS.ApplicationCore.csproj",
-        "projectName": "MISA.AMIS.ApplicationCore",
-        "projectPath": "D:\\nam4ki2\\DATN\\DA\\MISA.AMIS\\web05b-mf866-dvhai\\backend\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\MISA.AMIS.ApplicationCore.csproj",
+        "projectUniqueName": "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\TOE.TOEIC.ApplicationCore.csproj",
+        "projectName": "TOE.TOEIC.ApplicationCore",
+        "projectPath": "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\TOE.TOEIC.ApplicationCore.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "D:\\nam4ki2\\DATN\\DA\\MISA.AMIS\\web05b-mf866-dvhai\\backend\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\obj\\",
+        "outputPath": "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -80,14 +80,14 @@
         }
       }
     },
-    "D:\\nam4ki2\\DATN\\DA\\MISA.AMIS\\web05b-mf866-dvhai\\backend\\MISA.AMIS\\MISA.AMIS.Infarstructure\\MISA.AMIS.Infarstructure.csproj": {
+    "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.Infarstructure\\MISA.AMIS.Infarstructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\nam4ki2\\DATN\\DA\\MISA.AMIS\\web05b-mf866-dvhai\\backend\\MISA.AMIS\\MISA.AMIS.Infarstructure\\MISA.AMIS.Infarstructure.csproj",
+        "projectUniqueName": "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.Infarstructure\\MISA.AMIS.Infarstructure.csproj",
         "projectName": "MISA.AMIS.Infarstructure",
-        "projectPath": "D:\\nam4ki2\\DATN\\DA\\MISA.AMIS\\web05b-mf866-dvhai\\backend\\MISA.AMIS\\MISA.AMIS.Infarstructure\\MISA.AMIS.Infarstructure.csproj",
+        "projectPath": "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.Infarstructure\\MISA.AMIS.Infarstructure.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "D:\\nam4ki2\\DATN\\DA\\MISA.AMIS\\web05b-mf866-dvhai\\backend\\MISA.AMIS\\MISA.AMIS.Infarstructure\\obj\\",
+        "outputPath": "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.Infarstructure\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -104,8 +104,8 @@
           "netcoreapp3.1": {
             "targetAlias": "netcoreapp3.1",
             "projectReferences": {
-              "D:\\nam4ki2\\DATN\\DA\\MISA.AMIS\\web05b-mf866-dvhai\\backend\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\MISA.AMIS.ApplicationCore.csproj": {
-                "projectPath": "D:\\nam4ki2\\DATN\\DA\\MISA.AMIS\\web05b-mf866-dvhai\\backend\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\MISA.AMIS.ApplicationCore.csproj"
+              "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\TOE.TOEIC.ApplicationCore.csproj": {
+                "projectPath": "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\TOE.TOEIC.ApplicationCore.csproj"
               }
             }
           }
@@ -152,14 +152,14 @@
         }
       }
     },
-    "D:\\nam4ki2\\DATN\\DA\\MISA.AMIS\\web05b-mf866-dvhai\\backend\\MISA.AMIS\\MISA.AMIS.Web\\MISA.AMIS.Web.csproj": {
+    "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.Web\\MISA.AMIS.Web.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\nam4ki2\\DATN\\DA\\MISA.AMIS\\web05b-mf866-dvhai\\backend\\MISA.AMIS\\MISA.AMIS.Web\\MISA.AMIS.Web.csproj",
+        "projectUniqueName": "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.Web\\MISA.AMIS.Web.csproj",
         "projectName": "MISA.AMIS.Web",
-        "projectPath": "D:\\nam4ki2\\DATN\\DA\\MISA.AMIS\\web05b-mf866-dvhai\\backend\\MISA.AMIS\\MISA.AMIS.Web\\MISA.AMIS.Web.csproj",
+        "projectPath": "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.Web\\MISA.AMIS.Web.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "D:\\nam4ki2\\DATN\\DA\\MISA.AMIS\\web05b-mf866-dvhai\\backend\\MISA.AMIS\\MISA.AMIS.Web\\obj\\",
+        "outputPath": "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.Web\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -176,11 +176,11 @@
           "netcoreapp3.1": {
             "targetAlias": "netcoreapp3.1",
             "projectReferences": {
-              "D:\\nam4ki2\\DATN\\DA\\MISA.AMIS\\web05b-mf866-dvhai\\backend\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\MISA.AMIS.ApplicationCore.csproj": {
-                "projectPath": "D:\\nam4ki2\\DATN\\DA\\MISA.AMIS\\web05b-mf866-dvhai\\backend\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\MISA.AMIS.ApplicationCore.csproj"
+              "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\TOE.TOEIC.ApplicationCore.csproj": {
+                "projectPath": "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\TOE.TOEIC.ApplicationCore.csproj"
               },
-              "D:\\nam4ki2\\DATN\\DA\\MISA.AMIS\\web05b-mf866-dvhai\\backend\\MISA.AMIS\\MISA.AMIS.Infarstructure\\MISA.AMIS.Infarstructure.csproj": {
-                "projectPath": "D:\\nam4ki2\\DATN\\DA\\MISA.AMIS\\web05b-mf866-dvhai\\backend\\MISA.AMIS\\MISA.AMIS.Infarstructure\\MISA.AMIS.Infarstructure.csproj"
+              "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.Infarstructure\\MISA.AMIS.Infarstructure.csproj": {
+                "projectPath": "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.Infarstructure\\MISA.AMIS.Infarstructure.csproj"
               }
             }
           }

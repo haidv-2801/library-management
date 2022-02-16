@@ -1,12 +1,12 @@
-﻿using MISA.AMIS.ApplicationCoore.Entities;
-using MISA.AMIS.ApplicationCore.Entities;
-using MISA.AMIS.ApplicationCore.Interfaces;
-using MISA.AMIS.ApplicationCore.Interfaces.IRepositories;
+﻿using TOE.TOEIC.ApplicationCoore.Entities;
+using TOE.TOEIC.ApplicationCore.Entities;
+using TOE.TOEIC.ApplicationCore.Interfaces;
+using TOE.TOEIC.ApplicationCore.Interfaces.IRepositories;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MISA.AMIS.ApplicationCore.Interfaces
+namespace TOE.TOEIC.ApplicationCore.Interfaces
 {
     public class DepartmentService : BaseService<Department>, IDepartmentService
     {

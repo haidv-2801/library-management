@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
-using MISA.AMIS.ApplicationCore.Entities;
+using TOE.TOEIC.ApplicationCore.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MISA.AMIS.ApplicationCore.Interfaces
+namespace TOE.TOEIC.ApplicationCore.Interfaces
 {
     public interface IBaseService<TEntity>
     {

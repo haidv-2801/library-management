@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "IOvENZypmIQYsV7Xh/PVAbY9PtFn3mH81GuXrWeyZwij4dtjDI3ZREWbZwK0Fcgu3MXwrx8WAAQ1IAF6d2ETLw==",
+  "dgSpecHash": "OWyz/A0yD59lW7nQ9VGQjEJnOIKVbGV0RhEmhsRgcLcVL/MGVNIPQWdQCdt3CvZhfZlRavh0b0RQZ3/XxUNL2Q==",
   "success": true,
-  "projectFilePath": "D:\\nam4ki2\\DATN\\DA\\MISA.AMIS\\web05b-mf866-dvhai\\backend\\MISA.AMIS\\MISA.AMIS.Web\\MISA.AMIS.Web.csproj",
+  "projectFilePath": "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.Web\\TOE.TOEIC.Web.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Admin\\.nuget\\packages\\closedxml\\0.95.4\\closedxml.0.95.4.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\dapper\\2.0.90\\dapper.2.0.90.nupkg.sha512",

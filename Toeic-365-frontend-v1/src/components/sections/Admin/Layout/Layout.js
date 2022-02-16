@@ -25,6 +25,7 @@ import useWindowResize from '../../../../hooks/useWindowResize';
 import Loading from '../../../atomics/base/Loading/Loading';
 import Table from '../../../molecules/Table/Table';
 import SmartText from '../../../atomics/base/SmartText/SmartText';
+import UserInfo from '../../UserInfo/UserInfo';
 import { fake } from '../../../pages/test/Test';
 import { useDispatch, useSelector } from 'react-redux';
 import './layout.scss';
@@ -204,7 +205,7 @@ function Layout(props) {
             </b>
           </div>
           <div className="toe-layout-admin-page-container__header-right">
-            <div className="user-name">DOVANHAI</div>
+            {/* <div className="user-name">DOVANHAI</div>
             <div onClick={handleShowOption} className="user-avatar">
               <img src={Avatar} alt="avatar" />
             </div>
@@ -228,7 +229,8 @@ function Layout(props) {
                   options={POPUP_SELECTION_OPTIONS}
                 />
               </span>
-            )}
+            )} */}
+            <UserInfo />
           </div>
         </div>
         <div className="toe-layout-admin-page-container__body">
