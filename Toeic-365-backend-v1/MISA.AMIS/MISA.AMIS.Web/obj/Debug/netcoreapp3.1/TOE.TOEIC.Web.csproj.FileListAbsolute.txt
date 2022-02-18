@@ -51,3 +51,14 @@ D:\nam4ki2\DATN\DA\Toiec-365\Toeic-365-backend-v1\MISA.AMIS\MISA.AMIS.Web\obj\De
 D:\nam4ki2\DATN\DA\Toiec-365\Toeic-365-backend-v1\MISA.AMIS\MISA.AMIS.Web\obj\Debug\netcoreapp3.1\TOE.TOEIC.Web.dll
 D:\nam4ki2\DATN\DA\Toiec-365\Toeic-365-backend-v1\MISA.AMIS\MISA.AMIS.Web\obj\Debug\netcoreapp3.1\TOE.TOEIC.Web.pdb
 D:\nam4ki2\DATN\DA\Toiec-365\Toeic-365-backend-v1\MISA.AMIS\MISA.AMIS.Web\obj\Debug\netcoreapp3.1\TOE.TOEIC.Web.genruntimeconfig.cache
+D:\nam4ki2\DATN\DA\Toiec-365\Toeic-365-backend-v1\MISA.AMIS\MISA.AMIS.Web\obj\Debug\netcoreapp3.1\TOE.TOEIC.Web.MvcApplicationPartsAssemblyInfo.cs
+D:\nam4ki2\DATN\DA\Toiec-365\Toeic-365-backend-v1\MISA.AMIS\MISA.AMIS.Web\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+D:\nam4ki2\DATN\DA\Toiec-365\Toeic-365-backend-v1\MISA.AMIS\MISA.AMIS.Web\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.JsonWebTokens.dll
+D:\nam4ki2\DATN\DA\Toiec-365\Toeic-365-backend-v1\MISA.AMIS\MISA.AMIS.Web\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Logging.dll
+D:\nam4ki2\DATN\DA\Toiec-365\Toeic-365-backend-v1\MISA.AMIS\MISA.AMIS.Web\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Protocols.dll
+D:\nam4ki2\DATN\DA\Toiec-365\Toeic-365-backend-v1\MISA.AMIS\MISA.AMIS.Web\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+D:\nam4ki2\DATN\DA\Toiec-365\Toeic-365-backend-v1\MISA.AMIS\MISA.AMIS.Web\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Tokens.dll
+D:\nam4ki2\DATN\DA\Toiec-365\Toeic-365-backend-v1\MISA.AMIS\MISA.AMIS.Web\bin\Debug\netcoreapp3.1\System.IdentityModel.Tokens.Jwt.dll
+D:\nam4ki2\DATN\DA\Toiec-365\Toeic-365-backend-v1\MISA.AMIS\MISA.AMIS.Web\bin\Debug\netcoreapp3.1\NLog.dll
+D:\nam4ki2\DATN\DA\Toiec-365\Toeic-365-backend-v1\MISA.AMIS\MISA.AMIS.Web\bin\Debug\netcoreapp3.1\NLog.Extensions.Logging.dll
+D:\nam4ki2\DATN\DA\Toiec-365\Toeic-365-backend-v1\MISA.AMIS\MISA.AMIS.Web\bin\Debug\netcoreapp3.1\NLog.Web.AspNetCore.dll

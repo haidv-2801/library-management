@@ -13,7 +13,7 @@ namespace TOE.TOEIC.ApplicationCore.Entities
         //Lưu câu thông báo
         public string Messasge { get; set; }
 
-        //Lưu mã MISA
-        public MISACode MISACode { get; set; }
+        //Lưu mã lỗi
+        public TOECode TOECode { get; set; }
     }
 }

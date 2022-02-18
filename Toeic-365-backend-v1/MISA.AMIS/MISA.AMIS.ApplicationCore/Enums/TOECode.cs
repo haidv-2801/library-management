@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TOE.TOEIC.Entities
 {
-    public enum MISACode
+    public enum TOECode
     {
         /// <summary>
         /// Hợp lệ

@@ -34,7 +34,7 @@ namespace TOE.TOEIC.ApplicationCore
             _baseRepository = baseRepository;
             _serviceResult = new ServiceResult()
             {
-                MISACode = MISACode.Success
+                TOECode = TOECode.Success
             };
         }
         #endregion
@@ -80,12 +80,12 @@ namespace TOE.TOEIC.ApplicationCore
             if (isValid)
             {
                 _serviceResult.Data = _baseRepository.Insert(entity);
-                _serviceResult.MISACode = MISACode.Valid;
+                _serviceResult.TOECode = TOECode.Valid;
                 _serviceResult.Messasge = Properties.Resources.Msg_Success;
             }
             else
             {
-                _serviceResult.MISACode = MISACode.InValid;
+                _serviceResult.TOECode = TOECode.InValid;
                 _serviceResult.Messasge = Properties.Resources.Msg_NotValid;
             }
 
@@ -113,18 +113,18 @@ namespace TOE.TOEIC.ApplicationCore
                 _serviceResult.Data = rowAffects;
                 if (rowAffects > 0)
                 {
-                    _serviceResult.MISACode = MISACode.Valid;
+                    _serviceResult.TOECode = TOECode.Valid;
                     _serviceResult.Messasge = Properties.Resources.Msg_Success;
                 }
                 else
                 {
-                    _serviceResult.MISACode = MISACode.InValid;
+                    _serviceResult.TOECode = TOECode.InValid;
                     _serviceResult.Messasge = Properties.Resources.Msg_Failed;
                 }
             }
             else
             {
-                _serviceResult.MISACode = MISACode.InValid;
+                _serviceResult.TOECode = TOECode.InValid;
                 _serviceResult.Messasge = Properties.Resources.Msg_NotValid;
             }
             //3. Trả về kế quả
@@ -144,12 +144,12 @@ namespace TOE.TOEIC.ApplicationCore
 
             if (rowAffects > 0)
             {
-                _serviceResult.MISACode = MISACode.Success;
+                _serviceResult.TOECode = TOECode.Success;
                 _serviceResult.Messasge = Properties.Resources.Msg_Success;
             }
             else
             {
-                _serviceResult.MISACode = MISACode.InValid;
+                _serviceResult.TOECode = TOECode.InValid;
                 _serviceResult.Messasge = Properties.Resources.Msg_Failed;
             }
 
@@ -222,7 +222,7 @@ namespace TOE.TOEIC.ApplicationCore
             {
                 isValid = false;
 
-                _serviceResult.MISACode = MISACode.InValid;
+                _serviceResult.TOECode = TOECode.InValid;
                 _serviceResult.Messasge = Properties.Resources.Msg_NotValid;
                 _serviceResult.Data = string.Format(Properties.Resources.Msg_Required, propertyDisplayName);
             }

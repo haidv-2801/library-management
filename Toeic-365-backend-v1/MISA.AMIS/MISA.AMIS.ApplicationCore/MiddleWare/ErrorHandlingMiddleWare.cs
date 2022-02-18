@@ -42,7 +42,7 @@ namespace TOE.TOEIC.ApplicationCore.MiddleWare
                         cusMsg = Properties.Resources.MISA_Error
                     },
                     Messasge = Properties.Resources.MISA_Error,
-                    MISACode = TOE.TOEIC.Entities.MISACode.Exception
+                    TOECode = TOE.TOEIC.Entities.TOECode.Exception
                 }
                 );
 

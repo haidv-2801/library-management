@@ -3,6 +3,7 @@ import cookie from 'js-cookie';
 
 const TOKEN_KEY = 'TOKEN_KEY';
 const USER_INFO = 'USER_INFO';
+const ROLE_ADMIN = 'ROLE_ADMIN';
 
 const getLocalStorage = (key) => {
   return decodeURIComponent(localStorage.getItem(key));
@@ -57,11 +58,11 @@ const AuthContextProvider = (props) => {
   };
 
   const isSysAdmin = () => {
-    return auth()?.roles?.includes('ROLE_ADMIN');
+    return auth()?.roles?.includes(ROLE_ADMIN);
   };
 
   const notSysAdmin = () => {
-    return !auth()?.roles?.includes('ROLE_ADMIN');
+    return !auth()?.roles?.includes(ROLE_ADMIN);
   };
 
   const auth = () => {

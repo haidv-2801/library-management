@@ -17,7 +17,7 @@ namespace TOE.TOEIC.Web.Controllers
     /// <summary>
     /// Controller base
     /// </summary>
-    [Route("/v1/[controller]")]
+    [Route("/api/[controller]")]
     [ApiController]
     public class BaseEntityController<TEntity> : ControllerBase
     {
@@ -35,7 +35,6 @@ namespace TOE.TOEIC.Web.Controllers
         /// </summary>
         /// <returns>Danh sách thực thể</returns>
         /// CreatedBy: DVHAI 07/07/2021
-
         [EnableCors("AllowCROSPolicy")]
         [HttpGet]
         public IActionResult Get()
@@ -75,9 +74,9 @@ namespace TOE.TOEIC.Web.Controllers
         {
             var serviceResult = _baseService.Insert(entity);
 
-            if (serviceResult.MISACode == MISACode.InValid)
+            if (serviceResult.TOECode == TOECode.InValid)
                 return BadRequest(serviceResult);
-            else if (serviceResult.MISACode == MISACode.Exception)
+            else if (serviceResult.TOECode == TOECode.Exception)
                 return StatusCode(500, serviceResult);
 
             return StatusCode(201, serviceResult);
@@ -97,9 +96,9 @@ namespace TOE.TOEIC.Web.Controllers
             //Sử lí kiểu id động ở đây
             var serviceResult = _baseService.Update(Guid.Parse(id), entity);
 
-            if (serviceResult.MISACode == MISACode.InValid)
+            if (serviceResult.TOECode == TOECode.InValid)
                 return BadRequest(serviceResult);
-            else if (serviceResult.MISACode == MISACode.Exception)
+            else if (serviceResult.TOECode == TOECode.Exception)
                 return StatusCode(500, serviceResult);
 
             return Ok(serviceResult);
@@ -116,7 +115,7 @@ namespace TOE.TOEIC.Web.Controllers
         public IActionResult Delete(string id)
         {
             var serviceResult = _baseService.Delete(Guid.Parse(id));
-            if (serviceResult.MISACode == MISACode.Success)
+            if (serviceResult.TOECode == TOECode.Success)
                 return Ok(serviceResult);
             else
                 return NoContent();

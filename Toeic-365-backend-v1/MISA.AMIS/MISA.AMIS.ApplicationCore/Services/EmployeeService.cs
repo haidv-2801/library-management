@@ -162,7 +162,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
             {
                 isValid = false;
 
-                _serviceResult.MISACode = MISACode.InValid;
+                _serviceResult.TOECode = TOECode.InValid;
                 _serviceResult.Messasge = Properties.Resources.Msg_NotValid;
                 _serviceResult.Data = string.Format(Properties.Resources.Msg_Duplicate, propertyDisplayName);
             }
@@ -199,7 +199,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
             //4. Gán message lỗi
             if (!isValid)
             {
-                _serviceResult.MISACode = MISACode.InValid;
+                _serviceResult.TOECode = TOECode.InValid;
                 _serviceResult.Messasge = Properties.Resources.Msg_NotValid;
                 _serviceResult.Data = string.Format(Properties.Resources.Msg_NotFormat, propertyDisplayName);
             }
