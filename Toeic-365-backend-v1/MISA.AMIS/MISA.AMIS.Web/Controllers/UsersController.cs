@@ -63,7 +63,6 @@ namespace TOE.TOEIC.Web.Controllers
         [EnableCors("AllowCROSPolicy")]
         [Route("test")]
         [HttpGet]
-        [Authorize]
         public IActionResult TestAuth()
         {
             return Ok(new string[] { "value1", "value2", "value3", "value4", "value5" });
