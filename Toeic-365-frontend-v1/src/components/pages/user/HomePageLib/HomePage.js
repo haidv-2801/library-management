@@ -7,9 +7,11 @@ import Avatar from '../../../../assets/images/me.jpg';
 import useWindowResize from '../../../../hooks/useWindowResize';
 import HomeHeaderImg from '../../../../assets/images/thuvien_home.jpg';
 import Layout from '../../../sections/User/Layout/Layout';
-import Footer from '../../../sections/User/FooterLib/Footer';
 import CardList from '../../../molecules/CardList/CardList';
+import Footer from '../../../sections/User/FooterLib/Footer';
+import { InputSwitch } from 'primereact/inputswitch';
 import { Carousel } from 'primereact/carousel';
+import { BellOutlined, SearchOutlined } from '@ant-design/icons';
 import TitleSeparator from '../../../atomics/base/TitleSeparator/TitleSeparator';
 import CardItem from '../../../molecules/Card/Card';
 // import Carousel from '../../../molecules/Carousel/Carousel';
@@ -18,7 +20,10 @@ import NotificationList from '../../../molecules/NotificationList/NotificationLi
 import moment from 'moment';
 import DynamicMenu from '../../../molecules/DynamicMenu/DynamicMenu';
 import Button from '../../../atomics/base/Button/Button';
+import Loading from '../../../atomics/base/Loading/Loading';
 import { BUTTON_THEME } from '../../../../constants/commonConstant';
+import Input from '../../../atomics/base/Input/Input';
+import FilterEngine from '../../../molecules/FilterEngine/FilterEngine';
 let FAKE = [
   {
     id: 'c0d5e47b-b4c0-4f8d-9400-1e08b149c6d9',
@@ -106,6 +111,15 @@ function HomePage(props) {
     },
   ];
 
+  const [isLoading, setIsLoading] = useState(true);
+  const [showFilterEngine, setShowFilterEngine] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+  }, []);
+
   const itemTemplate = (card) => {
     return (
       <CardItem
@@ -115,6 +129,7 @@ function HomePage(props) {
         imgSrc={card?.imgSrc}
         description={card?.description}
         width={'30em'}
+        isLoading={isLoading}
       />
     );
   };
@@ -123,10 +138,26 @@ function HomePage(props) {
     <Layout>
       <div className="toe-home-page">
         <div className="toe-home-page__img-banner">
-          <img width={'auto'} height={'auto'} src={HomeHeaderImg} alt="" />
+          <h1 className="toe-home-page__img-banner__text">THƯ VIỆN 365</h1>
+          {/* <img width={'auto'} height={'auto'} src={HomeHeaderImg} alt="" /> */}
+        </div>
+        <h4 className="toe-home-page__noti-section">
+          <TitleSeparator icon={<SearchOutlined />} title={'Tìm kiếm'} />
+        </h4>
+        <div className="toe-home-page__img-banner__search">
+          <Input autoFocus placeholder={'Tìm kiếm'} />
+          <div>{showFilterEngine ? 'Tắt bộ lọc' : 'Bật bộ lọc'}</div>
+          <InputSwitch
+            checked={showFilterEngine}
+            onChange={(e) => setShowFilterEngine(e.value)}
+          />
+        </div>
+        <div className="toe-home-page__img-banner__search-engine">
+          {' '}
+          {showFilterEngine ? <FilterEngine /> : null}
         </div>
         <div className="toe-home-page__noti-section">
-          <TitleSeparator className="" title={'tin tức'} />
+          <TitleSeparator icon={<BellOutlined />} title={'tin tức'} />
         </div>
         <div className="toe-home-page__news">
           <div className="toe-home-page__news-carousel">
@@ -140,14 +171,14 @@ function HomePage(props) {
           </div>
         </div>
         <div className="toe-home-page__noti-section">
-          <TitleSeparator className="" title={'thông báo'} />
+          <TitleSeparator icon={<BellOutlined />} title={'thông báo'} />
         </div>
         <div className="toe-home-page__notificaitons">
           <div className="toe-home-page__notificaitons-left">
             <DynamicMenu />
           </div>
           <div className="toe-home-page__notificaitons-right">
-            <NotificationList data={FAKE_1} />
+            <NotificationList isLoading={isLoading} data={FAKE_1} />
             <Button
               className="toe-home-page__notificaitons-right__btn-more"
               name={'Xem thêm...'}
@@ -160,10 +191,11 @@ function HomePage(props) {
           <TitleSeparator className="" title={'giới thiệu sách mới'} />
         </div>
         <div className="toe-home-page__news">
-          <CardList cards={FAKE} />
+          <CardList isLoading={isLoading} cards={FAKE} />
         </div>
       </div>
       <Footer />
+      <Loading show={isLoading} />
     </Layout>
   );
 }

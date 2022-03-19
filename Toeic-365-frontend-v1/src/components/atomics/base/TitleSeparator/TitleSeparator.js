@@ -41,7 +41,7 @@ function TitleSeparator(props) {
       {title}{' '}
       <div className="toe-title-separator__icon">
         <div className="toe-title-separator__line"></div>
-        {!icon && <BellOutlined />}
+        {icon}
         <div className="toe-title-separator__line"></div>
       </div>
     </div>

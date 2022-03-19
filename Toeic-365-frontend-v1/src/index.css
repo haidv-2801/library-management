@@ -36,3 +36,11 @@ body {
   display: flex;
   align-items: center;
 }
+
+.p-inputswitch.p-inputswitch-checked .p-inputswitch-slider {
+  background-color: #43c1c9;
+}
+
+.p-inputswitch.p-inputswitch-checked .p-inputswitch-slider:hover {
+  background-color: #43c1c9;
+}

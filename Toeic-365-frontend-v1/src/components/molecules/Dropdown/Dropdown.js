@@ -14,7 +14,10 @@ Dropdown.propTypes = {
   defaultValue: PropTypes.any,
   placeholder: PropTypes.string,
   disabled: PropTypes.bool,
-  filter: PropTypes.func,
+  hasSubLabel: PropTypes.bool,
+  showClear: PropTypes.bool,
+  itemTemplate: PropTypes.any,
+  filter: PropTypes.bool,
   onChange: PropTypes.func,
 };
 
@@ -25,10 +28,13 @@ Dropdown.defaultProps = {
   options: [],
   configs: {},
   isLoading: false,
+  showClear: false,
   defaultValue: null,
   placeholder: 'Nhấp để chọn',
   disabled: false,
   filter: false,
+  itemTemplate: null,
+  hasSubLabel: false,
   onChange: () => {},
 };
 
@@ -43,7 +49,22 @@ function Dropdown(props) {
     disabled,
     onChange,
     filter,
+    itemTemplate,
+    showClear,
+    hasSubLabel,
   } = props;
+
+  const customItemTemplate = ({ label, value, subLabel = null }) => {
+    if (!hasSubLabel) return null;
+    return (
+      <div className="p-dropdown-item__wrapper">
+        <div className="p-dropdown-item__label">{label}</div>
+        <div className="p-dropdown-item__subLabel toe-font-hint">
+          {subLabel}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <DropdownPrime
@@ -65,6 +86,10 @@ function Dropdown(props) {
       filterInputAutoFocus
       resetFilterOnHide
       filterPlaceholder="Nhập từ cần tìm"
+      showClear={showClear}
+      itemTemplate={(data) =>
+        hasSubLabel ? customItemTemplate(data) : itemTemplate(data)
+      }
     />
   );
 }

@@ -9,6 +9,7 @@
   cursor: pointer;
   white-space: nowrap;
   max-height: 40px;
+  min-width: fit-content;
 
   &:hover {
     opacity: 0.8;

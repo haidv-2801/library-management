@@ -16,6 +16,7 @@ NotificationList.propTypes = {
   className: PropTypes.string,
   style: PropTypes.object,
   data: PropTypes.array,
+  isLoading: PropTypes.bool,
 };
 
 NotificationList.defaultProps = {
@@ -23,10 +24,11 @@ NotificationList.defaultProps = {
   className: '',
   style: {},
   data: [],
+  isLoading: false,
 };
 
 function NotificationList(props) {
-  const { id, style, className, data } = props;
+  const { id, style, className, data, isLoading } = props;
 
   return (
     <div
@@ -41,6 +43,7 @@ function NotificationList(props) {
                 title={noti?.title}
                 date={noti?.date}
                 description={noti?.description}
+                isLoading={isLoading}
               />
             );
           })
