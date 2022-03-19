@@ -65,7 +65,7 @@ const UserInfo = () => {
                 // history('/login');
                 //Xóa cache chrome
                 authCtx.logout();
-                window.location.replace('/login');
+                window.location.replace('/home');
               } else if (
                 data.value === POPUP_SELECTION_VALUES.USER_INFOMATION
               ) {

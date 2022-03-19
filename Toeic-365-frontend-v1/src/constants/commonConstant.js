@@ -40,6 +40,10 @@ const CHECKBOX_TYPE = {
   SQUARE: 2,
 };
 
+const DATE_FORMAT = {
+  TYPE_1: 'DD-MM-YYYY HH:mm:ss',
+};
+
 export {
   TEXT_FALL_BACK,
   BUTTON_THEME,
@@ -48,4 +52,5 @@ export {
   KEY_CODE,
   PATH_NAME,
   CHECKBOX_TYPE,
+  DATE_FORMAT,
 };

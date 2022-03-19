@@ -126,13 +126,13 @@ function RegisterPage() {
       >
         <img src={MainLogo} alt="logo" />
         <b className="name-app">
-          TOEIC<span style={{ color: '#43c1c9' }}>365</span>
+          Thư viện<span style={{ color: '#43c1c9' }}>365</span>
         </b>
       </div>
       <div className="toe-register-page__body"></div>
       <img className="toe-register-page-bg" src={RegisterBg} alt="login" />
       <Modal
-        title={' Chào mừng bạn đến với Toeic-365! 👋 '}
+        title={'Chào mừng bạn đến với Thư viện 365'}
         children={
           <div className="toe-register-page__modal-body">
             <div className="toe-register-page__modal-body__des toe-font-body">

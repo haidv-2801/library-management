@@ -59,24 +59,24 @@ function Layout(props) {
     },
     { key: 'separator' },
     {
-      key: '/admin/de-thi',
-      title: 'Quản lý đề thi',
+      key: '/admin/doc-gia',
+      title: 'Quản lý đọc giả',
       icon: <UserOutlined />,
     },
     {
-      key: '/admin/phan-thi',
-      title: 'Quản lý phần thi',
+      key: '/admin/sach',
+      title: 'Quản lý sách',
       icon: <UploadOutlined />,
     },
     { key: 'separator' },
     {
-      key: '/admin/nhom-cau-hoi',
-      title: 'Quản lý nhóm câu hỏi',
+      key: '/admin/phieu-muon',
+      title: 'Quản lý phiếu mượn',
       icon: <QuestionCircleOutlined />,
     },
     {
-      key: '/admin/cau-hoi',
-      title: 'Quản lý câu hỏi',
+      key: '/admin/tra-sach',
+      title: 'Quản lý trả sách',
       icon: <QuestionCircleOutlined />,
     },
     { key: 'separator' },
@@ -199,9 +199,9 @@ function Layout(props) {
             }}
             className="toe-layout-admin-page-container__header-left"
           >
-            <img className="logo-app" src={MainLogo} alt="toeic-365" />
+            <img className="logo-app" src={MainLogo} alt="thư viện 365" />
             <b className="name-app">
-              TOEIC<span style={{ color: '#43c1c9' }}>365</span>
+              Thư viện <span style={{ color: '#43c1c9' }}>365</span>
             </b>
           </div>
           <div className="toe-layout-admin-page-container__header-right">

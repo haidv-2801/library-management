@@ -6,7 +6,7 @@ import RegisterPage from './components/pages/admin/RegisterPage/RegisterPage';
 import UserPage from './components/pages/admin/UserPage/UserPage';
 
 import Test from './components/pages/test/Test';
-import HomePage from './components/pages/user/HomePage/HomePage';
+import HomePage from './components/pages/user/HomePageLib/HomePage';
 import ExamPage from './components/pages/user/ExamPage/ExamPage';
 import IntroPage from './components/pages/user/IntroPage/IntroPage';
 import {
@@ -23,7 +23,7 @@ function App() {
   const authCtx = useContext(AuthContext);
 
   useEffect(() => {
-    document.title = 'Toeic-365';
+    document.title = 'Thư viện 365';
   }, []);
 
   return (

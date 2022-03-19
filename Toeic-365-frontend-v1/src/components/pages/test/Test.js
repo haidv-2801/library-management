@@ -40,6 +40,12 @@ import QuestionCheckbox from '../../molecules/QuestionCheckbox/QuestionCheckbox'
 import GroupCheck from '../../molecules/GroupCheck/GroupCheck';
 import ExamItem from '../../molecules/ExamItem/ExamItem';
 import Spinner from '../../atomics/base/Spinner/Spinner';
+import CardItem from '../../molecules/Card/Card';
+import TitleSeparator from '../../atomics/base/TitleSeparator/TitleSeparator';
+import Carousel from '../../molecules/Carousel/Carousel';
+import NotificationItem from '../../molecules/NotificationItem/NotificationItem';
+import DynamicMenu from '../../molecules/DynamicMenu/DynamicMenu';
+import './test.scss';
 
 const fake = [
   {
@@ -345,7 +351,60 @@ const Test = () => {
 
       <GroupCheck /> */}
       {/* <ExamItem /> */}
-      <Spinner show={true} />
+      {/* <Spinner show={true} /> */}
+      {/* <CardItem
+        title="title"
+        subTitle="subtitle"
+        description={
+          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make "
+        }
+        imgSrc="me.jpg"
+      />
+      <CardItem
+        title="title"
+        subTitle="subtitle"
+        description={
+          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make "
+        }
+        imgSrc="me.jpg"
+      />
+      <CardItem
+        title="title"
+        subTitle="subtitle"
+        description={
+          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make "
+        }
+        imgSrc="me.jpg"
+      />
+      <CardItem
+        title="title"
+        subTitle="subtitle"
+        description={
+          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make "
+        }
+        imgSrc="me.jpg"
+      />
+      <CardItem
+        title="title"
+        subTitle="subtitle"
+        description={
+          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make "
+        }
+        imgSrc="me.jpg"
+      /> */}
+
+      {/* <TitleSeparator title={'THÔNG BÁO'} icon={null} /> */}
+      {/* <NotificationItem
+        title={
+          'THÔNG BÁO: Tạm ngưng phục vụ tại Thư viện Trung Tâm (Trụ sở chính)(Trụ sở chính)(Trụ sở chính)(Trụ sở chính)'
+        }
+        imgSrc="https://images.unsplash.com/photo-1640622304964-3e2c2c0cd7cd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
+        description={
+          'Sáng ngày 18/02/2022, Thư viện Trung tâm ĐHQG-HCM (TVTT) đã tổ chức “Hội nghịSáng ngày 18/02/2022, Thư viện Trung tâm ĐHQG-HCM (TVTT) đã tổ chức “Hội nghịSáng ngày 18/02/2022, Thư viện Trung tâm ĐHQG-HCM (TVTT) đã tổ chức “Hội nghịSáng ngày 18/02/2022, Thư viện Trung tâm ĐHQG-HCM (TVTT) đã tổ chức “Hội nghị'
+        }
+        date={Date.now()}
+      /> */}
+      <DynamicMenu />
     </div>
   );
 };

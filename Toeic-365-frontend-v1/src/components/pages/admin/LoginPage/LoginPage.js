@@ -154,13 +154,13 @@ function LoginPage(props) {
       >
         <img src={MainLogo} alt="logo" />
         <b className="name-app">
-          TOEIC<span style={{ color: '#43c1c9' }}>365</span>
+          Thư viện<span style={{ color: '#43c1c9' }}>365</span>
         </b>
       </div>
       <div className="toe-login-page__body"></div>
       <img className="toe-login-page-bg" src={LoginBg} alt="login" />
       <Modal
-        title={' Chào mừng bạn đến với Toeic-365! 👋 '}
+        title={' Chào mừng bạn đến với Thư viện 365'}
         children={
           <div className="toe-login-page__modal-body">
             <div className="toe-login-page__modal-body__des toe-font-body">

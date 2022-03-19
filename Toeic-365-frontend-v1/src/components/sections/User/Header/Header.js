@@ -38,15 +38,23 @@ function Header(props) {
   const MENU = [
     {
       key: '/home',
-      title: 'Trang chủ',
+      title: 'TRANG CHỦ',
     },
     {
-      key: '/exam',
-      title: 'Làm bài TEST',
+      key: '/about',
+      title: 'GIỚI THIỆU',
     },
     {
-      key: '/discuss',
-      title: 'Thảo luận',
+      key: '/resources',
+      title: 'TÀI NGUYÊN - BỘ SƯU TẬP',
+    },
+    {
+      key: '/services',
+      title: 'DỊCH VỤ - TIỆN ÍCH',
+    },
+    {
+      key: '/search',
+      title: 'TRA CỨU',
     },
   ];
 
@@ -95,7 +103,7 @@ function Header(props) {
       <div className="toe-layout-user-page-container__header-left">
         <img className="logo-app" src={MainLogo} alt="toeic-365" />
         <b className="name-app">
-          TOEIC<span style={{ color: '#43c1c9' }}>365</span>
+          Thư viện<span style={{ color: '#43c1c9' }}>365</span>
         </b>
       </div>
       <div className="toe-layout-user-page-container__header-right">
