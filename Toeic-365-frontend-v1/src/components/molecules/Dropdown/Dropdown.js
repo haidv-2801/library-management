@@ -33,7 +33,7 @@ Dropdown.defaultProps = {
   placeholder: 'Nhấp để chọn',
   disabled: false,
   filter: false,
-  itemTemplate: null,
+  itemTemplate: () => null,
   hasSubLabel: false,
   onChange: () => {},
 };
@@ -55,7 +55,7 @@ function Dropdown(props) {
   } = props;
 
   const customItemTemplate = ({ label, value, subLabel = null }) => {
-    if (!hasSubLabel) return null;
+    if (!hasSubLabel) return label;
     return (
       <div className="p-dropdown-item__wrapper">
         <div className="p-dropdown-item__label">{label}</div>
@@ -87,9 +87,7 @@ function Dropdown(props) {
       resetFilterOnHide
       filterPlaceholder="Nhập từ cần tìm"
       showClear={showClear}
-      itemTemplate={(data) =>
-        hasSubLabel ? customItemTemplate(data) : itemTemplate(data)
-      }
+      itemTemplate={customItemTemplate}
     />
   );
 }

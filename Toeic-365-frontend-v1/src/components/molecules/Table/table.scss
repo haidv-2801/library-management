@@ -1,13 +1,16 @@
 .toe-table {
-  border-radius: 8px;
-  overflow: hidden;
-
   & .p-datatable-thead {
     & .toe-table__th {
       border-right: 1px solid #e9ebee !important;
 
       &:hover {
         & .p-sortable-column-icon {
+          color: #43c1c9;
+        }
+      }
+
+      .p-sortable-column-icon {
+        &:hover {
           color: #43c1c9;
         }
       }
@@ -21,6 +24,12 @@
 
     & > tr > th {
       color: #000000;
+    }
+  }
+
+  .p-datatable .p-sortable-column.p-highlight:hover {
+    & .p-sortable-column-icon {
+      color: #43c1c9;
     }
   }
 
@@ -44,9 +53,19 @@
 
     &:hover {
       color: #43c1c9;
-    }
 
-    & .p-sortable-column-icon {
+      & .p-sortable-column-icon {
+        color: #43c1c9;
+
+        &:hover {
+          color: #43c1c9;
+        }
+      }
+    }
+  }
+
+  .p-datatable .p-sortable-column {
+    .p-sortable-column-icon {
       color: #43c1c9;
 
       &:hover {
@@ -85,8 +104,11 @@
 
     & .p-dropdown {
       font-size: 14px;
-      height: 40px;
+      height: 32px;
+      display: flex;
+      align-items: center;
       box-shadow: none;
+      padding: 0px;
 
       & .p-dropdown-label.p-inputtext {
         font-size: 14px;

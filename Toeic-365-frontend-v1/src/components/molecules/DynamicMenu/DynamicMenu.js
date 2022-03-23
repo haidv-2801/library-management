@@ -76,7 +76,9 @@ function DynamicMenu(props) {
     },
   ];
 
-  const [dataSearchTool, setDataSearchTool] = useState(null);
+  const [dataSearchTool, setDataSearchTool] = useState(
+    'http://opac.utc.edu.vn/'
+  );
 
   const handleOnClick = (item) => {
     navigate(item.key);
@@ -106,9 +108,12 @@ function DynamicMenu(props) {
         <Button
           type={BUTTON_TYPE.LEFT_ICON}
           leftIcon={<SearchOutlined />}
-          name={'Tìm kiếm tài liệu'}
+          name={'Tra cứu'}
           disabled={!dataSearchTool}
-          onClick={() => {}}
+          onClick={() => {
+            // window.location.replace(dataSearchTool);
+            window.open(dataSearchTool, '_blank');
+          }}
         />
         <Dropdown
           defaultValue={dataSearchTool}
@@ -117,7 +122,6 @@ function DynamicMenu(props) {
           placeholder="Chọn công cụ tìm kiếm"
           showClear
           hasSubLabel
-          filter
         />
       </div>
     </div>

@@ -44,6 +44,17 @@ const DATE_FORMAT = {
   TYPE_1: 'DD-MM-YYYY HH:mm:ss',
 };
 
+const OPERATOR = {
+  AND: 'AND',
+  OR: 'OR',
+  NOT: 'NOT',
+  CONTAINS: 'CONTAINS',
+  START_WIDTH: 'START_WIDTH',
+  END_WIDTH: 'END_WIDTH',
+};
+
+const PAGEGING = [10, 20, 50];
+
 export {
   TEXT_FALL_BACK,
   BUTTON_THEME,
@@ -53,4 +64,6 @@ export {
   PATH_NAME,
   CHECKBOX_TYPE,
   DATE_FORMAT,
+  OPERATOR,
+  PAGEGING,
 };

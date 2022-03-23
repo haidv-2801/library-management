@@ -7,6 +7,7 @@ import {
 import { buildClass } from '../../../../constants/commonFunction';
 import './popupSelection.scss';
 import useOnClickOutside from '../../../../hooks/useClickOutSide';
+import { Popover } from 'antd';
 
 PopupSelection.propTypes = {
   id: PropTypes.string,
@@ -16,7 +17,7 @@ PopupSelection.propTypes = {
   onChange: PropTypes.func,
   onClose: PropTypes.func,
   defaultValue: PropTypes.any,
-  ref: PropTypes.any,
+  clickTargetElementRef: PropTypes.any,
 };
 
 PopupSelection.defaultProps = {
@@ -27,14 +28,26 @@ PopupSelection.defaultProps = {
   onChange: () => {},
   onClose: () => {},
   defaultValue: null,
-  ref: null,
+  clickTargetElementRef: null,
 };
 
 function PopupSelection(props) {
-  const { id, style, className, options, defaultValue, onChange, onClose } =
-    props;
+  const {
+    id,
+    style,
+    className,
+    options,
+    defaultValue,
+    onChange,
+    onClose,
+    clickTargetElementRef,
+  } = props;
   const ref = useRef();
-  useOnClickOutside(ref, onClose);
+  useOnClickOutside(ref, (event) => {
+    if (event.target.contains(clickTargetElementRef.current)) return;
+    onClose();
+  });
+
   return (
     <div
       id={id}

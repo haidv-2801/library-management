@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Typography, Tooltip } from 'antd';
-import './smartText.scss';
 import { buildClass } from '../../../../constants/commonFunction';
+import './smartText.scss';
 const { Paragraph } = Typography;
 
 SmartText.propTypes = {
@@ -23,7 +23,7 @@ function SmartText(props) {
   const { onEllipsis, rows, children, maxWidth, className } = props;
 
   return (
-    <div
+    <span
       style={{ maxWidth: maxWidth }}
       className={buildClass(['toe-smarttext', className, 'toe-font-body'])}
     >
@@ -36,7 +36,7 @@ function SmartText(props) {
       >
         {children}
       </Paragraph>
-    </div>
+    </span>
   );
 }
 

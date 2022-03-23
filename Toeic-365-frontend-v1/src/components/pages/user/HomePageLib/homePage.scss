@@ -21,7 +21,7 @@
     display: flex;
     cursor: pointer;
     justify-content: center;
-    margin: 16px 0px;
+    // margin: 16px 0px;
     background-image: url('../../../../assets/images/thuvien_home.jpg');
     background-color: rgba(0, 0, 0, 0.3);
     box-shadow: inset 0 0 0 2000px rgba(0, 0, 0, 0.3);
@@ -43,16 +43,20 @@
       .toe-input {
         flex: 1;
       }
+
+      &-dropdown-filter {
+        max-width: 200px;
+      }
     }
   }
 
   &__noti-section {
-    padding: 10px 30px;
+    // padding: 10px 30px;
     width: 100%;
     display: flex;
     justify-content: center;
-    margin-top: 50px;
-    margin-bottom: 30px;
+    margin-top: 16px;
+    margin-bottom: 16px;
   }
 
   &__notificaitons {
@@ -87,6 +91,10 @@
         width: 4rem;
         height: 4rem;
       }
+    }
+
+    .toe-card {
+      height: 100%;
     }
   }
 

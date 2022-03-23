@@ -1,0 +1,25 @@
+.toe-paginator {
+  width: 100%;
+
+  .p-dropdown {
+    min-width: 100px;
+  }
+
+  .p-dropdown-label {
+    display: flex;
+    align-items: center;
+  }
+
+  .p-paginator-element {
+    cursor: pointer;
+    font-size: 14px;
+
+    .pi {
+      font-size: 14px;
+    }
+  }
+
+  .p-inputtext {
+    font-size: 14px;
+  }
+}

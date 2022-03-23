@@ -113,6 +113,7 @@ import './upLoadImage.scss';
 
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { Image } from 'primereact/image';
 import { buildClass } from '../../../constants/commonFunction';
 import './upLoadImage.scss';
 
@@ -134,20 +135,12 @@ UpLoadImage.defaultProps = {
 
 function UpLoadImage(props) {
   const { id, style, className, onChange, defaultValue } = props;
-
-  const imgRef = useRef(null);
   const [image, setImage] = useState(defaultValue);
 
-  useEffect(() => {
-    let test = document.getElementById('image')?.value;
-  }, [image]);
-
   const onImageChange = (event) => {
-    debugger;
     if (event.target.files && event.target.files[0]) {
       let img = event.target.files[0];
       setImage(URL.createObjectURL(img));
-      console.log(URL.createObjectURL(img));
       onChange && onChange(URL.createObjectURL(img));
     }
   };
@@ -159,13 +152,14 @@ function UpLoadImage(props) {
       className={buildClass(['toe-upload toe-font-body', className])}
     >
       <div className="toe-upload__img-wrapper">
-        {image ? <img ref={imgRef} src={image} /> : null}
+        {image ? <Image src={image} alt="Image" preview /> : null}
         {!image ? <i className="pi pi-user" /> : null}
       </div>
       <input
         type="file"
         name="myImage"
         id="image"
+        accept="image/png, image/jpeg, image/gif"
         // value={defaultValue}
         onChange={onImageChange}
       />

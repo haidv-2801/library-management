@@ -40,6 +40,7 @@ function NotificationList(props) {
         ? data.map((noti) => {
             return (
               <NotificationItem
+                key={noti?.id}
                 title={noti?.title}
                 date={noti?.date}
                 description={noti?.description}

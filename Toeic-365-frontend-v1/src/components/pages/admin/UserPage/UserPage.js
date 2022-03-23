@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import RegisterBg from '../../../../assets/images/register.svg';
 import { buildClass } from '../../../../constants/commonFunction';
 import MainLogo from '../../../../assets/images/toeiclogo.png';
-import Modal from '../../../atomics/base/Modal/Modal';
+import Modal from '../../../atomics/base/ModalV2/Modal';
 import Button from '../../../atomics/base/Button/Button';
 import { LoginOutlined } from '@ant-design/icons';
 import { InputText } from 'primereact/inputtext';
@@ -111,7 +111,7 @@ function UserPage(props) {
     sortOrder: lazyParams?.sortOrder,
     selection: selected,
     rows: lazyParams?.rows,
-    reorderableColumns: true,
+    // reorderableColumns: true,
     paginator: fake.length > MIN_PAGE_SIZE,
   };
 
@@ -165,12 +165,11 @@ function UserPage(props) {
         className={buildClass(['toe-admin-user-page', className])}
       >
         <Table data={fake} configs={CONFIGS} columns={COLUMNS} />
-        {isShowPopupCreateUser ? (
-          <PopupCreateUser
-            onClose={() => setIsShowPopupCreateUser(false)}
-            {...getPopupCreateUserPops()}
-          />
-        ) : null}
+        <PopupCreateUser
+          show={isShowPopupCreateUser}
+          onClose={() => setIsShowPopupCreateUser(false)}
+          {...getPopupCreateUserPops()}
+        />
       </div>
     </Layout>
   );

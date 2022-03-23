@@ -1,5 +1,6 @@
 import React, { useState, useRef, useContext } from 'react';
 import PopupSelection from '../../atomics/base/PopupSelection/PopupSelection';
+import PopupSelectionV1 from '../../atomics/base/PopupSelectionV1/PopupSelection';
 import Avatar from '../../../assets/images/me.jpg';
 import { buildClass } from '../../../constants/commonFunction';
 import { AuthContext } from '../../../contexts/authContext';
@@ -17,6 +18,7 @@ const UserInfo = () => {
     USER_INFOMATION: 2,
     CHANGE_PASSWORD: 3,
     ADMIN_PAGE: 4,
+    GUEST_PAGE: 5,
   };
 
   const POPUP_SELECTION_OPTIONS = [
@@ -24,6 +26,11 @@ const UserInfo = () => {
       label: <span className="toe-font-label">Trang quản trị</span>,
       value: POPUP_SELECTION_VALUES.ADMIN_PAGE,
       isHide: !authCtx.isSysAdmin() || location.pathname.includes('/admin'),
+    },
+    {
+      label: <span className="toe-font-label">Trang khách</span>,
+      value: POPUP_SELECTION_VALUES.GUEST_PAGE,
+      isHide: !authCtx.isSysAdmin() || !location.pathname.includes('/admin'),
     },
     {
       label: 'Thông tin người dùng',
@@ -39,47 +46,34 @@ const UserInfo = () => {
     },
   ];
 
-  const popupSelectionRef = useRef();
-  useOnClickOutside((popupSelectionRef, () => setIsShowPopupSelection(false)));
-
-  const [isShowPopupSelection, setIsShowPopupSelection] = useState(false);
   const [userSelectValue, setUserSelectValue] = useState();
-  const handleShowOption = () => {
-    setUserSelectValue(null);
-    setIsShowPopupSelection(true);
-  };
 
   return (
     <div className={buildClass(['toe-user-info'])}>
       <div className="user-name">{authCtx.auth()?.fullName}</div>
-      <div onClick={handleShowOption} className="user-avatar">
-        <img src={Avatar} alt="avatar" />
-      </div>
-      {isShowPopupSelection && (
-        <span ref={popupSelectionRef}>
-          <PopupSelection
-            defaultValue={userSelectValue}
-            onChange={(data) => {
-              setUserSelectValue(data.value);
-              if (data.value === POPUP_SELECTION_VALUES.LOGOUT) {
-                // history('/login');
-                //Xóa cache chrome
-                authCtx.logout();
-                window.location.replace('/home');
-              } else if (
-                data.value === POPUP_SELECTION_VALUES.USER_INFOMATION
-              ) {
-                //
-              } else if (data.value === POPUP_SELECTION_VALUES.ADMIN_PAGE) {
-                navigate('/admin');
-              }
-              setIsShowPopupSelection(false);
-            }}
-            onClose={() => setIsShowPopupSelection(false)}
-            options={POPUP_SELECTION_OPTIONS}
-          />
-        </span>
-      )}
+      <PopupSelectionV1
+        defaultValue={userSelectValue}
+        onChange={(data) => {
+          setUserSelectValue(data.value);
+          if (data.value === POPUP_SELECTION_VALUES.LOGOUT) {
+            // history('/login');
+            //Xóa cache chrome
+            authCtx.logout();
+            window.location.replace('/home');
+          } else if (data.value === POPUP_SELECTION_VALUES.USER_INFOMATION) {
+            //
+          } else if (data.value === POPUP_SELECTION_VALUES.ADMIN_PAGE) {
+            navigate('/admin');
+          } else if (data.value === POPUP_SELECTION_VALUES.GUEST_PAGE) {
+            navigate('/');
+          }
+        }}
+        options={POPUP_SELECTION_OPTIONS}
+      >
+        <div className="user-avatar">
+          <img src={Avatar} alt="avatar" />
+        </div>
+      </PopupSelectionV1>
     </div>
   );
 };

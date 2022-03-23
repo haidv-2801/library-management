@@ -13,7 +13,7 @@ import {
 } from '../../../../../constants/commonConstant';
 import SmartText from '../../../../atomics/base/SmartText/SmartText';
 import Input from '../../../../atomics/base/Input/Input';
-import Modal from '../../../../atomics/base/Modal/Modal';
+import Modal from '../../../../atomics/base/ModalV2/Modal';
 import UpLoadImage from '../../../../molecules/UpLoadImage/UpLoadImage';
 import './popupCreateUser.scss';
 
@@ -21,27 +21,28 @@ PopupCreateUser.propTypes = {
   id: PropTypes.string,
   className: PropTypes.string,
   style: PropTypes.object,
+  show: PropTypes.bool,
+  onClose: PropTypes.func,
 };
 
 PopupCreateUser.defaultProps = {
   id: '',
   className: '',
   style: {},
+  show: false,
+  onClose: () => {},
 };
 
 function PopupCreateUser(props) {
+  const { show, id, className, style, onClose } = props;
   return (
-    <Modal {...props} className="toe-popup-create-user">
+    <Modal
+      {...props}
+      onClose={onClose}
+      show={show}
+      className="toe-popup-create-user"
+    >
       <div className="toe-popup-create-user__left">
-        {/* <div className="toe-popup-create-user__left-avatar-wrapper">
-          <i class="pi pi-user"></i>
-        </div>
-        <Button
-          type={BUTTON_TYPE.LEFT_ICON}
-          leftIcon={<i class="pi pi-upload"></i>}
-          theme={BUTTON_THEME.THEME_6}
-          name="upload"
-        /> */}
         <UpLoadImage />
       </div>
       <div className="toe-popup-create-user__right">

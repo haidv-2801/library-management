@@ -63,6 +63,7 @@ function Button(props) {
       id={id}
       style={style}
       className={buildClass([
+        'toe-font-body',
         'toe-btn',
         type == BUTTON_TYPE.NORMAL && 'toe-btn-normal',
         type == BUTTON_TYPE.LEFT_ICON && 'toe-btn-left-icon',
@@ -82,7 +83,7 @@ function Button(props) {
         <div className="toe-btn-left-icon">{leftIcon}</div>
       ) : null}
 
-      <div className="toe-btn-content">{name}</div>
+      <div className="toe-btn-content ">{name}</div>
 
       {type == BUTTON_TYPE.RIGHT_ICON ? (
         <div className="toe-btn-right-icon">{rightIcon}</div>

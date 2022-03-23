@@ -1,4 +1,6 @@
 .toe-btn {
+  --main-color: #43c1c9;
+  --main-color: #0d4e96;
   padding: 8px 16px;
   width: fit-content;
   border-radius: 8px;
@@ -9,7 +11,8 @@
   cursor: pointer;
   white-space: nowrap;
   max-height: 40px;
-  min-width: fit-content;
+  min-height: 40px;
+  min-width: 100px;
 
   &:hover {
     opacity: 0.8;
@@ -20,17 +23,18 @@
   }
 
   &-theme-1 {
-    background-color: #43c1c9;
-    color: #fff;
+    background-color: var(--main-color);
+    color: #fff !important;
   }
 
   &-theme-2 {
     background-color: #fff;
-    color: #43c1c9;
-    border: 1px solid #43c1c9;
+    color: var(--main-color);
+    border: 1px solid var(--main-color);
+    padding: 7px 16px;
 
     &:hover {
-      background-color: #43c1c9;
+      background-color: var(--main-color);
       color: #fff;
     }
   }
@@ -39,6 +43,7 @@
     background-color: #fff;
     border: 1px solid #bbbbbb;
     color: #454545;
+    padding: 7px 16px;
 
     &:hover {
       background-color: #e5e5e5;
@@ -49,6 +54,7 @@
     background-color: #fff;
     border: 1px solid #dc3545;
     color: #000000;
+    padding: 7px 16px;
 
     &:hover {
       color: #7eab49;
@@ -63,6 +69,7 @@
     background-color: #dc3545;
     border: 1px solid #dc3545;
     color: #ffffff;
+    padding: 7px 16px;
 
     &:hover {
       color: #7eab49;

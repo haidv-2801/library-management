@@ -1,6 +1,5 @@
 .toe-card {
   cursor: pointer;
-  height: 100%;
 
   &-img {
     width: 100%;
@@ -18,13 +17,14 @@
   }
 
   .p-card {
-    max-width: 25em;
-    width: 20em;
+    max-width: 15em;
+    width: 15em;
     min-width: 15em;
     height: 100%;
 
     &-header img {
       height: 100%;
+      object-fit: cover;
     }
   }
 

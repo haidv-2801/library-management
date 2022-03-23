@@ -31,7 +31,8 @@ function TitleSeparator(props) {
   return (
     <div
       id={id}
-      style={{ color: 'rgb(67, 193, 201)', width: width, ...style }}
+      // style={{ color: 'rgb(67, 193, 201)', width: width, ...style }}
+      style={{ width: width, ...style }}
       className={buildClass([
         'toe-title-separator',
         'toe-font-body-big',

@@ -8,6 +8,7 @@ import Avatar from '../../../../assets/images/me.jpg';
 import useWindowResize from '../../../../hooks/useWindowResize';
 import { AuthContext } from '../../../../contexts/authContext';
 import MainLogo from '../../../../assets/images/toeiclogo.png';
+import PopupSelectionV1 from '../../../atomics/base/PopupSelectionV1/PopupSelection';
 
 import {
   BUTTON_THEME,
@@ -35,6 +36,21 @@ function Header(props) {
   const { id, style, className, showNav } = props;
   const authCtx = useContext(AuthContext);
 
+  const POPUP_SELECTION_OPTIONS = [
+    {
+      label: 'Tài liệu in',
+      value: 2,
+    },
+    {
+      label: 'Tài liệu số',
+      value: 3,
+    },
+    {
+      label: <span className="toe-font-label">Học liệu mở</span>,
+      value: 4,
+    },
+  ];
+
   const MENU = [
     {
       key: '/home',
@@ -47,6 +63,7 @@ function Header(props) {
     {
       key: '/resources',
       title: 'TÀI NGUYÊN - BỘ SƯU TẬP',
+      subMenu: POPUP_SELECTION_OPTIONS,
     },
     {
       key: '/services',
@@ -55,6 +72,7 @@ function Header(props) {
     {
       key: '/search',
       title: 'TRA CỨU',
+      redirect: 'http://opac.utc.edu.vn/',
     },
   ];
 
@@ -63,19 +81,45 @@ function Header(props) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const renderMenu = () => {
-    return MENU.map((item) => (
-      <div
-        onClick={() => handleChangePage(item.key)}
-        key={item.key}
-        className="menu-item toe-font-label"
-      >
-        {item.title}
-      </div>
-    ));
+    return MENU.map((item) => {
+      if (!item?.subMenu)
+        return (
+          <div
+            onClick={() => handleChangePage(item)}
+            key={item.key}
+            className="menu-item toe-font-label"
+          >
+            {item.title}
+          </div>
+        );
+
+      return (
+        <PopupSelectionV1
+          key={item.key}
+          onChange={(data) => {}}
+          options={item?.subMenu}
+          trigger="hover"
+          className="toe-layout-user-page-container__header__submenu"
+          placement="bottom"
+        >
+          <div
+            onClick={() => handleChangePage(item.key)}
+            className="menu-item toe-font-label"
+          >
+            {item.title}
+          </div>
+        </PopupSelectionV1>
+      );
+    });
   };
 
-  const handleChangePage = (path) => {
-    history(path);
+  const handleChangePage = (item) => {
+    if (item?.redirect) {
+      window.open(item?.redirect, '_blank');
+      // window.location.replace(item.redirect);
+    } else {
+      history(item.key);
+    }
   };
 
   const handleLogin = () => {

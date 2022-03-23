@@ -1,4 +1,5 @@
 .toe-input {
+  --main-color: #43c1c9;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -21,6 +22,8 @@
     width: 100%;
     font-size: 14px;
     height: 40px;
+    display: flex;
+    align-items: center;
   }
 
   & .p-password {
@@ -29,12 +32,12 @@
 
   & .p-inputtext:enabled:focus {
     box-shadow: none;
-    border-color: #43c1c9;
+    border-color: var(--main-color);
   }
 
   .p-inputtext:enabled:hover {
     box-shadow: none;
-    border-color: #43c1c9;
+    border-color: var(--main-color);
   }
 
   & .pi.pi-eye-slash {

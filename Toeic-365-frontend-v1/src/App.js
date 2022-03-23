@@ -4,11 +4,8 @@ import LoginPage from './components/pages/admin/LoginPage/LoginPage';
 import NotFoundPage from './components/pages/admin/NotFoundPage/NotFoundPage';
 import RegisterPage from './components/pages/admin/RegisterPage/RegisterPage';
 import UserPage from './components/pages/admin/UserPage/UserPage';
-
 import Test from './components/pages/test/Test';
 import HomePage from './components/pages/user/HomePageLib/HomePage';
-import ExamPage from './components/pages/user/ExamPage/ExamPage';
-import IntroPage from './components/pages/user/IntroPage/IntroPage';
 import {
   AuthContext,
   TOKEN_KEY,
@@ -17,6 +14,7 @@ import {
   getCookie,
 } from './contexts/authContext';
 import Layout from './components/sections/Admin/Layout/Layout';
+import CommonListItemPage from './components/pages/user/CommonListItemPage/CommonListItemPage';
 import './main.scss';
 
 function App() {
@@ -45,8 +43,22 @@ function App() {
           <Route exact path="home" element={<HomePage />} />
           <Route exact path="login" element={<LoginPage />} />
           <Route exact path="register" element={<RegisterPage />} />
-          <Route exact path="exam" element={<ExamPage />} />
-          <Route path="exam/intro/:id" element={<IntroPage />} />
+          <Route
+            exact
+            path="about"
+            element={<CommonListItemPage titlePage="Giới thiệu" />}
+          />
+          <Route
+            exact
+            path="resources"
+            element={<CommonListItemPage titlePage="Tài nguyên - bộ sưu tập" />}
+          />
+          <Route
+            exact
+            path="services"
+            element={<CommonListItemPage titlePage="Dịch vụ - tiện ích" />}
+          />
+          {/* <Route path="exam/intro/:id" element={<IntroPage />} /> */}
 
           <Route
             exact

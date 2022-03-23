@@ -25,7 +25,7 @@ import NotFoundPage from '../admin/NotFoundPage/NotFoundPage';
 import TextAreaBase from '../../atomics/base/TextArea/TextArea';
 import Loading from '../../atomics/base/Loading/Loading';
 import Input from '../../atomics/base/Input/Input';
-import Modal from '../../atomics/base/Modal/Modal';
+import Modal from '../../atomics/base/ModalV2/Modal';
 import PopupSelection from '../../atomics/base/PopupSelection/PopupSelection';
 import Layout from '../../sections/Admin/Layout/Layout';
 import LoginPage from '../../../components/pages/admin/LoginPage/LoginPage';
@@ -45,7 +45,13 @@ import TitleSeparator from '../../atomics/base/TitleSeparator/TitleSeparator';
 import Carousel from '../../molecules/Carousel/Carousel';
 import NotificationItem from '../../molecules/NotificationItem/NotificationItem';
 import DynamicMenu from '../../molecules/DynamicMenu/DynamicMenu';
+import Banner from '../../molecules/Banner/Banner';
+import { BellOutlined } from '@ant-design/icons';
+import CommonItem from '../../molecules/CommonItem/CommonItem';
 import './test.scss';
+import BackTop from '../../molecules/BackTop/BackTop';
+import Paginator from '../../molecules/Paginator/Paginator';
+import Editor from '../../molecules/Editor/Editor';
 
 const fake = [
   {
@@ -323,6 +329,20 @@ const Test = () => {
     option4: '',
     correctAnswer: 'A',
   };
+
+  const [show, setShow] = useState(false);
+
+  let renderItem = Array.from(Array(20).keys).map((item) => (
+    <CommonItem
+      title={'NDLTD – Mạng thư viện số luận văn, luận án quốc tế'}
+      description={
+        'Với NDLTD bạn đọc sẽ được truy cập hơn 6.200.000 tài liệu là luận văn, luận án của gần 100 trường đại học thành viên từ Hoa Kỳ, Canada, Ấn Độ, Nhật Bản, bạn đọc sẽ được truy cập hơn 6.200.000 tài liệu là luận văn, luận án của gần 100 trường đại học thành viên từ Hoa Kỳ Pháp…'
+      }
+      date={Date.now()}
+    />
+  ));
+
+  const [pageI, setPageI] = useState({ page: 1, pageSize: 20, total: 100 });
   return (
     <div className="toe-test">
       {/* <AudioPlay
@@ -404,7 +424,37 @@ const Test = () => {
         }
         date={Date.now()}
       /> */}
-      <DynamicMenu />
+      {/* <DynamicMenu /> */}
+      {/* <Button name={'show'} onClick={() => setShow((s) => !s)} />
+      <Modal
+        footerRight={[
+          <Button
+            onClick={() => setShow(false)}
+            theme={BUTTON_THEME.THEME_6}
+            name="Hủy"
+          />,
+          <Button name="Thêm" onClick={() => {}} />,
+        ]}
+        onClose={() => setShow(false)}
+        title={'Thêm mới người dùng'}
+        show={show}
+      ></Modal> */}
+      {/* <Banner
+        breadCrumbs={[{ label: 'Tin tức' }]}
+        title={'tin tức'}
+        icon={<BellOutlined />}
+      /> */}
+      {/* {renderItem}
+      <BackTop /> */}
+      {/* <Paginator
+        onChange={(data) => {
+          setPageI({ ...pageI, ...data });
+        }}
+        totalRecords={pageI.total}
+        page={pageI.page}
+        pageSize={pageI.pageSize}
+      /> */}
+      <Editor />
     </div>
   );
 };

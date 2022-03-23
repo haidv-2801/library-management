@@ -11,6 +11,7 @@ import CardList from '../../../molecules/CardList/CardList';
 import Footer from '../../../sections/User/FooterLib/Footer';
 import { InputSwitch } from 'primereact/inputswitch';
 import { Carousel } from 'primereact/carousel';
+import { BUTTON_TYPE } from '../../../../constants/commonConstant';
 import { BellOutlined, SearchOutlined } from '@ant-design/icons';
 import TitleSeparator from '../../../atomics/base/TitleSeparator/TitleSeparator';
 import CardItem from '../../../molecules/Card/Card';
@@ -24,6 +25,8 @@ import Loading from '../../../atomics/base/Loading/Loading';
 import { BUTTON_THEME } from '../../../../constants/commonConstant';
 import Input from '../../../atomics/base/Input/Input';
 import FilterEngine from '../../../molecules/FilterEngine/FilterEngine';
+import Dropdown from '../../../molecules/Dropdown/Dropdown';
+import BackTop from '../../../molecules/BackTop/BackTop';
 let FAKE = [
   {
     id: 'c0d5e47b-b4c0-4f8d-9400-1e08b149c6d9',
@@ -93,6 +96,21 @@ HomePage.propTypes = {};
 HomePage.defaultProps = {};
 
 function HomePage(props) {
+  const filterTypeOptions = [
+    {
+      label: 'Tất cả',
+      value: 0,
+    },
+    {
+      label: 'Nhan đề',
+      value: 1,
+    },
+    {
+      label: 'Tác giả',
+      value: 2,
+    },
+  ];
+
   const responsiveOptions = [
     {
       breakpoint: '1024px',
@@ -113,6 +131,8 @@ function HomePage(props) {
 
   const [isLoading, setIsLoading] = useState(true);
   const [showFilterEngine, setShowFilterEngine] = useState(false);
+  const [defaultFilterType, setDefaultFilterType] = useState(0);
+  const [commonSearchValue, setCommonSearchValue] = useState('');
 
   useEffect(() => {
     setTimeout(() => {
@@ -145,8 +165,30 @@ function HomePage(props) {
           <TitleSeparator icon={<SearchOutlined />} title={'Tìm kiếm'} />
         </h4>
         <div className="toe-home-page__img-banner__search">
-          <Input autoFocus placeholder={'Tìm kiếm'} />
-          <div>{showFilterEngine ? 'Tắt bộ lọc' : 'Bật bộ lọc'}</div>
+          <Dropdown
+            options={filterTypeOptions}
+            defaultValue={defaultFilterType}
+            className="toe-home-page__img-banner__search-dropdown-filter"
+          />
+          <Input
+            autoFocus
+            onChange={(e) => setCommonSearchValue(e.target.value)}
+            placeholder={'Tìm kiếm sách, tin tức, thông báo, tài liệu...'}
+          />
+          {!showFilterEngine ? (
+            <Button
+              type={BUTTON_TYPE.LEFT_ICON}
+              leftIcon={<SearchOutlined />}
+              name={'Tìm kiếm'}
+              disabled={!commonSearchValue}
+              onClick={() => {}}
+            />
+          ) : null}
+          <div>
+            {showFilterEngine
+              ? 'Tắt bộ lọc nâng cao'
+              : 'Hiển thị bộ học nâng cao'}
+          </div>
           <InputSwitch
             checked={showFilterEngine}
             onChange={(e) => setShowFilterEngine(e.value)}
@@ -190,7 +232,7 @@ function HomePage(props) {
         <div className="toe-home-page__noti-section">
           <TitleSeparator className="" title={'giới thiệu sách mới'} />
         </div>
-        <div className="toe-home-page__news">
+        <div className="toe-home-page__new-book">
           <CardList isLoading={isLoading} cards={FAKE} />
         </div>
       </div>
