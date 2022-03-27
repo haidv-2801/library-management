@@ -1,7 +1,7 @@
-import { DownOutlined } from '@ant-design/icons';
+import { DownOutlined, LoginOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
 import React, { useContext, useState } from 'react';
-import { NavLink, useNavigate, Navigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import MainLogo from '../../../../assets/images/toeiclogo.png';
 import {
   BUTTON_THEME,
@@ -13,7 +13,7 @@ import { AuthContext } from '../../../../contexts/authContext';
 import Button from '../../../atomics/base/Button/Button';
 import PopupSelectionV1 from '../../../atomics/base/PopupSelectionV1/PopupSelection';
 import UserInfo from '../../UserInfo/UserInfo';
-import { LoginOutlined } from '@ant-design/icons';
+import { PanelMenu } from 'primereact/panelmenu';
 import './header.scss';
 
 Header.propTypes = {
@@ -114,12 +114,41 @@ function Header(props) {
     },
   ];
 
+  const MENU_SMALL_SCREEN = [
+    {
+      label: 'Trang chủ',
+      icon: 'pi pi-fw pi-home',
+      url: PATH_NAME.HOME,
+    },
+    {
+      label: 'Giới thiệu',
+      items: ABOUT_SUB_MENU,
+      key: PATH_NAME.ABOUT,
+    },
+    {
+      key: PATH_NAME.RESOURCES,
+      label: 'TÀI NGUYÊN - BỘ SƯU TẬP',
+      items: RESOURCES_SUB_MENU,
+    },
+    {
+      key: PATH_NAME.SERVICES,
+      label: 'DỊCH VỤ - TIỆN ÍCH',
+      items: SERVICES_SUB_MENU,
+    },
+    {
+      key: PATH_NAME.SEARCH,
+      url: 'http://opac.utc.edu.vn/',
+      label: 'TRA CỨU',
+      icon: 'pi pi-fw pi-search',
+    },
+  ];
+
   const authCtx = useContext(AuthContext);
   const history = useNavigate();
   const [expandedMenu, setExpandedMenu] = useState(false);
   const [currentLink, setCurrentLink] = useState('');
 
-  const renderMenu = () => {
+  const renderMenu = (subPosition = 'bottomLeft') => {
     return MENU.map((item) => {
       const navLink = (
         <NavLink
@@ -162,7 +191,7 @@ function Header(props) {
           trigger="hover"
           className="toe-layout-user-page-container__header__submenu"
           overlayClassName="toe-layout-user-page-container__header__submenu-dropdown"
-          placement="bottomLeft"
+          placement={subPosition}
         >
           {navLink}
         </PopupSelectionV1>
@@ -200,8 +229,20 @@ function Header(props) {
         className,
       ])}
     >
-      {expandedMenu && <div className="toe-expanded-menu">{renderMenu()}</div>}
-      <div className="toe-layout-user-page-container__header-left">
+      {expandedMenu && (
+        <div className="toe-expanded-menu">
+          <PanelMenu
+            className="toe-expanded-menu__panel toe-font-body"
+            model={MENU_SMALL_SCREEN}
+          />
+        </div>
+      )}
+      <div
+        onClick={() => {
+          history(PATH_NAME.HOME);
+        }}
+        className="toe-layout-user-page-container__header-left"
+      >
         <img className="logo-app" src={MainLogo} alt="toeic-365" />
         <b className="name-app">
           Thư viện<span style={{ color: '#43c1c9' }}>365</span>

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
+  BUTTON_SHAPE,
   BUTTON_THEME,
   BUTTON_TYPE,
 } from '../../../../constants/commonConstant';
@@ -28,6 +29,7 @@ Button.propTypes = {
     BUTTON_THEME.THEME_5,
     BUTTON_THEME.THEME_6,
   ]),
+  shape: PropTypes.oneOf([BUTTON_SHAPE.ROUND, BUTTON_SHAPE.NORMAL]),
   disabled: PropTypes.bool,
   onClick: PropTypes.func,
 };
@@ -43,6 +45,7 @@ Button.defaultProps = {
   theme: BUTTON_THEME.THEME_1,
   onClick: () => {},
   disabled: false,
+  shape: BUTTON_SHAPE.ROUND,
 };
 
 function Button(props) {
@@ -57,6 +60,7 @@ function Button(props) {
     name,
     onClick,
     disabled,
+    shape,
   } = props;
   return (
     <div
@@ -75,6 +79,7 @@ function Button(props) {
         theme == BUTTON_THEME.THEME_5 && 'toe-btn-theme-5',
         theme == BUTTON_THEME.THEME_6 && 'toe-btn-theme-6',
         disabled && 'toe-btn--disabled',
+        shape === BUTTON_SHAPE.NORMAL && 'toe-btn-shape-normal',
         className,
       ])}
       onClick={onClick}

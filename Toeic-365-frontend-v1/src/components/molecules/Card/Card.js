@@ -59,8 +59,8 @@ function CardItem(props) {
             'https://images.unsplash.com/photo-1640622304964-3e2c2c0cd7cd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80'
           }
           alt="Image"
-          width="auto"
-          height={100}
+          // width="auto"
+          // height={100}
           preview
         />
       </div>
@@ -88,14 +88,13 @@ function CardItem(props) {
         </div>
       ) : (
         <Card
-          title={<SmartText>{title}</SmartText>}
-          style={{ width: width }}
-          subTitle={<SmartText>{subTitle}</SmartText>}
+          title={<div>{title}</div>}
+          subTitle={<div className="toe-font-body">{subTitle}</div>}
           footer={footer}
           header={header()}
         >
           <p className="m-0" style={{ lineHeight: '1.5' }}>
-            <SmartText rows={4}>{description}</SmartText>
+            <div className="toe-font-body">{description}</div>
           </p>
         </Card>
       )}

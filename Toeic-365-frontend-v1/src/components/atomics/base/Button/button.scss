@@ -21,6 +21,12 @@
     opacity: 0.7;
   }
 
+  &-shape {
+    &-normal {
+      border-radius: 0px;
+    }
+  }
+
   &-theme-1 {
     background-color: var(--main-color);
     color: #fff !important;

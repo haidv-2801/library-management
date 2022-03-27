@@ -10,6 +10,7 @@ TitleSeparator.propTypes = {
   title: PropTypes.any,
   icon: PropTypes.any,
   width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  onClick: PropTypes.func,
 };
 
 TitleSeparator.defaultProps = {
@@ -19,10 +20,11 @@ TitleSeparator.defaultProps = {
   title: '',
   icon: null,
   width: 'auto',
+  onClick: () => {},
 };
 
 function TitleSeparator(props) {
-  const { id, style, className, title, icon, width } = props;
+  const { id, style, className, title, icon, width, onClick } = props;
   return (
     <div
       id={id}
@@ -33,6 +35,7 @@ function TitleSeparator(props) {
         'toe-font-body-big',
         className,
       ])}
+      onClick={onClick}
     >
       {title}{' '}
       <div className="toe-title-separator__icon">

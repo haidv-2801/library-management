@@ -2,6 +2,7 @@ import { BellOutlined, SearchOutlined } from '@ant-design/icons';
 import { Carousel } from 'primereact/carousel';
 import { InputSwitch } from 'primereact/inputswitch';
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   BUTTON_THEME,
   BUTTON_TYPE,
@@ -25,8 +26,7 @@ let FAKE = [
     id: 'c0d5e47b-b4c0-4f8d-9400-1e08b149c6d9',
     title: 'Mrs',
     subTitle: "Devil's Diary",
-    description:
-      'NDLTD – Mạng thư viện số luận văn, luận án quốc tếNDLTD – Mạng thư viện số luận văn, luận án quốc tếNDLTD – Mạng thư viện số luận văn, luận án quốc tếNDLTD – Mạng thư viện số luận văn, luận án quốc tếNDLTD – Mạng thư viện số luận văn, luận án quốc tế',
+    description: 'NDLTD – Mạng thư viện số luận văn, luận án quốc tếNDLTD ',
     imgSrc: 'https://lic.haui.edu.vn/media/79/t79761.jpg',
   },
   {
@@ -41,11 +41,18 @@ let FAKE = [
     title: 'Honorable',
     subTitle: 'French Roast',
     description:
-      'Trung tâm Thông tin - Thư viện tổ chức tập huấn công tác xây dựng Bộ sưu tập theo ngành đào tạoTrung tâm Thông tin - Thư viện tổ chức tập huấn công tác xây dựng Bộ sưu tập theo ngành đào tạoTrung tâm Thông tin - Thư viện tổ chức tập huấn công tác xây dựng Bộ sưu tập theo ngành đào tạoTrung tâm Thông tin - Thư viện tổ chức tập huấn công tác xây dựng Bộ sưu tập theo ngành đào tạoTrung tâm Thông tin - Thư viện tổ chức tập huấn công tác xây dựng Bộ sưu tập theo ngành đào tạo',
+      'Trung tâm Thông tin - Thư viện tổ chức tập huấn công tác xây dựng Bộ sưu tập theo ngành đào tạo',
     imgSrc: 'https://lic.haui.edu.vn/media/78/m78555.jpg',
   },
   {
     id: '094c64e8-a214-457e-aee2-d4e2b4f9962a',
+    title: 'Ms',
+    subTitle: 'Green Dolphin Street',
+    description: 'National Institute of Technology, Trichy',
+    imgSrc: 'http://dummyimage.com/249x100.png/dddddd/000000',
+  },
+  {
+    id: '094c64e8-a214-457e-aee2-d4e2b4f99887',
     title: 'Ms',
     subTitle: 'Green Dolphin Street',
     description: 'National Institute of Technology, Trichy',
@@ -122,6 +129,7 @@ function HomePage(props) {
     },
   ];
 
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [showFilterEngine, setShowFilterEngine] = useState(false);
   const [defaultFilterType, setDefaultFilterType] = useState(0);
@@ -155,9 +163,15 @@ function HomePage(props) {
           {/* <img width={'auto'} height={'auto'} src={HomeHeaderImg} alt="" /> */}
         </div>
         <h4 className="toe-home-page__noti-section">
-          <TitleSeparator icon={<SearchOutlined />} title={'Tìm kiếm'} />
+          <TitleSeparator
+            onClick={() => {
+              navigate('/tin-tuc');
+            }}
+            icon={<SearchOutlined />}
+            title={'Tìm kiếm'}
+          />
         </h4>
-        <div className="toe-home-page__img-banner__search">
+        {/* <div className="toe-home-page__img-banner__search">
           <Dropdown
             options={filterTypeOptions}
             defaultValue={defaultFilterType}
@@ -190,35 +204,29 @@ function HomePage(props) {
         <div className="toe-home-page__img-banner__search-engine">
           {' '}
           {showFilterEngine ? <FilterEngine /> : null}
-        </div>
+        </div> */}
         <div className="toe-home-page__noti-section">
           <TitleSeparator icon={<BellOutlined />} title={'tin tức'} />
         </div>
         <div className="toe-home-page__news">
           <div className="toe-home-page__news-carousel">
-            <Carousel
-              value={FAKE}
-              numVisible={3}
-              numScroll={3}
-              itemTemplate={itemTemplate}
-              responsiveOptions={responsiveOptions}
-            />
+            <CardList isLoading={isLoading} cards={FAKE} />
           </div>
         </div>
         <div className="toe-home-page__noti-section">
           <TitleSeparator icon={<BellOutlined />} title={'thông báo'} />
         </div>
         <div className="toe-home-page__notificaitons">
-          <div className="toe-home-page__notificaitons-left">
-            <DynamicMenu />
-          </div>
+          {/* <div className="toe-home-page__notificaitons-left"> */}
+          {/* <DynamicMenu /> */}
+          {/* </div> */}
           <div className="toe-home-page__notificaitons-right">
-            <NotificationList isLoading={isLoading} data={FAKE_1} />
+            {/* <NotificationList isLoading={isLoading} data={FAKE_1} />
             <Button
               className="toe-home-page__notificaitons-right__btn-more"
               name={'Xem thêm...'}
               theme={BUTTON_THEME.THEME_4}
-            />
+            /> */}
           </div>
         </div>
 

@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import Input from '../../../atomics/base/Input/Input';
-import Button from '../../../atomics/base/Button/Button';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import { buildClass } from '../../../../constants/commonFunction';
+import Button from '../../../atomics/base/Button/Button';
+import Input from '../../../atomics/base/Input/Input';
 import './footer.scss';
 
 Footer.propTypes = {

@@ -12,26 +12,37 @@ import './main.scss';
 const PostPage = React.lazy(() =>
   import('./components/pages/admin/PostPage/PostPage')
 );
+
 const HtmlContentCreatingPage = React.lazy(() =>
   import(
     './components/pages/admin/HtmlContentCreatingPage/HtmlContentCreatingPage'
   )
 );
+
 const UserPage = React.lazy(() =>
   import('./components/pages/admin/UserPage/UserPage')
 );
+
 const Test = React.lazy(() => import('./components/pages/test/Test'));
+
 const CommonListItemPage = React.lazy(() =>
   import('./components/pages/user/CommonListItemPage/CommonListItemPage')
 );
+
 const HomePage = React.lazy(() =>
   import('./components/pages/user/HomePageLib/HomePage')
 );
+
 const HtmlRenderPage = React.lazy(() =>
   import('./components/pages/user/HtmlRenderPage/HtmlRenderPage')
 );
+
 const BooksPage = React.lazy(() =>
   import('./components/pages/user/BooksPage/BooksPage.js')
+);
+
+const BooksPageSeeAll = React.lazy(() =>
+  import('./components/pages/user/BooksPageSeeAll/BooksPageSeeAll')
 );
 
 function App() {
@@ -50,10 +61,14 @@ function App() {
             <Route exact path={PATH_NAME.HOME} element={<HomePage />} />
             <Route exact path={PATH_NAME.LOGIN} element={<LoginPage />} />
             <Route exact path={PATH_NAME.REGISTER} element={<RegisterPage />} />
+            <Route exact path={PATH_NAME.BORROWING_RETURNING_BOOK}>
+              <Route index element={<BooksPage />}></Route>
+              <Route exact path=":slug" element={<BooksPageSeeAll />}></Route>
+            </Route>
             <Route
               exact
-              path={PATH_NAME.BORROWING_RETURNING_BOOK}
-              element={<BooksPage />}
+              path={PATH_NAME.NEWS}
+              element={<CommonListItemPage />}
             />
 
             {/* html page */}
@@ -111,11 +126,7 @@ function App() {
           </Route>
           <Route
             path="/:postType/:postSlug/:postID"
-            element={
-              <RequiredAuth>
-                <HtmlRenderPage />
-              </RequiredAuth>
-            }
+            element={<HtmlRenderPage />}
           />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

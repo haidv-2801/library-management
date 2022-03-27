@@ -27,6 +27,11 @@ const BUTTON_TYPE = {
   RIGHT_ICON: 3,
 };
 
+const BUTTON_SHAPE = {
+  ROUND: 1,
+  NORMAL: 2,
+};
+
 const BUTTON_THEME = {
   THEME_1: 1, //nền xanh chữ trắng
   THEME_2: 2, //nền trắng chữ đen viền xanh
@@ -79,6 +84,7 @@ const BOOK_FORMAT = {
 };
 
 export {
+  BUTTON_SHAPE,
   BOOK_FORMAT,
   TEXT_FALL_BACK,
   BUTTON_THEME,

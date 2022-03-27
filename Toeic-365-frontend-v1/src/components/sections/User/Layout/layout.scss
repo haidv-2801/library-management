@@ -207,10 +207,34 @@
 
   .toe-expanded-menu {
     position: absolute;
-    top: 100%;
+    top: calc(100%);
+    width: 100vw;
+    background-color: #fff;
+    padding: 16px 8px;
+    // box-shadow: 0px 0px 9px 1px #a2a0a0;
+
+    &__panel {
+      .p-panelmenu-header-link {
+        padding: 8px 16px;
+        font-size: 14px;
+        font-family: 'OpenSans-Regular', sans-serif;
+      }
+
+      .p-menuitem-text {
+        font-size: 14px;
+        font-family: 'OpenSans-Regular', sans-serif;
+      }
+
+      .p-panelmenu-icon {
+        font-size: 12px;
+      }
+    }
 
     .menu-item {
-      display: block;
+      display: flex;
+      justify-content: center;
+      line-height: 40px;
+      border-right: none;
     }
   }
 }

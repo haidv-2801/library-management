@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import Input from '../../../atomics/base/Input/Input';
-import Button from '../../../atomics/base/Button/Button';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import { buildClass } from '../../../../constants/commonFunction';
+import Button from '../../../atomics/base/Button/Button';
+import Input from '../../../atomics/base/Input/Input';
 import './footer.scss';
 
 Footer.propTypes = {
@@ -66,14 +66,14 @@ function Footer(props) {
           {' '}
           Email hỗ trợ:
         </span>
-        <Input style={{ width: 400 }} placeholder={'toeic365@gmail.com'} />
+        <Input style={{ width: 400 }} placeholder={'thuvien365@gmail.com'} />
         <Button className="footer-bottom__btn-send" name={'Gửi'} />
       </div>
       <div className="footer-copyright">
         © 2021 Copyright:
         <Link className="text-white" to="#">
           {' '}
-          Toeic365.com
+          Thuvien365@gmail.com
         </Link>
       </div>
     </footer>

@@ -67,26 +67,4 @@
       }
     }
   }
-
-  &__search {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 16px;
-
-    .toe-input {
-      flex: 1;
-      min-width: 150px;
-    }
-
-    &-dropdown-filter {
-      max-width: 200px;
-    }
-
-    &-engine {
-      margin-bottom: 16px;
-    }
-  }
 }
