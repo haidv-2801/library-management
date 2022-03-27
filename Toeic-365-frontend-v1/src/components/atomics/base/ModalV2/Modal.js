@@ -1,9 +1,7 @@
-import React, { Children } from 'react';
-import PropTypes from 'prop-types';
-import { buildClass } from '../../../../constants/commonFunction';
 import { Dialog } from 'primereact/dialog';
-import Overlay from '../Overlay/Overlay';
-import { CloseOutlined } from '@ant-design/icons';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { buildClass } from '../../../../constants/commonFunction';
 import './modal.scss';
 
 Modal.propTypes = {

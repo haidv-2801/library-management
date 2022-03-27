@@ -15,6 +15,7 @@
     margin-top: calc(var(--header-height) + 1px);
     overflow: scroll;
     overflow: auto;
+    // padding: 0px 24px;
     background-color: #ffffff;
 
     &-left {
@@ -134,24 +135,44 @@
     position: relative;
     border-right: 1px solid #bbbbbb;
     white-space: nowrap;
+    display: flex;
+    align-items: center;
+
+    &--selected {
+      color: #43c1c9;
+    }
 
     &::before {
       content: '';
       width: 0;
       height: 2px;
       bottom: -5px;
-      left: 20px;
       transition: all 0.2s linear;
       position: absolute;
       background-color: #7eab49;
     }
 
     &:hover::before {
-      width: calc(100% - 42px);
+      width: calc(100% - 19px);
     }
 
     &:hover {
       color: #7eab49;
+
+      & > span {
+        transition: 0.3s;
+        transform: rotate(-180deg);
+      }
+    }
+
+    & > span {
+      margin-right: 4px;
+      display: flex;
+      align-items: center;
+
+      & > svg {
+        font-size: 8px;
+      }
     }
   }
 

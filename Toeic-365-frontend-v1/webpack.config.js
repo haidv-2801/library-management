@@ -1,4 +1,5 @@
 const path = require('path');
+
 module.exports = {
   mode: 'development',
   entry: './src/index.js',
@@ -17,31 +18,10 @@ module.exports = {
           'css-loader',
           // Compiles Sass to CSS
           'sass-loader',
+          // Compiles less to CSS
           'less-loader',
         ],
       },
     ],
   },
 };
-
-// webpack.config.js
-// const CircularDependencyPlugin = require('circular-dependency-plugin');
-
-// module.exports = {
-//   entry: './src/index.js',
-//   plugins: [
-//     new CircularDependencyPlugin({
-//       // exclude detection of files based on a RegExp
-//       exclude: /a\.js|node_modules/,
-//       // include specific files based on a RegExp
-//       include: /dir/,
-//       // add errors to webpack instead of warnings
-//       failOnError: true,
-//       // allow import cycles that include an asyncronous import,
-//       // e.g. via import(/* webpackMode: "weak" */ './file.js')
-//       allowAsyncCycles: false,
-//       // set the current working directory for displaying module paths
-//       cwd: process.cwd(),
-//     }),
-//   ],
-// };

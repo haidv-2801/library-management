@@ -1,13 +1,8 @@
-import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
-import {
-  BUTTON_THEME,
-  BUTTON_TYPE,
-} from '../../../../constants/commonConstant';
+import React, { useRef } from 'react';
 import { buildClass } from '../../../../constants/commonFunction';
-import './popupSelection.scss';
 import useOnClickOutside from '../../../../hooks/useClickOutSide';
-import { Popover } from 'antd';
+import './popupSelection.scss';
 
 PopupSelection.propTypes = {
   id: PropTypes.string,

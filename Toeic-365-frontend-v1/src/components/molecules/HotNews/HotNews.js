@@ -1,42 +1,49 @@
-import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { DATE_FORMAT } from '../../../constants/commonConstant';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { PATH_NAME } from '../../../constants/commonConstant';
 import { buildClass } from '../../../constants/commonFunction';
-import { Card } from 'primereact/card';
-import { format } from 'react-string-format';
-import { Image } from 'primereact/image';
-import SmartText from '../../atomics/base/SmartText/SmartText';
-import { Skeleton } from 'primereact/skeleton';
 import './hotNews.scss';
-import moment from 'moment';
 
 HotNews.propTypes = {
   id: PropTypes.string,
   className: PropTypes.string,
   style: PropTypes.object,
+  onClick: PropTypes.func,
 };
 
 HotNews.defaultProps = {
   id: '',
   className: '',
   style: {},
+  onClick: () => {},
 };
 
 function HotNews(props) {
-  const { id, style, className } = props;
+  const { id, style, className, onClick } = props;
+  const navigate = useNavigate();
+
+  const handleSeeDetailNew = (item) => {
+    navigate(PATH_NAME.NEWS + '/slug/234234');
+  };
 
   const renderCommonItems = () => {
     const arr = Array.from(Array(10).keys());
 
-    return arr.map((item) => (
-      <div className="toe-hot-news__section-content">
+    return arr.map((item, _) => (
+      <div
+        onClick={(item) => handleSeeDetailNew(item)}
+        key={_}
+        className="toe-hot-news__section-content"
+      >
         <div className="toe-hot-news__section-content__img">
-          <img
+          {/* <img
             src={
               'https://images.unsplash.com/photo-1647887977201-46da49bacae7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80'
             }
             alt="Image"
-          />
+          /> */}
+          <img src={require('../../../assets/images/me.jpg')} alt="Image" />
         </div>
         <div className="toe-hot-news__section-content__info">
           <div className="toe-hot-news__section-content__desc">

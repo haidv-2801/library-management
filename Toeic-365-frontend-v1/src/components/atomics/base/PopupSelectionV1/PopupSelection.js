@@ -1,17 +1,14 @@
-import React, { Children, useRef } from 'react';
+import { Popover } from 'antd';
 import PropTypes from 'prop-types';
-import {
-  BUTTON_THEME,
-  BUTTON_TYPE,
-} from '../../../../constants/commonConstant';
+import React from 'react';
 import { buildClass } from '../../../../constants/commonFunction';
 import './popupSelection.scss';
-import { Popover } from 'antd';
 
 PopupSelection.propTypes = {
   id: PropTypes.string,
   className: PropTypes.string,
   wrapperClassName: PropTypes.string,
+  overlayClassName: PropTypes.string,
   style: PropTypes.object,
   options: PropTypes.array,
   onChange: PropTypes.func,
@@ -25,6 +22,7 @@ PopupSelection.defaultProps = {
   id: '',
   className: '',
   wrapperClassName: '',
+  overlayClassName: '',
   style: {},
   options: [],
   onChange: () => {},
@@ -43,6 +41,7 @@ function PopupSelection(props) {
     wrapperClassName,
     trigger,
     placement,
+    overlayClassName,
   } = props;
 
   const renderOption = () => {
@@ -75,7 +74,10 @@ function PopupSelection(props) {
 
   return (
     <Popover
-      overlayClassName="toe-popup-selection__wrapper"
+      overlayClassName={buildClass([
+        'toe-popup-selection__wrapper',
+        overlayClassName,
+      ])}
       className={buildClass(['toe-popup-selection__wrapper', wrapperClassName])}
       placement={placement}
       content={renderOption()}

@@ -2,12 +2,23 @@ const TEXT_FALL_BACK = {
   TYPE_1: '- - -',
   TYPE_2: '--',
   TYPE_3: '- -',
+  TYPE_4: '---',
 };
 
 const PATH_NAME = {
-  HOME: '/home',
-  REGISTER: '/register',
-  LOGIN: '/login',
+  HOME: '/trang-chu',
+  REGISTER: '/dang-ky',
+  LOGIN: '/dang-nhap',
+  ABOUT: '/gioi-thieu',
+  NEWS: '/tin-tuc',
+  RESOURCES: '/tai-nguyen-bo-suu-tap',
+  SERVICES: '/dich-vu-tien-ich',
+  BORROWING_RETURNING_BOOK: '/muon-tra-tai-lieu',
+  SEARCH: '/tra-cuu',
+
+  //admin
+  ADMIN_POST_PAGE: '/admin/post',
+  ADMIN_CREATE_POST_PAGE: '/admin/post/new',
 };
 
 const BUTTON_TYPE = {
@@ -27,7 +38,8 @@ const BUTTON_THEME = {
 
 const REGEX = {
   EMAIL:
-    /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
+    /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i, //eslint-disable-line
+  //eslint-disable-next-line
   PASSWORD: /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])([a-zA-Z0-9]{8,})$/, //ít nhất 8 kí tự
 };
 
@@ -55,7 +67,19 @@ const OPERATOR = {
 
 const PAGEGING = [10, 20, 50];
 
+const POST_TYPE = {
+  NEWS: 0,
+  NOTIFICATION: 1,
+  ABOUT_THE_BOOK: 2,
+};
+
+const BOOK_FORMAT = {
+  EBOOK: 0,
+  PAPER_BACK: 1,
+};
+
 export {
+  BOOK_FORMAT,
   TEXT_FALL_BACK,
   BUTTON_THEME,
   BUTTON_TYPE,
@@ -66,4 +90,5 @@ export {
   DATE_FORMAT,
   OPERATOR,
   PAGEGING,
+  POST_TYPE,
 };

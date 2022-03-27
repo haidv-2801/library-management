@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { buildClass } from '../../../constants/commonFunction';
 import { BackTop as BackTopAntd } from 'antd';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { buildClass } from '../../../constants/commonFunction';
 import './backTop.scss';
 
 BackTop.propTypes = {

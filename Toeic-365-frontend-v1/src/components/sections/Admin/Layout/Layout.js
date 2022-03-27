@@ -1,33 +1,20 @@
-import React, { useState, useEffect, useRef } from 'react';
-import PropTypes from 'prop-types';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { Layout as LayoutAntd, Menu } from 'antd';
-import 'antd/dist/antd.css';
 import {
-  MenuUnfoldOutlined,
-  MenuFoldOutlined,
-  UserOutlined,
-  VideoCameraOutlined,
-  UploadOutlined,
-  DesktopOutlined,
-  PieChartOutlined,
-  FileOutlined,
-  TeamOutlined,
   DashboardOutlined,
+  LeftOutlined,
   QuestionCircleOutlined,
+  UploadOutlined,
+  UserOutlined,
 } from '@ant-design/icons';
-import { buildClass } from '../../../../constants/commonFunction';
-import useOnClickOutside from '../../../../hooks/useClickOutSide';
-import PopupSelection from '../../../atomics/base/PopupSelection/PopupSelection';
+import { Layout as LayoutAntd, Menu } from 'antd';
+import PropTypes from 'prop-types';
+import React, { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
 import MainLogo from '../../../../assets/images/toeiclogo.png';
-import Avatar from '../../../../assets/images/me.jpg';
+import useOnClickOutside from '../../../../hooks/useClickOutSide';
 import useWindowResize from '../../../../hooks/useWindowResize';
 import Loading from '../../../atomics/base/Loading/Loading';
-import Table from '../../../molecules/Table/Table';
-import SmartText from '../../../atomics/base/SmartText/SmartText';
 import UserInfo from '../../UserInfo/UserInfo';
-import { fake } from '../../../pages/test/Test';
-import { useDispatch, useSelector } from 'react-redux';
 import './layout.scss';
 
 const { Header, Sider, Content } = LayoutAntd;
@@ -36,15 +23,19 @@ const { SubMenu } = Menu;
 Layout.propTypes = {
   title: PropTypes.any,
   rightButtons: PropTypes.array,
+  hasBackBtn: PropTypes.bool,
+  back: PropTypes.func,
 };
 
 Layout.defaultProps = {
   title: null,
   rightButtons: [],
+  hasBackBtn: false,
+  back: () => {},
 };
 
 function Layout(props) {
-  const { title, rightButtons, children } = props;
+  const { title, rightButtons, children, hasBackBtn, back } = props;
 
   //#region constant
   const DEFAULT_ITEM = '/admin/dashboard';
@@ -83,6 +74,11 @@ function Layout(props) {
     {
       key: '/admin/user',
       title: 'Quản lý tài khoản',
+      icon: <UserOutlined />,
+    },
+    {
+      key: '/admin/post',
+      title: 'Quản lý bài đăng',
       icon: <UserOutlined />,
     },
   ];
@@ -126,7 +122,7 @@ function Layout(props) {
 
   //#region method
   useEffect(() => {
-    document.title = 'Toeic-365';
+    document.title = 'Thư viện-365';
   }, []);
 
   useEffect(() => {
@@ -175,7 +171,7 @@ function Layout(props) {
   };
 
   const renderRightButtons = () => {
-    return rightButtons.map((btn) => btn);
+    return rightButtons.map((btn, _) => <div key={_}>{btn}</div>);
   };
 
   const handleSelectMenuItem = (data) => {
@@ -205,31 +201,6 @@ function Layout(props) {
             </b>
           </div>
           <div className="toe-layout-admin-page-container__header-right">
-            {/* <div className="user-name">DOVANHAI</div>
-            <div onClick={handleShowOption} className="user-avatar">
-              <img src={Avatar} alt="avatar" />
-            </div>
-            {isShowPopupSelection && (
-              <span ref={popupSelectionRef}>
-                <PopupSelection
-                  defaultValue={userSelectValue}
-                  onChange={(data) => {
-                    setUserSelectValue(data.value);
-                    if (data.value === POPUP_SELECTION_VALUES.LOGOUT) {
-                      // history('/login');
-                      //Xóa cache chrome
-                      window.location.replace('/login');
-                    } else if (
-                      data.value === POPUP_SELECTION_VALUES.USER_INFOMATION
-                    ) {
-                      //
-                    }
-                    setIsShowPopupSelection(false);
-                  }}
-                  options={POPUP_SELECTION_OPTIONS}
-                />
-              </span>
-            )} */}
             <UserInfo />
           </div>
         </div>
@@ -254,6 +225,15 @@ function Layout(props) {
           <div className="toe-layout-admin-page-container__body-right">
             <div className="toe-layout-admin-page-container__body-right__head">
               <div className="toe-layout-admin-page-container__body-right__head-title">
+                {hasBackBtn ? (
+                  <div
+                    onClick={back}
+                    className="toe-layout-admin-page-container__body-right__head-title-back"
+                  >
+                    <LeftOutlined />
+                  </div>
+                ) : null}
+
                 <div className="toe-font-large-title">
                   {title || menuItemSelected}
                 </div>

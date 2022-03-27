@@ -1,0 +1,42 @@
+.toe-book {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  max-width: 125px;
+  width: 125px;
+  height: 185px;
+
+  &__type {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 7px;
+    background-color: rgba($color: #000000, $alpha: 0.4);
+    color: #fff;
+  }
+
+  &__title {
+    width: 100%;
+    flex: 1;
+    overflow: hidden;
+    padding: 11px 10px;
+    background-color: #2d7f9d;
+
+    .toe-font-body {
+      .ant-typography {
+        color: #fff;
+      }
+    }
+  }
+
+  &__author {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 10px;
+    background-color: #92d4b9;
+    font-size: 12px !important;
+  }
+}

@@ -1,32 +1,25 @@
-import React, { useState, useEffect, useRef } from 'react';
-import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
-import { buildClass } from '../../../../constants/commonFunction';
-import MainLogo from '../../../../assets/images/toeiclogo.png';
-import Avatar from '../../../../assets/images/me.jpg';
-import useWindowResize from '../../../../hooks/useWindowResize';
-import HomeHeaderImg from '../../../../assets/images/thuvien_home.jpg';
-import Layout from '../../../sections/User/Layout/Layout';
-import CardList from '../../../molecules/CardList/CardList';
-import Footer from '../../../sections/User/FooterLib/Footer';
-import { InputSwitch } from 'primereact/inputswitch';
-import { Carousel } from 'primereact/carousel';
-import { BUTTON_TYPE } from '../../../../constants/commonConstant';
 import { BellOutlined, SearchOutlined } from '@ant-design/icons';
+import { Carousel } from 'primereact/carousel';
+import { InputSwitch } from 'primereact/inputswitch';
+import React, { useEffect, useState } from 'react';
+import {
+  BUTTON_THEME,
+  BUTTON_TYPE,
+} from '../../../../constants/commonConstant';
+import Button from '../../../atomics/base/Button/Button';
+import Input from '../../../atomics/base/Input/Input';
+import Loading from '../../../atomics/base/Loading/Loading';
 import TitleSeparator from '../../../atomics/base/TitleSeparator/TitleSeparator';
 import CardItem from '../../../molecules/Card/Card';
-// import Carousel from '../../../molecules/Carousel/Carousel';
-import './homePage.scss';
-import NotificationList from '../../../molecules/NotificationList/NotificationList';
-import moment from 'moment';
-import DynamicMenu from '../../../molecules/DynamicMenu/DynamicMenu';
-import Button from '../../../atomics/base/Button/Button';
-import Loading from '../../../atomics/base/Loading/Loading';
-import { BUTTON_THEME } from '../../../../constants/commonConstant';
-import Input from '../../../atomics/base/Input/Input';
-import FilterEngine from '../../../molecules/FilterEngine/FilterEngine';
+import CardList from '../../../molecules/CardList/CardList';
 import Dropdown from '../../../molecules/Dropdown/Dropdown';
-import BackTop from '../../../molecules/BackTop/BackTop';
+import DynamicMenu from '../../../molecules/DynamicMenu/DynamicMenu';
+import FilterEngine from '../../../molecules/FilterEngine/FilterEngine';
+import NotificationList from '../../../molecules/NotificationList/NotificationList';
+import Footer from '../../../sections/User/FooterLib/Footer';
+import Layout from '../../../sections/User/Layout/Layout';
+import './homePage.scss';
+
 let FAKE = [
   {
     id: 'c0d5e47b-b4c0-4f8d-9400-1e08b149c6d9',
@@ -129,14 +122,14 @@ function HomePage(props) {
     },
   ];
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [showFilterEngine, setShowFilterEngine] = useState(false);
   const [defaultFilterType, setDefaultFilterType] = useState(0);
   const [commonSearchValue, setCommonSearchValue] = useState('');
 
   useEffect(() => {
     setTimeout(() => {
-      setIsLoading(false);
+      // setIsLoading(false);
     }, 2000);
   }, []);
 

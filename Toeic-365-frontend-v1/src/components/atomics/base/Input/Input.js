@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import { InputText } from 'primereact/inputtext';
 import { buildClass } from '../../../../constants/commonFunction';
+import { format } from 'react-string-format';
 import './input.scss';
 
 Input.propTypes = {
@@ -16,6 +17,7 @@ Input.propTypes = {
   autoFocus: PropTypes.bool,
   hasRequiredLabel: PropTypes.bool,
   onChange: PropTypes.func,
+  maxLength: PropTypes.any,
 };
 
 Input.defaultProps = {
@@ -30,6 +32,7 @@ Input.defaultProps = {
   autoFocus: false,
   hasRequiredLabel: false,
   onChange: () => {},
+  maxLength: undefined,
 };
 
 function Input(props) {
@@ -45,7 +48,10 @@ function Input(props) {
     onChange,
     autoFocus,
     hasRequiredLabel,
+    maxLength,
   } = props;
+
+  const ref = useRef('');
 
   return (
     <>
@@ -76,9 +82,19 @@ function Input(props) {
 
         <InputText
           autoFocus={autoFocus}
-          onChange={onChange}
+          onChange={(e) => {
+            ref.current = e.target.value;
+            onChange(e);
+            if (ref.current.length === parseInt(maxLength, 10) || 0) return;
+          }}
           placeholder={placeholder}
+          maxLength={maxLength}
         />
+        {maxLength ? (
+          <span className="toe-font-hint toe-input-maxlength">
+            {format('{0}/{1}', ref.current.length || 0, maxLength)}
+          </span>
+        ) : null}
       </div>
       {bottomMessage && !valid && (
         <div className="toe-input-message">{bottomMessage}</div>

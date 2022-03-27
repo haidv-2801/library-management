@@ -13,6 +13,7 @@
     "axios-auth-refresh": "^3.2.1",
     "css-loader": "^6.5.1",
     "dotenv": "^16.0.0",
+    "eslint-plugin-unused-imports": "^2.0.0",
     "js-cookie": "^3.0.1",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
@@ -32,7 +33,7 @@
     "web-vitals": "^2.1.2"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-scripts start --live-reload=false",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -41,7 +42,23 @@
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "plugins": [
+      "unused-imports"
+    ],
+    "rules": {
+      "no-unused-vars": "off",
+      "unused-imports/no-unused-imports": "off",
+      "unused-imports/no-unused-vars": [
+        "warn",
+        {
+          "vars": "all",
+          "varsIgnorePattern": "^_",
+          "args": "after-used",
+          "argsIgnorePattern": "^_"
+        }
+      ]
+    }
   },
   "browserslist": {
     "production": [

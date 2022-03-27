@@ -53,9 +53,8 @@ function CommonItem(props) {
       id={id}
       style={style}
       className={buildClass(['toe-common-item toe-font-body', className])}
-      onClick={onClick}
     >
-      <div className="toe-common-item__image">
+      <div className="toe-common-item__image" onClick={onClick}>
         {isLoading ? (
           <Skeleton height="100%"></Skeleton>
         ) : (
@@ -64,7 +63,6 @@ function CommonItem(props) {
               'https://images.unsplash.com/photo-1647882979170-a4e462043b8c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1140&q=80'
             }
             alt="Image"
-            preview
           />
         )}
       </div>
@@ -82,10 +80,13 @@ function CommonItem(props) {
         </div>
       ) : (
         <div className="toe-common-item__info">
-          <div className="toe-common-item__title">
+          <div onClick={onClick} className="toe-common-item__title">
             <SmartText rows={3}>{title}</SmartText>
           </div>
-          <div className="toe-common-item__date toe-font-hint">
+          <div
+            onClick={onClick}
+            className="toe-common-item__date toe-font-hint"
+          >
             Ngày tạo: {moment(date).format(DATE_FORMAT.TYPE_1)} - Lượt xem:{' '}
             {1100}
           </div>
@@ -93,7 +94,9 @@ function CommonItem(props) {
             <SmartText rows={3}>{description}</SmartText>
           </p>
           <div style={{ flex: 1 }}></div>
-          <div className="toe-common-item__see-more">Xem thêm</div>
+          <div className="toe-common-item__see-more" onClick={onClick}>
+            Xem thêm
+          </div>
         </div>
       )}
     </div>

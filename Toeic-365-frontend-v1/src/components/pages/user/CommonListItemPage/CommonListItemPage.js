@@ -1,18 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react';
-import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
-import { buildClass } from '../../../../constants/commonFunction';
-import MainLogo from '../../../../assets/images/toeiclogo.png';
-import Avatar from '../../../../assets/images/me.jpg';
-import useWindowResize from '../../../../hooks/useWindowResize';
 import { BellOutlined } from '@ant-design/icons';
-import Layout from '../../../sections/User/Layout/Layout';
-import Footer from '../../../sections/User/Footer/Footer';
+import PropTypes from 'prop-types';
+import React, { useState } from 'react';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import Banner from '../../../molecules/Banner/Banner';
 import CommonItem from '../../../molecules/CommonItem/CommonItem';
-import './commonListItemPage.scss';
 import HotNews from '../../../molecules/HotNews/HotNews';
 import Paginator from '../../../molecules/Paginator/Paginator';
+import Footer from '../../../sections/User/Footer/Footer';
+import Layout from '../../../sections/User/Layout/Layout';
+import './commonListItemPage.scss';
 
 CommonListItemPage.propTypes = {
   titlePage: PropTypes.string,
@@ -23,13 +19,20 @@ CommonListItemPage.defaultProps = { titlePage: '' };
 function CommonListItemPage(props) {
   const { children, titlePage } = props;
 
+  const navigate = useNavigate();
+  const params = useParams();
+  const { pathname } = useLocation();
   const [pageI, setPageI] = useState({ page: 1, pageSize: 20, total: 100 });
 
   const renderCommonItems = () => {
     const arr = Array.from(Array(10).keys());
 
-    return arr.map((item) => (
+    return arr.map((item, _) => (
       <CommonItem
+        onClick={() => {
+          navigate('slug/645634');
+        }}
+        key={_}
         title={
           'NDLTD – Mạng thư viện số luận văn, luận án quốc tếNDLTDNDLTD – Mạng thư viện số luận văn, luận án quốc tếNDLTDNDLTDNDLTD – Mạng thư viện số luận văn, luận án quốc tếNDLTDNDLTD – Mạng thư viện số luận văn'
         }
@@ -46,7 +49,7 @@ function CommonListItemPage(props) {
       <div className="toe-common-list-item-page">
         <div className="toe-common-list-item-page__banner">
           <Banner
-            breadCrumbs={[{ label: titlePage }]}
+            breadCrumbs={[{ label: titlePage, url: pathname }]}
             title={titlePage}
             icon={<BellOutlined />}
           />

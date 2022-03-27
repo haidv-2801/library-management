@@ -1,4 +1,4 @@
-const DEV_HOST = 'http://localhost:8081';
+const DEV_HOST = process.env.REACT_APP_DEV_DOMAIN;
 
 const END_POINT = (function () {
   if (

@@ -1,11 +1,12 @@
-import React from 'react';
+import { Typography } from 'antd';
 import PropTypes from 'prop-types';
-import { Typography, Tooltip } from 'antd';
+import React from 'react';
 import { buildClass } from '../../../../constants/commonFunction';
 import './smartText.scss';
 const { Paragraph } = Typography;
 
 SmartText.propTypes = {
+  style: PropTypes.object,
   onEllipsis: PropTypes.func,
   rows: PropTypes.number,
   maxWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
@@ -17,15 +18,16 @@ SmartText.defaultProps = {
   rows: 1,
   maxWidth: '100%',
   className: '',
+  style: {},
 };
 
 function SmartText(props) {
-  const { onEllipsis, rows, children, maxWidth, className } = props;
+  const { onEllipsis, rows, children, maxWidth, className, style } = props;
 
   return (
     <span
-      style={{ maxWidth: maxWidth }}
-      className={buildClass(['toe-smarttext', className, 'toe-font-body'])}
+      style={{ maxWidth: maxWidth, ...style }}
+      className={buildClass(['toe-smarttext toe-font-body', className])}
     >
       <Paragraph
         ellipsis={{

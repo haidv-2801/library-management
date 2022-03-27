@@ -1,11 +1,6 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  BUTTON_THEME,
-  BUTTON_TYPE,
-} from '../../../../constants/commonConstant';
+import React from 'react';
 import { buildClass } from '../../../../constants/commonFunction';
-import { BellOutlined } from '@ant-design/icons';
 import './titleSeparator.scss';
 
 TitleSeparator.propTypes = {

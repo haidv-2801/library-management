@@ -7,6 +7,7 @@ import { AuthContext } from '../../../contexts/authContext';
 import useOnClickOutside from '../../../hooks/useClickOutSide';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './userInfo.scss';
+import { PATH_NAME } from '../../../constants/commonConstant';
 
 const UserInfo = () => {
   const authCtx = useContext(AuthContext);
@@ -59,7 +60,7 @@ const UserInfo = () => {
             // history('/login');
             //Xóa cache chrome
             authCtx.logout();
-            window.location.replace('/home');
+            window.location.replace(PATH_NAME.HOME);
           } else if (data.value === POPUP_SELECTION_VALUES.USER_INFOMATION) {
             //
           } else if (data.value === POPUP_SELECTION_VALUES.ADMIN_PAGE) {

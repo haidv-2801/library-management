@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { BreadCrumb } from 'primereact/breadcrumb';
 import PropTypes from 'prop-types';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { buildClass } from '../../../constants/commonFunction';
-import { BellOutlined } from '@ant-design/icons';
-import { BreadCrumb } from 'primereact/breadcrumb';
 import './banner.scss';
 
 Banner.propTypes = {
@@ -30,10 +29,8 @@ function Banner(props) {
 
   const home = {
     icon: 'pi pi-home',
-    url: 'https://www.primefaces.org/primereact/showcase',
+    url: '/',
   };
-
-  console.log(process.env.DEVELOPMENT_DOMAIN);
 
   return (
     <div

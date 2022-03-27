@@ -1,22 +1,20 @@
-import React, { useState, useEffect, useContext } from 'react';
+import { DownOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
-import Input from '../../../atomics/base/Input/Input';
-import Button from '../../../atomics/base/Button/Button';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { buildClass } from '../../../../constants/commonFunction';
-import Avatar from '../../../../assets/images/me.jpg';
-import useWindowResize from '../../../../hooks/useWindowResize';
-import { AuthContext } from '../../../../contexts/authContext';
+import React, { useContext, useState } from 'react';
+import { NavLink, useNavigate, Navigate } from 'react-router-dom';
 import MainLogo from '../../../../assets/images/toeiclogo.png';
-import PopupSelectionV1 from '../../../atomics/base/PopupSelectionV1/PopupSelection';
-
 import {
   BUTTON_THEME,
   BUTTON_TYPE,
+  PATH_NAME,
 } from '../../../../constants/commonConstant';
-
-import './header.scss';
+import { buildClass, slugify } from '../../../../constants/commonFunction';
+import { AuthContext } from '../../../../contexts/authContext';
+import Button from '../../../atomics/base/Button/Button';
+import PopupSelectionV1 from '../../../atomics/base/PopupSelectionV1/PopupSelection';
 import UserInfo from '../../UserInfo/UserInfo';
+import { LoginOutlined } from '@ant-design/icons';
+import './header.scss';
 
 Header.propTypes = {
   id: PropTypes.string,
@@ -34,80 +32,139 @@ Header.defaultProps = {
 
 function Header(props) {
   const { id, style, className, showNav } = props;
-  const authCtx = useContext(AuthContext);
 
-  const POPUP_SELECTION_OPTIONS = [
+  const RESOURCES_SUB_MENU = [
     {
       label: 'Tài liệu in',
-      value: 2,
+      value: slugify('Tài liệu in'),
     },
     {
       label: 'Tài liệu số',
-      value: 3,
+      value: slugify('Tài liệu số'),
     },
     {
       label: <span className="toe-font-label">Học liệu mở</span>,
-      value: 4,
+      value: slugify('Học liệu mở'),
+    },
+  ];
+
+  const ABOUT_SUB_MENU = [
+    {
+      label: 'Tổng quan về thư viện',
+      value: slugify('Tổng quan về thư viện'),
+    },
+    {
+      label: 'Nội quy thư viện',
+      value: slugify('Nội quy thư viện'),
+    },
+    {
+      label: 'Hướng dẫn sử dụng',
+      value: slugify('Hướng dẫn sử dụng'),
+    },
+    {
+      label: 'Giới thiệu sách mới',
+      value: slugify('Giới thiệu sách mới'),
+    },
+  ];
+
+  const SERVICES_SUB_MENU = [
+    {
+      label: 'Mượn trả tài liệu',
+      value: slugify('Mượn trả tài liệu'),
+      isNotHtmlRender: true,
+    },
+    {
+      label: 'Cung cấp không gian tiện ích',
+      value: slugify('Cung cấp không gian tiện ích'),
+    },
+    {
+      label: 'Hỗ trợ học tập, giảng dạy và nghiên cứu',
+      value: slugify('Hỗ trợ học tập, giảng dạy và nghiên cứu'),
+    },
+    {
+      label: 'Các dịch vụ khác',
+      value: slugify('Các dịch vụ khác'),
     },
   ];
 
   const MENU = [
     {
-      key: '/home',
+      key: PATH_NAME.HOME,
       title: 'TRANG CHỦ',
     },
     {
-      key: '/about',
+      key: PATH_NAME.ABOUT,
       title: 'GIỚI THIỆU',
+      subMenu: ABOUT_SUB_MENU,
     },
     {
-      key: '/resources',
+      key: PATH_NAME.RESOURCES,
       title: 'TÀI NGUYÊN - BỘ SƯU TẬP',
-      subMenu: POPUP_SELECTION_OPTIONS,
+      subMenu: RESOURCES_SUB_MENU,
     },
     {
-      key: '/services',
+      key: PATH_NAME.SERVICES,
       title: 'DỊCH VỤ - TIỆN ÍCH',
+      subMenu: SERVICES_SUB_MENU,
     },
     {
-      key: '/search',
+      key: PATH_NAME.SEARCH,
       title: 'TRA CỨU',
       redirect: 'http://opac.utc.edu.vn/',
     },
   ];
 
+  const authCtx = useContext(AuthContext);
   const history = useNavigate();
   const [expandedMenu, setExpandedMenu] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentLink, setCurrentLink] = useState('');
 
   const renderMenu = () => {
     return MENU.map((item) => {
-      if (!item?.subMenu)
-        return (
-          <div
-            onClick={() => handleChangePage(item)}
-            key={item.key}
-            className="menu-item toe-font-label"
-          >
-            {item.title}
-          </div>
-        );
+      const navLink = (
+        <NavLink
+          to={item.key}
+          key={item.key}
+          onClick={(e) => {
+            if (item?.redirect) {
+              e.preventDefault();
+              window.open(item?.redirect, '_blank');
+            } else if (item?.subMenu) {
+              e.preventDefault();
+              e.stopPropagation();
+            }
+          }}
+          className={buildClass(['menu-item toe-font-label'])}
+          style={({ isActive }) => {
+            return {
+              color: isActive ? '#43c1c9' : '',
+            };
+          }}
+        >
+          {item?.subMenu ? <DownOutlined /> : null}
+          {item.title}
+        </NavLink>
+      );
 
-      return (
+      return !item?.subMenu ? (
+        navLink
+      ) : (
         <PopupSelectionV1
           key={item.key}
-          onChange={(data) => {}}
+          onChange={(data) => {
+            if (data?.isNotHtmlRender) {
+              history('/' + data.value);
+            } else {
+              history('/html/' + data.value);
+            }
+          }}
           options={item?.subMenu}
           trigger="hover"
           className="toe-layout-user-page-container__header__submenu"
-          placement="bottom"
+          overlayClassName="toe-layout-user-page-container__header__submenu-dropdown"
+          placement="bottomLeft"
         >
-          <div
-            onClick={() => handleChangePage(item.key)}
-            className="menu-item toe-font-label"
-          >
-            {item.title}
-          </div>
+          {navLink}
         </PopupSelectionV1>
       );
     });
@@ -116,18 +173,18 @@ function Header(props) {
   const handleChangePage = (item) => {
     if (item?.redirect) {
       window.open(item?.redirect, '_blank');
-      // window.location.replace(item.redirect);
     } else {
       history(item.key);
+      setCurrentLink(item.key);
     }
   };
 
   const handleLogin = () => {
-    history('/login');
+    history(PATH_NAME.LOGIN);
   };
 
   const handleRegister = () => {
-    history('/register');
+    history(PATH_NAME.REGISTER);
   };
 
   const handleExpanedMenu = () => {
@@ -160,8 +217,10 @@ function Header(props) {
                   className="toe-btn-login"
                   style={{ marginLeft: 16 }}
                   name="Đăng nhập"
-                  theme={BUTTON_THEME.THEME_5}
+                  theme={BUTTON_THEME.THEME_6}
                   onClick={handleLogin}
+                  rightIcon={<LoginOutlined />}
+                  type={BUTTON_TYPE.RIGHT_ICON}
                 />
                 <Button
                   className="toe-btn-register"

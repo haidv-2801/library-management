@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { DATE_FORMAT } from '../../../constants/commonConstant';
 import { buildClass } from '../../../constants/commonFunction';
 import { Card } from 'primereact/card';
-import { format } from 'react-string-format';
 import { Image } from 'primereact/image';
 import SmartText from '../../atomics/base/SmartText/SmartText';
 import { Skeleton } from 'primereact/skeleton';

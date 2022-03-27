@@ -1,10 +1,14 @@
 import axios from 'axios';
-import createAuthRefreshInterceptor from 'axios-auth-refresh';
+// import createAuthRefreshInterceptor from 'axios-auth-refresh';
 import { TOKEN_KEY, getCookie } from '../contexts/authContext';
+
+const { NODE_ENV } = process.env;
 
 let header = {
   'Content-type': 'application/json; charset=UTF-8',
 };
+
+console.log(NODE_ENV);
 
 const authHeader = () => {
   let token = getCookie(TOKEN_KEY);

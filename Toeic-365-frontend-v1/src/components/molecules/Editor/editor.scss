@@ -1,2 +1,12 @@
 .toe-editor {
+  height: 100%;
+
+  .tox-tinymce {
+    border-radius: 8px;
+    height: 100%;
+  }
+
+  &__label {
+    line-height: 27px !important;
+  }
 }

@@ -52,6 +52,7 @@ import './test.scss';
 import BackTop from '../../molecules/BackTop/BackTop';
 import Paginator from '../../molecules/Paginator/Paginator';
 import Editor from '../../molecules/Editor/Editor';
+import Book from '../../molecules/Book/Book';
 
 const fake = [
   {
@@ -454,7 +455,8 @@ const Test = () => {
         page={pageI.page}
         pageSize={pageI.pageSize}
       /> */}
-      <Editor />
+      {/* <Editor /> */}
+      <Book />
     </div>
   );
 };
