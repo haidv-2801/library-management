@@ -1,13 +1,14 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { BOOK_FORMAT } from '../../../../constants/commonConstant';
+import { buildClass } from '../../../../constants/commonFunction';
+import Banner from '../../../molecules/Banner/Banner';
 import Book from '../../../molecules/Book/Book';
+import Paginator from '../../../molecules/Paginator/Paginator';
 import Footer from '../../../sections/User/FooterLib/Footer';
 import Layout from '../../../sections/User/Layout/Layout';
-import Paginator from '../../../molecules/Paginator/Paginator';
 import './booksPageSeeAll.scss';
-import { buildClass } from '../../../../constants/commonFunction';
 
 BooksPageSeeAll.propTypes = {
   titlePage: PropTypes.string,
@@ -33,38 +34,52 @@ function BooksPageSeeAll(props) {
   };
 
   const params = useParams();
+  const { pathname } = useLocation();
+  const breadCrumbs = pathname
+    .split('/')
+    .filter(Boolean)
+    .map((item, _) => ({ label: item, url: _ === 0 ? '/' + item : item }));
+
   const navigate = useNavigate();
   const [viewType, setViewType] = useState(VIEW_TYPE.SMALL);
 
+  const handleViewDetail = () => {
+    navigate('2342');
+  };
+
   const fake = Array.from(Array(8).keys()).map((item, _) => (
-    <div className="toe-book-see-all-page__body-content__item">
+    <div key={_} className="toe-book-see-all-page__body-content__item">
       <Book
-        key={_}
         className="toe-book-see-all-page__body-content__book"
         bookTitle="Lập dự án kinh doanh và triển khai sản xuất đơn hàng áo Măng tô nữ trong sản xuất may công nghiệp"
         bookAuthor="Nguyễn Thị Thảo"
         bookType={BOOK_FORMAT.EBOOK}
-        onClick={() => {
-          navigate('id=2342');
-        }}
+        onClick={handleViewDetail}
       />
       {viewType === VIEW_TYPE.SMALL && (
         <div className="toe-book-see-all-page__body-content__item-info">
-          <h2 className="toe-book-see-all-page__body-content__item-info__row toe-font-label">
+          <h2
+            onClick={handleViewDetail}
+            className="toe-book-see-all-page__body-content__item-info__row toe-font-label"
+          >
             Lập dự án kinh doanh và triển khai sản xuất đơn hàng áo Măng tô nữ
             trong sản xuất may công nghiệp
           </h2>
           <div className="toe-book-see-all-page__body-content__item-info__row">
-            <span className="toe-font-lalel">Loại tài liệu:</span>
+            <span className="toe-font-label">Loại tài liệu:</span>{' '}
+            <span className="toe-font-body">Tài liệu giấy</span>
           </div>
           <div className="toe-book-see-all-page__body-content__item-info__row">
-            <span className="toe-font-lalel">Tác giả:</span>
+            <span className="toe-font-label">Tác giả:</span>
+            <span className="toe-font-body">Đỗ Văn Hải</span>
           </div>
           <div className="toe-book-see-all-page__body-content__item-info__row">
-            <span className="toe-font-lalel">Nhà xuất bản:</span>
+            <span className="toe-font-label">Nhà xuất bản:</span>
+            <span className="toe-font-body">Kim Đồng</span>
           </div>
           <div className="toe-book-see-all-page__body-content__item-info__row">
-            <span className="toe-font-lalel">Thông tin xếp giá:</span>
+            <span className="toe-font-label">Thông tin xếp giá:</span>
+            <span className="toe-font-body">C1</span>
           </div>
         </div>
       )}
@@ -106,11 +121,14 @@ function BooksPageSeeAll(props) {
   return (
     <Layout>
       <div className="toe-book-see-all-page">
+        <Banner breadCrumbs={breadCrumbs} />
         <div className="toe-book-see-all-page__body-wrapper">
           <div className="toe-book-see-all-page__body">
             <div className="toe-book-see-all-page__body-main">
-              <div className="toe-book-see-all-page__body-main__left">
+              <div className="toe-book-see-all-page__body-main__left toe-font-body">
                 {renderReport('Tài nguyên khác')}
+                <div className="__other-resource">Z39.50</div>
+                <div className="__other-resource">OAI/PMH</div>
               </div>
               <div className="toe-book-see-all-page__body-main__right">
                 {renderReport('Tài liệu mượn nhiều')}

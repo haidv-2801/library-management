@@ -640,3 +640,15 @@ export const slugify = (str) => {
     .replace(/^-+/, '') // trim - from start of text
     .replace(/-+$/, '');
 };
+
+/**
+ * Tạo data breadcrumb
+ * @param {location} path
+ * @returns array
+ */
+export const genDataBreadCrumb = (path) => {
+  return path
+    .split('/')
+    .filter(Boolean)
+    .map((item, _) => ({ label: item, url: _ === 0 ? '/' + item : item }));
+};

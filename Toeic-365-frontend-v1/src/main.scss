@@ -81,3 +81,13 @@
   font-size: 12px !important;
   color: #bbbbbb !important;
 }
+
+.p-tooltip {
+  border-radius: 8px;
+
+  &-text {
+    font-size: 14px;
+    padding: 6px 8px !important;
+    font-family: 'OpenSans-Regular', sans-serif;
+  }
+}

@@ -2,6 +2,8 @@
   max-width: 1024px;
   margin: 0px auto;
   padding: 0px 24px;
+  // background-image: url('../../../../assets/images/thu-vien-so-hcm.jpg');
+  // background-color: #e5e5e5;
 
   & .single-features {
     display: flex;
@@ -117,6 +119,21 @@
 
     &-left {
       flex: 1;
+    }
+  }
+
+  .btn-show-advanced-filter {
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    border: 1px solid #bbbbbb;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &:hover {
+      background-color: #e9ecef;
     }
   }
 }

@@ -1,7 +1,5 @@
 import { BellOutlined, SearchOutlined } from '@ant-design/icons';
-import { Carousel } from 'primereact/carousel';
-import { InputSwitch } from 'primereact/inputswitch';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   BUTTON_THEME,
@@ -10,15 +8,18 @@ import {
 import Button from '../../../atomics/base/Button/Button';
 import Input from '../../../atomics/base/Input/Input';
 import Loading from '../../../atomics/base/Loading/Loading';
+import SideBar from '../../../atomics/base/SideBar/SideBar';
 import TitleSeparator from '../../../atomics/base/TitleSeparator/TitleSeparator';
 import CardItem from '../../../molecules/Card/Card';
 import CardList from '../../../molecules/CardList/CardList';
 import Dropdown from '../../../molecules/Dropdown/Dropdown';
-import DynamicMenu from '../../../molecules/DynamicMenu/DynamicMenu';
 import FilterEngine from '../../../molecules/FilterEngine/FilterEngine';
-import NotificationList from '../../../molecules/NotificationList/NotificationList';
 import Footer from '../../../sections/User/FooterLib/Footer';
 import Layout from '../../../sections/User/Layout/Layout';
+import { useDispatch, useSelector } from 'react-redux';
+import rootState from '../../../../redux/store';
+import { filterAction } from '../../../../redux/slices/filterSlice';
+import { Tooltip } from 'antd';
 import './homePage.scss';
 
 let FAKE = [
@@ -129,17 +130,19 @@ function HomePage(props) {
     },
   ];
 
+  const refreshFilterKey = useRef(0);
+
   const navigate = useNavigate();
+  const selector = useSelector(
+    (rootState) => rootState.filter.homePageFilterEnige
+  );
+  const dispatch = useDispatch();
+
   const [isLoading, setIsLoading] = useState(false);
   const [showFilterEngine, setShowFilterEngine] = useState(false);
   const [defaultFilterType, setDefaultFilterType] = useState(0);
   const [commonSearchValue, setCommonSearchValue] = useState('');
-
-  useEffect(() => {
-    setTimeout(() => {
-      // setIsLoading(false);
-    }, 2000);
-  }, []);
+  const [filterValue, setFilterValue] = useState({ controls: [], filter: [] });
 
   const itemTemplate = (card) => {
     return (
@@ -152,6 +155,19 @@ function HomePage(props) {
         width={'30em'}
         isLoading={isLoading}
       />
+    );
+  };
+
+  const handleFilter = () => {
+    dispatch(
+      filterAction.changeHomePageFilterEnige({
+        controls: filterValue.controls,
+        filter: filterValue.filter,
+      })
+    );
+    console.log(
+      'filter :>> ',
+      selector.filter.length ? btoa(JSON.stringify(selector.filter)) : '[]'
     );
   };
 
@@ -171,7 +187,7 @@ function HomePage(props) {
             title={'Tìm kiếm'}
           />
         </h4>
-        {/* <div className="toe-home-page__img-banner__search">
+        <div className="toe-home-page__img-banner__search">
           <Dropdown
             options={filterTypeOptions}
             defaultValue={defaultFilterType}
@@ -182,29 +198,22 @@ function HomePage(props) {
             onChange={(e) => setCommonSearchValue(e.target.value)}
             placeholder={'Tìm kiếm sách, tin tức, thông báo, tài liệu...'}
           />
-          {!showFilterEngine ? (
-            <Button
-              type={BUTTON_TYPE.LEFT_ICON}
-              leftIcon={<SearchOutlined />}
-              name={'Tìm kiếm'}
-              disabled={!commonSearchValue}
-              onClick={() => {}}
-            />
-          ) : null}
-          <div>
-            {showFilterEngine
-              ? 'Tắt bộ lọc nâng cao'
-              : 'Hiển thị bộ học nâng cao'}
-          </div>
-          <InputSwitch
-            checked={showFilterEngine}
-            onChange={(e) => setShowFilterEngine(e.value)}
+          <Button
+            type={BUTTON_TYPE.LEFT_ICON}
+            leftIcon={<SearchOutlined />}
+            name={'Tìm kiếm'}
+            disabled={!commonSearchValue}
+            onClick={() => {}}
           />
+          <Tooltip title="Bộ lọc">
+            <div
+              className="btn-show-advanced-filter"
+              onClick={() => setShowFilterEngine(true)}
+            >
+              <i className="pi pi-filter"></i>
+            </div>
+          </Tooltip>
         </div>
-        <div className="toe-home-page__img-banner__search-engine">
-          {' '}
-          {showFilterEngine ? <FilterEngine /> : null}
-        </div> */}
         <div className="toe-home-page__noti-section">
           <TitleSeparator icon={<BellOutlined />} title={'tin tức'} />
         </div>
@@ -239,6 +248,45 @@ function HomePage(props) {
       </div>
       <Footer />
       <Loading show={isLoading} />
+      <SideBar
+        show={showFilterEngine}
+        onClose={() => setShowFilterEngine(false)}
+        title={'Bộ lọc nâng cao'}
+        onClickRefreshButton={() => {
+          // dispatch(
+          //   filterAction.changeHomePageFilterEnige({ controls: [], filter: [] })
+          // );
+
+          setFilterValue({ filter: [], controls: [] });
+          refreshFilterKey.current++;
+        }}
+        bottomRightButtons={[
+          <Button
+            name={'Hủy'}
+            theme={BUTTON_THEME.THEME_6}
+            onClick={() => setShowFilterEngine(false)}
+          />,
+          <Button
+            type={BUTTON_TYPE.LEFT_ICON}
+            leftIcon={<SearchOutlined />}
+            name={'Tìm kiếm'}
+            onClick={handleFilter}
+          />,
+        ]}
+      >
+        <FilterEngine
+          key={refreshFilterKey.current}
+          defaultControls={selector.controls}
+          defaultFilter={selector.filter}
+          onChange={({ filter, controls }) => {
+            // dispatch(
+            //   filterAction.changeHomePageFilterEnige({ controls, filter })
+            // );
+
+            setFilterValue({ filter, controls });
+          }}
+        />
+      </SideBar>
     </Layout>
   );
 }

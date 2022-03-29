@@ -19,9 +19,28 @@
       display: grid;
       grid-template-columns: 1fr 3fr;
 
+      @media screen and (max-width: 768px) {
+        grid-template-columns: 1fr;
+      }
+
       &__left {
         border-right: 1px solid #e5e5e5;
         margin-right: 16px;
+
+        .__other-resource {
+          line-height: 40px;
+          border-bottom: 1px solid #e5e5e5;
+          padding-left: 24px;
+          cursor: pointer;
+
+          &:hover {
+            color: #267b58;
+          }
+        }
+
+        @media screen and (max-width: 768px) {
+          display: none;
+        }
       }
 
       &__right {
@@ -77,6 +96,11 @@
           &__row {
             &:first-child {
               font-size: 18px !important;
+
+              &:hover {
+                color: #267b58;
+                cursor: pointer;
+              }
             }
 
             margin-bottom: 8px;

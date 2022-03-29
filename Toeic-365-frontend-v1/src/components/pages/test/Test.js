@@ -53,6 +53,8 @@ import BackTop from '../../molecules/BackTop/BackTop';
 import Paginator from '../../molecules/Paginator/Paginator';
 import Editor from '../../molecules/Editor/Editor';
 import Book from '../../molecules/Book/Book';
+import { Tooltip } from 'primereact/tooltip';
+import SideBar from '../../atomics/base/SideBar/SideBar';
 
 const fake = [
   {
@@ -413,7 +415,6 @@ const Test = () => {
         }
         imgSrc="me.jpg"
       /> */}
-
       {/* <TitleSeparator title={'THÔNG BÁO'} icon={null} /> */}
       {/* <NotificationItem
         title={
@@ -456,7 +457,31 @@ const Test = () => {
         pageSize={pageI.pageSize}
       /> */}
       {/* <Editor /> */}
-      <Book />
+      {/* <Book /> */}
+      <Tooltip mouseTrack mouseTrackLeft={15} target={'.test-tooltip'}>
+        show sidebar
+      </Tooltip>
+      <Button
+        className="test-tooltip"
+        name={'show'}
+        onClick={() => setShow(true)}
+      />
+
+      <SideBar
+        show={show}
+        onClose={() => setShow(false)}
+        title={'Bộ lọc nâng cao'}
+        bottomRightButtons={[
+          <Button
+            name={'Hủy'}
+            theme={BUTTON_THEME.THEME_6}
+            onClick={() => setShow(false)}
+          />,
+          <Button name={'Tìm kiếm'} />,
+        ]}
+      >
+        body
+      </SideBar>
     </div>
   );
 };

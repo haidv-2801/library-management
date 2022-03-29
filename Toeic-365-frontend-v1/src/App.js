@@ -4,7 +4,9 @@ import Loading from './components/atomics/base/Loading/Loading';
 import LoginPage from './components/pages/admin/LoginPage/LoginPage';
 import NotFoundPage from './components/pages/admin/NotFoundPage/NotFoundPage';
 import RegisterPage from './components/pages/admin/RegisterPage/RegisterPage';
+import BookDetail from './components/pages/user/BookDetail/BookDetail';
 import RequiredAuth from './components/sections/RequiredAuth/RequiredAuth';
+import UserProfile from './components/pages/user/UserProfile/UserProfile';
 import { PATH_NAME } from './constants/commonConstant';
 import { AuthContext } from './contexts/authContext';
 import './main.scss';
@@ -61,9 +63,13 @@ function App() {
             <Route exact path={PATH_NAME.HOME} element={<HomePage />} />
             <Route exact path={PATH_NAME.LOGIN} element={<LoginPage />} />
             <Route exact path={PATH_NAME.REGISTER} element={<RegisterPage />} />
+            <Route exact path={PATH_NAME.USER} element={<UserProfile />} />
             <Route exact path={PATH_NAME.BORROWING_RETURNING_BOOK}>
               <Route index element={<BooksPage />}></Route>
-              <Route exact path=":slug" element={<BooksPageSeeAll />}></Route>
+              <Route exact path=":slug">
+                <Route exact index element={<BooksPageSeeAll />} />
+                <Route exact path=":id" element={<BookDetail />} />
+              </Route>
             </Route>
             <Route
               exact

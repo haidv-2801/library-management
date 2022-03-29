@@ -10,6 +10,7 @@ const PATH_NAME = {
   REGISTER: '/dang-ky',
   LOGIN: '/dang-nhap',
   ABOUT: '/gioi-thieu',
+  USER: '/nguoi-dung',
   NEWS: '/tin-tuc',
   RESOURCES: '/tai-nguyen-bo-suu-tap',
   SERVICES: '/dich-vu-tien-ich',
@@ -33,12 +34,30 @@ const BUTTON_SHAPE = {
 };
 
 const BUTTON_THEME = {
-  THEME_1: 1, //nền xanh chữ trắng
-  THEME_2: 2, //nền trắng chữ đen viền xanh
-  THEME_3: 3, //nền trắng viền đen
-  THEME_4: 4, //nền trắng viền đỏ chữ xanh
-  THEME_5: 5, //nền đỏ chữ trắng hover-> nền trắng viền đỏ chữ xanh
-  THEME_6: 6, //nền trắng không viền
+  /**
+   * nền xanh chữ trắng
+   */
+  THEME_1: 1,
+  /**
+   * nền trắng chữ đen viền xanh
+   */
+  THEME_2: 2,
+  /**
+   * nền trắng viền đen
+   */
+  THEME_3: 3,
+  /**
+   * nền trắng viền đỏ chữ xanh
+   */
+  THEME_4: 4,
+  /**
+   * nền đỏ chữ trắng hover-> nền trắng viền đỏ chữ xanh
+   */
+  THEME_5: 5,
+  /**
+   * nền trắng không viền
+   */
+  THEME_6: 6,
 };
 
 const REGEX = {
@@ -68,6 +87,8 @@ const OPERATOR = {
   CONTAINS: 'CONTAINS',
   START_WIDTH: 'START_WIDTH',
   END_WIDTH: 'END_WIDTH',
+  EQUAL: '=',
+  NOT_EQUAL: '<>',
 };
 
 const PAGEGING = [10, 20, 50];

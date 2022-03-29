@@ -19,17 +19,17 @@ body {
 }
 *::-webkit-scrollbar-track {
   border-radius: 10px;
-  background: rgba(0, 0, 0, 0.1);
+  background: #e5e5e5;
 }
 *::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  background: rgba(0, 0, 0, 0.2);
+  background: #bbbbbb;
 }
 *::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.4);
+  background: #bbbbbb;
 }
 *::-webkit-scrollbar-thumb:active {
-  background: rgba(0, 0, 0, 0.9);
+  background: #bbbbbb;
 }
 
 .ant-message-custom-content {

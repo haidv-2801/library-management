@@ -1,27 +1,25 @@
-import React, { useState, useRef, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import RegisterBg from '../../../../assets/images/register.svg';
-import RegisterBg1 from '../../../../assets/images/boy_bg_new_year_20_opt.gif';
-import { useNavigate } from 'react-router-dom';
-import { buildClass } from '../../../../constants/commonFunction';
-import { LoginOutlined, LoadingOutlined } from '@ant-design/icons';
+import { LoadingOutlined } from '@ant-design/icons';
+import 'primeflex/primeflex.css';
+import 'primeicons/primeicons.css';
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
-import MainLogo from '../../../../assets/images/toeiclogo.png';
-import Modal from '../../../atomics/base/Modal/Modal';
-import Button from '../../../atomics/base/Button/Button';
-import baseApi from '../../../../api/baseApi';
-import { ADMIN_ENDPOINT } from '../../../../constants/endpoint';
-import 'primeicons/primeicons.css';
-import 'primereact/resources/themes/lara-light-indigo/theme.css';
 import 'primereact/resources/primereact.css';
-import 'primeflex/primeflex.css';
-import './registerPage.scss';
+import 'primereact/resources/themes/lara-light-indigo/theme.css';
+import PropTypes from 'prop-types';
+import React, { useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import RegisterBg from '../../../../assets/images/register.svg';
+import MainLogo from '../../../../assets/images/toeiclogo.png';
 import {
   BUTTON_TYPE,
-  REGEX,
   KEY_CODE,
+  PATH_NAME,
+  REGEX,
 } from '../../../../constants/commonConstant';
+import { buildClass } from '../../../../constants/commonFunction';
+import Button from '../../../atomics/base/Button/Button';
+import Modal from '../../../atomics/base/Modal/Modal';
+import './registerPage.scss';
 
 RegisterPage.propTypes = {
   id: PropTypes.string,
@@ -70,7 +68,7 @@ function RegisterPage() {
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);
-      navigate('/login');
+      navigate(PATH_NAME.LOGIN);
     }, 1000);
   };
 
@@ -122,7 +120,7 @@ function RegisterPage() {
     <div className={buildClass(['toe-register-page'])}>
       <div
         className="toe-register-page__head"
-        onClick={() => navigate('/home')}
+        onClick={() => navigate(PATH_NAME.HOME)}
       >
         <img src={MainLogo} alt="logo" />
         <b className="name-app">
@@ -139,7 +137,7 @@ function RegisterPage() {
               Vui lòng đăng kí tài khoản để trải nghiệm website 🚀!{' '}
               <span
                 className="text-high-light"
-                onClick={() => navigate('/login')}
+                onClick={() => navigate(PATH_NAME.LOGIN)}
               >
                 Đăng nhập
               </span>
@@ -205,7 +203,6 @@ function RegisterPage() {
                   className={buildClass([
                     !validate.password && 'toe-control-validate',
                   ])}
-                  panelStyle={{ fontSize: 12 }}
                   onKeyPress={(e) => {
                     if (e.charCode === KEY_CODE.ENTER) {
                       handleRegister();
@@ -234,7 +231,6 @@ function RegisterPage() {
                   className={buildClass([
                     !validate.rePassword && 'toe-control-validate',
                   ])}
-                  panelStyle={{ fontSize: 12 }}
                   onKeyPress={(e) => {
                     if (e.charCode === KEY_CODE.ENTER) {
                       handleRegister();

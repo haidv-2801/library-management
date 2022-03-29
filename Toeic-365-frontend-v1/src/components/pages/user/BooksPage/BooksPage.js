@@ -1,22 +1,27 @@
+import { SearchOutlined } from '@ant-design/icons';
+import { Tooltip } from 'antd';
 import { Chip } from 'primereact/chip';
-import { InputSwitch } from 'primereact/inputswitch';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
   BOOK_FORMAT,
   BUTTON_SHAPE,
+  BUTTON_THEME,
   BUTTON_TYPE,
 } from '../../../../constants/commonConstant';
 import Button from '../../../atomics/base/Button/Button';
 import Input from '../../../atomics/base/Input/Input';
+import SideBar from '../../../atomics/base/SideBar/SideBar';
 import Banner from '../../../molecules/Banner/Banner';
 import Book from '../../../molecules/Book/Book';
 import Dropdown from '../../../molecules/Dropdown/Dropdown';
 import FilterEngine from '../../../molecules/FilterEngine/FilterEngine';
 import Footer from '../../../sections/User/Footer/Footer';
 import Layout from '../../../sections/User/Layout/Layout';
-import { SearchOutlined } from '@ant-design/icons';
+import { useDispatch, useSelector } from 'react-redux';
+import rootState from '../../../../redux/store';
+import { filterAction } from '../../../../redux/slices/filterSlice';
 import './booksPage.scss';
 
 BooksPage.propTypes = {
@@ -27,6 +32,7 @@ BooksPage.defaultProps = { titlePage: '' };
 
 function BooksPage(props) {
   const { children, titlePage } = props;
+
   const filterTypeOptions = [
     {
       label: 'Tất cả',
@@ -59,6 +65,10 @@ function BooksPage(props) {
     },
   ];
 
+  const selector = useSelector(
+    (rootState) => rootState.filter.booksPageFilterEnige
+  );
+  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [showFilterEngine, setShowFilterEngine] = useState(false);
   const [defaultFilterType, setDefaultFilterType] = useState(0);
@@ -72,7 +82,7 @@ function BooksPage(props) {
       bookAuthor="Nguyễn Thị Thảo"
       bookType={BOOK_FORMAT.EBOOK}
       onClick={() => {
-        navigate('id=2342');
+        navigate('item-type/2342');
       }}
     />
   ));
@@ -133,28 +143,25 @@ function BooksPage(props) {
                   onChange={(e) => setCommonSearchValue(e.target.value)}
                   placeholder={'Tìm kiếm sách, tin tức, thông báo, tài liệu...'}
                 />
-                {!showFilterEngine ? (
-                  <Button
-                    type={BUTTON_TYPE.LEFT_ICON}
-                    leftIcon={<SearchOutlined />}
-                    name={'Tìm kiếm'}
-                    disabled={!commonSearchValue}
-                    onClick={() => {}}
-                  />
-                ) : null}
-                <div>
-                  {showFilterEngine
-                    ? 'Tắt bộ lọc nâng cao'
-                    : 'Hiển thị bộ học nâng cao'}
-                </div>
-                <InputSwitch
-                  checked={showFilterEngine}
-                  onChange={(e) => setShowFilterEngine(e.value)}
+                <Button
+                  type={BUTTON_TYPE.LEFT_ICON}
+                  leftIcon={<SearchOutlined />}
+                  name={'Tìm kiếm'}
+                  disabled={!commonSearchValue}
+                  onClick={() => {}}
                 />
+                <Tooltip title="Bộ lọc">
+                  <div
+                    className="btn-show-advanced-filter"
+                    onClick={() => setShowFilterEngine(true)}
+                  >
+                    <i className="pi pi-filter"></i>
+                  </div>
+                </Tooltip>
               </div>
               <div className="toe-book-page__search-engine">
-                {' '}
-                {showFilterEngine ? <FilterEngine /> : null}
+                {/* {' '}
+                {showFilterEngine ? <FilterEngine /> : null} */}
               </div>
               {renderSection('Tài liệu mới')}
               {renderSection('Tài liệu mượn nhiều')}
@@ -166,6 +173,29 @@ function BooksPage(props) {
         </div>
         <Footer />
       </div>
+      <SideBar
+        show={showFilterEngine}
+        onClose={() => setShowFilterEngine(false)}
+        title={'Bộ lọc nâng cao'}
+        bottomRightButtons={[
+          <Button
+            name={'Hủy'}
+            theme={BUTTON_THEME.THEME_6}
+            onClick={() => setShowFilterEngine(false)}
+          />,
+          <Button name={'Tìm kiếm'} />,
+        ]}
+      >
+        <FilterEngine
+          defaultControls={selector.controls}
+          defaultFilter={selector.filter}
+          onChange={({ filter, controls }) => {
+            dispatch(
+              filterAction.changeBooksPageFilterEnige({ controls, filter })
+            );
+          }}
+        />
+      </SideBar>
     </Layout>
   );
 }

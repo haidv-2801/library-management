@@ -62,7 +62,7 @@ const UserInfo = () => {
             authCtx.logout();
             window.location.replace(PATH_NAME.HOME);
           } else if (data.value === POPUP_SELECTION_VALUES.USER_INFOMATION) {
-            //
+            navigate(PATH_NAME.USER);
           } else if (data.value === POPUP_SELECTION_VALUES.ADMIN_PAGE) {
             navigate('/admin');
           } else if (data.value === POPUP_SELECTION_VALUES.GUEST_PAGE) {

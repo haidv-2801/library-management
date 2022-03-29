@@ -16,8 +16,14 @@ Input.propTypes = {
   label: PropTypes.any,
   autoFocus: PropTypes.bool,
   hasRequiredLabel: PropTypes.bool,
+  disabled: PropTypes.bool,
   onChange: PropTypes.func,
   maxLength: PropTypes.any,
+  defaultValue: PropTypes.any,
+  value: PropTypes.any,
+  tabIndex: PropTypes.number,
+  showMaxLength: PropTypes.bool,
+  type: PropTypes.oneOf(['input', 'textarea']),
 };
 
 Input.defaultProps = {
@@ -30,9 +36,15 @@ Input.defaultProps = {
   rightIcon: null,
   label: null,
   autoFocus: false,
+  disabled: false,
   hasRequiredLabel: false,
   onChange: () => {},
   maxLength: undefined,
+  defaultValue: null,
+  value: null,
+  tabIndex: 0,
+  showMaxLength: false,
+  type: 'input',
 };
 
 function Input(props) {
@@ -49,6 +61,12 @@ function Input(props) {
     autoFocus,
     hasRequiredLabel,
     maxLength,
+    disabled,
+    value,
+    tabIndex,
+    defaultValue,
+    showMaxLength,
+    type,
   } = props;
 
   const ref = useRef('');
@@ -80,17 +98,22 @@ function Input(props) {
           </label>
         ) : null}
 
-        <InputText
-          autoFocus={autoFocus}
-          onChange={(e) => {
-            ref.current = e.target.value;
-            onChange(e);
-            if (ref.current.length === parseInt(maxLength, 10) || 0) return;
-          }}
-          placeholder={placeholder}
-          maxLength={maxLength}
-        />
-        {maxLength ? (
+        {type === 'input' ? (
+          <InputText
+            autoFocus={autoFocus}
+            onChange={(e) => {
+              ref.current = e.target.value;
+              onChange(e);
+              if (ref.current.length === parseInt(maxLength, 10) || 0) return;
+            }}
+            placeholder={placeholder}
+            maxLength={maxLength}
+            defaultValue={defaultValue}
+            tabIndex={tabIndex}
+            disabled={disabled}
+          />
+        ) : null}
+        {showMaxLength ? (
           <span className="toe-font-hint toe-input-maxlength">
             {format('{0}/{1}', ref.current.length || 0, maxLength)}
           </span>
