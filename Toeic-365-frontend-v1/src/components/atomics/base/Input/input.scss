@@ -41,6 +41,12 @@
     border-color: var(--main-color);
   }
 
+  .p-disabled,
+  .p-component:disabled {
+    border-color: #bbbbbb;
+    background-color: #e9ebee;
+  }
+
   & .pi.pi-eye-slash {
     cursor: pointer;
   }

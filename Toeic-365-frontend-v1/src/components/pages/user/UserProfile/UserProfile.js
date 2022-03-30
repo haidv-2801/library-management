@@ -119,7 +119,12 @@ function UserProfile(props) {
                   <Input label={'Tên'} placeholder={'Nhập tên'} />
                 </div>
                 <div className="frame-right__body-row">
-                  <Input label={'Email'} disabled placeholder={'Nhập email'} />
+                  <Input
+                    label={'Email'}
+                    defaultValue="haidv2801@gmail.com"
+                    disabled
+                    placeholder={'Nhập email'}
+                  />
                   <Input label={'SĐT'} placeholder={'Nhập số điện thoại'} />
                 </div>
                 <div className="frame-right__body-row">
@@ -127,7 +132,11 @@ function UserProfile(props) {
                     label={'Ngày tham gia'}
                     disabled
                     placeholder={TEXT_FALL_BACK.TYPE_1}
+                    defaultValue="20/10/2021"
                   />
+                </div>
+                <div className="frame-right__body-row">
+                  <div className="toe-font-label">Trạng thái</div>
                 </div>
                 <div className="frame-right__body-row">
                   <TextAreaBase

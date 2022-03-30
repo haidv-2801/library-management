@@ -3,7 +3,7 @@
   flex-direction: column;
   height: 100%;
   background-image: url('../../../../assets/images/thu-vien-so-hcm.jpg');
-  background-size: cover;
+  background-size: auto;
 
   &__body {
     flex: 1;
@@ -25,6 +25,7 @@
 
   .user-profile__frame {
     height: 100%;
+    overflow: auto;
     background-color: #fff;
     border-radius: 8px;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
@@ -39,6 +40,10 @@
       border-right: 3px solid #e5e5e5;
       display: flex;
       flex-direction: column;
+
+      @media screen and (max-width: 767.98px) {
+        border-right: none;
+      }
 
       .user-profile__avt {
         width: 100%;
