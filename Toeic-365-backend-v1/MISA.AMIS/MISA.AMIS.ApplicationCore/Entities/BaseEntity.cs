@@ -29,11 +29,18 @@ namespace TOE.TOEIC.ApplicationCore.Entities
 
     }
 
+    [AttributeUsage(AttributeTargets.Property)]
+    public class IExclude : Attribute
+    {
+
+    }
+
     public class BaseEntity
     {
         /// <summary>
         /// Trạng thái của Entity
         /// </summary>
+        [IExclude]
         public EntityState EntityState { get; set; }
 
         /// <summary>

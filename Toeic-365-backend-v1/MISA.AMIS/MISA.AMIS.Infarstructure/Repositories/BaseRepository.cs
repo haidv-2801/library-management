@@ -190,11 +190,14 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
                     var propertyName = property.Name;
                     var propertyValue = property.GetValue(entity);
                     var propertyType = property.PropertyType;
-
-                    if (propertyType == typeof(Guid) || propertyType == typeof(Guid?))
-                        parameters.Add($"@{"v_" + propertyName}", propertyValue, DbType.String);
-                    else
-                        parameters.Add($"@{"v_" + propertyName}", propertyValue);
+                    if(propertyName != "EntityState")
+                    {
+                        if (propertyType == typeof(Guid) || propertyType == typeof(Guid?))
+                            parameters.Add($"@{"v_" + propertyName}", propertyValue, DbType.String);
+                        else
+                            parameters.Add($"@{"v_" + propertyName}", propertyValue);
+                    }
+                   
                 }
             }
             catch { }

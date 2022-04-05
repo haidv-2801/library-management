@@ -37,7 +37,7 @@ namespace TOE.TOEIC.ApplicationCoore.Entities
         /// Mô tả
         /// </summary>
         [Display(Name = "ID cha của menu")]
-        public string ParentID { get; set; }
+        public Guid? ParentID { get; set; }
 
         /// <summary>
         /// Mô tả
