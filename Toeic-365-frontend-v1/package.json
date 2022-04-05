@@ -12,6 +12,7 @@
     "axios": "^0.25.0",
     "axios-auth-refresh": "^3.2.1",
     "css-loader": "^6.5.1",
+    "debounce": "^1.2.1",
     "dotenv": "^16.0.0",
     "eslint-plugin-unused-imports": "^2.0.0",
     "js-cookie": "^3.0.1",

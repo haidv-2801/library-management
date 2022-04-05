@@ -2,6 +2,7 @@
   & .p-datatable-thead {
     & .toe-table__th {
       border-right: 1px solid #e9ebee !important;
+      // word-break: break-word;
 
       &:hover {
         & .p-sortable-column-icon {
@@ -113,6 +114,44 @@
       & .p-dropdown-label.p-inputtext {
         font-size: 14px;
         padding: 8px 16px;
+      }
+    }
+  }
+
+  .p-datatable-emptymessage {
+    font-size: 14px;
+  }
+
+  .table-option {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    cursor: pointer;
+
+    .pi.pi-ellipsis-v {
+      font-size: 12px;
+    }
+
+    &:hover {
+      background-color: #fff;
+      color: #454545;
+      cursor: pointer;
+    }
+
+    &__menu {
+      .toe-popup-selection {
+        box-shadow: none;
+      }
+
+      &-item {
+        & > * {
+          margin-right: 8px;
+          display: flex;
+          align-items: center;
+        }
       }
     }
   }

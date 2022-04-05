@@ -48,6 +48,52 @@ function Layout(props) {
       title: DEFAULT_TITLE,
       icon: <DashboardOutlined />,
     },
+    {
+      key: '/admin/system',
+      title: 'Hệ thống',
+      icon: <UserOutlined />,
+      children: [
+        {
+          key: '/admin/systems/user',
+          title: 'Tài khoản',
+        },
+        {
+          key: '/admin/systems/role',
+          title: 'Chức năng',
+        },
+        {
+          key: '/admin/systems/permission',
+          title: 'Phân quyền',
+        },
+        {
+          key: '/admin/systems/menu',
+          title: 'Menu',
+        },
+      ],
+    },
+    {
+      key: '/admin/tin-tuc',
+      title: 'Tin tức',
+      icon: <UserOutlined />,
+      children: [
+        {
+          key: '/admin/tin-tuc/menu',
+          title: 'Menu website',
+        },
+        {
+          key: '/admin/tin-tuc/post',
+          title: 'Bài viết',
+        },
+        {
+          key: '/admin/tin-tuc/page',
+          title: 'Trang',
+        },
+        {
+          key: '/admin/tin-tuc/slide',
+          title: 'Slide',
+        },
+      ],
+    },
     { key: 'separator' },
     {
       key: '/admin/doc-gia',
@@ -75,6 +121,12 @@ function Layout(props) {
       key: '/admin/user',
       title: 'Quản lý tài khoản',
       icon: <UserOutlined />,
+      children: [
+        {
+          key: '/admin/test',
+          title: 'Quản lý phân quyền',
+        },
+      ],
     },
     {
       key: '/admin/post',
@@ -144,12 +196,12 @@ function Layout(props) {
       }
       if (item?.children) {
         return (
-          <SubMenu key={item.key} icon={item.icon} title={item.title}>
+          <SubMenu theme="light" key={item.key} title={item.title}>
             {item.children.map((child) => (
               <Menu.Item
-                style={!collapsedMenu ? { paddingLeft: 16 } : {}}
+                // style={!collapsedMenu ? { paddingLeft: 16 } : {}}
+                className="admin-menu"
                 key={child.key}
-                icon={child.icon}
               >
                 {child.title}
               </Menu.Item>
@@ -159,9 +211,9 @@ function Layout(props) {
       } else {
         return (
           <Menu.Item
-            style={!collapsedMenu ? { paddingLeft: 16 } : {}}
+            className="admin-menu"
+            // style={!collapsedMenu ? { paddingLeft: 16 } : {}}
             key={item.key}
-            icon={item.icon}
           >
             {item.title}
           </Menu.Item>
@@ -176,7 +228,7 @@ function Layout(props) {
 
   const handleSelectMenuItem = (data) => {
     history(data.key);
-    setmenuItemSelected(data?.domEvent?.currentTarget?.innerText);
+    // setmenuItemSelected(data?.domEvent?.currentTarget?.innerText);
   };
 
   const handleShowOption = () => {
@@ -208,15 +260,22 @@ function Layout(props) {
           <div className="toe-layout-admin-page-container__body-left">
             <Sider
               collapsible
-              collapsed={collapsedMenu}
-              onCollapse={handleCollapsed}
+              // collapsed={collapsedMenu}
+              // onCollapse={handleCollapsed}
+              theme="light"
+              breakpoint="lg"
+              color="#fff"
             >
               <div className="logo" />
               <Menu
                 onSelect={handleSelectMenuItem}
-                theme="dark"
-                defaultSelectedKeys={[location?.pathname]}
+                theme="light"
                 mode="inline"
+                defaultSelectedKeys={[location.pathname]}
+                inlineIndent={24}
+                selectable
+                selectedKeys={location.pathname}
+                className="admin-menu"
               >
                 {renderMenu()}
               </Menu>

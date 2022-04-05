@@ -91,3 +91,20 @@
     font-family: 'OpenSans-Regular', sans-serif;
   }
 }
+
+.toast-demo button {
+  min-width: 10rem;
+  margin-right: 0.5rem;
+}
+
+@media screen and (max-width: 960px) {
+  .toast-demo button {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+}
+
+.tox-notification--warning {
+  display: none !important;
+  opacity: 0 !important;
+}

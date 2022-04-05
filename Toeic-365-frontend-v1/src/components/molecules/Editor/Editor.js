@@ -78,7 +78,8 @@ function Editor(props) {
       <EditorTiny
         onLoadContent={() => console.log('loading')}
         onInit={(evt, editor) => (editorRef.current = editor)}
-        initialValue={defaultContent}
+        // initialValue={defaultContent}
+        value={defaultContent}
         init={{
           height: '100%',
           menubar: true,

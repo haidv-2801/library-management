@@ -59,7 +59,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
             var keyName = GetKeyProperty().Name;
 
             var dynamicParams = new DynamicParameters();
-            dynamicParams.Add($"@{keyName}", entityId);
+            dynamicParams.Add($"@v_{keyName}", entityId);
 
             //2. Tạo kết nối và truy vấn
             var entity = _dbConnection.Query<TEntity>($"Proc_Get{_tableName}ById", param: dynamicParams, commandType: CommandType.StoredProcedure).FirstOrDefault();
@@ -87,10 +87,10 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
                     var keyName = GetKeyProperty().Name;
 
                     var dynamicParams = new DynamicParameters();
-                    dynamicParams.Add($"@m_{keyName}", entityId);
+                    dynamicParams.Add($"@v_{keyName}", entityId);
 
                     //2. Kết nối tới CSDL:
-                    rowAffects = _dbConnection.Execute($"Proc_Delete{_tableName}ById", param: dynamicParams, transaction: transaction,commandType: CommandType.StoredProcedure);
+                    rowAffects = _dbConnection.Execute($"Proc_Delete{_tableName}ById", param: dynamicParams, transaction: transaction, commandType: CommandType.StoredProcedure);
 
                     transaction.Commit();
                 }
@@ -117,13 +117,14 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
                 {
                     //1.Duyệt các thuộc tính trên bản ghi và tạo parameters
                     var parameters = MappingDbType(entity);
+                    parameters.RemoveUnused = true;
 
                     //2.Thực hiện thêm bản ghi
                     rowAffects = _dbConnection.Execute($"Proc_Insert{_tableName}", param: parameters, transaction: transaction, commandType: CommandType.StoredProcedure);
 
                     transaction.Commit();
                 }
-                catch
+                catch(Exception ex)
                 {
                     transaction.Rollback();
                 }
@@ -148,12 +149,14 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
             {
                 try
                 {
-                    //1. Duyệt các thuộc tính trên customer và tạo parameters
-                    var parameters = MappingDbType(entity);
-
-                    //2. Ánh xạ giá trị id
+                    //1. Ánh xạ giá trị id
                     var keyName = GetKeyProperty().Name;
                     entity.GetType().GetProperty(keyName).SetValue(entity, entityId);
+
+                    //2. Duyệt các thuộc tính trên customer và tạo parameters
+                    var parameters = MappingDbType(entity);
+
+                   
 
                     //3. Kết nối tới CSDL:
                     rowAffects = _dbConnection.Execute($"Proc_Update{_tableName}", param: parameters, transaction: transaction, commandType: CommandType.StoredProcedure);
@@ -189,9 +192,9 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
                     var propertyType = property.PropertyType;
 
                     if (propertyType == typeof(Guid) || propertyType == typeof(Guid?))
-                        parameters.Add($"@{propertyName}", propertyValue, DbType.String);
+                        parameters.Add($"@{"v_" + propertyName}", propertyValue, DbType.String);
                     else
-                        parameters.Add($"@{propertyName}", propertyValue);
+                        parameters.Add($"@{"v_" + propertyName}", propertyValue);
                 }
             }
             catch { }

@@ -55,6 +55,7 @@ import Editor from '../../molecules/Editor/Editor';
 import Book from '../../molecules/Book/Book';
 import { Tooltip } from 'primereact/tooltip';
 import SideBar from '../../atomics/base/SideBar/SideBar';
+import TreeSelect from '../../atomics/base/TreeSelect/TreeSelect';
 
 const fake = [
   {
@@ -126,362 +127,152 @@ const fake = [
 ];
 export { fake };
 
+const nodes = [
+  {
+    key: '0',
+    label: 'Documents',
+    data: 'Documents Folder',
+    icon: 'pi pi-fw pi-inbox',
+    children: [
+      {
+        key: '0-0',
+        label: 'Work',
+        data: 'Work Folder',
+        icon: 'pi pi-fw pi-cog',
+        children: [
+          {
+            key: '0-0-0',
+            label: 'Expenses.doc',
+            icon: 'pi pi-fw pi-file',
+            data: 'Expenses Document',
+          },
+          {
+            key: '0-0-1',
+            label: 'Resume.doc',
+            icon: 'pi pi-fw pi-file',
+            data: 'Resume Document',
+          },
+        ],
+      },
+      {
+        key: '0-1',
+        label: 'Home',
+        data: 'Home Folder',
+        icon: 'pi pi-fw pi-home',
+        children: [
+          {
+            key: '0-1-0',
+            label: 'Invoices.txt',
+            icon: 'pi pi-fw pi-file',
+            data: 'Invoices for this month',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    key: '1',
+    label: 'Events',
+    data: 'Events Folder',
+    icon: 'pi pi-fw pi-calendar',
+    children: [
+      {
+        key: '1-0',
+        label: 'Meeting',
+        icon: 'pi pi-fw pi-calendar-plus',
+        data: 'Meeting',
+      },
+      {
+        key: '1-1',
+        label: 'Product Launch',
+        icon: 'pi pi-fw pi-calendar-plus',
+        data: 'Product Launch',
+      },
+      {
+        key: '1-2',
+        label: 'Report Review',
+        icon: 'pi pi-fw pi-calendar-plus',
+        data: 'Report Review',
+      },
+    ],
+  },
+  {
+    key: '2',
+    label: 'Movies',
+    data: 'Movies Folder',
+    icon: 'pi pi-fw pi-star-fill',
+    children: [
+      {
+        key: '2-0',
+        icon: 'pi pi-fw pi-star-fill',
+        label: 'Al Pacino',
+        data: 'Pacino Movies',
+        children: [
+          {
+            key: '2-0-0',
+            label: 'Scarface',
+            icon: 'pi pi-fw pi-video',
+            data: 'Scarface Movie',
+          },
+          {
+            key: '2-0-1',
+            label: 'Serpico',
+            icon: 'pi pi-fw pi-video',
+            data: 'Serpico Movie',
+          },
+        ],
+      },
+      {
+        key: '2-1',
+        label: 'Robert De Niro',
+        icon: 'pi pi-fw pi-star-fill',
+        data: 'De Niro Movies',
+        children: [
+          {
+            key: '2-1-0',
+            label: 'Goodfellas',
+            icon: 'pi pi-fw pi-video',
+            data: 'Goodfellas Movie',
+          },
+          {
+            key: '2-1-1',
+            label: 'Untouchables',
+            icon: 'pi pi-fw pi-video',
+            data: 'Untouchables Movie',
+          },
+        ],
+      },
+    ],
+  },
+];
+
 const Test = () => {
-  const COLUMNS = [
-    {
-      field: 'checkbox',
-      selectionMode: 'multiple',
-      headerStyle: { width: '3em' },
-    },
-    {
-      field: 'name',
-      sortable: true,
-      header: 'Họ và tên',
-      filterField: 'name',
-      body: (row) => {
-        return <div className="toe-font-body">{row?.name}</div>;
-      },
-    },
-    {
-      field: 'age',
-      sortable: true,
-      header: 'Tuổi',
-      filterField: 'age',
-      body: (row) => {
-        return <div className="toe-font-body">{row?.age}</div>;
-      },
-    },
-    {
-      field: 'address',
-      sortable: true,
-      header: 'Địa chỉ',
-      filterField: 'address',
-      body: (row) => {
-        return <div className="toe-font-body">{row?.address}</div>;
-      },
-    },
-  ];
+  const preview = useRef();
+  const [src, setSrc] = useState(null);
 
-  const [selected, setSelected] = useState([]);
-  const [lazyParams, setLazyParams] = useState({});
+  function previewFile() {
+    const reader = new FileReader();
 
-  const CONFIGS = {
-    onSort: (event) => {
-      console.log(event);
-    },
-    resizableColumns: true,
-    dataKey: 'id',
-    totalRecords: fake.length,
-    selectionMode: 'checkbox',
-    onSelectionChange: (event) => {
-      setSelected(event.value);
-    },
-    onSort: (event) => {
-      console.log(event);
-      setLazyParams(event);
-    },
-    onPage: (event) => {
-      console.log(event);
-      setLazyParams(event);
-    },
-    sortField: lazyParams?.sortField,
-    sortOrder: lazyParams?.sortOrder,
-    selection: selected,
-  };
+    reader.addEventListener('load', () => setSrc(reader.result), false);
+    debugger;
+    if (preview.files[0]) {
+      reader.readAsDataURL(preview.files[0]);
+    }
+  }
 
-  const renderSkeleton = (row) => {
-    let sk = <Skeleton animation="wave" borderRadius="2px" width="100%" />;
-    return Array.from(Array(row).keys()).map((_) => ({
-      age: sk,
-      name: sk,
-      address: sk,
-    }));
-  };
-
-  const value = [
-    {
-      value: '59a8a0a1-ecc2-42ec-bd91-6024870a99bd',
-      label: 'Cherry McCoole',
-    },
-    {
-      value: '3418df77-84da-4997-a713-2f523926a39e',
-      label: 'Pippo Impey',
-    },
-    {
-      value: '66e22fe2-3f0f-4cda-b4b5-d7b3d5e11121',
-      label: 'Dennie Franzelini',
-    },
-    {
-      value: 'ca87cb62-6918-49b7-81b6-8034f0475d01',
-      label: 'Fonzie Anstead',
-    },
-    {
-      value: '88676e93-ab1f-47f4-883b-8afe1e8fd50c',
-      label: 'Alfi Monelli',
-    },
-    {
-      value: '8446363a-8069-403c-9a5e-d0b1d9c155dd',
-      label: 'Eleanore Brinkman',
-    },
-    {
-      value: '273214b3-1012-492d-92ad-e8e6bdebee4c',
-      label: 'Bat Wookey',
-    },
-    {
-      value: '794a14af-1841-43f5-979d-86b53d641b35',
-      label: 'Pyotr Mundwell',
-    },
-    {
-      value: 'b8fd1409-038c-4b8e-9fcd-b82156d2b629',
-      label: 'Lurline Doutch',
-    },
-    {
-      value: 'ac969f7d-f44c-4988-9ef5-634fc51e7a78',
-      label: 'Ashien Oxenham',
-    },
-    {
-      value: '89360ccb-ed24-4611-b5e8-3cefa5dac753',
-      label: 'Karrah Sunners',
-    },
-    {
-      value: '24261f40-1763-4426-bf5d-5d704460caf3',
-      label: 'Umeko Landreth',
-    },
-    {
-      value: 'cc0ac425-39d1-4ac1-b7b0-0b36c88310ec',
-      label: 'Remington Lathleiffure',
-    },
-    {
-      value: 'e8ed7321-9f3a-4ca3-82be-6742a79a28e4',
-      label: 'Nickie Smuth',
-    },
-    {
-      value: '200413bf-c5c0-4657-9161-e05aa727c25d',
-      label: 'Kandace Toten',
-    },
-    {
-      value: 'afddf600-e645-450d-bca3-459d86119fd3',
-      label: 'Honoria Westberg',
-    },
-    {
-      value: '793fe160-745c-46a6-9250-dae8339e52c9',
-      label: 'Rachelle Antoney',
-    },
-    {
-      value: 'dfe6b7e7-9d44-4cf8-8af2-4999493a85b5',
-      label: 'Meredithe Bursnoll',
-    },
-    {
-      value: 'c3417623-614e-4ed0-b6e5-86d43174295c',
-      label: 'Merilee Mapples',
-    },
-    {
-      value: 'd38dbbbb-91ce-4cb8-8c94-cd20c6881508',
-      label: 'Lief Blowers',
-    },
-    {
-      value: 'd7abde11-72e1-4670-9dff-2bb4fd7d8c4d',
-      label: 'Hugh Singers',
-    },
-    {
-      value: '9265021f-7d4a-49ab-9f8e-8289dc92b344',
-      label: 'Sashenka Garmey',
-    },
-    {
-      value: '72292823-e280-4a32-9724-a235123aa8ee',
-      label: 'Matthias Jury',
-    },
-    {
-      value: 'b065317e-9409-4b07-9839-2fdfff885c41',
-      label: 'Corie Jolin',
-    },
-    {
-      value: '6c3ff258-802e-4210-8214-0ef9a00c296d',
-      label: 'Daniel Glyne',
-    },
-    {
-      value: 'ef33c25f-6500-48eb-99e7-9d98e3721de0',
-      label: 'Mallorie Decker',
-    },
-    {
-      value: 'c979223e-4103-49ea-af45-0a254157211a',
-      label: 'Lari Vasyukov',
-    },
-    {
-      value: '55e0be96-3cdb-4954-968d-95b951ab7ce9',
-      label: 'Bibi Pitone',
-    },
-    {
-      value: 'ef45148a-75c9-424a-b187-29881571f46e',
-      label: 'Madelene Chaters',
-    },
-    {
-      value: '0d0db406-ae44-4fb9-90aa-dc664782dd91',
-      label: 'Thacher Kezar',
-    },
-  ];
-
-  const [dropdown, setDropdown] = useState();
-  const test = {
-    questionNumber: 4,
-    questionContent: 'Who wants to organize the patient files?',
-    questionImg: '',
-    option1: 'Min-Su would like to. ',
-    option2: 'Our phone number has changed.',
-    option3: ' A well-run organization.',
-    option4: '',
-    correctAnswer: 'A',
-  };
-
-  const [show, setShow] = useState(false);
-
-  let renderItem = Array.from(Array(20).keys).map((item) => (
-    <CommonItem
-      title={'NDLTD – Mạng thư viện số luận văn, luận án quốc tế'}
-      description={
-        'Với NDLTD bạn đọc sẽ được truy cập hơn 6.200.000 tài liệu là luận văn, luận án của gần 100 trường đại học thành viên từ Hoa Kỳ, Canada, Ấn Độ, Nhật Bản, bạn đọc sẽ được truy cập hơn 6.200.000 tài liệu là luận văn, luận án của gần 100 trường đại học thành viên từ Hoa Kỳ Pháp…'
-      }
-      date={Date.now()}
-    />
-  ));
-
-  const [pageI, setPageI] = useState({ page: 1, pageSize: 20, total: 100 });
   return (
     <div className="toe-test">
-      {/* <AudioPlay
-        src={
-          '../../../../../Toeic-365-backend/fileFolders/ets_2020_01_part1.mp3'
-        }
-      /> */}
-      {/* <QuestionCheckbox
-        questionName={test.questionNumber + '. ' + test.questionContent}
-        answers={[
-          { label: 'A.' + test.option1.trim(), value: 'A' },
-          { label: 'B.' + test.option2.trim(), value: 'B' },
-          { label: 'C.' + test.option3.trim(), value: 'C' },
-          {
-            label: 'D.' + test.option4.trim(),
-            value: 'D',
-            onHide: (item) => test.option4.trim() === '',
-          },
-        ]}
-        imgSrc={test.questionImg}
-        defaultValue={dropdown}
-        onChange={(res) => {
-          setDropdown(res);
+      <input type="file" onChange={previewFile} />
+      <br />
+      <img
+        ref={preview}
+        src={src}
+        height="200"
+        onError={(e) => {
+          console.log(e);
         }}
-      />
-
-      <GroupCheck /> */}
-      {/* <ExamItem /> */}
-      {/* <Spinner show={true} /> */}
-      {/* <CardItem
-        title="title"
-        subTitle="subtitle"
-        description={
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make "
-        }
-        imgSrc="me.jpg"
-      />
-      <CardItem
-        title="title"
-        subTitle="subtitle"
-        description={
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make "
-        }
-        imgSrc="me.jpg"
-      />
-      <CardItem
-        title="title"
-        subTitle="subtitle"
-        description={
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make "
-        }
-        imgSrc="me.jpg"
-      />
-      <CardItem
-        title="title"
-        subTitle="subtitle"
-        description={
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make "
-        }
-        imgSrc="me.jpg"
-      />
-      <CardItem
-        title="title"
-        subTitle="subtitle"
-        description={
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make "
-        }
-        imgSrc="me.jpg"
-      /> */}
-      {/* <TitleSeparator title={'THÔNG BÁO'} icon={null} /> */}
-      {/* <NotificationItem
-        title={
-          'THÔNG BÁO: Tạm ngưng phục vụ tại Thư viện Trung Tâm (Trụ sở chính)(Trụ sở chính)(Trụ sở chính)(Trụ sở chính)'
-        }
-        imgSrc="https://images.unsplash.com/photo-1640622304964-3e2c2c0cd7cd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
-        description={
-          'Sáng ngày 18/02/2022, Thư viện Trung tâm ĐHQG-HCM (TVTT) đã tổ chức “Hội nghịSáng ngày 18/02/2022, Thư viện Trung tâm ĐHQG-HCM (TVTT) đã tổ chức “Hội nghịSáng ngày 18/02/2022, Thư viện Trung tâm ĐHQG-HCM (TVTT) đã tổ chức “Hội nghịSáng ngày 18/02/2022, Thư viện Trung tâm ĐHQG-HCM (TVTT) đã tổ chức “Hội nghị'
-        }
-        date={Date.now()}
-      /> */}
-      {/* <DynamicMenu /> */}
-      {/* <Button name={'show'} onClick={() => setShow((s) => !s)} />
-      <Modal
-        footerRight={[
-          <Button
-            onClick={() => setShow(false)}
-            theme={BUTTON_THEME.THEME_6}
-            name="Hủy"
-          />,
-          <Button name="Thêm" onClick={() => {}} />,
-        ]}
-        onClose={() => setShow(false)}
-        title={'Thêm mới người dùng'}
-        show={show}
-      ></Modal> */}
-      {/* <Banner
-        breadCrumbs={[{ label: 'Tin tức' }]}
-        title={'tin tức'}
-        icon={<BellOutlined />}
-      /> */}
-      {/* {renderItem}
-      <BackTop /> */}
-      {/* <Paginator
-        onChange={(data) => {
-          setPageI({ ...pageI, ...data });
-        }}
-        totalRecords={pageI.total}
-        page={pageI.page}
-        pageSize={pageI.pageSize}
-      /> */}
-      {/* <Editor /> */}
-      {/* <Book /> */}
-      <Tooltip mouseTrack mouseTrackLeft={15} target={'.test-tooltip'}>
-        show sidebar
-      </Tooltip>
-      <Button
-        className="test-tooltip"
-        name={'show'}
-        onClick={() => setShow(true)}
-      />
-
-      <SideBar
-        show={show}
-        onClose={() => setShow(false)}
-        title={'Bộ lọc nâng cao'}
-        bottomRightButtons={[
-          <Button
-            name={'Hủy'}
-            theme={BUTTON_THEME.THEME_6}
-            onClick={() => setShow(false)}
-          />,
-          <Button name={'Tìm kiếm'} />,
-        ]}
-      >
-        body
-      </SideBar>
+        alt="Image preview..."
+      ></img>
     </div>
   );
 };

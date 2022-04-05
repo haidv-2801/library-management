@@ -9,5 +9,20 @@
     &:last-child {
       flex: 1;
     }
+
+    .toe-input {
+      width: 25vw;
+    }
+  }
+
+  &__toolbar {
+    display: flex;
+
+    .pi.pi-trash {
+      display: flex;
+      align-items: center;
+      color: red;
+      cursor: pointer;
+    }
   }
 }

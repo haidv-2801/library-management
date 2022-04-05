@@ -18,8 +18,10 @@ const PATH_NAME = {
   SEARCH: '/tra-cuu',
 
   //admin
+  ADMIN: '/admin',
+  ADMIN_DASBOARD: '/admin/dashboard',
   ADMIN_POST_PAGE: '/admin/post',
-  ADMIN_CREATE_POST_PAGE: '/admin/post/new',
+  ADMIN_CREATE_POST_PAGE: '/admin/tin-tuc/post/new',
 };
 
 const BUTTON_TYPE = {
@@ -104,7 +106,10 @@ const BOOK_FORMAT = {
   PAPER_BACK: 1,
 };
 
+const GUID_NULL = '00000000-0000-0000-0000-000000000000';
+
 export {
+  GUID_NULL,
   BUTTON_SHAPE,
   BOOK_FORMAT,
   TEXT_FALL_BACK,

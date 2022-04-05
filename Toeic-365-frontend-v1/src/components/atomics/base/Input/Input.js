@@ -1,8 +1,9 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { InputText } from 'primereact/inputtext';
 import { buildClass } from '../../../../constants/commonFunction';
 import { format } from 'react-string-format';
+import { debounce } from 'debounce';
 import './input.scss';
 
 Input.propTypes = {
@@ -23,7 +24,11 @@ Input.propTypes = {
   value: PropTypes.any,
   tabIndex: PropTypes.number,
   showMaxLength: PropTypes.bool,
+  controlled: PropTypes.bool,
   type: PropTypes.oneOf(['input', 'textarea']),
+  leftIcon: PropTypes.any,
+  delay: PropTypes.number,
+  delayAction: PropTypes.func,
 };
 
 Input.defaultProps = {
@@ -37,14 +42,18 @@ Input.defaultProps = {
   label: null,
   autoFocus: false,
   disabled: false,
+  controlled: false,
   hasRequiredLabel: false,
   onChange: () => {},
+  delayAction: () => {},
   maxLength: undefined,
-  defaultValue: null,
-  value: null,
+  defaultValue: '',
+  value: '',
   tabIndex: 0,
   showMaxLength: false,
   type: 'input',
+  leftIcon: '',
+  delay: 0,
 };
 
 function Input(props) {
@@ -67,9 +76,32 @@ function Input(props) {
     defaultValue,
     showMaxLength,
     type,
+    leftIcon,
+    delay,
+    delayAction,
+    controlled,
   } = props;
 
   const ref = useRef('');
+  const [delayValue, setDelayValue] = useState(defaultValue);
+
+  useEffect(() => {
+    let timeOutId = null;
+    if (delay > 0) {
+      timeOutId = setTimeout(() => {
+        onChange(delayValue);
+      }, delay);
+    } else {
+      onChange(delayValue);
+    }
+    return () => {
+      if (timeOutId) clearTimeout(timeOutId);
+    };
+  }, [delayValue]);
+
+  const valueProp = controlled
+    ? { value: value }
+    : { defaultValue: delayValue };
 
   return (
     <>
@@ -98,21 +130,26 @@ function Input(props) {
           </label>
         ) : null}
 
-        {type === 'input' ? (
+        <div
+          style={{ width: '100%' }}
+          className={buildClass([leftIcon && 'p-input-icon-left'])}
+        >
+          {leftIcon ? leftIcon : null}
           <InputText
             autoFocus={autoFocus}
             onChange={(e) => {
               ref.current = e.target.value;
-              onChange(e);
+              setDelayValue(e.target.value);
               if (ref.current.length === parseInt(maxLength, 10) || 0) return;
             }}
             placeholder={placeholder}
             maxLength={maxLength}
-            defaultValue={defaultValue}
+            {...valueProp}
             tabIndex={tabIndex}
             disabled={disabled}
+            leficon
           />
-        ) : null}
+        </div>
         {showMaxLength ? (
           <span className="toe-font-hint toe-input-maxlength">
             {format('{0}/{1}', ref.current.length || 0, maxLength)}

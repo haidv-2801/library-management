@@ -1,4 +1,4 @@
-import React, { Suspense, useContext, useEffect } from 'react';
+import React, { Suspense, useContext, useEffect, useRef } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import Loading from './components/atomics/base/Loading/Loading';
 import LoginPage from './components/pages/admin/LoginPage/LoginPage';
@@ -7,9 +7,18 @@ import RegisterPage from './components/pages/admin/RegisterPage/RegisterPage';
 import BookDetail from './components/pages/user/BookDetail/BookDetail';
 import RequiredAuth from './components/sections/RequiredAuth/RequiredAuth';
 import UserProfile from './components/pages/user/UserProfile/UserProfile';
+import { Toast } from 'primereact/toast';
 import { PATH_NAME } from './constants/commonConstant';
 import { AuthContext } from './contexts/authContext';
 import './main.scss';
+
+const MenuPage = React.lazy(() =>
+  import('./components/pages/admin/MenuPage/MenuPage')
+);
+
+const HtmlContentEditPage = React.lazy(() =>
+  import('./components/pages/admin/HtmlContentEditPage/HtmlContentEditPage')
+);
 
 const PostPage = React.lazy(() =>
   import('./components/pages/admin/PostPage/PostPage')
@@ -49,6 +58,7 @@ const BooksPageSeeAll = React.lazy(() =>
 
 function App() {
   const authCtx = useContext(AuthContext);
+  const toast = useRef();
 
   useEffect(() => {
     document.title = 'Thư viện 365';
@@ -71,11 +81,18 @@ function App() {
                 <Route exact path=":id" element={<BookDetail />} />
               </Route>
             </Route>
-            <Route
-              exact
-              path={PATH_NAME.NEWS}
-              element={<CommonListItemPage />}
-            />
+            {/* <Route exact path={PATH_NAME.NEWS}>
+              <Route
+                index
+                exact
+                path="post"
+                element={
+                  <RequiredAuth>
+                    <PostPage />
+                  </RequiredAuth>
+                }
+              />
+            </Route> */}
 
             {/* html page */}
             <Route exact path="html">
@@ -84,7 +101,7 @@ function App() {
             <Route path="test" element={<Test />} />
           </Route>
 
-          <Route path="admin">
+          <Route path={PATH_NAME.ADMIN}>
             <Route
               index
               element={
@@ -93,41 +110,84 @@ function App() {
                 </RequiredAuth>
               }
             />
+            <Route exact path="systems">
+              <Route
+                index
+                exact
+                path="user"
+                element={
+                  <RequiredAuth>
+                    <UserPage />
+                  </RequiredAuth>
+                }
+              />
+              <Route
+                exact
+                path="role"
+                element={
+                  <RequiredAuth>
+                    <UserPage />
+                  </RequiredAuth>
+                }
+              />
+              <Route
+                exact
+                path="permission"
+                element={
+                  <RequiredAuth>
+                    <UserPage />
+                  </RequiredAuth>
+                }
+              />
+              <Route
+                exact
+                path="menu"
+                element={
+                  <RequiredAuth>
+                    <MenuPage />
+                  </RequiredAuth>
+                }
+              />
+            </Route>
+
             <Route
-              path="user"
+              path="dashboard"
               element={
                 <RequiredAuth>
                   <UserPage />
                 </RequiredAuth>
               }
             />
-            <Route exact path="post">
-              <Route
-                exact
-                path="new"
-                element={
-                  <RequiredAuth>
-                    <HtmlContentCreatingPage />
-                  </RequiredAuth>
-                }
-              />
-              <Route
-                exact
-                path=":id"
-                element={
-                  <RequiredAuth>
-                    <HtmlContentCreatingPage />
-                  </RequiredAuth>
-                }
-              />
-              <Route
-                index
-                element={
-                  <RequiredAuth>
-                    <PostPage />
-                  </RequiredAuth>
-                }
-              />
+
+            <Route exact path={'tin-tuc'}>
+              <Route path="post">
+                <Route
+                  exact
+                  path="new"
+                  element={
+                    <RequiredAuth>
+                      <HtmlContentCreatingPage />
+                    </RequiredAuth>
+                  }
+                />
+                <Route
+                  exact
+                  path=":postId"
+                  element={
+                    <RequiredAuth>
+                      <HtmlContentEditPage />
+                    </RequiredAuth>
+                  }
+                />
+                <Route
+                  index
+                  element={
+                    <RequiredAuth>
+                      <PostPage />
+                    </RequiredAuth>
+                  }
+                />
+              </Route>
             </Route>
           </Route>
           <Route

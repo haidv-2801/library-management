@@ -67,11 +67,12 @@
       width: fit-content;
       flex-shrink: 0;
       border-right: 1px solid #e5e5e5;
-      box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.1);
-      background-color: #fff;
+      // box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.1);
+      // background-color: #fff;
       overflow: scroll;
       position: relative;
       padding-bottom: 50px;
+      background-color: #fff;
       height: calc(100vh - 63px);
 
       &::-webkit-scrollbar {
@@ -86,63 +87,91 @@
       -ms-overflow-style: none; /* IE and Edge */
       scrollbar-width: none; /* Firefox */
 
-      & .ant-menu-dark.ant-menu-inline {
-        background-color: transparent;
-        color: #454545;
-      }
+      // & .ant-menu-dark.ant-menu-inline {
+      //   background-color: transparent;
+      //   color: #454545;
+      // }
 
-      & .ant-menu-dark.ant-menu-inline .ant-menu-item,
-      .ant-menu-dark.ant-menu-inline .ant-menu-submenu-title {
-        color: #454545;
-      }
+      // & .ant-menu-dark.ant-menu-inline .ant-menu-item,
+      // .ant-menu-dark.ant-menu-inline .ant-menu-submenu-title {
+      //   color: #454545;
+      // }
 
-      & .ant-layout-sider-trigger {
-        background-color: transparent;
-        color: #454545;
-        background-color: #fff;
-      }
+      // & .ant-layout-sider-trigger {
+      //   background-color: transparent;
+      //   color: #454545;
+      // }
 
-      & .ant-layout-sider {
-        background-color: transparent;
-        color: #454545;
-        // box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.1);
-      }
+      // & .ant-layout-sider {
+      //   background-color: transparent;
+      //   color: #454545;
+      //   // box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.1);
+      // }
 
-      & .ant-layout-sider-trigger {
-        border-top: 1px solid #e9ebee;
-      }
+      // .ant-menu-submenu-title {
+      //   // padding-left: 16px !important;
+      // }
 
-      & .ant-layout-sider-children .ant-menu.ant-menu-inline-collapsed {
-        background-color: transparent;
+      // .ant-menu-submenu-arrow {
+      //   &::before {
+      //     background-color: #454545 !important;
+      //   }
 
-        & .ant-menu-item {
-          color: #454545;
-        }
-      }
+      //   &::after {
+      //     background-color: #454545 !important;
+      //   }
+      // }
 
-      & .ant-menu-item-icon {
-        width: 16px;
-        height: 16px;
-      }
+      // .ant-menu-vertical {
+      //   color: #454545 !important;
 
-      & .ant-menu-item.ant-menu-item-active {
-        background-color: #e5e5e5;
-      }
+      //   background-color: transparent !important;
+      // }
 
-      &
-        .ant-menu-dark.ant-menu-dark:not(.ant-menu-horizontal)
-        .ant-menu-item-selected {
-        background-color: #e5e5e5;
-        font-weight: bold;
+      // .ant-menu-item.ant-menu-item-active.ant-menu-item-only-child {
+      //   background-color: #f1f1f1 !important;
+      // }
 
-        & .ant-menu-title-content {
-          color: #43c1c9;
-        }
+      // & .ant-layout-sider-trigger {
+      //   border-top: 1px solid #e9ebee;
+      // }
 
-        & svg {
-          color: #43c1c9;
-        }
-      }
+      // & .ant-layout-sider-children .ant-menu.ant-menu-inline-collapsed {
+      //   background-color: transparent;
+
+      //   & .ant-menu-item {
+      //     color: #454545;
+      //   }
+      // }
+
+      // & .ant-menu-item-icon {
+      //   width: 16px;
+      //   height: 16px;
+      //   color: #454545 !important;
+      // }
+
+      // .ant-menu-sub {
+      //   background-color: transparent !important;
+      // }
+
+      // & .ant-menu-item.ant-menu-item-active {
+      //   background-color: #e5e5e5 !important;
+      // }
+
+      // &
+      //   .ant-menu-dark.ant-menu-dark:not(.ant-menu-horizontal)
+      //   .ant-menu-item-selected {
+      //   background-color: #e5e5e5;
+      //   font-weight: bold;
+
+      //   & .ant-menu-title-content {
+      //     color: #43c1c9;
+      //   }
+
+      //   & svg {
+      //     color: #43c1c9;
+      //   }
+      // }
     }
 
     &-right {

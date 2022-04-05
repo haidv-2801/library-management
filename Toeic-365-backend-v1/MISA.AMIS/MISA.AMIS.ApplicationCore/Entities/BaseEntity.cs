@@ -59,6 +59,11 @@ namespace TOE.TOEIC.ApplicationCore.Entities
         /// <summary>
         /// Trạng thái insert của entity
         /// </summary>
-        public List<String> Status { get; set; }
+        public bool Status { get; set; } = true;
+
+        /// <summary>
+        /// Có xóa mềm không
+        /// </summary>
+        public bool IsDeleted { get; set; } = false;
     }
 }

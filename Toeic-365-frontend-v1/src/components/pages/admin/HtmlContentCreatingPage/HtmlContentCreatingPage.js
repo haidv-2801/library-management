@@ -1,21 +1,34 @@
 import { EyeOutlined, RetweetOutlined } from '@ant-design/icons';
 import { Tooltip } from 'antd';
+import { Button as ButtonPrime } from 'primereact/button';
+import { FileUpload } from 'primereact/fileupload';
+import { ProgressBar } from 'primereact/progressbar';
+import { TabPanel, TabView } from 'primereact/tabview';
+import { Tag } from 'primereact/tag';
+import { Toast } from 'primereact/toast';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import baseApi from '../../../../api/baseApi';
 import {
   BUTTON_THEME,
   BUTTON_TYPE,
-  PATH_NAME,
   POST_TYPE,
   TEXT_FALL_BACK,
 } from '../../../../constants/commonConstant';
-import { buildClass, slugify } from '../../../../constants/commonFunction';
+import {
+  buildClass,
+  formatBytes,
+  slugify,
+  uuidv4,
+} from '../../../../constants/commonFunction';
+import END_POINT from '../../../../constants/endpoint';
 import Button from '../../../atomics/base/Button/Button';
 import Input from '../../../atomics/base/Input/Input';
 import TextAreaBase from '../../../atomics/base/TextArea/TextArea';
-import Dropdown from '../../../molecules/Dropdown/Dropdown';
+import TreeSelect from '../../../atomics/base/TreeSelect/TreeSelect';
 import Editor from '../../../molecules/Editor/Editor';
+import GroupCheck from '../../../molecules/GroupCheck/GroupCheck';
 import Layout from '../../../sections/Admin/Layout/Layout';
 import './htmlContentCreatingPage.scss';
 
@@ -38,28 +51,238 @@ function HtmlContentCreatingPage(props) {
     { label: 'Thông báo', value: POST_TYPE.NOTIFICATION },
     { label: 'Giới thiệu sách', value: POST_TYPE.ABOUT_THE_BOOK },
   ];
+  const DEFAULT_DATA = {
+    title: 'Tiêu đề bài đăng mặc định',
+    slug: 'tieu-de-bai-dang-mac-dinh',
+    postType: '',
+    htmlContent: 'Tiêu đề bài đăng content',
+    description: 'Mô tả mặc định',
+  };
+
+  const MAXIMUM_FILE_SIZE = 1000000;
 
   const navigate = useNavigate();
 
-  const [htmlContent, setHtmlContent] = useState('');
+  const [htmlContent, setHtmlContent] = useState('Type some text...');
   const [defaultHtmlContent, setDefaultHtmlContent] =
     useState('Type some text...');
-  const [data, setData] = useState({
-    title: '',
-    slug: '',
-    postType: '',
-    htmlContent: '',
-  });
+
+  const [data, setData] = useState(DEFAULT_DATA);
+
+  const [activeIndex, setActiveIndex] = useState();
+  const [totalSize, setTotalSize] = useState(0);
+  const [files, setFiles] = useState([]);
+  const [showWarningMessage, setShowWarningMessage] = useState(false);
+  const [isActive, setIsActive] = useState(true);
+  const toast = useRef(null);
+  const fileUploadRef = useRef(null);
+  const forgeRenderKey = useRef(0);
+
+  const onTemplateRemove = (file, callback) => {
+    setTotalSize(totalSize - file.size);
+    callback();
+  };
+
+  const onTemplateUpload = (e) => {
+    const _formData = new FormData();
+
+    for (let file of e.files) {
+      _formData.append(file.name, file);
+    }
+
+    toast.current.show({
+      severity: 'success',
+      summary: 'Success',
+      detail: 'File Uploaded',
+      life: 3000,
+    });
+  };
+
+  const onTemplateSelect = (e) => {
+    let _totalSize = totalSize;
+
+    for (let file of e.files) {
+      if (
+        file.size > MAXIMUM_FILE_SIZE ||
+        _totalSize + file.size > MAXIMUM_FILE_SIZE
+      ) {
+      } else {
+        _totalSize += file.size;
+        setFiles((pre) => [...pre]);
+      }
+    }
+
+    setTotalSize(_totalSize);
+  };
+
+  const onTemplateClear = () => {
+    setTotalSize(0);
+  };
+
+  const headerTemplate = (options) => {
+    const { className, chooseButton, uploadButton, cancelButton } = options;
+    const value = totalSize / 10000;
+    const formatedValue =
+      fileUploadRef && fileUploadRef.current
+        ? fileUploadRef.current.formatSize(totalSize)
+        : '0 B';
+
+    return (
+      <div
+        className={className}
+        style={{
+          backgroundColor: 'transparent',
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
+        {chooseButton}
+        {uploadButton}
+        {cancelButton}
+        <ProgressBar
+          value={value}
+          displayValueTemplate={() =>
+            `${formatedValue} / ${formatBytes(MAXIMUM_FILE_SIZE)}`
+          }
+          style={{ width: '300px', height: '20px', marginLeft: 'auto' }}
+        ></ProgressBar>
+      </div>
+    );
+  };
+
+  const itemTemplate = (file, props) => {
+    return (
+      <div className="flex align-items-center flex-wrap">
+        <div className="flex align-items-center" style={{ width: '40%' }}>
+          <img
+            alt={file.name}
+            role="presentation"
+            src={file.objectURL}
+            width={100}
+          />
+          <span className="flex flex-column text-left ml-3">
+            {file.name}
+            <small>{new Date().toLocaleString()}</small>
+          </span>
+        </div>
+        <Tag
+          value={props.formatSize}
+          severity="warning"
+          className="px-3 py-2"
+        />
+        <ButtonPrime
+          type="button"
+          icon="pi pi-times"
+          className="p-button-outlined p-button-rounded p-button-danger ml-auto"
+          onClick={() => onTemplateRemove(file, props.onRemove)}
+        />
+      </div>
+    );
+  };
+
+  const emptyTemplate = () => {
+    return (
+      <div className="flex align-items-center flex-column">
+        <i
+          className="pi pi-image mt-3 p-5"
+          style={{
+            fontSize: '5em',
+            borderRadius: '50%',
+            backgroundColor: 'var(--surface-b)',
+            color: 'var(--surface-d)',
+          }}
+        ></i>
+        <span
+          style={{ fontSize: '1.2em', color: 'var(--text-color-secondary)' }}
+          className="my-5"
+        >
+          Drag and Drop Image Here
+        </span>
+      </div>
+    );
+  };
+
+  const chooseOptions = {
+    icon: 'pi pi-fw pi-images',
+    iconOnly: true,
+    className: 'custom-choose-btn p-button-rounded p-button-outlined',
+  };
+
+  const uploadOptions = {
+    icon: 'pi pi-fw pi-cloud-upload',
+    iconOnly: true,
+    className:
+      'custom-upload-btn p-button-success p-button-rounded p-button-outlined',
+  };
+
+  const cancelOptions = {
+    icon: 'pi pi-fw pi-times',
+    iconOnly: true,
+    className:
+      'custom-cancel-btn p-button-danger p-button-rounded p-button-outlined',
+  };
+
+  const handleSave = () => {
+    if (!data.htmlContent) setShowWarningMessage(true);
+    insertPost();
+  };
+
+  const insertPost = () => {
+    let _body = {
+      title: data.title,
+      slug: data.slug,
+      description: data.description,
+      content: JSON.stringify(htmlContent),
+      image: new Date().getTime() + '_image',
+      viewCount: 200,
+      type: 1,
+      createdDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
+      createdBy: 'DOVANHAI',
+      modifiedDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
+      modifiedBy: 'DOVANHAI',
+      status: isActive,
+      isDeleted: false,
+    };
+
+    baseApi.post(
+      (res) => {
+        if (res.data > 0) {
+          toast.current.show({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Thêm mới thành công',
+            life: 3000,
+          });
+          setTimeout(() => {
+            window.history.back();
+          }, 400);
+        }
+      },
+      (err) => {
+        toast.current.show({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Thêm mới thất bại',
+          life: 3000,
+        });
+      },
+      () => {},
+      END_POINT.TOE_INSERT_POST,
+      _body,
+      null,
+      null
+    );
+  };
 
   return (
     <Layout
       title="Thêm mới bài đăng"
       hasBackBtn={true}
-      back={() => navigate(PATH_NAME.ADMIN_POST_PAGE)}
+      back={() => window.history.back()}
       rightButtons={[
-        <Tooltip title={'Xem trước'}>
-          <EyeOutlined />
-        </Tooltip>,
+        // <Tooltip title={'Xem trước'}>
+        //   <EyeOutlined />
+        // </Tooltip>,
         <Tooltip title={'Xóa trắng thông tin của các trường'}>
           <div>
             <Button
@@ -67,11 +290,14 @@ function HtmlContentCreatingPage(props) {
               leftIcon={<RetweetOutlined />}
               name={'Làm mới'}
               theme={BUTTON_THEME.THEME_6}
-              onClick={() => {}}
+              onClick={() => {
+                setData({ ...DEFAULT_DATA });
+                forgeRenderKey.current++;
+              }}
             />
           </div>
         </Tooltip>,
-        <Button onClick={() => {}} name="Lưu bài viết" />,
+        <Button onClick={handleSave} name="Lưu" />,
       ]}
     >
       <div
@@ -79,47 +305,123 @@ function HtmlContentCreatingPage(props) {
         style={style}
         className={buildClass(['toe-admin-create-post-page', className])}
       >
-        <div className="toe-admin-create-post-page__row">
-          <span className="toe-font-label">
-            Loại<span style={{ color: 'red' }}>*</span>
-          </span>
-          <Dropdown options={POST_TYPES} />
-        </div>
-        <div className="toe-admin-create-post-page__row">
-          <Input
-            label={'Tiêu đề'}
-            placeholder="Tiêu đề bài đăng..."
-            bottomMessage="Trường bắt buộc nhập"
-            valid={true}
-            hasRequiredLabel
-            onChange={(e) =>
-              setData((pre) => ({
-                ...pre,
-                title: e.target.value,
-                slug: slugify(e.target.value),
-              }))
-            }
-            maxLength={255}
-          />
-          <div className="toe-admin-create-post-page__row-slug toe-font-label">
-            Slug: {data.slug || TEXT_FALL_BACK.TYPE_1}
+        <Toast ref={toast}></Toast>
+        {showWarningMessage && !data.htmlContent ? (
+          <div className="toe-admin-create-post-page__row row-warning">
+            Vui lòng nhập nội dung của bài đăng
           </div>
-        </div>
-        <div className="toe-admin-create-post-page__row">
-          <span className="toe-font-label">
-            Tóm tắt<span style={{ color: 'red' }}>*</span>
-          </span>
-          <TextAreaBase placeholder="Tóm tắt nội dung..." />
-        </div>
-        <div className="toe-admin-create-post-page__row">
-          <Editor
-            label={'Nội dung'}
-            defaultContent={defaultHtmlContent}
-            onContentChange={(data) => {
-              setHtmlContent(data);
-            }}
-          />
-        </div>
+        ) : null}
+
+        <TabView
+          key={forgeRenderKey.current}
+          activeIndex={activeIndex}
+          onTabChange={(e) => setActiveIndex(e.index)}
+          className="toe-admin-create-post-page__tabview"
+        >
+          <TabPanel header="Thông tin">
+            <div className="toe-admin-create-post-page__row">
+              <Input
+                label={'Tiêu đề'}
+                placeholder="Tiêu đề bài đăng..."
+                bottomMessage="Trường bắt buộc nhập"
+                valid={true}
+                hasRequiredLabel
+                defaultValue={data?.title}
+                onChange={(value) => {
+                  setData((pre) => ({
+                    ...pre,
+                    title: value,
+                    slug: slugify(value),
+                  }));
+                }}
+                maxLength={255}
+              />
+              <div className="toe-admin-create-post-page__row-slug toe-font-label">
+                <Input
+                  label={'Alias'}
+                  placeholder="Alias..."
+                  bottomMessage="Trường bắt buộc nhập"
+                  valid={true}
+                  value={data.slug}
+                  defaultValue={data.slug || TEXT_FALL_BACK.TYPE_1}
+                  hasRequiredLabel
+                  onChange={(value) =>
+                    setData((pre) => ({
+                      ...pre,
+                      slug: value,
+                    }))
+                  }
+                  controlled
+                  maxLength={255}
+                />
+              </div>
+            </div>
+            <div className="toe-admin-create-post-page__row">
+              <TreeSelect hasRequiredLabel label="Menu" />
+            </div>
+            <div className="toe-admin-create-post-page__row">
+              <span className="toe-font-label">
+                Tóm tắt<span style={{ color: 'red' }}>*</span>
+              </span>
+              <TextAreaBase
+                value={data.description}
+                onChange={(value) => setData({ ...data, description: value })}
+                placeholder="Tóm tắt nội dung..."
+              />
+            </div>
+            <div className="toe-admin-create-post-page__row">
+              <GroupCheck
+                onClick={(e) => {
+                  setIsActive((p) => !p);
+                }}
+                defaultValue={isActive}
+                options={[{ label: 'Hoạt động', value: true }]}
+              />
+            </div>
+            <div className="toe-admin-create-post-page__row">
+              <span className="toe-font-label">
+                Ảnh xem trước<span style={{ color: 'red' }}>*</span>
+              </span>
+              <FileUpload
+                ref={fileUploadRef}
+                name="demo[]"
+                url="https://primefaces.org/primereact/showcase/upload.php"
+                multiple={false}
+                accept="image/*"
+                maxFileSize={MAXIMUM_FILE_SIZE}
+                customUpload={true}
+                // onUpload={onTemplateUpload}
+                uploadHandler={onTemplateUpload}
+                onSelect={onTemplateSelect}
+                onError={onTemplateClear}
+                onClear={onTemplateClear}
+                headerTemplate={headerTemplate}
+                itemTemplate={itemTemplate}
+                emptyTemplate={emptyTemplate}
+                chooseOptions={chooseOptions}
+                uploadOptions={uploadOptions}
+                cancelOptions={cancelOptions}
+                headerClassName="toe-font-body"
+                className="toe-font-body"
+              />
+            </div>
+          </TabPanel>
+          <TabPanel
+            header={
+              <span>
+                Nội dung<span style={{ color: 'red' }}>*</span>
+              </span>
+            }
+          >
+            <Editor
+              defaultContent={htmlContent}
+              onContentChange={(data) => {
+                setData((pre) => ({ ...pre, htmlContent: data }));
+                setHtmlContent(data);
+              }}
+            />
+          </TabPanel>
+        </TabView>
       </div>
     </Layout>
   );

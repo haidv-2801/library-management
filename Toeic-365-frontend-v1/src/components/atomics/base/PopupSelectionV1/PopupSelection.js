@@ -62,7 +62,12 @@ function PopupSelection(props) {
                 defaultValue === item?.value &&
                   'toe-popup-selection__item--selected',
               ])}
-              onClick={() => onChange(item)}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onChange(item);
+                if (typeof item?.onClick === 'function') item?.onClick(item);
+              }}
             >
               {item?.label}
             </div>

@@ -92,12 +92,13 @@ function TextAreaBase(props) {
         ])}
         onChange={(e) => {
           ref.current = e.target.value;
-          onChange(e);
+          onChange(e.target.value);
           if (ref.current.length === parseInt(maxLength, 10) || 0) return;
         }}
         placeholder={placeholder}
         maxLength={maxLength}
-        defaultValue={defaultValue}
+        // defaultValue={defaultValue}
+        value={value}
         tabIndex={tabIndex}
         disabled={disabled}
         autoResize

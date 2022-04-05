@@ -64,7 +64,7 @@ const UserInfo = () => {
           } else if (data.value === POPUP_SELECTION_VALUES.USER_INFOMATION) {
             navigate(PATH_NAME.USER);
           } else if (data.value === POPUP_SELECTION_VALUES.ADMIN_PAGE) {
-            navigate('/admin');
+            navigate(PATH_NAME.ADMIN_DASBOARD);
           } else if (data.value === POPUP_SELECTION_VALUES.GUEST_PAGE) {
             navigate('/');
           }

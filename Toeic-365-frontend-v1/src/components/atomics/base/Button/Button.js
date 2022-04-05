@@ -7,12 +7,10 @@ import {
 } from '../../../../constants/commonConstant';
 import { buildClass } from '../../../../constants/commonFunction';
 import './button.scss';
-
 Button.propTypes = {
   id: PropTypes.string,
   className: PropTypes.string,
   style: PropTypes.object,
-
   name: PropTypes.any,
   leftIcon: PropTypes.any,
   rightIcon: PropTypes.any,
@@ -62,6 +60,7 @@ function Button(props) {
     disabled,
     shape,
   } = props;
+
   return (
     <div
       id={id}

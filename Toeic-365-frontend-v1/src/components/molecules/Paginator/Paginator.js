@@ -4,6 +4,7 @@ import { PAGEGING } from '../../../constants/commonConstant';
 import { Paginator as PaginatorPrime } from 'primereact/paginator';
 import { buildClass } from '../../../constants/commonFunction';
 import './paginator.scss';
+import Dropdown from '../Dropdown/Dropdown';
 
 Paginator.propTypes = {
   id: PropTypes.string,
@@ -29,12 +30,33 @@ function Paginator(props) {
   const { id, style, className, pageSize, page, totalRecords, onChange } =
     props;
 
+  let from = pageSize * (page - 1) + 1,
+    to = Math.min(totalRecords, pageSize * page);
+
+  from = Math.min(from, to);
+
   return (
     <PaginatorPrime
       style={style}
       className={buildClass(['toe-paginator', 'toe-font-body', className])}
       first={(page - 1) * pageSize}
       rows={pageSize}
+      leftContent={
+        !totalRecords ? null : `Hiển thị ${from}-${to}/${totalRecords} bản ghi`
+      }
+      rightContent={
+        !totalRecords ? null : (
+          <Dropdown
+            className="dropdown-paginator"
+            defaultValue={pageSize}
+            options={PAGEGING.map((_) => ({
+              label: 'Hiển thị ' + _ + ' trang',
+              value: _,
+            }))}
+            onChange={(data) => onChange({ page, pageSize: data.value })}
+          />
+        )
+      }
       totalRecords={Math.max(0, totalRecords)}
       rowsPerPageOptions={PAGEGING}
       onPageChange={(data) => {

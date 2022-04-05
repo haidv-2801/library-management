@@ -1,0 +1,148 @@
+.toe-treeSelect {
+  $main-color: #43c1c9;
+  $icon-size: 12px;
+  $font-size: 14px;
+  $text-color: #454545;
+  $font: 'OpenSans-Regular', sans-serif;
+
+  // width: 20rem;
+  height: 40px;
+
+  &.p-treeselect {
+    &:focus {
+      box-shadow: none;
+      border: 1px solid $main-color;
+    }
+
+    &:hover {
+      border: 1px solid $main-color;
+    }
+
+    &:not(.p-disabled) {
+      &.p-focus {
+        box-shadow: none;
+        border: 1px solid $main-color;
+      }
+    }
+  }
+
+  .p-treeselect-label {
+    padding: 0px 16px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  .pi {
+    font-size: $icon-size;
+  }
+
+  &-panel {
+    .p-treenode-label,
+    .p-treenode-content {
+      font-size: $font-size;
+      line-height: 20px;
+      color: $text-color;
+      font-family: 'OpenSans-Regular', sans-serif;
+    }
+
+    .p-tree.p-component {
+      padding: 16px 24px;
+
+      .p-treenode-content {
+        padding: 0px;
+        height: 32px;
+
+        .p-tree-toggler {
+          margin-right: 0px;
+
+          &:focus {
+            box-shadow: none;
+            outline: none;
+          }
+        }
+      }
+    }
+
+    .p-treeselect-close.p-link {
+      &:focus {
+        box-shadow: none;
+        outline: none;
+      }
+
+      &:hover {
+        border-radius: 8px;
+      }
+    }
+
+    .p-treeselect-filter-container {
+      .p-inputtext {
+        padding: 0px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        padding-left: 8px;
+        font-size: $font-size;
+        color: $text-color;
+
+        &:enabled:focus {
+          box-shadow: none;
+          border-color: $main-color;
+        }
+
+        &:enabled:hover {
+          box-shadow: none;
+          border-color: $main-color;
+        }
+
+        &::-webkit-input-placeholder {
+          font-size: 12px;
+          color: #bbbbbb;
+        }
+      }
+    }
+
+    .p-checkbox {
+      .p-checkbox {
+        font-size: 12px;
+      }
+    }
+
+    .p-treeselect-header {
+      height: 40px;
+      padding: 0px 16px;
+    }
+
+    .pi {
+      font-size: $icon-size;
+    }
+  }
+
+  &--empty {
+    .toe-treeSelect-panel .p-tree.p-component {
+      display: none;
+    }
+    .p-tree.p-component.p-tree-selectable {
+      display: none;
+    }
+
+    .p-treeselect-header {
+      display: none;
+    }
+  }
+
+  &__label {
+    margin-bottom: 4px;
+  }
+
+  &__wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+
+  @media screen and (max-width: 640px) {
+    .treeselect-demo .p-treeselect {
+      width: 100%;
+    }
+  }
+}

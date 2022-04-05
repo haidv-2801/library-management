@@ -72,12 +72,21 @@ namespace TOE.TOEIC.Web.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] TEntity entity)
         {
-            var serviceResult = _baseService.Insert(entity);
+            var serviceResult = new ServiceResult();
+            try
+            {
+                serviceResult = _baseService.Insert(entity);
+                if (serviceResult.TOECode == TOECode.InValid)
+                    return BadRequest(serviceResult);
+                else if (serviceResult.TOECode == TOECode.Exception)
+                    return StatusCode(500, serviceResult);
 
-            if (serviceResult.TOECode == TOECode.InValid)
-                return BadRequest(serviceResult);
-            else if (serviceResult.TOECode == TOECode.Exception)
-                return StatusCode(500, serviceResult);
+                return StatusCode(201, serviceResult);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
 
             return StatusCode(201, serviceResult);
         }

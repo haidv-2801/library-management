@@ -8,6 +8,14 @@
   .p-dropdown {
     min-width: 100px;
     height: 40px;
+
+    &.p-inputwrapper-filled {
+      display: none;
+    }
+
+    &.dropdown-paginator.p-inputwrapper-filled {
+      display: flex;
+    }
   }
 
   .p-dropdown-label {
