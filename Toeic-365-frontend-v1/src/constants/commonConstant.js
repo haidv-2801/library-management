@@ -12,6 +12,7 @@ const PATH_NAME = {
   ABOUT: '/gioi-thieu',
   USER: '/nguoi-dung',
   NEWS: '/tin-tuc',
+  NOTIFICATION: '/thong-bao',
   RESOURCES: '/tai-nguyen-bo-suu-tap',
   SERVICES: '/dich-vu-tien-ich',
   BORROWING_RETURNING_BOOK: '/muon-tra-tai-lieu',
@@ -108,7 +109,27 @@ const BOOK_FORMAT = {
 
 const GUID_NULL = '00000000-0000-0000-0000-000000000000';
 
+/**
+ * Menu type trong header
+ * 0: là trang html render khi đó render path dạng: /hmtl/ + slug
+ * 1: là redirect đến trang khác render khi đó render path dạng: link
+ * 2: là trang bình thường khi đó render path dạng: slug
+ * 3: thường là menu chứa menu con khi click vào không có sk
+ */
+const MENU_TYPE = {
+  HTML_RENDER: 0,
+  REDIRECT: 1,
+  NORMAL: 2,
+  NONE_EVENT: 3,
+};
+
+const FIXED_MENU_ID = {
+  NEWS: '8d0fb05d-5ca6-4cf6-adfb-75e50d2a88c5',
+};
+
 export {
+  FIXED_MENU_ID,
+  MENU_TYPE,
   GUID_NULL,
   BUTTON_SHAPE,
   BOOK_FORMAT,

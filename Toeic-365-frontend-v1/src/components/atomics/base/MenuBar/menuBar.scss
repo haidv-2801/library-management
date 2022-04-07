@@ -1,0 +1,14 @@
+.toe-menubar {
+  --main-color: #43c1c9;
+  background-color: transparent;
+  border: none;
+
+  .pi {
+    font-size: 13px;
+  }
+
+  .p-submenu-list {
+    width: max-content;
+    min-width: 12.5rem;
+  }
+}

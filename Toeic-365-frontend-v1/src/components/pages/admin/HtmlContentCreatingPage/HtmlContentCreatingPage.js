@@ -13,12 +13,14 @@ import baseApi from '../../../../api/baseApi';
 import {
   BUTTON_THEME,
   BUTTON_TYPE,
+  GUID_NULL,
   POST_TYPE,
   TEXT_FALL_BACK,
 } from '../../../../constants/commonConstant';
 import {
   buildClass,
   formatBytes,
+  listToTree,
   slugify,
   uuidv4,
 } from '../../../../constants/commonFunction';
@@ -57,6 +59,7 @@ function HtmlContentCreatingPage(props) {
     postType: '',
     htmlContent: 'Tiêu đề bài đăng content',
     description: 'Mô tả mặc định',
+    menuID: GUID_NULL,
   };
 
   const MAXIMUM_FILE_SIZE = 1000000;
@@ -77,6 +80,11 @@ function HtmlContentCreatingPage(props) {
   const toast = useRef(null);
   const fileUploadRef = useRef(null);
   const forgeRenderKey = useRef(0);
+  const [dataTable, setDataTable] = useState([]);
+
+  useEffect(() => {
+    getMenus();
+  }, []);
 
   const onTemplateRemove = (file, callback) => {
     setTotalSize(totalSize - file.size);
@@ -227,6 +235,25 @@ function HtmlContentCreatingPage(props) {
     insertPost();
   };
 
+  const getMenus = () => {
+    baseApi.get(
+      (res) => {
+        let _data = res.map((item) => ({
+          ...item,
+          key: item?.menuID,
+          label: item?.title,
+        }));
+        _data = listToTree(_data);
+        setDataTable(_data);
+      },
+      (err) => {},
+      () => {},
+      END_POINT.TOE_GET_MENUS,
+      null,
+      null
+    );
+  };
+
   const insertPost = () => {
     let _body = {
       title: data.title,
@@ -357,7 +384,16 @@ function HtmlContentCreatingPage(props) {
               </div>
             </div>
             <div className="toe-admin-create-post-page__row">
-              <TreeSelect hasRequiredLabel label="Menu" />
+              <TreeSelect
+                hasRequiredLabel
+                label="Menu hiển thị"
+                placeholder="Nhấp để chọn"
+                value={data.menuID}
+                options={dataTable}
+                onChange={(data) => {
+                  setData((pre) => ({ ...pre, menuID: data.value }));
+                }}
+              />
             </div>
             <div className="toe-admin-create-post-page__row">
               <span className="toe-font-label">

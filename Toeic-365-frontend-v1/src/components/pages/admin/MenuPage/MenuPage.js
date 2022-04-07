@@ -12,7 +12,10 @@ import baseApi from '../../../../api/baseApi';
 import {
   BUTTON_THEME,
   BUTTON_TYPE,
+  DATE_FORMAT,
+  GUID_NULL,
   PATH_NAME,
+  TEXT_FALL_BACK,
 } from '../../../../constants/commonConstant';
 import { buildClass } from '../../../../constants/commonFunction';
 import END_POINT from '../../../../constants/endpoint';
@@ -57,7 +60,7 @@ function MenuPage(props) {
       header: 'Tên menu',
       filterField: 'title',
       body: (row) => {
-        return <SmartText>{row?.title}</SmartText>;
+        return <SmartText>{row?.title || TEXT_FALL_BACK.TYPE_1}</SmartText>;
       },
       style: { width: 400, maxWidth: 400 },
     },
@@ -69,7 +72,11 @@ function MenuPage(props) {
       body: (row) => {
         return (
           <div className="toe-font-body">
-            {<SmartText rows={4}>{row?.slug}</SmartText>}
+            {
+              <SmartText rows={4}>
+                {row?.slug || TEXT_FALL_BACK.TYPE_1}
+              </SmartText>
+            }
           </div>
         );
       },
@@ -80,7 +87,11 @@ function MenuPage(props) {
       header: 'Menu cha',
       filterField: 'parentID',
       body: (row) => {
-        return <div className="toe-font-body">{row?.parentID}</div>;
+        return (
+          <div className="toe-font-body">
+            {renderColumnParentMenu(row?.parentID)}
+          </div>
+        );
       },
     },
     {
@@ -90,6 +101,21 @@ function MenuPage(props) {
       filterField: 'displayOrder',
       body: (row) => {
         return <div className="toe-font-body">{row?.displayOrder}</div>;
+      },
+      style: { width: 170, maxWidth: 170 },
+    },
+    {
+      field: 'isShowHome',
+      sortable: true,
+      header: 'Hiển thị ở trang chủ',
+      filterField: 'isShowHome',
+      body: (row) => {
+        if (isLoading) return <Skeleton />;
+        return (
+          <div className="toe-font-body">
+            {row?.isShowHome ? 'Có' : 'Không'}
+          </div>
+        );
       },
       style: { width: 170, maxWidth: 170 },
     },
@@ -104,15 +130,15 @@ function MenuPage(props) {
       style: { width: 180, maxWidth: 180 },
     },
     {
-      field: 'createdDate',
+      field: 'link',
       sortable: true,
-      header: 'Ngày tạo',
-      filterField: 'createdDate',
+      header: 'Chuyển hướng',
+      filterField: 'link',
       body: (row) => {
         if (isLoading) return <Skeleton></Skeleton>;
         return (
           <div className="toe-font-body">
-            {moment(row?.createdDate).format('DD/MM/YYYY HH:mm:ss')}
+            {row?.link || TEXT_FALL_BACK.TYPE_1}
           </div>
         );
       },
@@ -142,6 +168,8 @@ function MenuPage(props) {
     pageSize: MIN_PAGE_SIZE,
   });
   const [dataCreate, setDataCreate] = useState({});
+  const [dataDetail, setDataDetail] = useState(null);
+  const [dataMenus, setDataMenus] = useState([]);
 
   const OPTIONS = [
     {
@@ -214,12 +242,35 @@ function MenuPage(props) {
 
   useEffect(() => {
     getMenusFilter();
+    getMenus();
   }, []);
 
   useEffect(() => {
     if (isLoading) return;
     getMenusFilter();
   }, [paging]);
+
+  const renderColumnParentMenu = (id) => {
+    if (isLoading) return <Skeleton></Skeleton>;
+    let item = dataMenus.filter((item) => item.menuID === id);
+    if (item.length) {
+      return item[0].title;
+    }
+    return TEXT_FALL_BACK.TYPE_1;
+  };
+
+  const getMenus = () => {
+    baseApi.get(
+      (res) => {
+        setDataMenus(res);
+      },
+      (err) => {},
+      () => {},
+      END_POINT.TOE_GET_MENUS,
+      null,
+      null
+    );
+  };
 
   const getPopupCreateMenuPops = () => {
     if (popupMode === POPUP_MODE.ADD) {
@@ -243,7 +294,7 @@ function MenuPage(props) {
             name="Hủy"
             theme={BUTTON_THEME.THEME_6}
           />,
-          <Button name="Cập nhập" onClick={handleEdit} />,
+          <Button name="Cập nhập" onClick={handleSave} />,
         ],
       };
     }
@@ -283,14 +334,76 @@ function MenuPage(props) {
     );
   };
 
-  const handleEdit = (key) => {};
+  const handleEdit = (key) => {
+    const item = dataTable.filter((_) => _.menuID === key);
+    if (item.length) {
+      setPopupMode(POPUP_MODE.EDIT);
+      setIsShowPopupCreateMenu(true);
+      setDataDetail(item[0]);
+    }
+  };
+
+  const handleSave = () => {
+    let _body = {
+      ...dataCreate,
+      modifiedDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
+      modifiedBy: 'DOVANHAI',
+      parentID: dataCreate?.parentID,
+      displayOrder: dataCreate.displayOrder || 0,
+    };
+
+    debugger;
+
+    baseApi.put(
+      (res) => {
+        if (res.data > 0) {
+          toast.current.show({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Cập nhật thành công',
+            life: 3000,
+          });
+          getMenusFilter();
+        } else {
+          toast.current.show({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Cập nhật thất bại',
+            life: 3000,
+          });
+        }
+        setIsShowPopupCreateMenu(false);
+        setIsLoading(false);
+      },
+      (err) => {
+        toast.current.show({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Cập nhật thất bại',
+          life: 3000,
+        });
+        setIsLoading(false);
+      },
+      () => {
+        setIsLoading(true);
+      },
+      format(END_POINT.TOE_UPDATE_MENU, dataDetail.menuID),
+      _body,
+      null,
+      null
+    );
+  };
 
   const handleAdd = () => {
     let _body = {
       ...dataCreate,
+      createdDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
+      createdBy: 'DOVANHAI',
+      modifiedDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
+      modifiedBy: 'DOVANHAI',
+      parentID: dataCreate?.parentID,
+      displayOrder: dataCreate.displayOrder || 0,
     };
-
-    debugger;
 
     baseApi.post(
       (res) => {
@@ -301,10 +414,17 @@ function MenuPage(props) {
             detail: 'Thêm mới thành công',
             life: 3000,
           });
-          setTimeout(() => {
-            window.history.back();
-          }, 400);
+          getMenusFilter();
+        } else {
+          toast.current.show({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Thêm mới thất bại',
+            life: 3000,
+          });
         }
+        setIsShowPopupCreateMenu(false);
+        setIsLoading(false);
       },
       (err) => {
         toast.current.show({
@@ -313,8 +433,11 @@ function MenuPage(props) {
           detail: 'Thêm mới thất bại',
           life: 3000,
         });
+        setIsLoading(false);
       },
-      () => {},
+      () => {
+        setIsLoading(true);
+      },
       END_POINT.TOE_INSERT_MENU,
       _body,
       null,
@@ -428,6 +551,7 @@ function MenuPage(props) {
       rightButtons={[
         <Button
           onClick={() => {
+            setDataDetail(null);
             setIsShowPopupCreateMenu(true);
             setPopupMode(POPUP_MODE.ADD);
           }}
@@ -448,7 +572,7 @@ function MenuPage(props) {
               onChange={(value) => {
                 setPaging({
                   ...paging,
-                  filterValue: value,
+                  filterValue: value?.trim(),
                 });
               }}
               placeholder={'Tìm kiếm menu theo Tiêu đề, Alias...'}
@@ -484,12 +608,17 @@ function MenuPage(props) {
           pageSize={paging.pageSize}
           totalRecords={totalRecords}
         />
-        <PopupCreateMenu
-          show={isShowPopupCreateMenu}
-          onClose={() => setIsShowPopupCreateMenu(false)}
-          {...getPopupCreateMenuPops()}
-          onChange={(data) => setDataCreate(data)}
-        />
+        {isShowPopupCreateMenu ? (
+          <PopupCreateMenu
+            show={isShowPopupCreateMenu}
+            onClose={() => setIsShowPopupCreateMenu(false)}
+            {...getPopupCreateMenuPops()}
+            onChange={(data) => {
+              setDataCreate(data);
+            }}
+            defaultValue={dataDetail}
+          />
+        ) : null}
       </div>
       <Toast ref={toast}></Toast>
     </Layout>

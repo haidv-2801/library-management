@@ -8,6 +8,7 @@ import { Toast } from 'primereact/toast';
 import {
   BUTTON_THEME,
   BUTTON_TYPE,
+  DATE_FORMAT,
   PATH_NAME,
 } from '../../../../constants/commonConstant';
 import { buildClass } from '../../../../constants/commonFunction';
@@ -117,7 +118,7 @@ function PostPage(props) {
         if (isLoading) return <Skeleton></Skeleton>;
         return (
           <div className="toe-font-body">
-            {moment(row?.createdDate).format('DD/MM/YYYY HH:mm:ss')}
+            {moment(row?.createdDate).format(DATE_FORMAT.TYPE_1)}
           </div>
         );
       },

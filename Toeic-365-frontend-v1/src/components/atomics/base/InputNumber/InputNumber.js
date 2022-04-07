@@ -82,25 +82,6 @@ function InputNumber(props) {
   } = props;
 
   const ref = useRef('');
-  const [delayValue, setDelayValue] = useState(defaultValue);
-
-  useEffect(() => {
-    let timeOutId = null;
-    if (delay > 0) {
-      timeOutId = setTimeout(() => {
-        onChange(delayValue);
-      }, delay);
-    } else {
-      onChange(delayValue);
-    }
-    return () => {
-      if (timeOutId) clearTimeout(timeOutId);
-    };
-  }, [delayValue]);
-
-  const valueProp = controlled
-    ? { value: value }
-    : { defaultValue: delayValue };
 
   return (
     <>
@@ -110,7 +91,7 @@ function InputNumber(props) {
         className={buildClass([
           'toe-input-number',
           !valid && 'toe-input-number-warning',
-          rightIcon && 'p-InputNumber-icon-right',
+          rightIcon && 'p-input-number-icon-right',
           label && 'toe-input-number-has-label',
           className,
           'toe-font-body',
@@ -131,24 +112,23 @@ function InputNumber(props) {
 
         <div
           style={{ width: '100%' }}
-          className={buildClass([leftIcon && 'p-InputNumber-icon-left'])}
+          className={buildClass([leftIcon && 'p-input-number-icon-left'])}
         >
           {leftIcon ? leftIcon : null}
           <InputNumberPrime
+            className="toe-input-number--inner"
             autoFocus={autoFocus}
             onValueChange={(e) => {
-              console.log('sdasdsa');
               ref.current = e.value;
-              setDelayValue(e.value);
-              if (ref.current?.length === parseInt(maxLength, 10) || 0) return;
+              onChange(e.value);
             }}
             placeholder={placeholder}
             maxLength={maxLength}
-            {...valueProp}
             tabIndex={tabIndex}
             disabled={disabled}
             mode="decimal"
             useGrouping={false}
+            value={value}
           />
         </div>
         {showMaxLength ? (

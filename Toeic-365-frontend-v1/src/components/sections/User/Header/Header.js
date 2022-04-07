@@ -1,20 +1,32 @@
 import { DownOutlined, LoginOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
-import React, { useContext, useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import React, { useContext, useState, useEffect } from 'react';
+import { Navigate, NavLink, useNavigate } from 'react-router-dom';
 import MainLogo from '../../../../assets/images/toeiclogo.png';
 import {
   BUTTON_THEME,
   BUTTON_TYPE,
+  GUID_NULL,
+  MENU_TYPE,
   PATH_NAME,
 } from '../../../../constants/commonConstant';
-import { buildClass, slugify } from '../../../../constants/commonFunction';
+import {
+  buildClass,
+  slugify,
+  listToTree,
+} from '../../../../constants/commonFunction';
 import { AuthContext } from '../../../../contexts/authContext';
 import Button from '../../../atomics/base/Button/Button';
 import PopupSelectionV1 from '../../../atomics/base/PopupSelectionV1/PopupSelection';
 import UserInfo from '../../UserInfo/UserInfo';
+import { Menubar } from 'primereact/menubar';
 import { PanelMenu } from 'primereact/panelmenu';
+import { FAKE_DATA_MENU, FAKE_MENU_ITEM } from '../../../pages/test/Fake';
+import MenuBar from '../../../atomics/base/MenuBar/MenuBar';
+
 import './header.scss';
+import baseApi from '../../../../api/baseApi';
+import END_POINT from '../../../../constants/endpoint';
 
 Header.propTypes = {
   id: PropTypes.string,
@@ -143,10 +155,15 @@ function Header(props) {
     },
   ];
 
+  useEffect(() => {
+    getMenus();
+  }, []);
+
   const authCtx = useContext(AuthContext);
   const history = useNavigate();
   const [expandedMenu, setExpandedMenu] = useState(false);
   const [currentLink, setCurrentLink] = useState('');
+  const [dataMenus, setDataMenus] = useState([]);
 
   const renderMenu = (subPosition = 'bottomLeft') => {
     return MENU.map((item) => {
@@ -197,6 +214,65 @@ function Header(props) {
         </PopupSelectionV1>
       );
     });
+  };
+
+  const getMenus = () => {
+    baseApi.get(
+      (res) => {
+        res = res.sort((a, b) => a.displayOrder - b.displayOrder);
+        setDataMenus(
+          listToTree(
+            res.map((item) => ({
+              ...item,
+              label: item.title,
+              key: item.menuID,
+              // url: handleControlByMenuType(item),
+              command: (e) => {
+                switch (item.type) {
+                  case MENU_TYPE.NORMAL:
+                    history('/' + item.slug);
+                    break;
+                  case MENU_TYPE.HTML_RENDER:
+                    history('/html/' + item.slug);
+                    break;
+                  case MENU_TYPE.REDIRECT:
+                    window.open(item?.link, '_blank');
+                    break;
+                  case MENU_TYPE.NONE_EVENT:
+                    break;
+                  default:
+                    break;
+                }
+              },
+            })),
+            'items'
+          )
+        );
+      },
+      (err) => {},
+      () => {},
+      END_POINT.TOE_GET_MENUS,
+      null,
+      null
+    );
+  };
+
+  const handleControlByMenuType = (item) => {
+    return '';
+    switch (item.type) {
+      case MENU_TYPE.NORMAL:
+        return item.slug;
+      case MENU_TYPE.REDIRECT:
+        return '';
+      case MENU_TYPE.HTML_RENDER:
+        return '/html/' + item.slug;
+      case MENU_TYPE.NONE_EVENT:
+        return '';
+      case MENU_TYPE.REDIRECT:
+        return '';
+      default:
+        return '';
+    }
   };
 
   const handleChangePage = (item) => {
@@ -251,7 +327,7 @@ function Header(props) {
       <div className="toe-layout-user-page-container__header-right">
         {showNav && (
           <>
-            {renderMenu()}
+            <MenuBar options={dataMenus} />
             {!authCtx.isLoggedIn ? (
               <>
                 <Button

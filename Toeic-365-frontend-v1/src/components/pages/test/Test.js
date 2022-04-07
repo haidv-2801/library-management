@@ -56,7 +56,9 @@ import Book from '../../molecules/Book/Book';
 import { Tooltip } from 'primereact/tooltip';
 import SideBar from '../../atomics/base/SideBar/SideBar';
 import TreeSelect from '../../atomics/base/TreeSelect/TreeSelect';
-
+import MenuBar from '../../atomics/base/MenuBar/MenuBar';
+import { FAKE_MENU_ITEM, FAKE_DATA_MENU } from './Fake';
+import { listToTree } from '../../../constants/commonFunction';
 const fake = [
   {
     id: '7172095f-daf0-4d6c-a866-30ec9c8a3f96',
@@ -262,17 +264,17 @@ const Test = () => {
 
   return (
     <div className="toe-test">
-      <input type="file" onChange={previewFile} />
-      <br />
-      <img
-        ref={preview}
-        src={src}
-        height="200"
-        onError={(e) => {
-          console.log(e);
-        }}
-        alt="Image preview..."
-      ></img>
+      <MenuBar
+        options={listToTree(
+          FAKE_DATA_MENU.map((item) => ({
+            ...item,
+            label: item.title,
+            key: item.menuID,
+            url: '',
+          })),
+          'items'
+        )}
+      />
     </div>
   );
 };

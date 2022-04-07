@@ -140,7 +140,7 @@ function BooksPage(props) {
                 />
                 <Input
                   autoFocus
-                  onChange={(e) => setCommonSearchValue(e.target.value)}
+                  onChange={(e) => setCommonSearchValue(e)}
                   placeholder={'Tìm kiếm sách, tin tức, thông báo, tài liệu...'}
                 />
                 <Button

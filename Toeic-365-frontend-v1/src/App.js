@@ -81,19 +81,16 @@ function App() {
                 <Route exact path=":id" element={<BookDetail />} />
               </Route>
             </Route>
-            {/* <Route exact path={PATH_NAME.NEWS}>
-              <Route
-                index
-                exact
-                path="post"
-                element={
-                  <RequiredAuth>
-                    <PostPage />
-                  </RequiredAuth>
-                }
-              />
-            </Route> */}
-
+            <Route
+              exact
+              path={PATH_NAME.NEWS}
+              element={<CommonListItemPage />}
+            />
+            <Route
+              exact
+              path={PATH_NAME.NOTIFICATION}
+              element={<CommonListItemPage />}
+            />
             {/* html page */}
             <Route exact path="html">
               <Route index path=":slug" element={<HtmlRenderPage />} />

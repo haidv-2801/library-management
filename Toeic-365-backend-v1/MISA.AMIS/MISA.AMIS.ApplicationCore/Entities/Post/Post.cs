@@ -19,6 +19,11 @@ namespace TOE.TOEIC.ApplicationCoore.Entities
         public Guid PostID { get; set; } = Guid.NewGuid();
 
         /// <summary>
+        /// Id bài viết
+        /// </summary>
+        public Guid MenuID { get; set; } = Guid.Empty;
+
+        /// <summary>
         /// Mã bài viết
         /// </summary>
         [IDuplicate]

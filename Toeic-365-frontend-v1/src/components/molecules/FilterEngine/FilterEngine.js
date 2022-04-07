@@ -163,7 +163,7 @@ function FilterEngine(props) {
             onChange={(e) =>
               setFilterValue((pre) => ({
                 ...pre,
-                [keyHover]: e.target.value?.trim(),
+                [keyHover]: e?.trim(),
               }))
             }
             maxLength={255}

@@ -194,6 +194,7 @@ function TreeSelect(props) {
         emptyMessage={filterPlaceholder}
         filterPlaceholder="Nhập giá trị tìm kiếm"
         resetFilterOnHide={true}
+        scrollHeight={300}
       />
     </div>
   );

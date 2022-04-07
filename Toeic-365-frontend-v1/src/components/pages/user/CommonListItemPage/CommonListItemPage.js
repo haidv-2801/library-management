@@ -1,6 +1,6 @@
 import { BellOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import Banner from '../../../molecules/Banner/Banner';
 import CommonItem from '../../../molecules/CommonItem/CommonItem';
@@ -24,6 +24,8 @@ function CommonListItemPage(props) {
   const { pathname } = useLocation();
   const [pageI, setPageI] = useState({ page: 1, pageSize: 20, total: 100 });
 
+  useEffect(() => {}, []);
+
   const renderCommonItems = () => {
     const arr = Array.from(Array(10).keys());
 
@@ -43,6 +45,8 @@ function CommonListItemPage(props) {
       />
     ));
   };
+
+  const getPostsByMenuID = (menuID) => {};
 
   return (
     <Layout>

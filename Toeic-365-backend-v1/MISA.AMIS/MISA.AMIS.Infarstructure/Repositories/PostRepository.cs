@@ -55,6 +55,31 @@ namespace TOE.TOEIC.Infrastructure
             //3. Trả về dữ liệu
             return serviceResult;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filterValue"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="pageNum"></param>
+        /// <returns></returns>
+        public DbResponse GetPostsByMenuID(Guid MenuID)
+        {
+            //1. Ánh xạ giá trị
+            var serviceResult = new DbResponse();
+            var param = new DynamicParameters();
+            param.Add($"@v_menuid", MenuID);
+            param.Add($"@v_total_record", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+            //2. Tạo kết nối và truy vấn                        
+            var posts = _dbConnection.Query<Post>($"Proc_Get{_tableName}sByMenuID", param: param, commandType: CommandType.StoredProcedure);
+
+            serviceResult.Data = (IEnumerable<Post>)posts;
+            serviceResult.TotalRecords = param.Get<int>("v_total_record");
+
+            //3. Trả về dữ liệu
+            return serviceResult;
+        }
         #endregion
     }
 }

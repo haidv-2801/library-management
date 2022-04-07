@@ -1,4 +1,4 @@
-import { TEXT_FALL_BACK } from './commonConstant';
+import { GUID_NULL, TEXT_FALL_BACK } from './commonConstant';
 
 /**
  * Build ra classname
@@ -677,25 +677,31 @@ export const findNode = (key, root) => {
  * @param {*} list
  * @returns
  */
-export const listToTree = (list) => {
+export const listToTree = (list, children = 'children') => {
   let map = {},
     node,
     roots = [],
-    i;
+    i,
+    _list = [...list];
 
-  for (i = 0; i < list.length; i += 1) {
-    map[list[i].key] = i;
-    list[i].children = [];
+  for (i = 0; i < _list.length; i += 1) {
+    map[list[i]?.key] = i;
+    _list[i][children] = [];
   }
 
-  for (i = 0; i < list.length; i += 1) {
-    node = list[i];
-    if (node?.parentId) {
-      list[map[node.parentId]].children.push(node);
+  for (i = 0; i < _list.length; i += 1) {
+    node = _list[i];
+    if (node?.parentID !== GUID_NULL) {
+      _list[map[node.parentID]][children].push(node);
     } else {
       roots.push(node);
     }
   }
+
+  for (let node of _list) {
+    if (!node[children]?.length) node[children] = null;
+  }
+
   return roots;
 };
 
@@ -741,6 +747,10 @@ export const debounce = (timeout = 0, func) => {
   };
 };
 
+/**
+ * Tạo guid
+ * @returns
+ */
 export const uuidv4 = () => {
   return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) =>
     (

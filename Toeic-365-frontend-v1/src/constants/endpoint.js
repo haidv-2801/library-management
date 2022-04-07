@@ -36,7 +36,7 @@ const END_POINT = (function () {
        * *Endpoint menu
        */
       TOE_GET_MENUS_FILTER_PAGING: DEV_HOST + 'api/Menus/MenusFilterPaging',
-      TOE_GET_MENUS: DEV_HOST + 'api/Posts',
+      TOE_GET_MENUS: DEV_HOST + 'api/Menus',
       TOE_UPDATE_MENU: DEV_HOST + 'api/Menus/{0}',
       TOE_INSERT_MENU: DEV_HOST + 'api/Menus',
       TOE_GET_MENU_BY_ID: DEV_HOST + 'api/Menus/{0}',

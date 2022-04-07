@@ -7,6 +7,16 @@
 
   &__row {
     margin-bottom: 16px;
+
+    &.--flex-center {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+
+      & > * {
+        flex: 1;
+      }
+    }
   }
 
   &__left {

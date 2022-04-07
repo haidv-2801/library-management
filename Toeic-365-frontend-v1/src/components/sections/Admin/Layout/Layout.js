@@ -77,10 +77,6 @@ function Layout(props) {
       icon: <UserOutlined />,
       children: [
         {
-          key: '/admin/tin-tuc/menu',
-          title: 'Menu website',
-        },
-        {
           key: '/admin/tin-tuc/post',
           title: 'Bài viết',
         },

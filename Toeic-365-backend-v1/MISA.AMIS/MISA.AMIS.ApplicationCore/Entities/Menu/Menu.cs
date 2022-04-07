@@ -30,7 +30,6 @@ namespace TOE.TOEIC.ApplicationCoore.Entities
         /// Họ và tên menu
         /// </summary>
         [Display(Name = "Alias menu")]
-        [IDuplicate]
         public string Slug { get; set; }
 
         /// <summary>

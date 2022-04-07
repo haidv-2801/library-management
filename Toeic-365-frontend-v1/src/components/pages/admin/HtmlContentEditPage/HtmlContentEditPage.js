@@ -13,12 +13,14 @@ import baseApi from '../../../../api/baseApi';
 import {
   BUTTON_THEME,
   BUTTON_TYPE,
+  GUID_NULL,
   POST_TYPE,
   TEXT_FALL_BACK,
 } from '../../../../constants/commonConstant';
 import {
   buildClass,
   formatBytes,
+  listToTree,
   slugify,
 } from '../../../../constants/commonFunction';
 import END_POINT from '../../../../constants/endpoint';
@@ -57,6 +59,7 @@ function HtmlContentEditPage(props) {
     postType: '',
     htmlContent: 'Tiêu đề bài đăng content',
     description: 'Mô tả mặc định',
+    menuID: GUID_NULL,
   };
 
   const MAXIMUM_FILE_SIZE = 1000000;
@@ -77,9 +80,11 @@ function HtmlContentEditPage(props) {
   const toast = useRef(null);
   const fileUploadRef = useRef(null);
   const forgeRenderKey = useRef(0);
+  const [dataTable, setDataTable] = useState([]);
 
   useEffect(() => {
     getPostById();
+    getMenus();
   }, []);
 
   const onTemplateRemove = (file, callback) => {
@@ -226,6 +231,25 @@ function HtmlContentEditPage(props) {
       'custom-cancel-btn p-button-danger p-button-rounded p-button-outlined',
   };
 
+  const getMenus = () => {
+    baseApi.get(
+      (res) => {
+        let _data = res.map((item) => ({
+          ...item,
+          key: item?.menuID,
+          label: item?.title,
+        }));
+        _data = listToTree(_data);
+        setDataTable(_data);
+      },
+      (err) => {},
+      () => {},
+      END_POINT.TOE_GET_MENUS,
+      null,
+      null
+    );
+  };
+
   const handleSave = () => {
     if (!data.htmlContent) setShowWarningMessage(true);
     updatePost();
@@ -280,6 +304,7 @@ function HtmlContentEditPage(props) {
     baseApi.get(
       (res) => {
         setData({
+          ...res,
           title: res.title,
           slug: res.slug,
           description: res.description,
@@ -378,7 +403,16 @@ function HtmlContentEditPage(props) {
               </div>
             </div>
             <div className="toe-admin-edit-post-page__row">
-              <TreeSelect hasRequiredLabel label="Menu" />
+              <TreeSelect
+                hasRequiredLabel
+                label="Menu hiển thị"
+                placeholder="Nhấp để chọn"
+                value={data.menuID}
+                options={dataTable}
+                onChange={(data) => {
+                  setData((pre) => ({ ...pre, menuID: data.value }));
+                }}
+              />
             </div>
             <div className="toe-admin-edit-post-page__row">
               <span className="toe-font-label">
