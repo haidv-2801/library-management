@@ -10,29 +10,34 @@ import UserProfile from './components/pages/user/UserProfile/UserProfile';
 import { Toast } from 'primereact/toast';
 import { PATH_NAME } from './constants/commonConstant';
 import { AuthContext } from './contexts/authContext';
+import HtmlContentEditPage from './components/pages/admin/HtmlContentEditPage/HtmlContentEditPage';
+import HtmlContentCreatingPage from './components/pages/admin/HtmlContentCreatingPage/HtmlContentCreatingPage';
+import PostPage from './components/pages/admin/PostPage/PostPage';
+import UserPage from './components/pages/admin/UserPage/UserPage';
+import MenuPage from './components/pages/admin/MenuPage/MenuPage';
 import './main.scss';
 
-const MenuPage = React.lazy(() =>
-  import('./components/pages/admin/MenuPage/MenuPage')
-);
+// const MenuPage = React.lazy(() =>
+//   import('./components/pages/admin/MenuPage/MenuPage')
+// );
 
-const HtmlContentEditPage = React.lazy(() =>
-  import('./components/pages/admin/HtmlContentEditPage/HtmlContentEditPage')
-);
+// const HtmlContentEditPage = React.lazy(() =>
+//   import('./components/pages/admin/HtmlContentEditPage/HtmlContentEditPage')
+// );
 
-const PostPage = React.lazy(() =>
-  import('./components/pages/admin/PostPage/PostPage')
-);
+// const PostPage = React.lazy(() =>
+//   import('./components/pages/admin/PostPage/PostPage')
+// );
 
-const HtmlContentCreatingPage = React.lazy(() =>
-  import(
-    './components/pages/admin/HtmlContentCreatingPage/HtmlContentCreatingPage'
-  )
-);
+// const HtmlContentCreatingPage = React.lazy(() =>
+//   import(
+//     './components/pages/admin/HtmlContentCreatingPage/HtmlContentCreatingPage'
+//   )
+// );
 
-const UserPage = React.lazy(() =>
-  import('./components/pages/admin/UserPage/UserPage')
-);
+// const UserPage = React.lazy(() =>
+//   import('./components/pages/admin/UserPage/UserPage')
+// );
 
 const Test = React.lazy(() => import('./components/pages/test/Test'));
 

@@ -286,10 +286,11 @@ function HtmlContentCreatingPage(props) {
         }
       },
       (err) => {
+        let errMessage = err?.response?.data?.data || 'Có lỗi xảy ra';
         toast.current.show({
           severity: 'error',
-          summary: 'Error',
-          detail: 'Thêm mới thất bại',
+          summary: 'Thêm mới thất bại',
+          detail: errMessage,
           life: 3000,
         });
       },

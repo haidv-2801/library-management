@@ -7,18 +7,26 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TOE.TOEIC.ApplicationCoore.Entities
 {
-    public class UserDTO : BaseEntity
+    public class AccountPasswordChangeDTO : BaseEntity
     {
         #region Property
         /// <summary>
-        /// Họ và tên nhân viên
+        /// Id tài khoản
         /// </summary>
-        public string UserName { get; set; }
+        [Key]
+        public Guid AccountID { get; set; } = Guid.NewGuid();
 
         /// <summary>
         /// Email
         /// </summary>
-        public string Email { get; set; }
+        [Display(Name = "Mật khẩu cũ")]
+        public string OldPassword { get; set; }
+
+        /// <summary>
+        /// Email
+        /// </summary>
+        [Display(Name = "Mật khẩu mới")]
+        public string Password { get; set; }
         #endregion
     }
 }

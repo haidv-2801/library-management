@@ -71,6 +71,9 @@ namespace TOE.TOEIC.ApplicationCore
         /// CREATED BY: DVHAI (11/07/2021)
         public virtual ServiceResult Insert(TEntity entity)
         {
+            //0.Custom lại giá trị khi update
+            entity = CustomValueWhenInsert(entity);
+
             entity.EntityState = EntityState.Add;
 
             //1. Validate tất cả các trường nếu được gắn thẻ
@@ -102,6 +105,9 @@ namespace TOE.TOEIC.ApplicationCore
         /// CREATED BY: DVHAI (11/07/2021)
         public ServiceResult Update(Guid entityId, TEntity entity)
         {
+            //0.Custom lại giá trị khi update
+            entity = CustomValueWhenUpdate(entity);
+
             //1. Trạng thái
             entity.EntityState = EntityState.Update;
 
@@ -196,6 +202,26 @@ namespace TOE.TOEIC.ApplicationCore
         protected virtual bool ValidateCustom(TEntity entity)
         {
             return true;
+        }
+
+        /// <summary>
+        /// Custom lại value khi update
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        protected virtual TEntity CustomValueWhenUpdate(TEntity entity)
+        {
+            return entity;
+        }
+
+        /// <summary>
+        /// Custom lại value khi insert
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        protected virtual TEntity CustomValueWhenInsert(TEntity entity)
+        {
+            return entity;
         }
 
         /// <summary>

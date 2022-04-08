@@ -10,20 +10,21 @@ namespace TOE.TOEIC.ApplicationCoore.Entities
     /// <summary>
     /// Thực thể người dùng
     /// </summary>
-    [Table("User")]
-    public class User : BaseEntity
+    [Table("Account")]
+    public class Account : BaseEntity
     {
         #region Property
         /// <summary>
-        /// Id nhân viên
+        /// Id tài khoản
         /// </summary>
         [Key]
-        public Guid UserID { get; set; } = Guid.NewGuid();
+        public Guid AccountID { get; set; } = Guid.NewGuid();
 
         /// <summary>
-        /// Họ và tên nhân viên
+        /// Họ và tên tài khoản
         /// </summary>
         [Display(Name ="Tên người dùng")]
+        [IDuplicate]
         public string UserName { get; set; }
 
         /// <summary>
@@ -39,6 +40,17 @@ namespace TOE.TOEIC.ApplicationCoore.Entities
         /// </summary>
         [Display(Name = "Mật khẩu")]
         public string Password { get; set; }
+
+        [Display(Name = "Họ và tên")]
+        public string FullName { get; set; }
+
+
+        [Display(Name = "Số điện thoại")]
+        [IDuplicate]
+        public string PhoneNumber { get; set; }
+
+        [Display(Name = "Avatar")]
+        public string Avatar { get; set; }
         #endregion
     }
 }

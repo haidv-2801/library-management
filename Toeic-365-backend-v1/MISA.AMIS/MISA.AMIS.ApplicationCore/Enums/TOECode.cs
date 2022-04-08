@@ -22,6 +22,11 @@ namespace TOE.TOEIC.Entities
         Success = 900,
 
         /// <summary>
+        /// Thất bại  
+        /// </summary>
+        Fail = 700,
+
+        /// <summary>
         /// Lỗi exception
         /// </summary>
         Exception = 500

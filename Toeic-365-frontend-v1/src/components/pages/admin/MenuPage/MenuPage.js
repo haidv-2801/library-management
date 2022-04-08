@@ -373,7 +373,6 @@ function MenuPage(props) {
           });
         }
         setIsShowPopupCreateMenu(false);
-        setIsLoading(false);
       },
       (err) => {
         toast.current.show({
@@ -382,11 +381,8 @@ function MenuPage(props) {
           detail: 'Cập nhật thất bại',
           life: 3000,
         });
-        setIsLoading(false);
       },
-      () => {
-        setIsLoading(true);
-      },
+      () => {},
       format(END_POINT.TOE_UPDATE_MENU, dataDetail.menuID),
       _body,
       null,
@@ -424,20 +420,17 @@ function MenuPage(props) {
           });
         }
         setIsShowPopupCreateMenu(false);
-        setIsLoading(false);
       },
       (err) => {
+        let errMessage = err?.response?.data?.data || 'Có lỗi xảy ra';
         toast.current.show({
           severity: 'error',
-          summary: 'Error',
-          detail: 'Thêm mới thất bại',
+          summary: 'Thêm mới thất bại',
+          detail: errMessage,
           life: 3000,
         });
-        setIsLoading(false);
       },
-      () => {
-        setIsLoading(true);
-      },
+      () => {},
       END_POINT.TOE_INSERT_MENU,
       _body,
       null,

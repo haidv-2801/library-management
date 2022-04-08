@@ -177,7 +177,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         /// </summary>
         /// <param name="entity">Thực thể</param>
         /// <returns>Dan sách các biến động</returns>
-        private DynamicParameters MappingDbType(TEntity entity)
+        protected DynamicParameters MappingDbType(TEntity entity)
         {
             var parameters = new DynamicParameters();
             try
@@ -210,7 +210,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         /// </summary>
         /// <returns></returns>
         /// CREATED BY: DVHAI (11/07/2021)
-        private PropertyInfo GetKeyProperty()
+        protected PropertyInfo GetKeyProperty()
         {
             try
             {
@@ -247,9 +247,9 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
 
             //3. Kiểm tra kiểu form
             if (entity.EntityState == EntityState.Add)
-                query = $"SELECT * FROM {_tableName} WHERE {propertyName} = '{propertyValue}'";
+                query = $"SELECT * FROM {_tableName} WHERE {propertyName} = '{propertyValue}' AND IsDeleted = FALSE";
             else if (entity.EntityState == EntityState.Update)
-                query = $"SELECT * FROM {_tableName} WHERE {propertyName} = '{propertyValue}' AND {keyName} <> '{keyValue}'";
+                query = $"SELECT * FROM {_tableName} WHERE {propertyName} = '{propertyValue}' AND {keyName} <> '{keyValue}' AND IsDeleted = FALSE";
             else
                 return null;
 

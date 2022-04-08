@@ -108,3 +108,15 @@
   display: none !important;
   opacity: 0 !important;
 }
+
+.p-tabview .p-tabview-nav li .p-tabview-nav-link:not(.p-disabled):focus {
+  box-shadow: none;
+}
+
+.p-tabview-panels {
+  flex: 1;
+
+  .p-tabview-panel {
+    height: 100%;
+  }
+}

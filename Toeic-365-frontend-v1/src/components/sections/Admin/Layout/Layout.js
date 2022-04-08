@@ -88,6 +88,10 @@ function Layout(props) {
           key: '/admin/tin-tuc/slide',
           title: 'Slide',
         },
+        {
+          key: '/admin/yeu-cau-gop-y',
+          title: 'Yêu cầu góp ý',
+        },
       ],
     },
     { key: 'separator' },

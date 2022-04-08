@@ -1,42 +1,28 @@
-import React, { useState, useContext } from 'react';
-import PropTypes from 'prop-types';
-
-import LoginBg from '../../../../assets/images/login.svg';
-import { buildClass } from '../../../../constants/commonFunction';
-import MainLogo from '../../../../assets/images/toeiclogo.png';
-import Modal from '../../../atomics/base/Modal/Modal';
-import Button from '../../../atomics/base/Button/Button';
-import { LoginOutlined, LoadingOutlined } from '@ant-design/icons';
+import { LoadingOutlined, LoginOutlined } from '@ant-design/icons';
+import 'primeflex/primeflex.css';
+import 'primeicons/primeicons.css';
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
-import { message } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
-import store from '../../../../redux/store';
-import baseApi from '../../../../api/baseApi';
-import END_POINT, { ADMIN_ENDPOINT } from '../../../../constants/endpoint';
-import {
-  setCookie,
-  getCookie,
-  setLocalStorage,
-  getLocalStorage,
-  TOKEN_KEY,
-  USER_INFO,
-  AuthContext,
-} from '../../../../contexts/authContext';
-import { appAction } from '../../../../redux/slices/appSlice';
-import 'primeicons/primeicons.css';
-import 'primereact/resources/themes/lara-light-indigo/theme.css';
 import 'primereact/resources/primereact.css';
-import 'primeflex/primeflex.css';
-import './loginPage.scss';
-
+import 'primereact/resources/themes/lara-light-indigo/theme.css';
+import PropTypes from 'prop-types';
+import React, { useContext, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import LoginBg from '../../../../assets/images/login.svg';
+import MainLogo from '../../../../assets/images/toeiclogo.png';
 import {
   BUTTON_TYPE,
-  REGEX,
   KEY_CODE,
   PATH_NAME,
+  REGEX,
 } from '../../../../constants/commonConstant';
-import { useNavigate } from 'react-router-dom';
+import { buildClass } from '../../../../constants/commonFunction';
+import { AuthContext } from '../../../../contexts/authContext';
+import { appAction } from '../../../../redux/slices/appSlice';
+import Button from '../../../atomics/base/Button/Button';
+import Modal from '../../../atomics/base/Modal/Modal';
+import './loginPage.scss';
 
 LoginPage.propTypes = {
   id: PropTypes.string,

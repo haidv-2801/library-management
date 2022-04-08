@@ -10,12 +10,6 @@ const END_POINT = (function () {
       //login
       TOE_LOGIN: DEV_HOST + '/auth/login',
 
-      //user
-      TOE_GET_USERS: DEV_HOST + '/api/users',
-      TOE_GET_ME: DEV_HOST + '/api/users/me',
-      TOE_GET_USER_UPDATE: DEV_HOST + '/api/users/update',
-      TOE_GET_USER_DELETE: DEV_HOST + '/api/users/delete/{0}',
-
       //exam
       TOE_GET_EXAM_INTRO: DEV_HOST + '/api/exams/intro',
       TOE_GET_EXAMS: DEV_HOST + '/api/exams/name',
@@ -41,6 +35,18 @@ const END_POINT = (function () {
       TOE_INSERT_MENU: DEV_HOST + 'api/Menus',
       TOE_GET_MENU_BY_ID: DEV_HOST + 'api/Menus/{0}',
       TOE_DELETE_MENU: DEV_HOST + 'api/Menus/{0}',
+
+      /**
+       * *Endpoint user
+       */
+      TOE_GET_USERS_FILTER_PAGING:
+        DEV_HOST + 'api/Accounts/AccountsFilterPaging',
+      TOE_GET_USERS: DEV_HOST + 'api/Accounts',
+      TOE_UPDATE_USER: DEV_HOST + 'api/Accounts/{0}',
+      TOE_UPDATE_USER_PASSWORD: DEV_HOST + 'api/Accounts/ChangePassword/{0}',
+      TOE_DELETE_USER: DEV_HOST + 'api/Accounts/{0}',
+      TOE_INSERT_USER: DEV_HOST + 'api/Accounts',
+      TOE_GET_USER_BY_ID: DEV_HOST + 'api/Accounts/{0}',
     };
   } else {
     return {};
