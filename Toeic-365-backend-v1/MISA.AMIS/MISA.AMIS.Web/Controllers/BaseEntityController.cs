@@ -44,6 +44,32 @@ namespace TOE.TOEIC.Web.Controllers
             return Ok(entities);
         }
 
+        [EnableCors("AllowCROSPolicy")]
+        [HttpPost("Filter")]
+        public IActionResult GetFilter(PagingRequest pagingRequest)
+        {
+            var serviceResult = new ServiceResult();
+            try
+            {
+                var entity = _baseService.GetEntitiesFilter(pagingRequest);
+
+                if (entity == null)
+                    return NotFound();
+
+                return Ok(entity);
+            }
+            catch (Exception ex)
+            {
+                serviceResult.Data = null;
+                serviceResult.Messasge = ex.Message;
+                serviceResult.TOECode = TOECode.Fail;
+            }
+
+            if(serviceResult.TOECode == TOECode.Fail) { return BadRequest(serviceResult); }
+
+            return Ok(serviceResult);
+        }
+
         /// <summary>
         /// Lấy thực thể theo id
         /// </summary>

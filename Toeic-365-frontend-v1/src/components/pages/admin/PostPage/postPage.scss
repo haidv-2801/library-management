@@ -4,6 +4,8 @@
   flex-direction: column;
 
   &__row {
+    display: flex;
+    gap: 16px;
     margin-bottom: 16px;
 
     &:last-child {
@@ -11,7 +13,11 @@
     }
 
     .toe-input {
-      width: 25vw;
+      width: 20vw;
+    }
+
+    .dropdown-filter-by-menu {
+      width: fit-content;
     }
   }
 

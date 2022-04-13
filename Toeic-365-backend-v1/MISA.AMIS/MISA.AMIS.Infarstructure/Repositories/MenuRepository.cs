@@ -24,6 +24,20 @@ namespace TOE.TOEIC.Infrastructure
 
         }
 
+        public DbResponse GetMenusAndPostsCount()
+        {
+            //1. Ánh xạ giá trị
+            var serviceResult = new DbResponse();
+
+            //2. Tạo kết nối và truy vấn                        
+            var posts = _dbConnection.Query<object>("select * from view_countpostbymenuid",  commandType: CommandType.Text);
+
+            serviceResult.Data = (IEnumerable<object>)posts;
+
+            //3. Trả về dữ liệu
+            return serviceResult;
+        }
+
         #endregion
 
         #region Methods

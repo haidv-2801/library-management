@@ -59,6 +59,7 @@ import TreeSelect from '../../atomics/base/TreeSelect/TreeSelect';
 import MenuBar from '../../atomics/base/MenuBar/MenuBar';
 import { FAKE_MENU_ITEM, FAKE_DATA_MENU } from './Fake';
 import { listToTree } from '../../../constants/commonFunction';
+import PaginatorAntd from '../../molecules/PaginatorAntd/PaginatorAntd';
 const fake = [
   {
     id: '7172095f-daf0-4d6c-a866-30ec9c8a3f96',
@@ -264,7 +265,7 @@ const Test = () => {
 
   return (
     <div className="toe-test">
-      <MenuBar
+      {/* <MenuBar
         options={listToTree(
           FAKE_DATA_MENU.map((item) => ({
             ...item,
@@ -274,6 +275,13 @@ const Test = () => {
           })),
           'items'
         )}
+      /> */}
+      <PaginatorAntd
+        totalRecords={30}
+        page={1}
+        onChange={(data) => {
+          console.log(data);
+        }}
       />
     </div>
   );

@@ -53,19 +53,19 @@ function PopupCreateMenu(props) {
 
   const DROPDOWN_TYPE_OPTIONS = [
     {
-      label: 'Chuyển hướng Alias',
-      value: MENU_TYPE.NORMAL,
-      subLabel: 'VD: https://trangwebcuaban.com/{Alias}',
-    },
-    {
-      label: 'Chuyển hướng Link',
-      value: MENU_TYPE.REDIRECT,
-      subLabel: 'Trang được chuyển hướng qua đường dẫn là {Link}',
-    },
-    {
-      label: 'Chuyển hướng thành /html/{Alias}',
+      label: 'Menu đơn',
       value: MENU_TYPE.HTML_RENDER,
-      subLabel: 'VD: https://trangwebcuaban.com/{Html}/{Alias}',
+      subLabel: 'Menu chỉ chứa một bài đăng duy nhất',
+    },
+    {
+      label: 'Menu nhiều',
+      value: MENU_TYPE.NORMAL,
+      subLabel: 'Chứa danh sách các bài đăng',
+    },
+    {
+      label: 'Menu chuyển hướng',
+      value: MENU_TYPE.REDIRECT,
+      subLabel: 'Trang được chuyển hướng qua đường dẫn hiện tại',
     },
     {
       label: 'Menu tĩnh',
@@ -99,7 +99,15 @@ function PopupCreateMenu(props) {
   }, []);
 
   useEffect(() => {
-    onChange(data);
+    let _data = { ...data };
+
+    if (data.type === MENU_TYPE.NONE_EVENT) {
+      _data.slug = '';
+    } else if (data.type === MENU_TYPE.HTML_RENDER) {
+      _data.slug = 'html/' + _data.slug;
+    }
+
+    onChange(_data);
   }, [data]);
   //#region
 
@@ -150,7 +158,11 @@ function PopupCreateMenu(props) {
           <Dropdown
             defaultValue={data.type}
             onChange={(e) => {
-              setData({ ...data, type: e.value });
+              let _data = { ...data, type: e.value };
+              if (e.value === MENU_TYPE.NONE_EVENT) {
+                _data = { ..._data, slug: 'html' };
+              }
+              setData(_data);
             }}
             hasSubLabel
             options={DROPDOWN_TYPE_OPTIONS}
@@ -175,7 +187,11 @@ function PopupCreateMenu(props) {
               label="Alias"
               placeholder="Nhập alias"
               controlled
+              pattern="/^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$/"
               value={data.slug}
+              defaultValue={(function () {
+                return data.slug;
+              })()}
               onChange={(e) => {
                 setData({ ...data, slug: e });
               }}

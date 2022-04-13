@@ -21,13 +21,13 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
     public class MenuService : BaseService<Menu>, IMenuService
     {
         #region Declare
-        IMenuRepository _postRepository;
+        IMenuRepository _menuRepository;
         #endregion
 
         #region Constructer
         public MenuService(IMenuRepository postRepository) : base(postRepository)
         {
-            _postRepository = postRepository;
+            _menuRepository = postRepository;
 ;
         }
         #endregion
@@ -44,7 +44,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         public ServiceResult GetMenusFilterPaging(string filterValue, int pageSize, int pageNumber)
         {
             //.1 Lấy danh sách nhân viên phân trang
-            var postDbResponse = (DbResponse)_postRepository.GetMenusFilterPaging(filterValue, pageSize, pageNumber);
+            var postDbResponse = (DbResponse)_menuRepository.GetMenusFilterPaging(filterValue, pageSize, pageNumber);
 
             //2. Lấy tổng số bản ghi
             long totalRecord = postDbResponse.TotalRecords;
@@ -62,6 +62,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
             return _serviceResult;
         }
 
+     
         /// <summary>
         /// Validate tùy chỉn theo màn hình nhân viên
         /// </summary>
@@ -109,7 +110,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
             var propertyDisplayName = GetAttributeDisplayName(propertyName);
 
             //3. Tùy chỉnh nguồn dữ liệu để validate, trạng thái thêm hoắc sửa
-            var entityDuplicate = _postRepository.GetEntityByProperty(post, propertyInfo);
+            var entityDuplicate = _menuRepository.GetEntityByProperty(post, propertyInfo);
 
             if (entityDuplicate != null)
             {
@@ -181,6 +182,12 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
             }
 
             return propertyInfo.GetValue(post, null);
+        }
+
+        public ServiceResult GetMenusAndPostsCount()
+        {
+            _serviceResult.Data = _menuRepository.GetMenusAndPostsCount();
+            return _serviceResult;
         }
         #endregion
     }

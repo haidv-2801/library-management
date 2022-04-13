@@ -76,7 +76,7 @@ function Editor(props) {
         <span className="toe-editor__label toe-font-label">{label}</span>
       ) : null}
       <EditorTiny
-        onLoadContent={() => console.log('loading')}
+        // onLoadContent={() => console.log('loading')}
         onInit={(evt, editor) => (editorRef.current = editor)}
         // initialValue={defaultContent}
         value={defaultContent}
@@ -88,11 +88,12 @@ function Editor(props) {
             'searchreplace visualblocks code fullscreen',
             'insertdatetime media table paste code help wordcount',
           ],
-          toolbar:
+          toolbar: [
             'undo redo | formatselect | ' +
-            'bold italic backcolor | alignleft aligncenter ' +
-            'alignright alignjustify | bullist numlist outdent indent | ' +
-            'removeformat | image  preview  fullscreen  code  help',
+              'bold italic backcolor | alignleft aligncenter ' +
+              'alignright alignjustify | bullist numlist outdent indent | ' +
+              'removeformat | image  preview  fullscreen  code  help',
+          ],
           image_title: true,
           automatic_uploads: true,
           automatic_uploads: true,

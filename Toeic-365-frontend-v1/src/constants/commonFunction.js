@@ -759,3 +759,26 @@ export const uuidv4 = () => {
     ).toString(16)
   );
 };
+
+/**
+ * is guid
+ * @param {*} value
+ * @returns
+ */
+export const isGuid = (value) => {
+  var regex = /[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}/i;
+  var match = regex.exec(value);
+  return match != null;
+};
+
+/**
+ * Parse json
+ * @param {*} json
+ */
+export const ParseJson = (json) => {
+  let res = '';
+  try {
+    res = JSON.parse(json);
+  } catch (error) {}
+  return res;
+};

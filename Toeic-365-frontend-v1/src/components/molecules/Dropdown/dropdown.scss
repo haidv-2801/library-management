@@ -23,7 +23,7 @@
   & .p-inputtext {
     padding: 8px 16px;
     font-size: 14px;
-    font-family: 'OpenSans-Medium', sans-serif;
+    font-family: 'OpenSans-Regular', sans-serif;
   }
 
   .p-dropdown-trigger {
@@ -40,6 +40,16 @@
 
   .pi {
     font-size: 12px;
+  }
+
+  .p-dropdown {
+    &-item {
+      &__value--prefix {
+        .p-dropdown-item__value-display {
+          font-family: 'OpenSans-SemiBold', sans-serif !important;
+        }
+      }
+    }
   }
 }
 

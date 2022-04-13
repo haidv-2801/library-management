@@ -1,6 +1,5 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { Tooltip } from 'antd';
-import moment from 'moment';
 import { Chip } from 'primereact/chip';
 import { Skeleton } from 'primereact/skeleton';
 import { Toast } from 'primereact/toast';
@@ -12,10 +11,10 @@ import baseApi from '../../../../api/baseApi';
 import {
   BUTTON_THEME,
   BUTTON_TYPE,
-  DATE_FORMAT,
-  GUID_NULL,
-  PATH_NAME,
+  MENU_TYPE,
   TEXT_FALL_BACK,
+  OPERATOR,
+  GUID_NULL,
 } from '../../../../constants/commonConstant';
 import { buildClass } from '../../../../constants/commonFunction';
 import END_POINT from '../../../../constants/endpoint';
@@ -25,9 +24,9 @@ import SmartText from '../../../atomics/base/SmartText/SmartText';
 import Paginator from '../../../molecules/Paginator/Paginator';
 import Table from '../../../molecules/Table/Table';
 import Layout from '../../../sections/Admin/Layout/Layout';
-import PopupCreateUser from '../UserPage/PopupCreateUser/PopupCreateUser';
-import './menuPage.scss';
 import PopupCreateMenu from './PopupCreateMenu/PopupCreateMenu';
+import Dropdown from '../../../molecules/Dropdown/Dropdown';
+import './menuPage.scss';
 
 MenuPage.propTypes = {
   id: PropTypes.string,
@@ -151,6 +150,33 @@ function MenuPage(props) {
     ADD: 1,
   };
 
+  const DROPDOWN_TYPE_OPTIONS = [
+    {
+      label: 'Tất cả',
+      value: -1,
+    },
+    {
+      label: 'Chuyển hướng Alias',
+      value: MENU_TYPE.NORMAL,
+      subLabel: 'VD: https://trangwebcuaban.com/{Alias}',
+    },
+    {
+      label: 'Chuyển hướng Link',
+      value: MENU_TYPE.REDIRECT,
+      subLabel: 'Trang được chuyển hướng qua đường dẫn là {Link}',
+    },
+    {
+      label: 'Chuyển hướng thành /html/{Alias}',
+      value: MENU_TYPE.HTML_RENDER,
+      subLabel: 'VD: https://trangwebcuaban.com/{Html}/{Alias}',
+    },
+    {
+      label: 'Menu tĩnh',
+      value: MENU_TYPE.NONE_EVENT,
+      subLabel: 'Không có sự kiện và chứa menu',
+    },
+  ];
+
   const MIN_PAGE_SIZE = 10;
   const requestDoneRef = useRef(true);
 
@@ -166,6 +192,7 @@ function MenuPage(props) {
     filterValue: '',
     page: 1,
     pageSize: MIN_PAGE_SIZE,
+    type: -1,
   });
   const [dataCreate, setDataCreate] = useState({});
   const [dataDetail, setDataDetail] = useState(null);
@@ -301,17 +328,32 @@ function MenuPage(props) {
   };
 
   const getMenusFilter = () => {
+    let _filter = [['IsDeleted', OPERATOR.EQUAL, '0']];
+    if (paging.filterValue?.trim() != '') {
+      _filter.push(OPERATOR.AND);
+      _filter.push([
+        ['Title', OPERATOR.CONTAINS, encodeURI(paging.filterValue)],
+        OPERATOR.OR,
+        ['Slug', OPERATOR.CONTAINS, encodeURI(paging.filterValue)],
+      ]);
+    }
+    if (+paging.type !== -1) {
+      _filter.push(OPERATOR.AND);
+      _filter.push(['Type', OPERATOR.EQUAL, +paging.type]);
+    }
+
     baseApi.post(
       (res) => {
         let _data = res.data.pageData.sort((a, b) => {
           const time = (date) => new Date(date).getTime();
-          if (time(b?.modifiedDate) - time(a?.modifiedDate) === 0) {
+          if (time(b?.createdDate) - time(a?.modifiedDate) > 0) {
             return time(b?.createdDate) - time(a?.createdDate);
           } else {
             return time(b?.modifiedDate) - time(a?.modifiedDate);
           }
         });
-        setDataTable(_data);
+
+        setDataTable([..._data]);
         setIsLoading(false);
         setTotalRecords(res.data.totalRecord);
         requestDoneRef.current = true;
@@ -324,13 +366,13 @@ function MenuPage(props) {
         setIsLoading(true);
         requestDoneRef.current = false;
       },
-      END_POINT.TOE_GET_MENUS_FILTER_PAGING,
-      null,
+      END_POINT.TOE_GET_MENUS_FILTER,
       {
-        filterValue: paging.filterValue || '',
+        filter: btoa(JSON.stringify(_filter)),
         pageSize: paging.pageSize,
-        pageNumber: paging.page,
-      }
+        pageIndex: paging.page,
+      },
+      null
     );
   };
 
@@ -351,8 +393,6 @@ function MenuPage(props) {
       parentID: dataCreate?.parentID,
       displayOrder: dataCreate.displayOrder || 0,
     };
-
-    debugger;
 
     baseApi.put(
       (res) => {
@@ -576,6 +616,16 @@ function MenuPage(props) {
               leftIcon={<i className="pi pi-search"></i>}
               delay={300}
             />
+
+            <Dropdown
+              className="dropdown-filter-by-menu"
+              defaultValue={paging.type}
+              options={DROPDOWN_TYPE_OPTIONS}
+              hasSubLabel
+              prefixValue={'Loại Menu'}
+              scrollHeight={350}
+              onChange={({ value }) => setPaging({ ...paging, type: value })}
+            />
           </div>
           {selected?.length ? (
             <Tooltip placement="bottomLeft" title="Xóa bản ghi">
@@ -592,6 +642,9 @@ function MenuPage(props) {
           columns={COLUMNS}
           hasOption
           options={OPTIONS}
+          rowClassName={(row) =>
+            buildClass([row.parentID === GUID_NULL && 'menu-root'])
+          }
         />
         <Paginator
           onChange={({ page, pageSize }) => {

@@ -15,6 +15,7 @@ using TOE.TOEIC.ApplicationCoore.Entities;
 using Microsoft.AspNetCore.Cors;
 using TOE.TOEIC.Entities;
 using System.Threading;
+using System.ComponentModel.DataAnnotations;
 
 namespace MISA.CukCuk.Web.Controllers
 {
@@ -50,6 +51,14 @@ namespace MISA.CukCuk.Web.Controllers
         public ActionResult GetPostsFilterPaging([FromQuery]string filterValue, [FromQuery] int pageSize, [FromQuery] int pageNumber)
         {
             return Ok(_postService.GetPostsFilterPaging(filterValue, pageSize, pageNumber));           
+        }
+
+        [EnableCors("AllowCROSPolicy")]
+        [Route("/api/PostsByMenuID/{id}")]
+        [HttpGet]
+        public ActionResult GetPostsByMenuID([Required] string id)
+        {
+            return Ok(_postService.GetPostsByMenuID(Guid.Parse(id)));
         }
         #endregion
     }

@@ -1,32 +1,31 @@
 import { DownOutlined, LoginOutlined } from '@ant-design/icons';
+import { PanelMenu } from 'primereact/panelmenu';
 import PropTypes from 'prop-types';
-import React, { useContext, useState, useEffect } from 'react';
-import { Navigate, NavLink, useNavigate } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import baseApi from '../../../../api/baseApi';
 import MainLogo from '../../../../assets/images/toeiclogo.png';
 import {
   BUTTON_THEME,
   BUTTON_TYPE,
-  GUID_NULL,
   MENU_TYPE,
   PATH_NAME,
 } from '../../../../constants/commonConstant';
 import {
   buildClass,
-  slugify,
   listToTree,
+  slugify,
 } from '../../../../constants/commonFunction';
+import END_POINT from '../../../../constants/endpoint';
 import { AuthContext } from '../../../../contexts/authContext';
 import Button from '../../../atomics/base/Button/Button';
+import MenuBar from '../../../atomics/base/MenuBar/MenuBar';
 import PopupSelectionV1 from '../../../atomics/base/PopupSelectionV1/PopupSelection';
 import UserInfo from '../../UserInfo/UserInfo';
-import { Menubar } from 'primereact/menubar';
-import { PanelMenu } from 'primereact/panelmenu';
-import { FAKE_DATA_MENU, FAKE_MENU_ITEM } from '../../../pages/test/Fake';
-import MenuBar from '../../../atomics/base/MenuBar/MenuBar';
-
+import { useSelector, useDispatch } from 'react-redux';
+import store from '../../../../redux/store';
+import { appAction } from '../../../../redux/slices/appSlice';
 import './header.scss';
-import baseApi from '../../../../api/baseApi';
-import END_POINT from '../../../../constants/endpoint';
 
 Header.propTypes = {
   id: PropTypes.string,
@@ -155,15 +154,16 @@ function Header(props) {
     },
   ];
 
-  useEffect(() => {
-    getMenus();
-  }, []);
-
+  const dispatch = useDispatch();
   const authCtx = useContext(AuthContext);
   const history = useNavigate();
   const [expandedMenu, setExpandedMenu] = useState(false);
   const [currentLink, setCurrentLink] = useState('');
   const [dataMenus, setDataMenus] = useState([]);
+
+  useEffect(() => {
+    getMenus();
+  }, []);
 
   const renderMenu = (subPosition = 'bottomLeft') => {
     return MENU.map((item) => {
@@ -219,6 +219,7 @@ function Header(props) {
   const getMenus = () => {
     baseApi.get(
       (res) => {
+        dispatch(appAction.changeDataMenus([...res]));
         res = res.sort((a, b) => a.displayOrder - b.displayOrder);
         setDataMenus(
           listToTree(
@@ -230,10 +231,8 @@ function Header(props) {
               command: (e) => {
                 switch (item.type) {
                   case MENU_TYPE.NORMAL:
-                    history('/' + item.slug);
-                    break;
                   case MENU_TYPE.HTML_RENDER:
-                    history('/html/' + item.slug);
+                    history('/' + item.slug);
                     break;
                   case MENU_TYPE.REDIRECT:
                     window.open(item?.link, '_blank');
@@ -347,9 +346,7 @@ function Header(props) {
                   onClick={handleRegister}
                 />
               </>
-            ) : (
-              <UserInfo />
-            )}
+            ) : null}
             <Button
               className="toe-btn-toggle"
               leftIcon={<i className="pi pi-bars" />}

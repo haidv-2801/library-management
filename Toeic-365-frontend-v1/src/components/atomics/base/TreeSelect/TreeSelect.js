@@ -4,6 +4,7 @@ import { TreeSelect as TreeSelectPrime } from 'primereact/treeselect';
 import { buildClass } from '../../../../constants/commonFunction';
 import { format } from 'react-string-format';
 import './treeSelect.scss';
+import { TEXT_FALL_BACK } from '../../../../constants/commonConstant';
 
 TreeSelect.propTypes = {
   id: PropTypes.string,
@@ -17,6 +18,7 @@ TreeSelect.propTypes = {
   hasRequiredLabel: PropTypes.bool,
   filterPlaceholder: PropTypes.string,
   hasFilter: PropTypes.bool,
+  prefixValue: PropTypes.any,
 };
 
 TreeSelect.defaultProps = {
@@ -31,6 +33,7 @@ TreeSelect.defaultProps = {
   hasFilter: false,
   label: '',
   hasRequiredLabel: false,
+  prefixValue: null,
 };
 
 function TreeSelect(props) {
@@ -46,6 +49,7 @@ function TreeSelect(props) {
     hasFilter,
     label,
     hasRequiredLabel,
+    prefixValue,
   } = props;
 
   const nodes = [
@@ -169,6 +173,25 @@ function TreeSelect(props) {
 
   const [selectedNodeKey1, setSelectedNodeKey1] = useState(null);
 
+  const customValueTemplate = (data) => {
+    let _data = data.length ? data[0] : {};
+    return (
+      <div
+        className={buildClass([
+          'p-dropdown-item__value',
+          prefixValue && 'p-dropdown-item__value--prefix',
+        ])}
+      >
+        {prefixValue ? (
+          <span className="p-dropdown-item__value-prefix">{prefixValue}: </span>
+        ) : null}
+        <span className="p-dropdown-item__value-display">
+          {_data?.label ?? TEXT_FALL_BACK.TYPE_1}
+        </span>
+      </div>
+    );
+  };
+
   return (
     <div className="toe-treeSelect__wrapper">
       {label && (
@@ -186,6 +209,7 @@ function TreeSelect(props) {
           'toe-font-body',
           !options.length && 'toe-treeSelect--empty',
         ])}
+        valueTemplate={customValueTemplate}
         value={value}
         options={options}
         onChange={onChange}
@@ -195,6 +219,7 @@ function TreeSelect(props) {
         filterPlaceholder="Nhập giá trị tìm kiếm"
         resetFilterOnHide={true}
         scrollHeight={300}
+        filterBy="label"
       />
     </div>
   );

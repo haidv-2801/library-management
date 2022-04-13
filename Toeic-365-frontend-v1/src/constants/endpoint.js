@@ -25,16 +25,19 @@ const END_POINT = (function () {
       TOE_INSERT_POST: DEV_HOST + 'api/Posts',
       TOE_GET_POST_BY_ID: DEV_HOST + 'api/Posts/{0}',
       TOE_DELETE_POST: DEV_HOST + 'api/Posts/{0}',
+      TOE_GET_POSTS_FILTER: DEV_HOST + 'api/Posts/Filter',
 
       /**
        * *Endpoint menu
        */
       TOE_GET_MENUS_FILTER_PAGING: DEV_HOST + 'api/Menus/MenusFilterPaging',
       TOE_GET_MENUS: DEV_HOST + 'api/Menus',
+      TOE_GET_MENUS_POST_COUNT: DEV_HOST + 'api/Menus/MenuPostsCount',
       TOE_UPDATE_MENU: DEV_HOST + 'api/Menus/{0}',
       TOE_INSERT_MENU: DEV_HOST + 'api/Menus',
       TOE_GET_MENU_BY_ID: DEV_HOST + 'api/Menus/{0}',
       TOE_DELETE_MENU: DEV_HOST + 'api/Menus/{0}',
+      TOE_GET_MENUS_FILTER: DEV_HOST + 'api/Menus/Filter',
 
       /**
        * *Endpoint user

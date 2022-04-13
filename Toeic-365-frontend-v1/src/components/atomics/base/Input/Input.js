@@ -12,6 +12,7 @@ Input.propTypes = {
   style: PropTypes.object,
   valid: PropTypes.bool,
   bottomMessage: PropTypes.string,
+  name: PropTypes.string,
   placeholder: PropTypes.any,
   rightIcon: PropTypes.any,
   label: PropTypes.any,
@@ -29,15 +30,18 @@ Input.propTypes = {
   leftIcon: PropTypes.any,
   delay: PropTypes.number,
   delayAction: PropTypes.func,
+  pattern: PropTypes.string,
 };
 
 Input.defaultProps = {
   id: '',
-  className: '',
   style: {},
+  className: '',
+  pattern: '',
   valid: true,
   bottomMessage: null,
   placeholder: 'Nhập thông tin',
+  name: '',
   rightIcon: null,
   label: null,
   autoFocus: false,
@@ -52,7 +56,7 @@ Input.defaultProps = {
   tabIndex: 0,
   showMaxLength: false,
   type: 'input',
-  leftIcon: '',
+  leftIcon: null,
   delay: 0,
 };
 
@@ -80,6 +84,8 @@ function Input(props) {
     delay,
     delayAction,
     controlled,
+    name,
+    pattern,
   } = props;
 
   const ref = useRef('');
@@ -134,7 +140,7 @@ function Input(props) {
           style={{ width: '100%' }}
           className={buildClass([leftIcon && 'p-input-icon-left'])}
         >
-          {leftIcon ? leftIcon : null}
+          {leftIcon != null ? leftIcon : null}
           <InputText
             autoFocus={autoFocus}
             onChange={(e) => {
@@ -148,6 +154,7 @@ function Input(props) {
             tabIndex={tabIndex}
             disabled={disabled}
             leficon
+            name={name}
           />
         </div>
         {showMaxLength ? (

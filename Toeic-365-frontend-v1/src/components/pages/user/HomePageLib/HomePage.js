@@ -4,6 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import {
   BUTTON_THEME,
   BUTTON_TYPE,
+  OPERATOR,
+  FIXED_MENU_ID,
+  PATH_NAME,
+  MAXIMUM_PAGESIZE,
 } from '../../../../constants/commonConstant';
 import Button from '../../../atomics/base/Button/Button';
 import Input from '../../../atomics/base/Input/Input';
@@ -20,6 +24,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import rootState from '../../../../redux/store';
 import { filterAction } from '../../../../redux/slices/filterSlice';
 import { Tooltip } from 'antd';
+import NotificationList from '../../../molecules/NotificationList/NotificationList';
+import END_POINT from '../../../../constants/endpoint';
+import baseApi from '../../../../api/baseApi';
 import './homePage.scss';
 
 let FAKE = [
@@ -97,6 +104,8 @@ HomePage.propTypes = {};
 HomePage.defaultProps = {};
 
 function HomePage(props) {
+  const MIN_PAGE_SIZE = 20;
+
   const filterTypeOptions = [
     {
       label: 'Tất cả',
@@ -143,6 +152,86 @@ function HomePage(props) {
   const [defaultFilterType, setDefaultFilterType] = useState(0);
   const [commonSearchValue, setCommonSearchValue] = useState('');
   const [filterValue, setFilterValue] = useState({ controls: [], filter: [] });
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [dataTable, setDataTable] = useState([]);
+  const [dataPostsNews, setDataPostsNews] = useState([]);
+  const [dataPostsNoti, setDataPostsNoti] = useState([]);
+  const [dataPostNewBooks, setDataPostNewBooks] = useState([]);
+
+  useEffect(() => {
+    getPostsByMenuID();
+  }, []);
+
+  const getPostsByMenuID = (menuID) => {
+    baseApi.post(
+      (res) => {
+        let _data = res.data.pageData.sort((a, b) => {
+          const time = (date) => new Date(date).getTime();
+          if (time(b?.modifiedDate) - time(a?.modifiedDate) === 0) {
+            return time(b?.createdDate) - time(a?.createdDate);
+          } else {
+            return time(b?.modifiedDate) - time(a?.modifiedDate);
+          }
+        });
+
+        _data = _data.map((post) => ({
+          ...post,
+          key: post.postID,
+          title: post.title,
+          description: post.description,
+          date: post.createdDate,
+        }));
+
+        setTotalRecords(res.data.totalRecord);
+
+        setDataPostsNews(
+          _data.filter((item) => item.menuID === FIXED_MENU_ID.NEWS).slice(0, 3)
+        );
+
+        setDataPostsNoti(
+          _data
+            .filter((item) => item.menuID === FIXED_MENU_ID.NOTIFICATION)
+            .slice(0, 3)
+        );
+
+        setDataPostNewBooks(
+          _data
+            .filter(
+              (item) => item.menuID === FIXED_MENU_ID.NEW_BOOKS_INTRODUCTION
+            )
+            .slice(0, 3)
+        );
+
+        setIsLoading(false);
+      },
+      (err) => {
+        setIsLoading(false);
+      },
+      () => {
+        setIsLoading(true);
+      },
+      END_POINT.TOE_GET_POSTS_FILTER,
+      {
+        filter: btoa(
+          JSON.stringify([
+            [
+              ['MenuID', OPERATOR.EQUAL, FIXED_MENU_ID.NEWS],
+              OPERATOR.OR,
+              ['MenuID', OPERATOR.EQUAL, FIXED_MENU_ID.NOTIFICATION],
+              OPERATOR.OR,
+              ['MenuID', OPERATOR.EQUAL, FIXED_MENU_ID.NEW_BOOKS_INTRODUCTION],
+            ],
+            'AND',
+            ['Status', OPERATOR.EQUAL, '1'],
+            'AND',
+            ['IsDeleted', OPERATOR.EQUAL, '0'],
+          ])
+        ),
+        pageIndex: 1,
+        pageSize: MAXIMUM_PAGESIZE,
+      }
+    );
+  };
 
   const itemTemplate = (card) => {
     return (
@@ -171,6 +260,10 @@ function HomePage(props) {
     );
   };
 
+  const handleSearch = () => {
+    navigate(PATH_NAME.SEARCH);
+  };
+
   return (
     <Layout>
       <div className="toe-home-page">
@@ -178,22 +271,16 @@ function HomePage(props) {
           <h1 className="toe-home-page__img-banner__text">THƯ VIỆN 365</h1>
           {/* <img width={'auto'} height={'auto'} src={HomeHeaderImg} alt="" /> */}
         </div>
-        <h4 className="toe-home-page__noti-section">
-          <TitleSeparator
-            onClick={() => {
-              navigate('/tin-tuc');
-            }}
-            icon={<SearchOutlined />}
-            title={'Tìm kiếm'}
-          />
-        </h4>
-        <div className="toe-home-page__img-banner__search">
-          <Dropdown
+        {/* <h4 className="toe-home-page__noti-section">
+          <TitleSeparator icon={<SearchOutlined />} title={'Tìm kiếm'} />
+        </h4> */}
+        {/* <div className="toe-home-page__img-banner__search"> */}
+        {/* <Dropdown
             options={filterTypeOptions}
             defaultValue={defaultFilterType}
             className="toe-home-page__img-banner__search-dropdown-filter"
-          />
-          <Input
+          /> */}
+        {/* <Input
             autoFocus
             onChange={(e) => setCommonSearchValue(e)}
             placeholder={'Tìm kiếm sách, tin tức, thông báo, tài liệu...'}
@@ -203,47 +290,65 @@ function HomePage(props) {
             leftIcon={<SearchOutlined />}
             name={'Tìm kiếm'}
             disabled={!commonSearchValue}
-            onClick={() => {}}
-          />
-          <Tooltip title="Bộ lọc">
+            onClick={handleSearch}
+          /> */}
+        {/* <Tooltip title="Bộ lọc">
             <div
               className="btn-show-advanced-filter"
               onClick={() => setShowFilterEngine(true)}
             >
               <i className="pi pi-filter"></i>
             </div>
-          </Tooltip>
-        </div>
+          </Tooltip> */}
+        {/* </div> */}
         <div className="toe-home-page__noti-section">
-          <TitleSeparator icon={<BellOutlined />} title={'tin tức'} />
+          <TitleSeparator
+            icon={<BellOutlined />}
+            title={'tin tức'}
+            onClick={() => {
+              navigate(PATH_NAME.NEWS);
+            }}
+          />
         </div>
         <div className="toe-home-page__news">
           <div className="toe-home-page__news-carousel">
-            <CardList isLoading={isLoading} cards={FAKE} />
+            <CardList isLoading={isLoading} cards={dataPostsNews} />
           </div>
         </div>
         <div className="toe-home-page__noti-section">
-          <TitleSeparator icon={<BellOutlined />} title={'thông báo'} />
+          <TitleSeparator
+            icon={<BellOutlined />}
+            title={'thông báo'}
+            onClick={() => {
+              navigate(PATH_NAME.NOTIFICATION);
+            }}
+          />
         </div>
         <div className="toe-home-page__notificaitons">
           {/* <div className="toe-home-page__notificaitons-left"> */}
           {/* <DynamicMenu /> */}
           {/* </div> */}
           <div className="toe-home-page__notificaitons-right">
-            {/* <NotificationList isLoading={isLoading} data={FAKE_1} />
-            <Button
+            <NotificationList isLoading={isLoading} data={dataPostsNoti} />
+            {/* <Button
               className="toe-home-page__notificaitons-right__btn-more"
               name={'Xem thêm...'}
               theme={BUTTON_THEME.THEME_4}
-            /> */}
+            />  */}
           </div>
         </div>
 
         <div className="toe-home-page__noti-section">
-          <TitleSeparator className="" title={'giới thiệu sách mới'} />
+          <TitleSeparator
+            className=""
+            title={'giới thiệu sách mới'}
+            onClick={() => {
+              navigate(PATH_NAME.NEW_BOOKS_INTRODUCTION);
+            }}
+          />
         </div>
         <div className="toe-home-page__new-book">
-          <CardList isLoading={isLoading} cards={FAKE} />
+          <CardList isLoading={isLoading} cards={dataPostNewBooks} />
         </div>
       </div>
       <Footer />

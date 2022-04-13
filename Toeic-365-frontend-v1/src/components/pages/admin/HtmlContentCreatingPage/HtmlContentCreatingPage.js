@@ -1,4 +1,4 @@
-import { EyeOutlined, RetweetOutlined } from '@ant-design/icons';
+import { RetweetOutlined } from '@ant-design/icons';
 import { Tooltip } from 'antd';
 import { Button as ButtonPrime } from 'primereact/button';
 import { FileUpload } from 'primereact/fileupload';
@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import baseApi from '../../../../api/baseApi';
+import { uploadFiles } from '../../../../api/firebase';
 import {
   BUTTON_THEME,
   BUTTON_TYPE,
@@ -22,11 +23,11 @@ import {
   formatBytes,
   listToTree,
   slugify,
-  uuidv4,
 } from '../../../../constants/commonFunction';
 import END_POINT from '../../../../constants/endpoint';
 import Button from '../../../atomics/base/Button/Button';
 import Input from '../../../atomics/base/Input/Input';
+import Spinner from '../../../atomics/base/Spinner/Spinner';
 import TextAreaBase from '../../../atomics/base/TextArea/TextArea';
 import TreeSelect from '../../../atomics/base/TreeSelect/TreeSelect';
 import Editor from '../../../molecules/Editor/Editor';
@@ -81,6 +82,7 @@ function HtmlContentCreatingPage(props) {
   const fileUploadRef = useRef(null);
   const forgeRenderKey = useRef(0);
   const [dataTable, setDataTable] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     getMenus();
@@ -116,7 +118,7 @@ function HtmlContentCreatingPage(props) {
       ) {
       } else {
         _totalSize += file.size;
-        setFiles((pre) => [...pre]);
+        setFiles((pre) => [...pre, file]);
       }
     }
 
@@ -125,6 +127,7 @@ function HtmlContentCreatingPage(props) {
 
   const onTemplateClear = () => {
     setTotalSize(0);
+    setFiles([]);
   };
 
   const headerTemplate = (options) => {
@@ -145,7 +148,6 @@ function HtmlContentCreatingPage(props) {
         }}
       >
         {chooseButton}
-        {uploadButton}
         {cancelButton}
         <ProgressBar
           value={value}
@@ -231,8 +233,25 @@ function HtmlContentCreatingPage(props) {
   };
 
   const handleSave = () => {
+    setIsLoading(true);
     if (!data.htmlContent) setShowWarningMessage(true);
-    insertPost();
+    if (!files.length) {
+      insertPost('');
+    } else {
+      uploadFiles(files[0], 'images')
+        .then((res) => {
+          insertPost(res);
+        })
+        .catch((err) => {
+          setIsLoading(false);
+          toast.current.show({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Sửa thất bại',
+            life: 3000,
+          });
+        });
+    }
   };
 
   const getMenus = () => {
@@ -254,15 +273,16 @@ function HtmlContentCreatingPage(props) {
     );
   };
 
-  const insertPost = () => {
+  const insertPost = (_image = '') => {
     let _body = {
       title: data.title,
       slug: data.slug,
       description: data.description,
       content: JSON.stringify(htmlContent),
-      image: new Date().getTime() + '_image',
+      image: _image,
       viewCount: 200,
       type: 1,
+      menuID: data?.menuID,
       createdDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
       createdBy: 'DOVANHAI',
       modifiedDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
@@ -325,7 +345,13 @@ function HtmlContentCreatingPage(props) {
             />
           </div>
         </Tooltip>,
-        <Button onClick={handleSave} name="Lưu" />,
+        <Button
+          onClick={handleSave}
+          name="Lưu"
+          leftIcon={<Spinner show={isLoading} />}
+          type={isLoading ? BUTTON_TYPE.LEFT_ICON : BUTTON_TYPE.NORMAL}
+          disabled={isLoading}
+        />,
       ]}
     >
       <div
@@ -392,7 +418,10 @@ function HtmlContentCreatingPage(props) {
                 value={data.menuID}
                 options={dataTable}
                 onChange={(data) => {
-                  setData((pre) => ({ ...pre, menuID: data.value }));
+                  setData((pre) => ({
+                    ...pre,
+                    menuID: data.value,
+                  }));
                 }}
               />
             </div>
@@ -421,14 +450,10 @@ function HtmlContentCreatingPage(props) {
               </span>
               <FileUpload
                 ref={fileUploadRef}
-                name="demo[]"
-                url="https://primefaces.org/primereact/showcase/upload.php"
                 multiple={false}
                 accept="image/*"
                 maxFileSize={MAXIMUM_FILE_SIZE}
                 customUpload={true}
-                // onUpload={onTemplateUpload}
-                uploadHandler={onTemplateUpload}
                 onSelect={onTemplateSelect}
                 onError={onTemplateClear}
                 onClear={onTemplateClear}

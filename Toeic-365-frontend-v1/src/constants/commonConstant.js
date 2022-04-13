@@ -16,7 +16,7 @@ const PATH_NAME = {
   RESOURCES: '/tai-nguyen-bo-suu-tap',
   SERVICES: '/dich-vu-tien-ich',
   BORROWING_RETURNING_BOOK: '/muon-tra-tai-lieu',
-  SEARCH: '/tra-cuu',
+  NEW_BOOKS_INTRODUCTION: '/gioi-thieu-sach-moi',
 
   //admin
   ADMIN: '/admin',
@@ -81,6 +81,7 @@ const CHECKBOX_TYPE = {
 
 const DATE_FORMAT = {
   TYPE_1: 'DD-MM-YYYY HH:mm:ss',
+  TYPE_2: 'HH:mm DD-MM-YYYY',
 };
 
 const OPERATOR = {
@@ -125,9 +126,40 @@ const MENU_TYPE = {
 
 const FIXED_MENU_ID = {
   NEWS: '8d0fb05d-5ca6-4cf6-adfb-75e50d2a88c5',
+  NOTIFICATION: 'be71f925-721b-4892-9a39-c450ea8ea88d',
+  NEW_BOOKS_INTRODUCTION: 'df867bd4-8f77-4418-afa3-5b49bd4270a5',
 };
 
+/**
+ * Số page tối đa
+ */
+const MAXIMUM_PAGESIZE = 9999;
+
+/**
+ * Gắn thêm vào body filter base
+ */
+const ACTIVE_RECORD_FILTER = [
+  OPERATOR.AND,
+  ['IsDeleted', OPERATOR.EQUAL, '0'],
+  OPERATOR.AND,
+  ['Status', OPERATOR.EQUAL, '1'],
+];
+
+const DAYS_OF_WEEK = [
+  '',
+  'Thứ Hai',
+  'Thứ Ba',
+  'Thứ Tư',
+  'Thứ Năm',
+  'Thứ Sáu',
+  'Thứ Bảy',
+  'Chủ Nhật',
+];
+
 export {
+  DAYS_OF_WEEK,
+  ACTIVE_RECORD_FILTER,
+  MAXIMUM_PAGESIZE,
   FIXED_MENU_ID,
   MENU_TYPE,
   GUID_NULL,

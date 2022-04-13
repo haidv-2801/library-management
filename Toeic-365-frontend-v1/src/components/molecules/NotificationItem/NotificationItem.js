@@ -52,18 +52,12 @@ function NotificationItem(props) {
       id={id}
       style={style}
       className={buildClass(['toe-notification-item toe-font-body', className])}
-      onClick={onClick}
     >
-      <div className="toe-notification-item__image">
+      <div className="toe-notification-item__image" onClick={onClick}>
         {isLoading ? (
           <Skeleton height="100%"></Skeleton>
         ) : (
-          <img
-            src={
-              'https://images.unsplash.com/photo-1640622304964-3e2c2c0cd7cd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80'
-            }
-            alt="Image"
-          />
+          <img src={imgSrc} alt={props.slug ?? 'image'} />
         )}
       </div>
       {isLoading ? (
@@ -80,7 +74,7 @@ function NotificationItem(props) {
         </div>
       ) : (
         <div className="toe-notification-item__info">
-          <div className="toe-notification-item__title">
+          <div className="toe-notification-item__title" onClick={onClick}>
             <SmartText>{title}</SmartText>
           </div>
           <div className="toe-notification-item__date toe-font-hint">

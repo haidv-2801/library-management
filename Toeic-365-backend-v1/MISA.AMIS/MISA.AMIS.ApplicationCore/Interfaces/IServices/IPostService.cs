@@ -19,5 +19,13 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         /// <returns>Danh sách bài đăng</returns>
         /// CREATED BY: DVHAI (07/07/2021)
         ServiceResult GetPostsFilterPaging(string filterValue, int limit, int offset);
+
+        /// <summary>
+        /// Lấy posts theo menu id
+        /// </summary>
+        /// <param name="MenuID"></param>
+        /// <returns></returns>
+        ServiceResult GetPostsByMenuID(Guid? MenuID);
+
     }
 }

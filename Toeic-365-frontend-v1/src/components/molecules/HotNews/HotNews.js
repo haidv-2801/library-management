@@ -1,8 +1,13 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PATH_NAME } from '../../../constants/commonConstant';
+import {
+  DATE_FORMAT,
+  DAYS_OF_WEEK,
+  PATH_NAME,
+} from '../../../constants/commonConstant';
 import { buildClass } from '../../../constants/commonFunction';
+import moment from 'moment';
 import './hotNews.scss';
 
 HotNews.propTypes = {
@@ -10,6 +15,7 @@ HotNews.propTypes = {
   className: PropTypes.string,
   style: PropTypes.object,
   onClick: PropTypes.func,
+  data: PropTypes.array,
 };
 
 HotNews.defaultProps = {
@@ -17,41 +23,34 @@ HotNews.defaultProps = {
   className: '',
   style: {},
   onClick: () => {},
+  data: [],
 };
 
 function HotNews(props) {
-  const { id, style, className, onClick } = props;
+  const { id, style, className, onClick, data } = props;
   const navigate = useNavigate();
 
   const handleSeeDetailNew = (item) => {
-    navigate(PATH_NAME.NEWS + '/slug/234234');
+    navigate(PATH_NAME.NEWS + `/${item.slug}/${item.postID}`);
   };
 
   const renderCommonItems = () => {
-    const arr = Array.from(Array(10).keys());
-
-    return arr.map((item, _) => (
+    return data.map((item, _) => (
       <div
-        onClick={(item) => handleSeeDetailNew(item)}
+        onClick={() => handleSeeDetailNew(item)}
         key={_}
         className="toe-hot-news__section-content"
       >
         <div className="toe-hot-news__section-content__img">
-          {/* <img
-            src={
-              'https://images.unsplash.com/photo-1647887977201-46da49bacae7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80'
-            }
-            alt="Image"
-          /> */}
-          <img src={require('../../../assets/images/me.jpg')} alt="Image" />
+          <img src={item.image} alt={item.slug} />
         </div>
         <div className="toe-hot-news__section-content__info">
           <div className="toe-hot-news__section-content__desc">
-            Thư viện Trường ĐH Công nghiệp Hà Nội tổ chức chương trình Hướng dẫn
-            khai thác, sử dụng thư viện cho sinh viên khóa mới
+            {item.title}
           </div>
           <div className="toe-hot-news__section-content__date">
-            Thứ Sáu, 07:46 14/01/2022
+            {DAYS_OF_WEEK[new Date(item.createdDate).getDay()]},
+            {moment(item.createdDate).format(DATE_FORMAT.TYPE_2)}
           </div>
         </div>
       </div>

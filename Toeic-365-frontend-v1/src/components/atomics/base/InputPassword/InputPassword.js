@@ -104,11 +104,7 @@ function InputPassword(props) {
       ) : null}
 
       <PasswordPrime
-        className={buildClass([
-          'toe-input-password',
-          className,
-          'toe-font-body',
-        ])}
+        className={buildClass(['toe-input-password', 'toe-font-body'])}
         name="password"
         onChange={(e) => {
           onChange(e);

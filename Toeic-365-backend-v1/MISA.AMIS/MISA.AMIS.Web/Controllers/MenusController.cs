@@ -51,6 +51,23 @@ namespace MISA.CukCuk.Web.Controllers
         {
             return Ok(_menuService.GetMenusFilterPaging(filterValue, pageSize, pageNumber));           
         }
+
+        /// <summary>
+        /// Lấy danh sách bài đăng phân trang, tìm kiếm
+        /// </summary>
+        /// <param name="filterValue">Giá trị tìm kiếm</param>
+        /// <param name="pageSize">Số bản ghi trên 1 trang</param>
+        /// <param name="pageNumber">Số trang</param>
+        /// <returns>Danh sách bài đăng</returns>
+        /// CREATED BY: DVHAI (07/07/2021)
+        [EnableCors("AllowCROSPolicy")]
+        [Route("/api/Menus/MenuPostsCount")]
+        [HttpGet]
+        public ActionResult GetMenusAndPostsCount()
+        {
+            var res = _menuService.GetMenusAndPostsCount();
+            return Ok(res);
+        }
         #endregion
     }
 }

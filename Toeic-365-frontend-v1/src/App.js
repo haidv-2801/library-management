@@ -8,7 +8,7 @@ import BookDetail from './components/pages/user/BookDetail/BookDetail';
 import RequiredAuth from './components/sections/RequiredAuth/RequiredAuth';
 import UserProfile from './components/pages/user/UserProfile/UserProfile';
 import { Toast } from 'primereact/toast';
-import { PATH_NAME } from './constants/commonConstant';
+import { FIXED_MENU_ID, PATH_NAME } from './constants/commonConstant';
 import { AuthContext } from './contexts/authContext';
 import HtmlContentEditPage from './components/pages/admin/HtmlContentEditPage/HtmlContentEditPage';
 import HtmlContentCreatingPage from './components/pages/admin/HtmlContentCreatingPage/HtmlContentCreatingPage';
@@ -16,6 +16,7 @@ import PostPage from './components/pages/admin/PostPage/PostPage';
 import UserPage from './components/pages/admin/UserPage/UserPage';
 import MenuPage from './components/pages/admin/MenuPage/MenuPage';
 import './main.scss';
+import SearchPage from './components/pages/user/SearchPage/SearchPage';
 
 // const MenuPage = React.lazy(() =>
 //   import('./components/pages/admin/MenuPage/MenuPage')
@@ -89,15 +90,35 @@ function App() {
             <Route
               exact
               path={PATH_NAME.NEWS}
-              element={<CommonListItemPage />}
+              element={
+                <CommonListItemPage
+                  titlePage="Tin tức"
+                  menuID={FIXED_MENU_ID.NEWS}
+                />
+              }
             />
             <Route
               exact
               path={PATH_NAME.NOTIFICATION}
-              element={<CommonListItemPage />}
+              element={
+                <CommonListItemPage
+                  titlePage="Thông báo"
+                  menuID={FIXED_MENU_ID.NOTIFICATION}
+                />
+              }
+            />
+            <Route
+              exact
+              path={PATH_NAME.NEW_BOOKS_INTRODUCTION}
+              element={
+                <CommonListItemPage
+                  titlePage="Giới thiệu sách mới"
+                  menuID={FIXED_MENU_ID.NEW_BOOKS_INTRODUCTION}
+                />
+              }
             />
             {/* html page */}
-            <Route exact path="html">
+            <Route exact path=":menuType">
               <Route index path=":slug" element={<HtmlRenderPage />} />
             </Route>
             <Route path="test" element={<Test />} />
@@ -192,6 +213,7 @@ function App() {
               </Route>
             </Route>
           </Route>
+          <Route path={PATH_NAME.SEARCH} element={<SearchPage />} />
           <Route
             path="/:postType/:postSlug/:postID"
             element={<HtmlRenderPage />}

@@ -8,7 +8,8 @@ import { Tag } from 'primereact/tag';
 import { Toast } from 'primereact/toast';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { format } from 'react-string-format';
 import baseApi from '../../../../api/baseApi';
 import {
   BUTTON_THEME,
@@ -21,6 +22,7 @@ import {
   buildClass,
   formatBytes,
   listToTree,
+  ParseJson,
   slugify,
 } from '../../../../constants/commonFunction';
 import END_POINT from '../../../../constants/endpoint';
@@ -31,7 +33,8 @@ import TreeSelect from '../../../atomics/base/TreeSelect/TreeSelect';
 import Editor from '../../../molecules/Editor/Editor';
 import GroupCheck from '../../../molecules/GroupCheck/GroupCheck';
 import Layout from '../../../sections/Admin/Layout/Layout';
-import { format } from 'react-string-format';
+import { uploadFiles } from '../../../../api/firebase';
+import Spinner from '../../../atomics/base/Spinner/Spinner';
 import './htmlContentEditPage.scss';
 
 HtmlContentEditPage.propTypes = {
@@ -67,9 +70,6 @@ function HtmlContentEditPage(props) {
   const navigate = useNavigate();
   const { postId } = useParams();
   const [htmlContent, setHtmlContent] = useState('Type some text...');
-  const [defaultHtmlContent, setDefaultHtmlContent] =
-    useState('Type some text...');
-
   const [data, setData] = useState(DEFAULT_DATA);
   const [activeIndex, setActiveIndex] = useState();
   const [totalSize, setTotalSize] = useState(0);
@@ -81,6 +81,9 @@ function HtmlContentEditPage(props) {
   const fileUploadRef = useRef(null);
   const forgeRenderKey = useRef(0);
   const [dataTable, setDataTable] = useState([]);
+  const [image, setImage] = useState(null);
+  const [progress, setProgress] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     getPostById();
@@ -92,20 +95,7 @@ function HtmlContentEditPage(props) {
     callback();
   };
 
-  const onTemplateUpload = (e) => {
-    const _formData = new FormData();
-
-    for (let file of e.files) {
-      _formData.append(file.name, file);
-    }
-
-    toast.current.show({
-      severity: 'success',
-      summary: 'Success',
-      detail: 'File Uploaded',
-      life: 3000,
-    });
-  };
+  const onTemplateUpload = (e) => {};
 
   const onTemplateSelect = (e) => {
     let _totalSize = totalSize;
@@ -117,7 +107,7 @@ function HtmlContentEditPage(props) {
       ) {
       } else {
         _totalSize += file.size;
-        setFiles((pre) => [...pre]);
+        setFiles((pre) => [...pre, file]);
       }
     }
 
@@ -126,6 +116,7 @@ function HtmlContentEditPage(props) {
 
   const onTemplateClear = () => {
     setTotalSize(0);
+    setFiles([]);
   };
 
   const headerTemplate = (options) => {
@@ -146,7 +137,6 @@ function HtmlContentEditPage(props) {
         }}
       >
         {chooseButton}
-        {uploadButton}
         {cancelButton}
         <ProgressBar
           value={value}
@@ -251,18 +241,36 @@ function HtmlContentEditPage(props) {
   };
 
   const handleSave = () => {
+    setIsLoading(true);
     if (!data.htmlContent) setShowWarningMessage(true);
-    updatePost();
+    if (!files.length) {
+      updatePost(data.image);
+    } else {
+      uploadFiles(files[0], 'images')
+        .then((res) => {
+          updatePost(res);
+        })
+        .catch((err) => {
+          setIsLoading(false);
+          toast.current.show({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Sửa thất bại',
+            life: 3000,
+          });
+        });
+    }
   };
 
-  const updatePost = () => {
+  const updatePost = (imageUrl) => {
     let _body = {
       postId: postId,
       title: data.title,
       slug: data.slug,
       description: data.description,
       content: JSON.stringify(htmlContent),
-      image: new Date().getTime() + '_image',
+      image: imageUrl,
+      menuID: data.menuID,
       viewCount: 200,
       type: 1,
       modifiedDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
@@ -284,8 +292,10 @@ function HtmlContentEditPage(props) {
             window.history.back();
           }, 400);
         }
+        setIsLoading(false);
       },
       (err) => {
+        setIsLoading(false);
         toast.current.show({
           severity: 'error',
           summary: 'Error',
@@ -308,7 +318,10 @@ function HtmlContentEditPage(props) {
           title: res.title,
           slug: res.slug,
           description: res.description,
+          content: ParseJson(res.content),
         });
+
+        setHtmlContent(ParseJson(res?.content));
         setIsActive(res.status);
       },
       (err) => {},
@@ -342,7 +355,13 @@ function HtmlContentEditPage(props) {
             />
           </div>
         </Tooltip>,
-        <Button onClick={handleSave} name="Sửa" />,
+        <Button
+          onClick={handleSave}
+          name="Sửa"
+          leftIcon={<Spinner show={isLoading} />}
+          type={isLoading ? BUTTON_TYPE.LEFT_ICON : BUTTON_TYPE.NORMAL}
+          disabled={isLoading}
+        />,
       ]}
     >
       <div
@@ -372,6 +391,7 @@ function HtmlContentEditPage(props) {
                 valid={true}
                 hasRequiredLabel
                 value={data?.title}
+                defaultValue={data?.title || TEXT_FALL_BACK.TYPE_1}
                 onChange={(value) => {
                   setData((pre) => ({
                     ...pre,
@@ -410,10 +430,14 @@ function HtmlContentEditPage(props) {
                 value={data.menuID}
                 options={dataTable}
                 onChange={(data) => {
-                  setData((pre) => ({ ...pre, menuID: data.value }));
+                  setData((pre) => ({
+                    ...pre,
+                    menuID: data.value,
+                  }));
                 }}
               />
             </div>
+
             <div className="toe-admin-edit-post-page__row">
               <span className="toe-font-label">
                 Tóm tắt<span style={{ color: 'red' }}>*</span>
@@ -439,14 +463,10 @@ function HtmlContentEditPage(props) {
               </span>
               <FileUpload
                 ref={fileUploadRef}
-                name="demo[]"
-                url="https://primefaces.org/primereact/showcase/upload.php"
                 multiple={false}
                 accept="image/*"
                 maxFileSize={MAXIMUM_FILE_SIZE}
                 customUpload={true}
-                // onUpload={onTemplateUpload}
-                uploadHandler={onTemplateUpload}
                 onSelect={onTemplateSelect}
                 onError={onTemplateClear}
                 onClear={onTemplateClear}
@@ -469,9 +489,9 @@ function HtmlContentEditPage(props) {
             }
           >
             <Editor
-              defaultContent={htmlContent}
+              defaultContent={data.content}
               onContentChange={(data) => {
-                setData((pre) => ({ ...pre, htmlContent: data }));
+                setData((pre) => ({ ...pre, content: data }));
                 setHtmlContent(data);
               }}
             />

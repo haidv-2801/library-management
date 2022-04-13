@@ -5,6 +5,8 @@
 
   &__row {
     margin-bottom: 16px;
+    display: flex;
+    gap: 16px;
 
     &:last-child {
       flex: 1;
@@ -12,6 +14,18 @@
 
     .toe-input {
       width: 25vw;
+    }
+
+    .dropdown-filter-by-menu {
+      width: fit-content;
+    }
+  }
+
+  .menu-root {
+    .toe-table__th {
+      .toe-font-body {
+        font-family: 'OpenSans-SemiBold', sans-serif !important;
+      }
     }
   }
 

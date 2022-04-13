@@ -6,12 +6,16 @@ import { useNavigate } from 'react-router-dom';
 import baseApi from '../../../../api/baseApi';
 import { Toast } from 'primereact/toast';
 import {
+  ACTIVE_RECORD_FILTER,
   BUTTON_THEME,
   BUTTON_TYPE,
   DATE_FORMAT,
+  GUID_NULL,
+  MENU_TYPE,
+  OPERATOR,
   PATH_NAME,
 } from '../../../../constants/commonConstant';
-import { buildClass } from '../../../../constants/commonFunction';
+import { buildClass, listToTree } from '../../../../constants/commonFunction';
 import END_POINT from '../../../../constants/endpoint';
 import Button from '../../../atomics/base/Button/Button';
 import Input from '../../../atomics/base/Input/Input';
@@ -25,6 +29,8 @@ import moment from 'moment';
 import { Tooltip } from 'antd';
 import { format } from 'react-string-format';
 import './postPage.scss';
+import Dropdown from '../../../molecules/Dropdown/Dropdown';
+import TreeSelect from '../../../atomics/base/TreeSelect/TreeSelect';
 
 PostPage.propTypes = {
   id: PropTypes.string,
@@ -131,6 +137,33 @@ function PostPage(props) {
     ADD: 1,
   };
 
+  const DROPDOWN_TYPE_OPTIONS = [
+    {
+      label: 'Tất cả',
+      value: -1,
+    },
+    {
+      label: 'Chuyển hướng Alias',
+      value: MENU_TYPE.NORMAL,
+      subLabel: 'VD: https://trangwebcuaban.com/{Alias}',
+    },
+    {
+      label: 'Chuyển hướng Link',
+      value: MENU_TYPE.REDIRECT,
+      subLabel: 'Trang được chuyển hướng qua đường dẫn là {Link}',
+    },
+    {
+      label: 'Chuyển hướng thành /html/{Alias}',
+      value: MENU_TYPE.HTML_RENDER,
+      subLabel: 'VD: https://trangwebcuaban.com/{Html}/{Alias}',
+    },
+    {
+      label: 'Menu tĩnh',
+      value: MENU_TYPE.NONE_EVENT,
+      subLabel: 'Không có sự kiện và chứa menu',
+    },
+  ];
+
   const MIN_PAGE_SIZE = 10;
   const requestDoneRef = useRef(true);
 
@@ -145,7 +178,10 @@ function PostPage(props) {
     filterValue: '',
     page: 1,
     pageSize: MIN_PAGE_SIZE,
+    type: -1,
+    menuID: -1,
   });
+  const [dataMenus, setDataMenus] = useState([]);
 
   const OPTIONS = [
     {
@@ -218,6 +254,7 @@ function PostPage(props) {
 
   useEffect(() => {
     getPostsFilter();
+    getMenus();
   }, []);
 
   useEffect(() => {
@@ -254,16 +291,36 @@ function PostPage(props) {
   };
 
   const getPostsFilter = () => {
+    let _filter = [['IsDeleted', OPERATOR.EQUAL, '0']];
+    if (paging.filterValue?.trim() != '') {
+      _filter.push(OPERATOR.AND);
+      _filter.push([
+        ['Title', OPERATOR.CONTAINS, encodeURI(paging.filterValue)],
+        OPERATOR.OR,
+        ['Slug', OPERATOR.CONTAINS, encodeURI(paging.filterValue)],
+        OPERATOR.OR,
+        ['Description', OPERATOR.CONTAINS, encodeURI(paging.filterValue)],
+      ]);
+    }
+
+    if (paging.menuID != -1) {
+      _filter.push(OPERATOR.AND);
+      _filter.push(['MenuID', OPERATOR.EQUAL, paging.menuID]);
+    }
+
     baseApi.post(
       (res) => {
-        let _data = res.data.pageData.sort((a, b) => {
-          const time = (date) => new Date(date).getTime();
-          if (time(b?.modifiedDate) - time(a?.modifiedDate) === 0) {
-            return time(b?.createdDate) - time(a?.createdDate);
-          } else {
-            return time(b?.modifiedDate) - time(a?.modifiedDate);
-          }
-        });
+        let _data = res.data.pageData
+          .sort((a, b) => {
+            const time = (date) => new Date(date).getTime();
+            if (time(b?.createdDate) - time(a?.modifiedDate) > 0) {
+              return time(b?.createdDate) - time(a?.createdDate);
+            } else {
+              return time(b?.modifiedDate) - time(a?.modifiedDate);
+            }
+          })
+          .filter((menu) => menu.parentID !== GUID_NULL);
+
         setDataTable(_data.map((_) => ({ ..._, key: _.postId })));
         setIsLoading(false);
         setTotalRecords(res.data.totalRecord);
@@ -277,13 +334,13 @@ function PostPage(props) {
         setIsLoading(true);
         requestDoneRef.current = false;
       },
-      END_POINT.TOE_GET_POSTS_FILTER_PAGING,
-      null,
+      END_POINT.TOE_GET_POSTS_FILTER,
       {
-        filterValue: paging.filterValue || '',
+        filter: btoa(JSON.stringify(_filter)),
         pageSize: paging.pageSize,
-        pageNumber: paging.page,
-      }
+        pageIndex: paging.page,
+      },
+      null
     );
   };
 
@@ -326,6 +383,40 @@ function PostPage(props) {
     }
   };
 
+  const getMenus = () => {
+    baseApi.get(
+      (res) => {
+        let _data = res.data.data.map((item) => ({
+          ...item,
+          key: item?.MenuID,
+          label: (
+            <div className="treeselect-item">
+              <div className="treeselect-item__title">{item.Title}</div>
+              <Tooltip title={`Menu chứa ${item.Amount} bài viết`}>
+                <div className="treeselect-item__amount">{item.Amount}</div>
+              </Tooltip>
+            </div>
+          ),
+          parentID: item.ParentID,
+        }));
+        _data = listToTree(_data);
+        _data = [
+          {
+            key: '-1',
+            label: 'Tất cả',
+          },
+          ..._data,
+        ];
+        setDataMenus(_data);
+      },
+      (err) => {},
+      () => {},
+      END_POINT.TOE_GET_MENUS_POST_COUNT,
+      null,
+      null
+    );
+  };
+
   const handleRemove = (key) => {
     baseApi.delete(
       (res) => {
@@ -337,6 +428,13 @@ function PostPage(props) {
             life: 3000,
           });
           getPostsFilter();
+        } else {
+          toast.current.show({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Xóa thất bại',
+            life: 3000,
+          });
         }
       },
       (err) => {
@@ -420,12 +518,29 @@ function PostPage(props) {
               }}
               placeholder={'Tìm kiếm Tiêu đề, Alias, Mô tả...'}
               value={paging.filterValue}
-              // label={
-              //   <div className="toe-admin-post-page__row-label">Tìm kiếm</div>
-              // }
               leftIcon={<i className="pi pi-search"></i>}
               delay={300}
             />
+
+            <TreeSelect
+              placeholder="Nhấp để chọn"
+              value={paging.menuID}
+              options={dataMenus}
+              prefixValue={'Menu'}
+              onChange={(data) => {
+                setPaging((pre) => ({ ...pre, menuID: data.value }));
+              }}
+            />
+
+            {/* <Dropdown
+              className="dropdown-filter-by-menu"
+              defaultValue={paging.type}
+              options={DROPDOWN_TYPE_OPTIONS}
+              hasSubLabel
+              prefixValue={'Loại Menu'}
+              scrollHeight={350}
+              onChange={({ value }) => setPaging({ ...paging, type: value })}
+            /> */}
           </div>
           {selected?.length ? (
             <Tooltip placement="bottomLeft" title="Xóa bản ghi">

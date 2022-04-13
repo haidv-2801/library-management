@@ -18,7 +18,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         /// <param name="employeeCode">Mã nhân viên</param>
         /// <returns>Bản ghi nhân viên</returns>
         /// CREATED BY: DVHAI (07/07/2021)
-        Employee GetEmployeeByCode(string employeeCode);
+        //Employee GetEmployeeByCode(string employeeCode);
 
         /// <summary>
         /// Lấy mã nhân viên mới

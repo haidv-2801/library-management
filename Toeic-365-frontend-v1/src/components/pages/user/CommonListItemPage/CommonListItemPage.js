@@ -1,52 +1,185 @@
 import { BellOutlined } from '@ant-design/icons';
+import { Skeleton } from 'primereact/skeleton';
 import PropTypes from 'prop-types';
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import baseApi from '../../../../api/baseApi';
+import END_POINT from '../../../../constants/endpoint';
 import Banner from '../../../molecules/Banner/Banner';
 import CommonItem from '../../../molecules/CommonItem/CommonItem';
 import HotNews from '../../../molecules/HotNews/HotNews';
-import Paginator from '../../../molecules/Paginator/Paginator';
+import PaginatorAntd from '../../../molecules/PaginatorAntd/PaginatorAntd';
 import Footer from '../../../sections/User/Footer/Footer';
 import Layout from '../../../sections/User/Layout/Layout';
+import store from '../../../../redux/store';
+import { useSelector } from 'react-redux';
 import './commonListItemPage.scss';
 
 CommonListItemPage.propTypes = {
   titlePage: PropTypes.string,
+  menuID: PropTypes.string,
 };
 
-CommonListItemPage.defaultProps = { titlePage: '' };
+CommonListItemPage.defaultProps = { titlePage: '', menuID: '' };
 
 function CommonListItemPage(props) {
-  const { children, titlePage } = props;
+  const { children, titlePage, menuID } = props;
+  const MIN_PAGE_SIZE = 20;
 
   const navigate = useNavigate();
   const params = useParams();
+  const appSelector = useSelector((store) => store.app.menus);
   const { pathname } = useLocation();
-  const [pageI, setPageI] = useState({ page: 1, pageSize: 20, total: 100 });
 
-  useEffect(() => {}, []);
+  const [paging, setPaging] = useState({
+    page: 1,
+  });
+  const [isLoading, setIsLoading] = useState(true);
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [dataTable, setDataTable] = useState([]);
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    getPostsByMenuID(menuID);
+    getPosts();
+  }, []);
+
+  useEffect(() => {
+    getPostsByMenuID();
+  }, [paging]);
 
   const renderCommonItems = () => {
-    const arr = Array.from(Array(10).keys());
-
-    return arr.map((item, _) => (
+    if (isLoading) return renderSkeleton();
+    if (totalRecords <= 0) return 'Không có dữ liệu hiển thị';
+    return dataTable.map((item, _) => (
       <CommonItem
         onClick={() => {
-          navigate('slug/645634');
+          navigate(`${item?.slug}/${item?.postID}`);
         }}
-        key={_}
-        title={
-          'NDLTD – Mạng thư viện số luận văn, luận án quốc tếNDLTDNDLTD – Mạng thư viện số luận văn, luận án quốc tếNDLTDNDLTDNDLTD – Mạng thư viện số luận văn, luận án quốc tếNDLTDNDLTD – Mạng thư viện số luận văn'
-        }
-        description={
-          'Với NDLTD bạn đọc sẽ được truy cập hơn 6.200.000 tài liệu là luận văn, luận án của gần 100 trường đại học thành viên từ Hoa Kỳ, Canada, Ấn Độ, Nhật Bản, bạn đọc sẽ được truy cập hơn 6.200.000 tài liệu là luận văn, luận án của gần 100 trường đại học thành viên từ Hoa Kỳ Pháp…Với NDLTD bạn đọc sẽ được truy cập hơn 6.200.000 tài liệu là luận văn, luận án của gần 100 trường đại học thành viên từ Hoa Kỳ, Canada, Ấn Độ, Nhật Bản, bạn đọc sẽ được truy cập hơn 6.200.000 tài liệu là luận văn, luận án của gần 100 trường đại học thành viên từ Hoa Kỳ Pháp…'
-        }
-        date={Date.now()}
+        slug={item.slug}
+        key={item?.postID}
+        title={item?.title}
+        description={item?.description}
+        date={item?.createdDate}
+        viewCount={item?.viewCount}
+        imgSrc={item.image}
       />
     ));
   };
 
-  const getPostsByMenuID = (menuID) => {};
+  const getPostsByMenuID = (menuID) => {
+    // let _menuID = appSelector.filter(item=>item.slug===)
+    baseApi.post(
+      (res) => {
+        let _data = res.data.pageData.sort((a, b) => {
+          const time = (date) => new Date(date).getTime();
+          if (time(b?.modifiedDate) - time(a?.modifiedDate) === 0) {
+            return time(b?.createdDate) - time(a?.createdDate);
+          } else {
+            return time(b?.modifiedDate) - time(a?.modifiedDate);
+          }
+        });
+        setTotalRecords(res.data.totalRecord);
+        setDataTable(_data);
+        setIsLoading(false);
+      },
+      (err) => {
+        setIsLoading(false);
+      },
+      () => {
+        setIsLoading(true);
+      },
+      END_POINT.TOE_GET_POSTS_FILTER,
+      {
+        filter: btoa(
+          JSON.stringify([
+            ['MenuID', '=', menuID],
+            'AND',
+            ['Status', '=', '1'],
+            'AND',
+            ['IsDeleted', '=', '0'],
+          ])
+        ),
+        pageIndex: paging.page,
+        pageSize: MIN_PAGE_SIZE,
+      }
+    );
+  };
+
+  const getPosts = () => {
+    baseApi.post(
+      (res) => {
+        let _data = res.data.pageData.sort((a, b) => {
+          const time = (date) => new Date(date).getTime();
+          if (time(b?.modifiedDate) - time(a?.modifiedDate) === 0) {
+            return time(b?.createdDate) - time(a?.createdDate);
+          } else {
+            return time(b?.modifiedDate) - time(a?.modifiedDate);
+          }
+        });
+        setPosts(_data);
+      },
+      (err) => {},
+      () => {},
+      END_POINT.TOE_GET_POSTS_FILTER,
+      {
+        filter: btoa(
+          JSON.stringify([['Status', '=', '1'], 'AND', ['IsDeleted', '=', '0']])
+        ),
+        pageIndex: 1,
+        pageSize: 5,
+      }
+    );
+  };
+
+  const renderSkeleton = () => {
+    let number = Math.min(MIN_PAGE_SIZE, totalRecords || MIN_PAGE_SIZE),
+      arr = [],
+      obj = {};
+
+    return (
+      <div className="custom-skeleton p-4">
+        <div className="m-0 p-0">
+          <div className="mb-3">
+            <div className="flex">
+              <Skeleton shape="circle" size="7rem" className="mr-2"></Skeleton>
+              <div style={{ flex: '1' }}>
+                <Skeleton width="100%" className="mb-2"></Skeleton>
+                <Skeleton width="75%"></Skeleton>
+              </div>
+            </div>
+          </div>
+          <div className="mb-3">
+            <div className="flex">
+              <Skeleton shape="circle" size="7rem" className="mr-2"></Skeleton>
+              <div style={{ flex: '1' }}>
+                <Skeleton width="100%" className="mb-2"></Skeleton>
+                <Skeleton width="75%"></Skeleton>
+              </div>
+            </div>
+          </div>
+          <div className="mb-3">
+            <div className="flex">
+              <Skeleton shape="circle" size="7rem" className="mr-2"></Skeleton>
+              <div style={{ flex: '1' }}>
+                <Skeleton width="100%" className="mb-2"></Skeleton>
+                <Skeleton width="75%"></Skeleton>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div className="flex">
+              <Skeleton shape="circle" size="7rem" className="mr-2"></Skeleton>
+              <div style={{ flex: '1' }}>
+                <Skeleton width="100%" className="mb-2"></Skeleton>
+                <Skeleton width="75%"></Skeleton>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <Layout>
@@ -62,20 +195,22 @@ function CommonListItemPage(props) {
           <div className="toe-common-list-item-page__body">
             <div className="toe-common-list-item-page__body-left">
               {renderCommonItems()}
+              {totalRecords > 0 ? (
+                <PaginatorAntd
+                  className="toe-common-list-item-page__paginator"
+                  totalRecords={totalRecords}
+                  page={paging.page}
+                  pageSize={MIN_PAGE_SIZE}
+                  onChange={(data) => {
+                    setPaging({ page: data });
+                  }}
+                />
+              ) : null}
             </div>
             <div className="toe-common-list-item-page__body-right">
-              <HotNews />
+              <HotNews data={posts} />
             </div>
           </div>
-          <Paginator
-            className="toe-common-list-item-page__paginator"
-            onChange={(data) => {
-              setPageI({ ...pageI, ...data });
-            }}
-            totalRecords={pageI.total}
-            page={pageI.page}
-            pageSize={pageI.pageSize}
-          />
         </div>
         <Footer />
       </div>

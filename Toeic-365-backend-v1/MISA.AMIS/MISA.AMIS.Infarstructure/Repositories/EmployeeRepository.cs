@@ -32,11 +32,11 @@ namespace TOE.TOEIC.Infrastructure
         /// <param name="employeeCode">Mã nhân viên</param>
         /// <returns>Bản ghi nhân viên</returns>
         /// CREATED BY: DVHAI (07/07/2021)
-        public Employee GetEmployeeByCode(string employeeCode)
-        {
-            var employee = GetEntityByProperty("EmployeeCode", employeeCode);
-            return employee;
-        }
+        //public Employee GetEmployeeByCode(string employeeCode)
+        //{
+        //    var employee = GetEntityByProperty("EmployeeCode", employeeCode);
+        //    return employee;
+        //}
 
         /// <summary>
         /// Lấy danh sách nhân viên phân trang, tìm kiếm

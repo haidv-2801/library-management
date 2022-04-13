@@ -10,10 +10,12 @@ GroupCheck.propTypes = {
   id: PropTypes.string,
   className: PropTypes.string,
   style: PropTypes.object,
-  options: PropTypes.arrayOf({
-    label: PropTypes.any,
-    value: PropTypes.any,
-  }),
+  options: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.any,
+      value: PropTypes.any,
+    })
+  ),
   defaultValue: PropTypes.any,
   disabled: PropTypes.bool,
   type: PropTypes.oneOf([CHECKBOX_TYPE.CIRCLE, CHECKBOX_TYPE.SQUARE]),

@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { PATH_NAME } from '../../../constants/commonConstant';
 import { buildClass } from '../../../constants/commonFunction';
 import CardItem from '../Card/Card';
 import './cardList.scss';
@@ -22,6 +24,11 @@ CardList.defaultProps = {
 
 function CardList(props) {
   const { id, style, className, cards, isLoading } = props;
+  const navigate = useNavigate();
+
+  const handleSeeDetail = (item) => {
+    navigate(PATH_NAME.NEWS + '/' + item.slug + '/' + item.postID);
+  };
 
   return (
     <div
@@ -36,9 +43,10 @@ function CardList(props) {
                 key={card.id}
                 title={card?.title}
                 subTitle={card?.subTitle}
-                imgSrc={card?.imgSrc}
+                imgSrc={card?.image}
                 description={card?.description}
                 isLoading={isLoading}
+                onClick={() => handleSeeDetail(card)}
               />
             );
           })

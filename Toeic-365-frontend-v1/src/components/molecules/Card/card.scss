@@ -23,11 +23,12 @@
 
     &-header img {
       height: 200px;
-      object-fit: cover;
+      object-fit: contain;
     }
 
     .p-card-body {
       flex: 1;
+      padding: 10px;
     }
   }
 
@@ -46,19 +47,15 @@
     }
   }
 
-  &:first-child {
-    .p-card {
-      &-header img {
-        height: auto;
-      }
+  // &:first-child {
+  //   .p-card {
+  //     &-header img {
+  //       height: auto;
+  //     }
 
-      .p-image-preview-indicator {
-        height: 100%;
-      }
-    }
-
-    .toe-card-img {
-      height: 100%;
-    }
-  }
+  //     .p-image-preview-indicator {
+  //       height: 100%;
+  //     }
+  //   }
+  // }
 }

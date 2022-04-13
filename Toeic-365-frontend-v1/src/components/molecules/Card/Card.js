@@ -53,15 +53,15 @@ function CardItem(props) {
 
   const header = () => {
     return (
-      <div className="toe-card-img">
+      <div className="toe-card-img" onClick={onClick}>
         <Image
-          src={
-            'https://images.unsplash.com/photo-1640622304964-3e2c2c0cd7cd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80'
-          }
+          // src={
+          //   'https://images.unsplash.com/photo-1640622304964-3e2c2c0cd7cd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80'
+          // }
+          src={imgSrc}
           alt="Image"
           // width="auto"
           // height={100}
-          preview
         />
       </div>
     );
@@ -72,7 +72,6 @@ function CardItem(props) {
       id={id}
       style={style}
       className={buildClass(['toe-card toe-font-body', className])}
-      onClick={onClick}
     >
       {isLoading ? (
         <div className="custom-skeleton p-4">
@@ -88,7 +87,11 @@ function CardItem(props) {
         </div>
       ) : (
         <Card
-          title={<div>{title}</div>}
+          title={
+            <div className="toe-font-title" onClick={onClick}>
+              {title}
+            </div>
+          }
           subTitle={<div className="toe-font-body">{subTitle}</div>}
           footer={footer}
           header={header()}

@@ -265,11 +265,45 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         /// <param name="propertyValue">Giá trị của thuộc tính</param>
         /// <returns>Thực thể</returns>
         /// CREATED BY: DVHAI 08/07/2021
-        public TEntity GetEntityByProperty(string propertyName, object propertyValue)
+        public IEnumerable<TEntity> GetEntitiesByProperty(string propertyName, object propertyValue)
         {
             string query = $"SELECT * FROM {_tableName} WHERE {propertyName} = '{propertyValue}'";
-            var entityReturn = _dbConnection.Query<TEntity>(query, commandType: CommandType.Text).FirstOrDefault();
-            return entityReturn;
+            var entityReturn = _dbConnection.Query<TEntity>(query, commandType: CommandType.Text);
+            return (IEnumerable<TEntity>)entityReturn;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="whereClause"></param>
+        /// <returns></returns>
+        public IEnumerable<TEntity> GetEntitiesFilter(string whereClause, string viewName = "")
+        {
+            string resource = _tableName;
+            if (!string.IsNullOrEmpty(viewName))
+            {
+                resource = viewName;
+            }
+            string query = $"SELECT * FROM {resource} WHERE {whereClause}";
+            var entityReturn = _dbConnection.Query<TEntity>(query, commandType: CommandType.Text);
+            return (IEnumerable<TEntity>)entityReturn;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="whereClause"></param>
+        /// <returns></returns>
+        public int CountTotalRecordByClause(string whereClause, string viewName = "")
+        {
+            string resource = _tableName;
+            if (!string.IsNullOrEmpty(viewName))
+            {
+                resource = viewName;
+            }
+            string queryTotal = $"SELECT COUNT(*) FROM {_tableName} WHERE {whereClause}";
+            var totalRecord = (int)_dbConnection.QuerySingle<int>(queryTotal, commandType: CommandType.Text);
+            return totalRecord;
         }
 
         /// <summary>
@@ -282,6 +316,8 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
                 _dbConnection.Close();
             }
         }
+
+       
         #endregion
     }
 }

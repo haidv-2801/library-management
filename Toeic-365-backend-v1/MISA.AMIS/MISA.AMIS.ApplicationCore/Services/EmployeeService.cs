@@ -56,7 +56,8 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         /// CREATED BY: HAIDV 09/07/2021
         public Employee GetEmployeeByCode(string employeeCode)
         {
-            return _employeeRepository.GetEmployeeByCode(employeeCode);
+            return new Employee();
+            //return _employeeRepository.GetEmployeeByCode(employeeCode);
         }
 
         /// <summary>

@@ -21,5 +21,11 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         /// <returns>Danh sách menu</returns>
         /// CREATED BY: DVHAI (07/07/2021)
         DbResponse GetMenusFilterPaging(string filterValue, int? pageSize = null, int? pageNum = null);
+
+        /// <summary>
+        /// Lấy danh sách menu và tổng số bài viết trong menu đó
+        /// </summary>
+        /// <returns></returns>
+        DbResponse GetMenusAndPostsCount();
     }
 }

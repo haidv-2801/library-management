@@ -20,6 +20,7 @@ CommonItem.propTypes = {
   description: PropTypes.any,
   date: PropTypes.any,
   isLoading: PropTypes.bool,
+  viewCount: PropTypes.number,
 };
 
 CommonItem.defaultProps = {
@@ -33,6 +34,7 @@ CommonItem.defaultProps = {
   width: '20em',
   isLoading: false,
   date: null,
+  viewCount: 0,
 };
 
 function CommonItem(props) {
@@ -46,6 +48,7 @@ function CommonItem(props) {
     description,
     date,
     isLoading,
+    viewCount,
   } = props;
 
   return (
@@ -58,12 +61,7 @@ function CommonItem(props) {
         {isLoading ? (
           <Skeleton height="100%"></Skeleton>
         ) : (
-          <img
-            src={
-              'https://images.unsplash.com/photo-1647882979170-a4e462043b8c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1140&q=80'
-            }
-            alt="Image"
-          />
+          <img src={imgSrc} alt={props.slug} />
         )}
       </div>
       {isLoading ? (
@@ -88,7 +86,7 @@ function CommonItem(props) {
             className="toe-common-item__date toe-font-hint"
           >
             Ngày tạo: {moment(date).format(DATE_FORMAT.TYPE_1)} - Lượt xem:{' '}
-            {1100}
+            {viewCount}
           </div>
           <p className="toe-common-item__desc">
             <SmartText rows={3}>{description}</SmartText>

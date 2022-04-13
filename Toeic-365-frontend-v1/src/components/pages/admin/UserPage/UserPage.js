@@ -28,6 +28,7 @@ import Layout from '../../../sections/Admin/Layout/Layout';
 import PopupCreateUser from './PopupCreateUser/PopupCreateUser';
 import Modal from '../../../atomics/base/ModalV2/Modal';
 import './userPage.scss';
+import InputPassword from '../../../atomics/base/InputPassword/InputPassword';
 
 UserPage.propTypes = {
   id: PropTypes.string,
@@ -275,7 +276,7 @@ function UserPage(props) {
       (res) => {
         let _data = res.data.pageData.sort((a, b) => {
           const time = (date) => new Date(date).getTime();
-          if (time(b?.modifiedDate) - time(a?.modifiedDate) === 0) {
+          if (time(b?.createdDate) - time(a?.modifiedDate) > 0) {
             return time(b?.createdDate) - time(a?.createdDate);
           } else {
             return time(b?.modifiedDate) - time(a?.modifiedDate);
@@ -654,32 +655,43 @@ function UserPage(props) {
               <Button name="Áp dụng" onClick={handleChangePw} />,
             ]}
           >
-            <Input
+            <InputPassword
               autoFocus
               className="mb-3"
               hasRequiredLabel
               label="Mật khẩu cũ"
               placeholder="Nhập mật khẩu cũ"
               onChange={(d) =>
-                setDataChangePw({ ...dataChangePw, oldPassword: d })
+                setDataChangePw({
+                  ...dataChangePw,
+                  oldPassword: d.target.value,
+                })
               }
             />
-            <Input
+
+            <InputPassword
               className="mb-3"
               hasRequiredLabel
               label="Mật khẩu mới"
               placeholder="Nhập mật khẩu mới"
               onChange={(d) =>
-                setDataChangePw({ ...dataChangePw, password: d })
+                setDataChangePw({
+                  ...dataChangePw,
+                  password: d.target.value?.trim(),
+                })
               }
             />
-            <Input
+
+            <InputPassword
               className="mb-3"
               hasRequiredLabel
               label="Nhập lại mật khẩu mới"
               placeholder="Nhập lại mật khẩu mới"
               onChange={(d) =>
-                setDataChangePw({ ...dataChangePw, rePassword: d })
+                setDataChangePw({
+                  ...dataChangePw,
+                  rePassword: d.target.value?.trim(),
+                })
               }
             />
           </Modal>

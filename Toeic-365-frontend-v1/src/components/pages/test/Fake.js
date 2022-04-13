@@ -397,3 +397,33 @@ export const FAKE_DATA_MENU = [
     isDeleted: false,
   },
 ];
+
+export const FILTER = btoa(
+  JSON.stringify([
+    [
+      ['MenuID', '=', '8d0fb05d-5ca6-4cf6-adfb-75e50d2a88c5'],
+      'OR',
+      ['Title', 'CONTAINS', encodeURI('Tiêu đề')],
+    ],
+    'AND',
+    [['Status', '=', '1'], 'AND', ['IsDeleted', '=', '0']],
+  ])
+);
+
+const body = {
+  filter: btoa(
+    JSON.stringify([
+      ['MenuID', '=', '8d0fb05d-5ca6-4cf6-adfb-75e50d2a88c5'],
+      'AND',
+      ['Status', '=', '1'],
+      'AND',
+      ['IsDeleted', '=', '0'],
+    ])
+  ),
+  sort: JSON.stringify([['Title', 'DESC']]),
+  pageIndex: 1,
+  pageSize: 20,
+};
+
+export const FILTER_AFTER =
+  'W1siTWVudUlEIiwiPSIsIjhkMGZiMDVkLTVjYTYtNGNmNi1hZGZiLTc1ZTUwZDJhODhjNSJdLCJBTkQiLFsiU3RhdHVzIiwiPSIsIjEiXSwiQU5EIixbIklzRGVsZXRlZCIsIj0iLCIwIl1d';

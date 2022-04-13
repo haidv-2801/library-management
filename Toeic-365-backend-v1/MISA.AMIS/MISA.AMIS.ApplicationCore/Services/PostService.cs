@@ -182,6 +182,18 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
 
             return propertyInfo.GetValue(post, null);
         }
+
+        /// <summary>
+        /// Lấy danh sách post theo menuid
+        /// </summary>
+        /// <param name="MenuID"></param>
+        /// <returns></returns>
+        public ServiceResult GetPostsByMenuID(Guid? MenuID)
+        {
+            _serviceResult.Data = _postRepository.GetEntitiesByProperty("MenuID", MenuID.ToString());
+            _serviceResult.TOECode = TOECode.Success;
+            return _serviceResult;
+        }
         #endregion
     }
 }

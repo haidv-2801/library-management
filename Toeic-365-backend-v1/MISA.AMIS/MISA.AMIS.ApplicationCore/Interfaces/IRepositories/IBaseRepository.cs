@@ -15,6 +15,20 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         IEnumerable<TEntity> GetEntities();
 
         /// <summary>
+        /// Base filter
+        /// </summary>
+        /// <param name="whereClause"></param>
+        /// <returns></returns>
+        IEnumerable<TEntity> GetEntitiesFilter(string whereClause, string viewName = "");
+
+        /// <summary>
+        /// Base filter
+        /// </summary>
+        /// <param name="whereClause"></param>
+        /// <returns></returns>
+        int CountTotalRecordByClause(string whereClause, string viewName = "");
+
+        /// <summary>
         ///  Lấy bản ghi theo id
         /// </summary>
         /// <param name="entityId">Id của bản ghi</param>
@@ -63,6 +77,6 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         /// <param name="propertyValue">Giá trị của thuộc tính</param>
         /// <returns>Thực thể</returns>
         /// CREATED BY: DVHAI (07/07/2021)
-        TEntity GetEntityByProperty(string propertyName, object propertyValue);
+        IEnumerable<TEntity> GetEntitiesByProperty(string propertyName, object propertyValue);
     }
 }

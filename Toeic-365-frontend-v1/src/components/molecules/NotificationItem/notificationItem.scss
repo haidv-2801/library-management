@@ -20,6 +20,7 @@
     width: 95px;
     height: 95px;
     flex-shrink: 0;
+    cursor: pointer;
 
     img {
       object-fit: cover;
@@ -29,6 +30,7 @@
   }
 
   &__title {
+    cursor: pointer;
     font-size: 16px !important;
     width: 100%;
     font-weight: 600;

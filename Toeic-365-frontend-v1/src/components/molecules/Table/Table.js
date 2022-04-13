@@ -18,6 +18,7 @@ Table.propTypes = {
   isLoading: PropTypes.bool,
   hasOption: PropTypes.bool,
   options: PropTypes.array,
+  rowClassName: PropTypes.func,
 };
 
 Table.defaultProps = {
@@ -30,6 +31,7 @@ Table.defaultProps = {
   isLoading: false,
   hasOption: false,
   options: [],
+  rowClassName: () => {},
 };
 
 function Table(props) {
@@ -43,6 +45,7 @@ function Table(props) {
     isLoading,
     hasOption,
     options,
+    rowClassName,
   } = props;
 
   const [showOption, setShowOption] = useState(null);
@@ -124,6 +127,7 @@ function Table(props) {
           paginator={false}
           rowsPerPageOptions={PAGEGING}
           emptyMessage="Không có dữ liệu hiển thị"
+          rowClassName={rowClassName}
         >
           {renderColums()}
         </DataTable>
