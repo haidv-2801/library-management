@@ -327,7 +327,7 @@ function Header(props) {
         {showNav && (
           <>
             <MenuBar options={dataMenus} />
-            {!authCtx.isLoggedIn ? (
+            {!authCtx.isLoggedIn && false ? (
               <>
                 <Button
                   className="toe-btn-login"

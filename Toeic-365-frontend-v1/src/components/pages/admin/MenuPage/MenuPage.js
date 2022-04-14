@@ -150,25 +150,52 @@ function MenuPage(props) {
     ADD: 1,
   };
 
+  // const DROPDOWN_TYPE_OPTIONS = [
+  //   {
+  //     label: 'Tất cả',
+  //     value: -1,
+  //   },
+  //   {
+  //     label: 'Chuyển hướng Alias',
+  //     value: MENU_TYPE.NORMAL,
+  //     subLabel: 'VD: https://trangwebcuaban.com/{Alias}',
+  //   },
+  //   {
+  //     label: 'Chuyển hướng Link',
+  //     value: MENU_TYPE.REDIRECT,
+  //     subLabel: 'Trang được chuyển hướng qua đường dẫn là {Link}',
+  //   },
+  //   {
+  //     label: 'Chuyển hướng thành /html/{Alias}',
+  //     value: MENU_TYPE.HTML_RENDER,
+  //     subLabel: 'VD: https://trangwebcuaban.com/{Html}/{Alias}',
+  //   },
+  //   {
+  //     label: 'Menu tĩnh',
+  //     value: MENU_TYPE.NONE_EVENT,
+  //     subLabel: 'Không có sự kiện và chứa menu',
+  //   },
+  // ];
+
   const DROPDOWN_TYPE_OPTIONS = [
     {
       label: 'Tất cả',
       value: -1,
     },
     {
-      label: 'Chuyển hướng Alias',
-      value: MENU_TYPE.NORMAL,
-      subLabel: 'VD: https://trangwebcuaban.com/{Alias}',
-    },
-    {
-      label: 'Chuyển hướng Link',
-      value: MENU_TYPE.REDIRECT,
-      subLabel: 'Trang được chuyển hướng qua đường dẫn là {Link}',
-    },
-    {
-      label: 'Chuyển hướng thành /html/{Alias}',
+      label: 'Menu đơn',
       value: MENU_TYPE.HTML_RENDER,
-      subLabel: 'VD: https://trangwebcuaban.com/{Html}/{Alias}',
+      subLabel: 'Menu chỉ chứa một bài đăng duy nhất',
+    },
+    {
+      label: 'Menu nhiều',
+      value: MENU_TYPE.NORMAL,
+      subLabel: 'Chứa danh sách các bài đăng',
+    },
+    {
+      label: 'Menu chuyển hướng',
+      value: MENU_TYPE.REDIRECT,
+      subLabel: 'Trang được chuyển hướng qua đường dẫn hiện tại',
     },
     {
       label: 'Menu tĩnh',

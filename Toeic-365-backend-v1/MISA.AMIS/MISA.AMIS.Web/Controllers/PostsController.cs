@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Cors;
 using TOE.TOEIC.Entities;
 using System.Threading;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.Extensions.Logging;
 
 namespace MISA.CukCuk.Web.Controllers
 {
@@ -27,12 +28,14 @@ namespace MISA.CukCuk.Web.Controllers
     {
         #region Declare
         IPostService _postService;
+        ILogger<Post> _logger;
         #endregion
 
         #region Constructer
-        public PostsController(IPostService postService) : base(postService)
+        public PostsController(IPostService postService, ILogger<Post> logger) : base(postService, logger)
         {
             _postService = postService;
+            _logger = logger;
         }
         #endregion
 
@@ -59,6 +62,14 @@ namespace MISA.CukCuk.Web.Controllers
         public ActionResult GetPostsByMenuID([Required] string id)
         {
             return Ok(_postService.GetPostsByMenuID(Guid.Parse(id)));
+        }
+
+        [EnableCors("AllowCROSPolicy")]
+        [Route("/api/PostsELK")]
+        [HttpGet]
+        public ActionResult GetPostsELK()
+        {
+            return Ok(true);
         }
         #endregion
     }

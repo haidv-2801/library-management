@@ -67,7 +67,9 @@ function PopupCreateUser(props) {
       className={buildClass(['toe-popup-create-user', className])}
     >
       <div className="toe-popup-create-user__left">
-        <UpLoadImage />
+        <UpLoadImage
+          onChange={(img) => setDataCreate({ ...dataCreate, avatar: img })}
+        />
       </div>
       <div className="toe-popup-create-user__right">
         <div className="toe-popup-create-user__row">

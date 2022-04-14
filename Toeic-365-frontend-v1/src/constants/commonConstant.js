@@ -145,6 +145,11 @@ const ACTIVE_RECORD_FILTER = [
   ['Status', OPERATOR.EQUAL, '1'],
 ];
 
+const STATUS_CODE = {
+  UNAUTHORIZE: 401,
+  BAD_REQUEST: 300,
+};
+
 const DAYS_OF_WEEK = [
   '',
   'Thứ Hai',
@@ -157,6 +162,7 @@ const DAYS_OF_WEEK = [
 ];
 
 export {
+  STATUS_CODE,
   DAYS_OF_WEEK,
   ACTIVE_RECORD_FILTER,
   MAXIMUM_PAGESIZE,

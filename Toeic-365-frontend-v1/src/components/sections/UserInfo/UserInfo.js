@@ -51,7 +51,7 @@ const UserInfo = () => {
 
   return (
     <div className={buildClass(['toe-user-info'])}>
-      <div className="user-name">{authCtx.auth()?.fullName}</div>
+      <div className="user-name">{authCtx.auth()?.userName}</div>
       <PopupSelectionV1
         defaultValue={userSelectValue}
         onChange={(data) => {
@@ -60,7 +60,8 @@ const UserInfo = () => {
             // history('/login');
             //Xóa cache chrome
             authCtx.logout();
-            window.location.replace(PATH_NAME.HOME);
+            // window.location.replace(PATH_NAME.HOME);
+            window.location.replace(PATH_NAME.LOGIN);
           } else if (data.value === POPUP_SELECTION_VALUES.USER_INFOMATION) {
             navigate(PATH_NAME.USER);
           } else if (data.value === POPUP_SELECTION_VALUES.ADMIN_PAGE) {
@@ -72,7 +73,14 @@ const UserInfo = () => {
         options={POPUP_SELECTION_OPTIONS}
       >
         <div className="user-avatar">
-          <img src={Avatar} alt="avatar" />
+          <img
+            src={
+              authCtx.auth()?.avatar
+                ? authCtx.auth()?.avatar
+                : 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/220px-User_icon_2.svg.png'
+            }
+            alt="avatar"
+          />
         </div>
       </PopupSelectionV1>
     </div>

@@ -20,6 +20,7 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
 
 namespace TOE.TOEIC.ApplicationCore.Interfaces
 {
@@ -216,32 +217,18 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         /// </summary>
         /// <param name="userRequest"></param>
         /// <returns></returns>
-        public object Login(Account userRequest)
+        public async Task<object> Login(AccountLoginDTO userRequest)
         {
-            string passwordHashed = CreateMD5(userRequest.Password);
-            //var user = _userRepository.GetEntityByProperty("Email", (string)userRequest.Email);
-            //fake user
-            var user = new Account
-            {
-                AccountID = Guid.Parse("b69e90d7-324c-4d54-9da8-38ba0ba02967"),
-                UserName = "dovanhai",
-                Email = "haido2801@gmail.com",
-                Password = CreateMD5("123456"),
-                CreatedDate = new DateTime(2022, 02, 18)
-            };
+            userRequest.Password = CreateMD5(userRequest.Password);
+            var account = (Account)(await _accountRepository.Login(userRequest));
 
-            if (user == null)
+            if (account != null)
             {
-                return null;
+                if (account.Status == false) return null;
+                return new { userInfo = new { roles = new string[] { "ROLE_ADMIN" }, Email = account.Email, UserName = account.UserName, FullName = account.FullName, PhoneNumer = account.PhoneNumber, CreatedDate = account.CreatedDate, Avatar = account.Avatar }, token = GenerateJSONWebToken(account) };
             }
-            else
-            {
-                if (user.Password == passwordHashed)
-                {
-                    return new { userInfo = JsonConvert.SerializeObject(new AccountDTO { Email = user.Email, UserName = user.UserName }), token = GenerateJSONWebToken(user) };
-                }
-            }
-            return null;
+
+            return account;
         }
 
         /// <summary>

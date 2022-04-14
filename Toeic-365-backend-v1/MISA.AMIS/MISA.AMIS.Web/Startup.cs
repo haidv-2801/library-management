@@ -69,6 +69,16 @@ namespace TOE.TOEIC.Web
               });
             services.AddMvc(x => x.EnableEndpointRouting = false);
 
+            //
+            services.AddScoped<ClientIpCheckActionFilter>(container =>
+            {
+                var loggerFactory = container.GetRequiredService<ILoggerFactory>();
+                var logger = loggerFactory.CreateLogger<ClientIpCheckActionFilter>();
+
+                return new ClientIpCheckActionFilter(
+                    Configuration["AdminSafeList"], logger);
+            });
+
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen();
 
@@ -131,6 +141,8 @@ namespace TOE.TOEIC.Web
             {
                 endpoints.MapControllers();
             });
+
+            app.UseMiddleware<AdminSafeListMiddleware>(Configuration["AdminSafeList"]);
         }
     }
 }

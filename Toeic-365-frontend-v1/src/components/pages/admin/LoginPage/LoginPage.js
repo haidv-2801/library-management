@@ -5,10 +5,12 @@ import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
 import 'primereact/resources/primereact.css';
 import 'primereact/resources/themes/lara-light-indigo/theme.css';
+import { Toast } from 'primereact/toast';
 import PropTypes from 'prop-types';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import baseApi from '../../../../api/baseApi';
 import LoginBg from '../../../../assets/images/login.svg';
 import MainLogo from '../../../../assets/images/toeiclogo.png';
 import {
@@ -16,8 +18,10 @@ import {
   KEY_CODE,
   PATH_NAME,
   REGEX,
+  STATUS_CODE,
 } from '../../../../constants/commonConstant';
 import { buildClass } from '../../../../constants/commonFunction';
+import END_POINT from '../../../../constants/endpoint';
 import { AuthContext } from '../../../../contexts/authContext';
 import { appAction } from '../../../../redux/slices/appSlice';
 import Button from '../../../atomics/base/Button/Button';
@@ -40,6 +44,7 @@ function LoginPage(props) {
   const { id, className, style } = props;
 
   const authCtx = useContext(AuthContext);
+  const toast = useRef(null);
   const dispatch = useDispatch();
   const selector = useSelector((store) => store.app);
   const [loginInfo, setloginInfo] = useState({});
@@ -62,49 +67,70 @@ function LoginPage(props) {
   };
 
   const callApiLogin = () => {
-    const fake = {
-      token: 'bnh5yzdirjinqaorq0ox1tf383nb3xr',
-      userInfo: { fullName: 'DOVANHAI', roles: ['ROLE_ADMIN'] },
-    };
-    authCtx.login(fake.token, fake.userInfo);
-    // window.history.back();
-    const path = selector.history;
-    if (path?.length) {
-      navigate(path[0]);
-      return;
-    }
+    // const fake = {
+    //   token: 'bnh5yzdirjinqaorq0ox1tf383nb3xr',
+    //   userInfo: { fullName: 'DOVANHAI', roles: ['ROLE_ADMIN'] },
+    // };
+    // authCtx.login(fake.token, fake.userInfo);
+    // // window.history.back();
+    // const path = selector.history;
+    // if (path?.length) {
+    //   navigate(path[0]);
+    //   return;
+    // }
 
-    navigate('/admin');
+    // navigate('/admin');
 
-    setTimeout(() => {
-      dispatch(appAction.changeHistory([]));
-    }, 0);
-    // baseApi.post(
-    //   (res) => {
-    //     authCtx.login(res.token, res.userInfo);
-    //     // window.history.back();
-    //     const path = selector.history;
-    //     if (path?.length) {
-    //       navigate(path[0]);
-    //       return;
-    //     }
+    // setTimeout(() => {
+    //   dispatch(appAction.changeHistory([]));
+    // }, 0);
 
-    //     navigate('/admin');
+    baseApi.post(
+      (res) => {
+        debugger;
+        authCtx.login(res.token, res.userInfo);
+        // window.history.back();
+        const path = selector.history;
 
-    //     setTimeout(() => {
-    //       dispatch(appAction.changeHistory([]));
-    //     }, 0);
-    //   },
-    //   (err) => {
-    //     message.error('Tài khoản hoặc mật khẩu không đúng', 3);
-    //     setIsLoading(false);
-    //   },
-    //   () => {
-    //     setIsLoading(true);
-    //   },
-    //   END_POINT.TOE_LOGIN,
-    //   loginInfo
-    // );
+        if (path?.length) {
+          navigate(path[0]);
+          return;
+        }
+
+        navigate('/admin');
+
+        setTimeout(() => {
+          dispatch(appAction.changeHistory([]));
+        }, 0);
+      },
+      (err) => {
+        switch (err.response.status) {
+          case STATUS_CODE.UNAUTHORIZE:
+            toast.current.show({
+              severity: 'error',
+              summary: 'Lỗi',
+              detail: 'Tài khoản hoặc mật khẩu không đúng',
+              life: 3000,
+            });
+            break;
+          case STATUS_CODE.BAD_REQUEST:
+          default:
+            toast.current.show({
+              severity: 'error',
+              summary: 'Lỗi',
+              detail: 'Có lỗi xảy ra',
+              life: 3000,
+            });
+            break;
+        }
+        setIsLoading(false);
+      },
+      () => {
+        setIsLoading(true);
+      },
+      END_POINT.TOE_USER_LOGIN,
+      loginInfo
+    );
   };
 
   const isEmail = (email) => {
@@ -132,6 +158,7 @@ function LoginPage(props) {
 
   return (
     <div className={buildClass(['toe-login-page'])}>
+      <Toast ref={toast}></Toast>
       <div
         className="toe-login-page__head"
         onClick={() => {

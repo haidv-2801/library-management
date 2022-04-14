@@ -141,7 +141,7 @@ function UpLoadImage(props) {
     if (event.target.files && event.target.files[0]) {
       let img = event.target.files[0];
       setImage(URL.createObjectURL(img));
-      onChange && onChange(URL.createObjectURL(img));
+      onChange && onChange(event.target.files[0]);
     }
   };
 

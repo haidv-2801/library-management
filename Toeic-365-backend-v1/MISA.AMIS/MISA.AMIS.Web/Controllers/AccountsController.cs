@@ -17,6 +17,7 @@ using TOE.TOEIC.Entities;
 using System.Threading;
 using Microsoft.AspNetCore.Authorization;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.Extensions.Logging;
 
 namespace MISA.CukCuk.Web.Controllers
 {
@@ -28,12 +29,14 @@ namespace MISA.CukCuk.Web.Controllers
     {
         #region Declare
         IAccountService _accountService;
+        ILogger<Account> _logger;
         #endregion
 
         #region Constructer
-        public AccountsController(IAccountService accountService) : base(accountService)
+        public AccountsController(IAccountService accountService, ILogger<Account> logger) : base(accountService, logger)
         {
             _accountService = accountService;
+            _logger = logger;
         }
         #endregion
 
@@ -49,9 +52,9 @@ namespace MISA.CukCuk.Web.Controllers
         [EnableCors("AllowCROSPolicy")]
         [Route("/api/Accounts/AccountsFilterPaging")]
         [HttpPost]
-        public ActionResult GetAccountsFilterPaging([FromQuery]string filterValue, [FromQuery] int pageSize, [FromQuery] int pageNumber)
+        public ActionResult GetAccountsFilterPaging([FromQuery] string filterValue, [FromQuery] int pageSize, [FromQuery] int pageNumber)
         {
-            return Ok(_accountService.GetAccountsFilterPaging(filterValue, pageSize, pageNumber));           
+            return Ok(_accountService.GetAccountsFilterPaging(filterValue, pageSize, pageNumber));
         }
 
         /// <summary>
@@ -71,13 +74,13 @@ namespace MISA.CukCuk.Web.Controllers
         [EnableCors("AllowCROSPolicy")]
         [AllowAnonymous]
         [HttpPost("Login")]
-        public IActionResult Login([FromBody] Account accountInfo)
+        public async Task<IActionResult> Login([FromBody] AccountLoginDTO accountInfo)
         {
             try
             {
-                var isLoggedIn = _accountService.Login(accountInfo);
-                if (isLoggedIn == null) return Unauthorized();
-                return Ok(isLoggedIn);
+                var loggedIn = await _accountService.Login(accountInfo);
+                if (loggedIn == null) return Unauthorized();
+                return Ok(loggedIn);
             }
             catch (Exception ex)
             {
@@ -92,7 +95,7 @@ namespace MISA.CukCuk.Web.Controllers
         [EnableCors("AllowCROSPolicy")]
         [AllowAnonymous]
         [HttpPut("/api/Accounts/ChangePassword/{id}")]
-        public IActionResult ChangePassword([FromRoute][Required]string id, [FromBody][Required] AccountPasswordChangeDTO entity)
+        public IActionResult ChangePassword([FromRoute][Required] string id, [FromBody][Required] AccountPasswordChangeDTO entity)
         {
             var res = new ServiceResult();
             try

@@ -8,8 +8,10 @@ import 'primereact/resources/themes/lara-light-indigo/theme.css';
 import PropTypes from 'prop-types';
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import baseApi from '../../../../api/baseApi';
 import RegisterBg from '../../../../assets/images/register.svg';
 import MainLogo from '../../../../assets/images/toeiclogo.png';
+import { Toast } from 'primereact/toast';
 import {
   BUTTON_TYPE,
   KEY_CODE,
@@ -17,6 +19,7 @@ import {
   REGEX,
 } from '../../../../constants/commonConstant';
 import { buildClass } from '../../../../constants/commonFunction';
+import END_POINT from '../../../../constants/endpoint';
 import Button from '../../../atomics/base/Button/Button';
 import Modal from '../../../atomics/base/Modal/Modal';
 import './registerPage.scss';
@@ -34,6 +37,7 @@ RegisterPage.defaultProps = {
 };
 
 function RegisterPage() {
+  const toast = useRef(null);
   const [registerInfo, setRegisterInfo] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const registerObjectRef = useRef({});
@@ -65,13 +69,65 @@ function RegisterPage() {
     )
       return;
 
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      navigate(PATH_NAME.LOGIN);
-    }, 1000);
+    handleAdd();
+
+    // setIsLoading(true);
+    // setTimeout(() => {
+    //   setIsLoading(false);
+    //   navigate(PATH_NAME.LOGIN);
+    // }, 1000);
   };
 
+  const handleAdd = () => {
+    let _body = {
+      ...registerInfo,
+      createdDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
+      createdBy: registerInfo.userName,
+      modifiedDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
+      modifiedBy: registerInfo.userName,
+    };
+
+    baseApi.post(
+      (res) => {
+        if (res.data > 0) {
+          toast.current.show({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Đăng kí thành công',
+            life: 3000,
+          });
+          setTimeout(() => {
+            navigate(PATH_NAME.LOGIN);
+          }, 1000);
+        } else {
+          toast.current.show({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Đăng kí thất bại',
+            life: 3000,
+          });
+        }
+        setIsLoading(false);
+      },
+      (err) => {
+        let errMessage = err?.response?.data?.data || 'Có lỗi xảy ra';
+        toast.current.show({
+          severity: 'error',
+          summary: 'Đăng kí thất bại',
+          detail: errMessage,
+          life: 3000,
+        });
+        setIsLoading(false);
+      },
+      () => {
+        setIsLoading(true);
+      },
+      END_POINT.TOE_INSERT_USER,
+      _body,
+      null,
+      null
+    );
+  };
   const isEmail = (email) => {
     return regex.test(email);
   };
@@ -118,6 +174,7 @@ function RegisterPage() {
 
   return (
     <div className={buildClass(['toe-register-page'])}>
+      <Toast ref={toast}></Toast>
       <div
         className="toe-register-page__head"
         onClick={() => navigate(PATH_NAME.HOME)}

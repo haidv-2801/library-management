@@ -13,17 +13,15 @@ console.log(NODE_ENV);
 
 const authHeader = () => {
   let token = getCookie(TOKEN_KEY);
-  if (token) {
-    return {
-      Accept: '*',
-      Authorization: 'Bearer ' + token,
-    };
-  } else {
-    return {};
-  }
+  return token
+    ? {
+        Accept: '*',
+        Authorization: 'Bearer ' + token,
+      }
+    : {};
 };
 
-header = { ...header };
+header = { ...header, ...authHeader() };
 
 const axiosClient = axios.create({
   headers: {

@@ -187,7 +187,6 @@ function PopupCreateMenu(props) {
               label="Alias"
               placeholder="Nhập alias"
               controlled
-              pattern="/^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$/"
               value={data.slug}
               defaultValue={(function () {
                 return data.slug;

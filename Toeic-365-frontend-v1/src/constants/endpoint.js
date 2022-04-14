@@ -50,6 +50,7 @@ const END_POINT = (function () {
       TOE_DELETE_USER: DEV_HOST + 'api/Accounts/{0}',
       TOE_INSERT_USER: DEV_HOST + 'api/Accounts',
       TOE_GET_USER_BY_ID: DEV_HOST + 'api/Accounts/{0}',
+      TOE_USER_LOGIN: DEV_HOST + 'api/Accounts/Login',
     };
   } else {
     return {};

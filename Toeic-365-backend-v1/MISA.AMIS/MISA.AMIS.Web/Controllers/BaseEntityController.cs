@@ -11,6 +11,12 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using System.Net.NetworkInformation;
+using TOE.TOEIC.ApplicationCore.Helpers;
+using TOE.TOEIC.ApplicationCore.MiddleWare;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace TOE.TOEIC.Web.Controllers
 {
@@ -23,11 +29,13 @@ namespace TOE.TOEIC.Web.Controllers
     {
         #region Declare
         IBaseService<TEntity> _baseService;
+        private readonly ILogger<TEntity> _logger;
         #endregion
 
-        public BaseEntityController(IBaseService<TEntity> baseService)
+        public BaseEntityController(IBaseService<TEntity> baseService, ILogger<TEntity> logger)
         {
             _baseService = baseService;
+            _logger = logger;
         }
 
         /// <summary>
@@ -46,11 +54,13 @@ namespace TOE.TOEIC.Web.Controllers
 
         [EnableCors("AllowCROSPolicy")]
         [HttpPost("Filter")]
+        [ServiceFilter(typeof(ClientIpCheckActionFilter))]
         public IActionResult GetFilter(PagingRequest pagingRequest)
         {
             var serviceResult = new ServiceResult();
             try
             {
+                _logger.LogInformation("Filter base info : " + JsonConvert.SerializeObject(pagingRequest));
                 var entity = _baseService.GetEntitiesFilter(pagingRequest);
 
                 if (entity == null)
@@ -60,12 +70,13 @@ namespace TOE.TOEIC.Web.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError("Lỗi : "+ ex.Message);
                 serviceResult.Data = null;
                 serviceResult.Messasge = ex.Message;
                 serviceResult.TOECode = TOECode.Fail;
             }
 
-            if(serviceResult.TOECode == TOECode.Fail) { return BadRequest(serviceResult); }
+            if (serviceResult.TOECode == TOECode.Fail) { return BadRequest(serviceResult); }
 
             return Ok(serviceResult);
         }

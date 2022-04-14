@@ -15,6 +15,7 @@ using TOE.TOEIC.ApplicationCoore.Entities;
 using Microsoft.AspNetCore.Cors;
 using TOE.TOEIC.Entities;
 using System.Threading;
+using Microsoft.Extensions.Logging;
 
 namespace MISA.CukCuk.Web.Controllers
 {
@@ -26,12 +27,14 @@ namespace MISA.CukCuk.Web.Controllers
     {
         #region Declare
         IMenuService _menuService;
+        ILogger<Menu> _logger;
         #endregion
 
         #region Constructer
-        public MenusController(IMenuService menuService) : base(menuService)
+        public MenusController(IMenuService menuService, ILogger<Menu> logger) : base(menuService, logger)
         {
             _menuService = menuService;
+            _logger = logger;
         }
         #endregion
 

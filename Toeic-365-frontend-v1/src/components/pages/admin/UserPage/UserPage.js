@@ -9,26 +9,25 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'react-string-format';
 import baseApi from '../../../../api/baseApi';
+import { uploadFiles } from '../../../../api/firebase';
 import {
   BUTTON_THEME,
   BUTTON_TYPE,
   DATE_FORMAT,
-  GUID_NULL,
-  PATH_NAME,
   TEXT_FALL_BACK,
 } from '../../../../constants/commonConstant';
 import { buildClass } from '../../../../constants/commonFunction';
 import END_POINT from '../../../../constants/endpoint';
 import Button from '../../../atomics/base/Button/Button';
 import Input from '../../../atomics/base/Input/Input';
+import InputPassword from '../../../atomics/base/InputPassword/InputPassword';
+import Modal from '../../../atomics/base/ModalV2/Modal';
 import SmartText from '../../../atomics/base/SmartText/SmartText';
 import Paginator from '../../../molecules/Paginator/Paginator';
 import Table from '../../../molecules/Table/Table';
 import Layout from '../../../sections/Admin/Layout/Layout';
 import PopupCreateUser from './PopupCreateUser/PopupCreateUser';
-import Modal from '../../../atomics/base/ModalV2/Modal';
 import './userPage.scss';
-import InputPassword from '../../../atomics/base/InputPassword/InputPassword';
 
 UserPage.propTypes = {
   id: PropTypes.string,
@@ -84,7 +83,11 @@ function UserPage(props) {
       header: 'Tên người dùng',
       filterField: 'fullName',
       body: (row) => {
-        return <div className="toe-font-body">{row?.fullName}</div>;
+        return (
+          <div className="toe-font-body">
+            {row?.fullName || TEXT_FALL_BACK.TYPE_1}
+          </div>
+        );
       },
     },
     {
@@ -93,7 +96,11 @@ function UserPage(props) {
       header: 'Số điện thoại',
       filterField: 'phoneNumber',
       body: (row) => {
-        return <div className="toe-font-body">{row?.phoneNumber}</div>;
+        return (
+          <div className="toe-font-body">
+            {row?.phoneNumber || TEXT_FALL_BACK.TYPE_1}
+          </div>
+        );
       },
       style: { width: 170, maxWidth: 170 },
     },
@@ -229,6 +236,10 @@ function UserPage(props) {
     if (isLoading) return;
     getUsersFilter();
   }, [paging]);
+
+  useEffect(() => {
+    console.log('dataCreate :>> ', dataCreate);
+  }, [dataCreate]);
 
   const getUsers = () => {
     baseApi.get(
@@ -370,12 +381,32 @@ function UserPage(props) {
   };
 
   const handleAdd = () => {
+    if (dataCreate?.avatar) {
+      uploadFiles(dataCreate?.avatar, 'images')
+        .then((res) => {
+          callApiAdd(res);
+        })
+        .catch((err) => {
+          toast.current.show({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Sửa thất bại',
+            life: 3000,
+          });
+        });
+    } else {
+      callApiAdd();
+    }
+  };
+
+  const callApiAdd = (avatar = null) => {
     let _body = {
       ...dataCreate,
       createdDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
       createdBy: 'DOVANHAI',
       modifiedDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
       modifiedBy: 'DOVANHAI',
+      avatar: avatar,
     };
 
     baseApi.post(

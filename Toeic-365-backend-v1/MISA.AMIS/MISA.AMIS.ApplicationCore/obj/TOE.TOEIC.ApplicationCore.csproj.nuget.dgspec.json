@@ -60,6 +60,14 @@
               "target": "Package",
               "version": "[5.0.7, )"
             },
+            "NEST": {
+              "target": "Package",
+              "version": "[7.17.1, )"
+            },
+            "NLog": {
+              "target": "Package",
+              "version": "[4.7.15, )"
+            },
             "NLog.Web.AspNetCore": {
               "target": "Package",
               "version": "[4.14.0, )"
