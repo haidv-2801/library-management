@@ -150,6 +150,15 @@ const STATUS_CODE = {
   BAD_REQUEST: 300,
 };
 
+/**
+ * !Loại bạn đọc
+ */
+const READER_TYPE = {
+  GUEST: 2,
+  STUDENT: 1,
+  LECTURER: 0,
+};
+
 const DAYS_OF_WEEK = [
   '',
   'Thứ Hai',
@@ -162,6 +171,7 @@ const DAYS_OF_WEEK = [
 ];
 
 export {
+  READER_TYPE,
   STATUS_CODE,
   DAYS_OF_WEEK,
   ACTIVE_RECORD_FILTER,

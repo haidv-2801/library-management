@@ -29,13 +29,15 @@ namespace MISA.CukCuk.Web.Controllers
         #region Declare
         IPostService _postService;
         ILogger<Post> _logger;
+        IElasticService<Post> _postELKService;
         #endregion
 
         #region Constructer
-        public PostsController(IPostService postService, ILogger<Post> logger) : base(postService, logger)
+        public PostsController(IPostService postService, ILogger<Post> logger, IElasticService<Post> postELKService) : base(postService, logger)
         {
             _postService = postService;
             _logger = logger;
+            _postELKService = postELKService;
         }
         #endregion
 
@@ -66,11 +68,42 @@ namespace MISA.CukCuk.Web.Controllers
 
         [EnableCors("AllowCROSPolicy")]
         [Route("/api/PostsELK")]
-        [HttpGet]
-        public ActionResult GetPostsELK()
+        [HttpPost]
+        public async Task<ActionResult> GetPostsELK([FromBody][Required]GridQueryModel gridQueryModel)
         {
-            return Ok(true);
+            var (totalRecords, documents) = await _postELKService.GetDocumentsAsync(gridQueryModel);
+
+            var gridResponse = new ApiGridResponse<Post>(documents, totalRecords);
+
+            return Ok(gridResponse);
         }
+
+        [EnableCors("AllowCROSPolicy")]
+        [Route("/api/PostELK/Upsert")]
+        [HttpPost]
+        public async Task<ActionResult> UpsertPostELK([FromBody][Required] Post post)
+        {
+            await _postELKService.UpdateDocumentAsync(post);
+            return Ok();
+        }
+
+        [EnableCors("AllowCROSPolicy")]
+        [HttpGet("/api/PostELK/GetByID/{id}")]
+        public async Task<ActionResult> GetPostELKByID([Required] string id)
+        {
+             var res = await _postELKService.GetDocumentAsync(id);
+             return Ok(res);
+        }
+
+        [EnableCors("AllowCROSPolicy")]
+        [Route("/api/PostELK/Delete/{id}")]
+        [HttpDelete]
+        public async Task<IActionResult> DeletePostELK(string id)
+        {
+            await _postELKService.DeleteDocumentAsync(new Post() { PostID = Guid.Parse(id)});
+            return Ok();
+        }
+
         #endregion
     }
 }

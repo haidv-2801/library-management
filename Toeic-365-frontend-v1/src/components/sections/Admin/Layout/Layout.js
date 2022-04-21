@@ -94,44 +94,16 @@ function Layout(props) {
         },
       ],
     },
-    { key: 'separator' },
     {
-      key: '/admin/doc-gia',
-      title: 'Quản lý đọc giả',
-      icon: <UserOutlined />,
-    },
-    {
-      key: '/admin/sach',
-      title: 'Quản lý sách',
-      icon: <UploadOutlined />,
-    },
-    { key: 'separator' },
-    {
-      key: '/admin/phieu-muon',
-      title: 'Quản lý phiếu mượn',
-      icon: <QuestionCircleOutlined />,
-    },
-    {
-      key: '/admin/tra-sach',
-      title: 'Quản lý trả sách',
-      icon: <QuestionCircleOutlined />,
-    },
-    { key: 'separator' },
-    {
-      key: '/admin/user',
-      title: 'Quản lý tài khoản',
+      key: '/admin/danh-muc',
+      title: 'Danh mục',
       icon: <UserOutlined />,
       children: [
         {
-          key: '/admin/test',
-          title: 'Quản lý phân quyền',
+          key: '/admin/danh-muc/ban-doc',
+          title: 'Bạn đọc',
         },
       ],
-    },
-    {
-      key: '/admin/post',
-      title: 'Quản lý bài đăng',
-      icon: <UserOutlined />,
     },
   ];
 

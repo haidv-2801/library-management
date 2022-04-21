@@ -3,14 +3,23 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using System.ComponentModel;
+using Nest;
 
 namespace TOE.TOEIC.ApplicationCoore.Entities
 {
     /// <summary>
     /// Thực thể bài viết
     /// </summary>
+    [ElasticsearchType(IdProperty = nameof(PostID)), Description("posts")]
     public class Post : BaseEntity
     {
+
+        //public Post(string id)
+        //{
+        //    PostID = Guid.Parse(id);
+        //}
+
         #region Property
         /// <summary>
         /// Id bài viết
@@ -29,6 +38,7 @@ namespace TOE.TOEIC.ApplicationCoore.Entities
         [IDuplicate]
         [IRequired]
         [Display(Name = "Tiêu đề bài viết")]
+        [Text(Index = true, Fielddata = true, Analyzer = "casesensitive_text")]
         public string Title { get; set; }
 
         /// <summary>
@@ -36,12 +46,14 @@ namespace TOE.TOEIC.ApplicationCoore.Entities
         /// </summary>
         [Display(Name = "Alias bài viết")]
         [IDuplicate]
+        [Text(Index = true, Fielddata = true, Analyzer = "casesensitive_text")]
         public string Slug { get; set; }
 
         /// <summary>
         /// Mô tả
         /// </summary>
         [Display(Name = "Mô tả của bài viết")]
+        [Text(Index = true, Fielddata = true, Analyzer = "casesensitive_text")]
         public string Description { get; set; }
 
         /// <summary>

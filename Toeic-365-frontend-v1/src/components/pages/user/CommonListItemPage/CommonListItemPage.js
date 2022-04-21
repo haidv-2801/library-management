@@ -45,8 +45,8 @@ function CommonListItemPage(props) {
   }, []);
 
   useEffect(() => {
-    getPostsByMenuID();
-  }, [paging]);
+    getPostsByMenuID(menuID);
+  }, [paging, menuID]);
 
   const renderCommonItems = () => {
     if (isLoading) return renderSkeleton();

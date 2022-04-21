@@ -27,6 +27,7 @@ import { Tooltip } from 'antd';
 import NotificationList from '../../../molecules/NotificationList/NotificationList';
 import END_POINT from '../../../../constants/endpoint';
 import baseApi from '../../../../api/baseApi';
+import DynamicMenu from '../../../molecules/DynamicMenu/DynamicMenu';
 import './homePage.scss';
 
 let FAKE = [
@@ -325,9 +326,10 @@ function HomePage(props) {
           />
         </div>
         <div className="toe-home-page__notificaitons">
-          {/* <div className="toe-home-page__notificaitons-left"> */}
-          {/* <DynamicMenu /> */}
-          {/* </div> */}
+          <div className="toe-home-page__notificaitons-left">
+            {' '}
+            <DynamicMenu />
+          </div>
           <div className="toe-home-page__notificaitons-right">
             <NotificationList isLoading={isLoading} data={dataPostsNoti} />
             {/* <Button

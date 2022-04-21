@@ -18,6 +18,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using TOE.TOEIC.ApplicationCore.Helpers;
+using Nest;
 
 namespace TOE.TOEIC.Web
 {
@@ -79,6 +81,13 @@ namespace TOE.TOEIC.Web
                     Configuration["AdminSafeList"], logger);
             });
 
+            //Add Elasticsearch
+            //services.AddElasticsearch(Configuration);
+            var url = Configuration["elasticsearch:url"];
+            var settings = new ConnectionSettings(new Uri(url)).DefaultIndex("posts");
+            var client = new ElasticClient(settings);
+            services.AddSingleton(client);
+
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen();
 
@@ -105,6 +114,10 @@ namespace TOE.TOEIC.Web
             //menu
             services.AddScoped<IMenuRepository, MenuRepository>();
             services.AddScoped<IMenuService, MenuService>();
+
+            //elastic search
+            services.AddScoped(typeof(IElasticRepository<>), typeof(ElasticRepository<>));
+            services.AddScoped(typeof(IElasticService<>), typeof(ElasticService<>));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -120,6 +133,7 @@ namespace TOE.TOEIC.Web
             app.UseMiddleware<ErrorHandlingMiddleWare>();
 
             app.UseRouting();
+            app.UseStaticFiles();
 
             app.UseCors();
 

@@ -8,7 +8,9 @@ import MainLogo from '../../../../assets/images/toeiclogo.png';
 import {
   BUTTON_THEME,
   BUTTON_TYPE,
+  MAXIMUM_PAGESIZE,
   MENU_TYPE,
+  OPERATOR,
   PATH_NAME,
 } from '../../../../constants/commonConstant';
 import {
@@ -217,8 +219,17 @@ function Header(props) {
   };
 
   const getMenus = () => {
-    baseApi.get(
+    let _filter = [
+      ['IsDeleted', OPERATOR.EQUAL, '0'],
+      OPERATOR.AND,
+      ['Status', OPERATOR.EQUAL, '1'],
+      OPERATOR.AND,
+      ['IsShowHome', OPERATOR.EQUAL, '1'],
+    ];
+
+    baseApi.post(
       (res) => {
+        res = res.data.pageData;
         dispatch(appAction.changeDataMenus([...res]));
         res = res.sort((a, b) => a.displayOrder - b.displayOrder);
         setDataMenus(
@@ -250,8 +261,12 @@ function Header(props) {
       },
       (err) => {},
       () => {},
-      END_POINT.TOE_GET_MENUS,
-      null,
+      END_POINT.TOE_GET_MENUS_FILTER,
+      {
+        filter: btoa(JSON.stringify(_filter)),
+        pageIndex: 1,
+        pageSize: MAXIMUM_PAGESIZE,
+      },
       null
     );
   };
@@ -327,7 +342,7 @@ function Header(props) {
         {showNav && (
           <>
             <MenuBar options={dataMenus} />
-            {!authCtx.isLoggedIn && false ? (
+            {!authCtx.isLoggedIn ? (
               <>
                 <Button
                   className="toe-btn-login"

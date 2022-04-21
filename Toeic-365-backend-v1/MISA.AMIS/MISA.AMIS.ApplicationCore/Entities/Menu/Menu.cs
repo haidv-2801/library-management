@@ -61,6 +61,7 @@ namespace TOE.TOEIC.ApplicationCoore.Entities
         /// </summary>
         [Display(Name = "Loại menu")]
         public int Type { get; set; }
+
         #endregion
     }
 }

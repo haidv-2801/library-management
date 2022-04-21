@@ -15,8 +15,9 @@ import HtmlContentCreatingPage from './components/pages/admin/HtmlContentCreatin
 import PostPage from './components/pages/admin/PostPage/PostPage';
 import UserPage from './components/pages/admin/UserPage/UserPage';
 import MenuPage from './components/pages/admin/MenuPage/MenuPage';
-import './main.scss';
 import SearchPage from './components/pages/user/SearchPage/SearchPage';
+import './main.scss';
+import ReaderPage from './components/pages/admin/ReaderPage/ReaderPage';
 
 // const MenuPage = React.lazy(() =>
 //   import('./components/pages/admin/MenuPage/MenuPage')
@@ -211,6 +212,18 @@ function App() {
                   }
                 />
               </Route>
+            </Route>
+
+            <Route exact path={'danh-muc'}>
+              <Route
+                exact
+                path="ban-doc"
+                element={
+                  <RequiredAuth>
+                    <ReaderPage />
+                  </RequiredAuth>
+                }
+              />
             </Route>
           </Route>
           <Route path={PATH_NAME.SEARCH} element={<SearchPage />} />

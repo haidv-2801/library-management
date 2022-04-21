@@ -15,6 +15,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace TOE.TOEIC.ApplicationCore.Interfaces
 {
@@ -28,7 +29,6 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         public PostService(IPostRepository postRepository) : base(postRepository)
         {
             _postRepository = postRepository;
-;
         }
         #endregion
 
@@ -194,6 +194,60 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
             _serviceResult.TOECode = TOECode.Success;
             return _serviceResult;
         }
+
+        //public async Task SaveSingleAsync(Post post)
+        //{
+        //    if (_cache.Any(p => p.PostID == post.PostID))
+        //    {
+        //        await _elasticClient.UpdateAsync<Post>(post, u => u.Doc(post));
+        //    }
+        //    else
+        //    {
+        //        _cache.Add(post);
+        //        await _elasticClient.IndexDocumentAsync(post);
+        //    }
+        //}
+
+        //public async Task SaveManyAsync(Post[] posts)
+        //{
+        //    _cache.AddRange(posts);
+        //    var result = await _elasticClient.IndexManyAsync(posts);
+        //    if (result.Errors)
+        //    {
+        //        // the response can be inspected for errors
+        //        foreach (var itemWithError in result.ItemsWithErrors)
+        //        {
+        //            //_logger.LogError("Failed to index document {0}: {1}",
+        //            //    itemWithError.PostID, itemWithError.Error);
+        //        }
+        //    }
+        //}
+
+        //public async Task SaveBulkAsync(Post[] posts)
+        //{
+        //    _cache.AddRange(posts);
+        //    var result = await _elasticClient.BulkAsync(b => b.Index("posts").IndexMany(posts));
+        //    if (result.Errors)
+        //    {
+        //        // the response can be inspected for errors
+        //        foreach (var itemWithError in result.ItemsWithErrors)
+        //        {
+        //            //_logger.LogError("Failed to index document {0}: {1}",
+        //            //    itemWithError.PostID, itemWithError.Error);
+        //        }
+        //    }
+        //}
+
+        //public async Task DeleteAsync(Post post)
+        //{
+        //    await _elasticClient.DeleteAsync<Post>
+        //(post);
+
+        //    if (_cache.Contains(post))
+        //    {
+        //        _cache.Remove(post);
+        //    }
+        //}
         #endregion
     }
 }

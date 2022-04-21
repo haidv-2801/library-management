@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import { format } from 'react-string-format';
 import baseApi from '../../../../api/baseApi';
 import { isGuid } from '../../../../constants/commonFunction';
@@ -10,6 +10,8 @@ import Footer from '../../../sections/User/Footer/Footer';
 import Layout from '../../../sections/User/Layout/Layout';
 import { useSelector } from 'react-redux';
 import store from '../../../../redux/store';
+import Banner from '../../../molecules/Banner/Banner';
+import { BellOutlined } from '@ant-design/icons';
 import './htmlRenderPage.scss';
 import {
   MAXIMUM_PAGESIZE,
@@ -26,6 +28,8 @@ function HtmlRenderPage(props) {
   const { children, titlePage } = props;
 
   const params = useParams();
+  const { pathname } = useLocation();
+
   const appSelector = useSelector((store) => store.app.menus);
   const [postDetail, setPostDetail] = useState({});
   const [error, setError] = useState(null);
@@ -150,9 +154,31 @@ function HtmlRenderPage(props) {
     );
   };
 
+  const getDataBreadCrumb = () => {
+    if (pathname) {
+      let arr = pathname.split('/');
+      arr = arr.map((item) => {
+        return { label: item, url: item };
+      });
+      return arr;
+    }
+
+    return [];
+  };
+
   return (
     <Layout>
       <div className="toe-html-render-page">
+        <Banner
+          breadCrumbs={[
+            {
+              label: postDetail?.title,
+              url: params?.slug ?? params?.postType,
+            },
+          ]}
+          title={titlePage}
+          icon={<BellOutlined />}
+        />
         <div className="toe-html-render-page__body-wrapper">
           <div className="toe-html-render-page__body">
             <div className="toe-html-render-page__body-left">
