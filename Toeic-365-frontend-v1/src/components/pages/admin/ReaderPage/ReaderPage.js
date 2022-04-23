@@ -14,7 +14,7 @@ import {
   MENU_TYPE,
   OPERATOR,
   PATH_NAME,
-  READER_TYPE,
+  MEMBER_TYPE,
 } from '../../../../constants/commonConstant';
 import { buildClass, listToTree } from '../../../../constants/commonFunction';
 import END_POINT from '../../../../constants/endpoint';

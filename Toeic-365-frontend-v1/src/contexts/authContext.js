@@ -69,7 +69,6 @@ const AuthContextProvider = (props) => {
     if (userIsLoggedIn) {
       try {
         const user = JSON.parse(getLocalStorage(USER_INFO));
-        console.log(user);
         if (user) return user;
       } catch {
         return null;

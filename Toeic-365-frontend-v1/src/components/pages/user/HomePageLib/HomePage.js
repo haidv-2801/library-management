@@ -1,33 +1,29 @@
 import { BellOutlined, SearchOutlined } from '@ant-design/icons';
 import React, { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import baseApi from '../../../../api/baseApi';
 import {
   BUTTON_THEME,
   BUTTON_TYPE,
-  OPERATOR,
   FIXED_MENU_ID,
-  PATH_NAME,
   MAXIMUM_PAGESIZE,
+  OPERATOR,
+  PATH_NAME,
 } from '../../../../constants/commonConstant';
+import END_POINT from '../../../../constants/endpoint';
+import { filterAction } from '../../../../redux/slices/filterSlice';
 import Button from '../../../atomics/base/Button/Button';
-import Input from '../../../atomics/base/Input/Input';
 import Loading from '../../../atomics/base/Loading/Loading';
 import SideBar from '../../../atomics/base/SideBar/SideBar';
 import TitleSeparator from '../../../atomics/base/TitleSeparator/TitleSeparator';
 import CardItem from '../../../molecules/Card/Card';
 import CardList from '../../../molecules/CardList/CardList';
-import Dropdown from '../../../molecules/Dropdown/Dropdown';
+import DynamicMenu from '../../../molecules/DynamicMenu/DynamicMenu';
 import FilterEngine from '../../../molecules/FilterEngine/FilterEngine';
+import NotificationList from '../../../molecules/NotificationList/NotificationList';
 import Footer from '../../../sections/User/FooterLib/Footer';
 import Layout from '../../../sections/User/Layout/Layout';
-import { useDispatch, useSelector } from 'react-redux';
-import rootState from '../../../../redux/store';
-import { filterAction } from '../../../../redux/slices/filterSlice';
-import { Tooltip } from 'antd';
-import NotificationList from '../../../molecules/NotificationList/NotificationList';
-import END_POINT from '../../../../constants/endpoint';
-import baseApi from '../../../../api/baseApi';
-import DynamicMenu from '../../../molecules/DynamicMenu/DynamicMenu';
 import './homePage.scss';
 
 let FAKE = [
@@ -254,10 +250,6 @@ function HomePage(props) {
         controls: filterValue.controls,
         filter: filterValue.filter,
       })
-    );
-    console.log(
-      'filter :>> ',
-      selector.filter.length ? btoa(JSON.stringify(selector.filter)) : '[]'
     );
   };
 

@@ -361,7 +361,9 @@ function Header(props) {
                   onClick={handleRegister}
                 />
               </>
-            ) : null}
+            ) : (
+              <UserInfo />
+            )}
             <Button
               className="toe-btn-toggle"
               leftIcon={<i className="pi pi-bars" />}

@@ -153,7 +153,7 @@ const STATUS_CODE = {
 /**
  * !Loại bạn đọc
  */
-const READER_TYPE = {
+const MEMBER_TYPE = {
   GUEST: 2,
   STUDENT: 1,
   LECTURER: 0,
@@ -171,7 +171,7 @@ const DAYS_OF_WEEK = [
 ];
 
 export {
-  READER_TYPE,
+  MEMBER_TYPE,
   STATUS_CODE,
   DAYS_OF_WEEK,
   ACTIVE_RECORD_FILTER,

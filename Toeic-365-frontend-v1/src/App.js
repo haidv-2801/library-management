@@ -82,7 +82,7 @@ function App() {
             <Route exact path={PATH_NAME.REGISTER} element={<RegisterPage />} />
             <Route exact path={PATH_NAME.USER} element={<UserProfile />} />
             <Route exact path={PATH_NAME.BORROWING_RETURNING_BOOK}>
-              <Route index element={<BooksPage />}></Route>
+              <Route exact path="sach" element={<BooksPage />}></Route>
               <Route exact path=":slug">
                 <Route exact index element={<BooksPageSeeAll />} />
                 <Route exact path=":id" element={<BookDetail />} />

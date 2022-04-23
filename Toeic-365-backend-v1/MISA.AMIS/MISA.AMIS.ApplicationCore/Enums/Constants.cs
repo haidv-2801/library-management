@@ -4,6 +4,14 @@ using System.Text;
 
 namespace TOE.TOEIC.ApplicationCore.Enums
 {
+
+    public static class MemberType
+    {
+        public static readonly int STUDENT = 1;
+        public static readonly int GUEST = 2;
+        public static readonly int LECTURER = 0;
+    }
+
     public static class DataType
     {
         public static readonly string DATE_TIME = "DateTime"; 
