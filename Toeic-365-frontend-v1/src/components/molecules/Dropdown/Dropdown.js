@@ -23,6 +23,7 @@ Dropdown.propTypes = {
   prefixItem: PropTypes.any,
   prefixValue: PropTypes.any,
   scrollHeight: PropTypes.number,
+  label: PropTypes.any,
 };
 
 Dropdown.defaultProps = {
@@ -43,6 +44,7 @@ Dropdown.defaultProps = {
   hasSubLabel: false,
   onChange: () => {},
   scrollHeight: 300,
+  label: null,
 };
 
 function Dropdown(props) {
@@ -62,6 +64,7 @@ function Dropdown(props) {
     prefixItem,
     prefixValue,
     scrollHeight,
+    label,
   } = props;
 
   const customItemTemplate = ({ label, value, subLabel = null }) => {
@@ -107,30 +110,37 @@ function Dropdown(props) {
   };
 
   return (
-    <DropdownPrime
-      id={id}
-      style={style}
-      panelClassName="toe-font-body"
-      className={buildClass(['toe-dropdown', 'toe-font-body', className])}
-      value={defaultValue}
-      options={options}
-      onChange={onChange}
-      optionLabel="label"
-      optionValue="value"
-      placeholder={placeholder}
-      disabled={disabled}
-      emptyFilterMessage="Không tìm thấy dữ liệu"
-      emptyMessage="Không có dữ liệu hiển thị"
-      dataKey="value"
-      filter={filter}
-      filterInputAutoFocus
-      resetFilterOnHide
-      filterPlaceholder="Nhập từ cần tìm"
-      showClear={showClear}
-      itemTemplate={customItemTemplate}
-      valueTemplate={customValueTemplate}
-      scrollHeight={scrollHeight}
-    />
+    <div className="toe-dropdown__wrapper">
+      {label ? (
+        <div className="toe-dropdown__wrapper-label toe-font-label">
+          {label}
+        </div>
+      ) : null}
+      <DropdownPrime
+        id={id}
+        style={style}
+        panelClassName="toe-font-body"
+        className={buildClass(['toe-dropdown', 'toe-font-body', className])}
+        value={defaultValue}
+        options={options}
+        onChange={onChange}
+        optionLabel="label"
+        optionValue="value"
+        placeholder={placeholder}
+        disabled={disabled}
+        emptyFilterMessage="Không tìm thấy dữ liệu"
+        emptyMessage="Không có dữ liệu hiển thị"
+        dataKey="value"
+        filter={filter}
+        filterInputAutoFocus
+        resetFilterOnHide
+        filterPlaceholder="Nhập từ cần tìm"
+        showClear={showClear}
+        itemTemplate={customItemTemplate}
+        valueTemplate={customValueTemplate}
+        scrollHeight={scrollHeight}
+      />
+    </div>
   );
 }
 

@@ -4,6 +4,14 @@
   box-shadow: none !important;
   font-family: 'OpenSans-Medium', sans-serif !important;
 
+  &__wrapper {
+    width: 100%;
+  }
+
+  &__wrapper-label {
+    margin-bottom: 4px;
+  }
+
   &:hover {
     &:not(.p-disabled) {
       border-color: #43c1c9 !important;

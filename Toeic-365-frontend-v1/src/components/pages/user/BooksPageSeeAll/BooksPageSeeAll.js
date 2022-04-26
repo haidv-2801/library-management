@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { BOOK_FORMAT } from '../../../../constants/commonConstant';
 import { buildClass } from '../../../../constants/commonFunction';
@@ -47,44 +47,46 @@ function BooksPageSeeAll(props) {
     navigate('2342');
   };
 
-  const fake = Array.from(Array(8).keys()).map((item, _) => (
-    <div key={_} className="toe-book-see-all-page__body-content__item">
-      <Book
-        className="toe-book-see-all-page__body-content__book"
-        bookTitle="Lập dự án kinh doanh và triển khai sản xuất đơn hàng áo Măng tô nữ trong sản xuất may công nghiệp"
-        bookAuthor="Nguyễn Thị Thảo"
-        bookType={BOOK_FORMAT.EBOOK}
-        onClick={handleViewDetail}
-      />
-      {viewType === VIEW_TYPE.SMALL && (
-        <div className="toe-book-see-all-page__body-content__item-info">
-          <h2
-            onClick={handleViewDetail}
-            className="toe-book-see-all-page__body-content__item-info__row toe-font-label"
-          >
-            Lập dự án kinh doanh và triển khai sản xuất đơn hàng áo Măng tô nữ
-            trong sản xuất may công nghiệp
-          </h2>
-          <div className="toe-book-see-all-page__body-content__item-info__row">
-            <span className="toe-font-label">Loại tài liệu:</span>{' '}
-            <span className="toe-font-body">Tài liệu giấy</span>
+  const fake = useMemo(() => {
+    return Array.from(Array(8).keys()).map((item, _) => (
+      <div key={_} className="toe-book-see-all-page__body-content__item">
+        <Book
+          className="toe-book-see-all-page__body-content__book"
+          bookTitle="Lập dự án kinh doanh và triển khai sản xuất đơn hàng áo Măng tô nữ trong sản xuất may công nghiệp"
+          bookAuthor="Nguyễn Thị Thảo"
+          bookType={BOOK_FORMAT.EBOOK}
+          onClick={handleViewDetail}
+        />
+        {viewType === VIEW_TYPE.SMALL && (
+          <div className="toe-book-see-all-page__body-content__item-info">
+            <h2
+              onClick={handleViewDetail}
+              className="toe-book-see-all-page__body-content__item-info__row toe-font-label"
+            >
+              Lập dự án kinh doanh và triển khai sản xuất đơn hàng áo Măng tô nữ
+              trong sản xuất may công nghiệp
+            </h2>
+            <div className="toe-book-see-all-page__body-content__item-info__row">
+              <span className="toe-font-label">Loại tài liệu:</span>{' '}
+              <span className="toe-font-body">Tài liệu giấy</span>
+            </div>
+            <div className="toe-book-see-all-page__body-content__item-info__row">
+              <span className="toe-font-label">Tác giả:</span>
+              <span className="toe-font-body">Đỗ Văn Hải</span>
+            </div>
+            <div className="toe-book-see-all-page__body-content__item-info__row">
+              <span className="toe-font-label">Nhà xuất bản:</span>
+              <span className="toe-font-body">Kim Đồng</span>
+            </div>
+            <div className="toe-book-see-all-page__body-content__item-info__row">
+              <span className="toe-font-label">Thông tin xếp giá:</span>
+              <span className="toe-font-body">C1</span>
+            </div>
           </div>
-          <div className="toe-book-see-all-page__body-content__item-info__row">
-            <span className="toe-font-label">Tác giả:</span>
-            <span className="toe-font-body">Đỗ Văn Hải</span>
-          </div>
-          <div className="toe-book-see-all-page__body-content__item-info__row">
-            <span className="toe-font-label">Nhà xuất bản:</span>
-            <span className="toe-font-body">Kim Đồng</span>
-          </div>
-          <div className="toe-book-see-all-page__body-content__item-info__row">
-            <span className="toe-font-label">Thông tin xếp giá:</span>
-            <span className="toe-font-body">C1</span>
-          </div>
-        </div>
-      )}
-    </div>
-  ));
+        )}
+      </div>
+    ));
+  }, [viewType]);
 
   const renderReport = (title) => {
     return (

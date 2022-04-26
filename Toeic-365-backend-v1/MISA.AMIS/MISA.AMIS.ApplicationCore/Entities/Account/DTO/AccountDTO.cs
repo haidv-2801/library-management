@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace TOE.TOEIC.ApplicationCoore.Entities
+namespace TOE.TOEIC.ApplicationCore.Entities
 {
     public class AccountDTO : BaseEntity
     {

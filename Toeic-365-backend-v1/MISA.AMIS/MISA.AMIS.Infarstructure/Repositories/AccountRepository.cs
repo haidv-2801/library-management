@@ -7,7 +7,7 @@ using System.Text;
 using Dapper;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
-using TOE.TOEIC.ApplicationCoore.Entities;
+using TOE.TOEIC.ApplicationCore.Entities;
 using TOE.TOEIC.ApplicationCore.Entities;
 using System.Threading.Tasks;
 

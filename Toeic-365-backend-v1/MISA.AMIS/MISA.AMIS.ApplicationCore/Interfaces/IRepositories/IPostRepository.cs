@@ -1,4 +1,4 @@
-﻿using TOE.TOEIC.ApplicationCoore.Entities;
+﻿using TOE.TOEIC.ApplicationCore.Entities;
 using TOE.TOEIC.ApplicationCore.Entities;
 using System;
 using System.Collections.Generic;

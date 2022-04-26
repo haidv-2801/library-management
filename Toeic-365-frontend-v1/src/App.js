@@ -16,8 +16,9 @@ import PostPage from './components/pages/admin/PostPage/PostPage';
 import UserPage from './components/pages/admin/UserPage/UserPage';
 import MenuPage from './components/pages/admin/MenuPage/MenuPage';
 import SearchPage from './components/pages/user/SearchPage/SearchPage';
-import './main.scss';
 import ReaderPage from './components/pages/admin/ReaderPage/ReaderPage';
+import BookPage from './components/pages/admin/BookPage/BookPage';
+import './main.scss';
 
 // const MenuPage = React.lazy(() =>
 //   import('./components/pages/admin/MenuPage/MenuPage')
@@ -82,10 +83,12 @@ function App() {
             <Route exact path={PATH_NAME.REGISTER} element={<RegisterPage />} />
             <Route exact path={PATH_NAME.USER} element={<UserProfile />} />
             <Route exact path={PATH_NAME.BORROWING_RETURNING_BOOK}>
-              <Route exact path="sach" element={<BooksPage />}></Route>
-              <Route exact path=":slug">
-                <Route exact index element={<BooksPageSeeAll />} />
-                <Route exact path=":id" element={<BookDetail />} />
+              <Route exact path="sach">
+                <Route index element={<BooksPage />} />
+                <Route exact path=":slug">
+                  <Route index element={<BooksPageSeeAll />} />
+                  <Route exact path=":id" element={<BookDetail />} />
+                </Route>
               </Route>
             </Route>
             <Route
@@ -221,6 +224,15 @@ function App() {
                 element={
                   <RequiredAuth>
                     <ReaderPage />
+                  </RequiredAuth>
+                }
+              />
+              <Route
+                exact
+                path="sach"
+                element={
+                  <RequiredAuth>
+                    <BookPage />
                   </RequiredAuth>
                 }
               />

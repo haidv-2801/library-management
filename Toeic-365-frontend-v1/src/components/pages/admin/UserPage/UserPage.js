@@ -62,7 +62,7 @@ function UserPage(props) {
       body: (row) => {
         return <SmartText>{row?.userName || TEXT_FALL_BACK.TYPE_1}</SmartText>;
       },
-      style: { width: 400, maxWidth: 400 },
+      style: { width: 300, maxWidth: 300 },
     },
     {
       field: 'email',
@@ -76,6 +76,7 @@ function UserPage(props) {
           </div>
         );
       },
+      style: { width: 350, maxWidth: 350 },
     },
     {
       field: 'fullName',
@@ -89,6 +90,7 @@ function UserPage(props) {
           </div>
         );
       },
+      style: { width: 250, maxWidth: 250 },
     },
     {
       field: 'phoneNumber',
@@ -127,7 +129,7 @@ function UserPage(props) {
           </div>
         );
       },
-      style: { width: 180, maxWidth: 180 },
+      // style: { width: 180, maxWidth: 180 },
     },
   ];
 

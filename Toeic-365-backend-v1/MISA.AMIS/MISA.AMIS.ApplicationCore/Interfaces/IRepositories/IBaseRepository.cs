@@ -19,7 +19,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         /// </summary>
         /// <param name="whereClause"></param>
         /// <returns></returns>
-        IEnumerable<TEntity> GetEntitiesFilter(string whereClause, string viewName = "");
+        IEnumerable<TEntity> GetEntitiesFilter(string whereClause, string columnNames = "*", string viewName = "");
 
         /// <summary>
         /// Base filter

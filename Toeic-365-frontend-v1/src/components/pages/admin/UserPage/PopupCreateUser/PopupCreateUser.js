@@ -41,16 +41,6 @@ PopupCreateUser.defaultProps = {
 
 function PopupCreateUser(props) {
   const { show, id, className, style, onClose, defaultValue, onChange } = props;
-
-  const FAKE = {
-    userName: 'haidv',
-    email: 'haidv2801@gmail.com',
-    phoneNumber: '0388039267',
-    fullName: 'DO VAN HAI',
-    password: '123456',
-    rePassword: '123456',
-  };
-
   const [dataCreate, setDataCreate] = useState(defaultValue ?? {});
 
   useEffect(() => {

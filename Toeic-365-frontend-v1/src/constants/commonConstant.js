@@ -170,7 +170,23 @@ const DAYS_OF_WEEK = [
   'Chủ Nhật',
 ];
 
+const ADMIN_BOOK_PAGE_BOLUMN_SEARCH = [
+  { label: 'Mã sách', value: 'BookCode' },
+  { label: 'Tên sách', value: 'BookName' },
+  { label: 'Mô tả', value: 'Description' },
+  { label: 'Tác giả', value: 'Author' },
+  { label: 'Nhà xuất bản', value: 'Publisher' },
+];
+
+const MAXIMUM_FILE_SIZE = 1000000;
+
+const ACCEPT_FILE =
+  '.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+
 export {
+  ACCEPT_FILE,
+  ADMIN_BOOK_PAGE_BOLUMN_SEARCH,
+  MAXIMUM_FILE_SIZE,
   MEMBER_TYPE,
   STATUS_CODE,
   DAYS_OF_WEEK,

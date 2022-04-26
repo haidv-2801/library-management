@@ -103,6 +103,10 @@ function Layout(props) {
           key: '/admin/danh-muc/ban-doc',
           title: 'Bạn đọc',
         },
+        {
+          key: '/admin/danh-muc/sach',
+          title: 'Ấn phẩm',
+        },
       ],
     },
   ];

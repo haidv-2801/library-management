@@ -4,7 +4,7 @@ using Nest;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using TOE.TOEIC.ApplicationCoore.Entities;
+using TOE.TOEIC.ApplicationCore.Entities;
 
 namespace TOE.TOEIC.ApplicationCore.Helpers
 {

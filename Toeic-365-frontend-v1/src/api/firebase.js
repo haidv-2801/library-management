@@ -16,8 +16,8 @@ const firebaseConfig = {
   measurementId: 'G-F58XBFKCB2',
 };
 
-const app = initializeApp(firebaseConfig);
-const storage = getStorage(app);
+var app = initializeApp(firebaseConfig);
+var storage = getStorage(app);
 
 const uploadFiles = (file, folder = 'images') => {
   return new Promise((resolve, reject) => {

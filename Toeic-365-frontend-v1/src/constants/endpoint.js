@@ -51,6 +51,17 @@ const END_POINT = (function () {
       TOE_INSERT_USER: DEV_HOST + 'api/Accounts',
       TOE_GET_USER_BY_ID: DEV_HOST + 'api/Accounts/{0}',
       TOE_USER_LOGIN: DEV_HOST + 'api/Accounts/Login',
+
+      /**
+       * *Endpoint book
+       */
+      TOE_GET_BOOKS_FILTER_PAGING: DEV_HOST + 'api/Books/BooksFilterPaging',
+      TOE_GET_BOOKS: DEV_HOST + 'api/BookItems',
+      TOE_UPDATE_BOOK: DEV_HOST + 'api/BookItems/{0}',
+      TOE_DELETE_BOOK: DEV_HOST + 'api/BookItems/{0}',
+      TOE_INSERT_BOOK: DEV_HOST + 'api/BookItems',
+      TOE_GET_BOOK_BY_ID: DEV_HOST + 'api/BookItems/{0}',
+      TOE_GET_BOOKS_FILTER: DEV_HOST + 'api/BookItems/Filter',
     };
   } else {
     return {};

@@ -48,6 +48,10 @@
   .p-dialog-header {
     padding: 24px 1.5rem;
 
+    .p-dialog-header-icon {
+      border-radius: 8px;
+    }
+
     .pi {
       font-size: 1rem;
     }

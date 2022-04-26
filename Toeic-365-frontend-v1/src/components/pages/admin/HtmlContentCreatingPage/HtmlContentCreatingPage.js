@@ -17,6 +17,7 @@ import {
   GUID_NULL,
   POST_TYPE,
   TEXT_FALL_BACK,
+  MAXIMUM_FILE_SIZE,
 } from '../../../../constants/commonConstant';
 import {
   buildClass,
@@ -62,8 +63,6 @@ function HtmlContentCreatingPage(props) {
     description: 'Mô tả mặc định',
     menuID: GUID_NULL,
   };
-
-  const MAXIMUM_FILE_SIZE = 1000000;
 
   const navigate = useNavigate();
 

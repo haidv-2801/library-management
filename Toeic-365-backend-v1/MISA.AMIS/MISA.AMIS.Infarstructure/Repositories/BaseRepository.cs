@@ -10,6 +10,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.Configuration;
 using TOE.TOEIC.Entities;
 using TOE.TOEIC.ApplicationCore.Entities;
+using System.ComponentModel;
 
 namespace TOE.TOEIC.ApplicationCore.Interfaces
 {
@@ -28,7 +29,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
             _configuration = configuration;
             _connectionString = _configuration.GetConnectionString("TOEIC365ConnectionString");
             _dbConnection = new MySqlConnection(_connectionString);
-            _tableName = typeof(TEntity).Name;
+            _tableName = ClassDisplayName();
         }
         #endregion
 
@@ -124,7 +125,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
 
                     transaction.Commit();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     transaction.Rollback();
                 }
@@ -156,7 +157,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
                     //2. Duyệt các thuộc tính trên customer và tạo parameters
                     var parameters = MappingDbType(entity);
 
-                   
+
 
                     //3. Kết nối tới CSDL:
                     rowAffects = _dbConnection.Execute($"Proc_Update{_tableName}", param: parameters, transaction: transaction, commandType: CommandType.StoredProcedure);
@@ -190,14 +191,14 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
                     var propertyName = property.Name;
                     var propertyValue = property.GetValue(entity);
                     var propertyType = property.PropertyType;
-                    if(propertyName != "EntityState")
+                    if (propertyName != "EntityState")
                     {
                         if (propertyType == typeof(Guid) || propertyType == typeof(Guid?))
                             parameters.Add($"@{"v_" + propertyName}", propertyValue, DbType.String);
                         else
                             parameters.Add($"@{"v_" + propertyName}", propertyValue);
                     }
-                   
+
                 }
             }
             catch { }
@@ -277,14 +278,16 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         /// </summary>
         /// <param name="whereClause"></param>
         /// <returns></returns>
-        public IEnumerable<TEntity> GetEntitiesFilter(string whereClause, string viewName = "")
+        public IEnumerable<TEntity> GetEntitiesFilter(string whereClause, string columnNames = "*", string viewName = "")
         {
             string resource = _tableName;
             if (!string.IsNullOrEmpty(viewName))
             {
                 resource = viewName;
             }
-            string query = $"SELECT * FROM {resource} WHERE {whereClause}";
+
+            if (columnNames == null) columnNames = "*";
+            string query = $"SELECT {columnNames} FROM {resource} WHERE {whereClause}";
             var entityReturn = _dbConnection.Query<TEntity>(query, commandType: CommandType.Text);
             return (IEnumerable<TEntity>)entityReturn;
         }
@@ -317,7 +320,16 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
             }
         }
 
-       
+        /// <summary>
+        /// Lấy tên class
+        /// </summary>
+        /// <returns></returns>
+        public string ClassDisplayName()
+        {
+            var displayName = typeof(TEntity).GetCustomAttributes(typeof(DisplayNameAttribute), true).FirstOrDefault() as DisplayNameAttribute;
+            if (displayName == null) return typeof(TEntity).Name;
+            return displayName.DisplayName;
+        }
         #endregion
     }
 }

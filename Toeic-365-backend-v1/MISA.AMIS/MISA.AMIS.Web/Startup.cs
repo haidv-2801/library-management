@@ -8,7 +8,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using TOE.TOEIC.ApplicationCore;
 using TOE.TOEIC.ApplicationCore.Interfaces;
-using TOE.TOEIC.ApplicationCore.Interfaces.IRepositories;
 using TOE.TOEIC.ApplicationCore.MiddleWare;
 using TOE.TOEIC.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -95,10 +94,6 @@ namespace TOE.TOEIC.Web
             services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
             services.AddScoped(typeof(IBaseService<>), typeof(BaseService<>));
 
-            //departmenmt
-            services.AddScoped<IDepartmentRepository, DepartmentRepository>();
-            services.AddScoped<IDepartmentService, DepartmentService>();
-
             //account
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<IAccountService, AccountService>();
@@ -110,6 +105,10 @@ namespace TOE.TOEIC.Web
             //menu
             services.AddScoped<IMenuRepository, MenuRepository>();
             services.AddScoped<IMenuService, MenuService>();
+
+            //book
+            services.AddScoped<IBookRepository, BookRepository>();
+            services.AddScoped<IBookService, BookService>();
 
             //elastic search
             services.AddScoped(typeof(IElasticRepository<>), typeof(ElasticRepository<>));

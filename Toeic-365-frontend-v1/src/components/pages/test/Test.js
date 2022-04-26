@@ -60,6 +60,7 @@ import MenuBar from '../../atomics/base/MenuBar/MenuBar';
 import { FAKE_MENU_ITEM, FAKE_DATA_MENU } from './Fake';
 import { listToTree } from '../../../constants/commonFunction';
 import PaginatorAntd from '../../molecules/PaginatorAntd/PaginatorAntd';
+import BooksPageSeeAll from '../user/BooksPageSeeAll/BooksPageSeeAll';
 const fake = [
   {
     id: '7172095f-daf0-4d6c-a866-30ec9c8a3f96',
@@ -257,7 +258,6 @@ const Test = () => {
     const reader = new FileReader();
 
     reader.addEventListener('load', () => setSrc(reader.result), false);
-    debugger;
     if (preview.files[0]) {
       reader.readAsDataURL(preview.files[0]);
     }
@@ -276,13 +276,14 @@ const Test = () => {
           'items'
         )}
       /> */}
-      <PaginatorAntd
+      {/* <PaginatorAntd
         totalRecords={30}
         page={1}
         onChange={(data) => {
           console.log(data);
         }}
-      />
+      /> */}
+      <BooksPageSeeAll />
     </div>
   );
 };

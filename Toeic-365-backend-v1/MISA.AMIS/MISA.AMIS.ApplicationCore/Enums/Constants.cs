@@ -44,4 +44,10 @@ namespace TOE.TOEIC.ApplicationCore.Enums
         public static readonly string DESC = "DESC";
         public static readonly string ASC = "ASC";
     }
+
+    public static class BookFormat
+    {
+        public static readonly int EBOOK = 0;
+        public static readonly int PAPER_BACK = 1;
+    }
 }

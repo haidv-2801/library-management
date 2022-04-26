@@ -40,16 +40,17 @@ function NotificationList(props) {
       {data.length
         ? data.map((noti) => {
             return (
-              <NotificationItem
-                key={noti?.id}
-                title={noti?.title}
-                date={noti?.createdDate}
-                description={noti?.description}
-                isLoading={isLoading}
-                imgSrc={noti.image}
-                slug={noti.slug}
-                onClick={() => handleSeeDetail(noti)}
-              />
+              <React.Fragment key={noti?.postID}>
+                <NotificationItem
+                  title={noti?.title}
+                  date={noti?.createdDate}
+                  description={noti?.description}
+                  isLoading={isLoading}
+                  imgSrc={noti.image}
+                  slug={noti.slug}
+                  onClick={() => handleSeeDetail(noti)}
+                />
+              </React.Fragment>
             );
           })
         : null}

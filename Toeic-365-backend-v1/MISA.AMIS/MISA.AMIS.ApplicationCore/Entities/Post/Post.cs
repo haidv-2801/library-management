@@ -6,7 +6,7 @@ using System.Text;
 using System.ComponentModel;
 using Nest;
 
-namespace TOE.TOEIC.ApplicationCoore.Entities
+namespace TOE.TOEIC.ApplicationCore.Entities
 {
     /// <summary>
     /// Thực thể bài viết

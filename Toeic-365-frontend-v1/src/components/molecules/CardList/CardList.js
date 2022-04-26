@@ -40,7 +40,7 @@ function CardList(props) {
         ? cards.map((card) => {
             return (
               <CardItem
-                key={card.id}
+                key={card.postID}
                 title={card?.title}
                 subTitle={card?.subTitle}
                 imgSrc={card?.image}

@@ -1,0 +1,24 @@
+.toe-popup-create-book {
+  .p-dialog-content.toe-admin-book-page__popup-create-book {
+    width: 100%;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+
+    .row {
+      display: flex;
+    }
+
+    .col {
+      &__label {
+        margin-bottom: 4px;
+      }
+    }
+  }
+
+  .toe-modal-v2 {
+    width: calc(100% - 600px);
+  }
+}

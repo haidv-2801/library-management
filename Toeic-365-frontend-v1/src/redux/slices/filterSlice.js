@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const defaultValue = {
   homePageFilterEnige: { controls: [], filter: [] },
   booksPageFilterEnige: { controls: [], filter: [] },
+  booksPageAdminFilterEnige: { controls: [], filter: [] },
 };
 
 const Filter = createSlice({
@@ -16,6 +17,10 @@ const Filter = createSlice({
     },
 
     changeBooksPageFilterEnige: (state, action) => {
+      state.booksPageFilterEnige = action.payload;
+    },
+
+    changeBooksPageAdminFilterEnige: (state, action) => {
       state.booksPageFilterEnige = action.payload;
     },
   },

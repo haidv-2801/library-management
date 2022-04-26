@@ -40,6 +40,7 @@ namespace TOE.TOEIC.ApplicationCore
             _baseRepository = baseRepository;
             _serviceResult = new ServiceResult()
             {
+                Data = null,
                 TOECode = TOECode.Success,
                 Messasge = Properties.Resources.Msg_Success,
             };
@@ -68,6 +69,7 @@ namespace TOE.TOEIC.ApplicationCore
 
             StringBuilder stringBuilder = new StringBuilder();
             var filter = JsonConvert.DeserializeObject<JArray>(FunctionHelper.Base64Decode(pagingRequest.Filter));
+            List<string> columns = null;
 
             if (filter != null && filter.Type == JTokenType.Array)
             {
@@ -112,9 +114,15 @@ namespace TOE.TOEIC.ApplicationCore
                 stringBuilder.Append($" LIMIT {pagingRequest.PageSize} OFFSET {pagingRequest.PageSize * (pagingRequest.PageIndex - 1)}");
             }
 
+            if (!string.IsNullOrEmpty(pagingRequest.Columns))
+            {
+                columns = pagingRequest.Columns.Split(",".ToCharArray()).Select(item => item.Trim()).ToList();
+            }
+
             if (totalRecord > 0)
             {
-                var data = _baseRepository.GetEntitiesFilter(stringBuilder.ToString());
+                string cols = columns == null ? "*" : string.Join(", ", columns);
+                var data = _baseRepository.GetEntitiesFilter(stringBuilder.ToString(), cols);
 
                 _serviceResult.Data = new
                 {
@@ -212,9 +220,12 @@ namespace TOE.TOEIC.ApplicationCore
             //2. Sử lí lỗi tương ứng
             if (isValid)
             {
-                _serviceResult.Data = _baseRepository.Insert(entity);
-                _serviceResult.TOECode = TOECode.Valid;
-                _serviceResult.Messasge = Properties.Resources.Msg_Success;
+                int rowAffects = _baseRepository.Insert(entity);
+                if (rowAffects == 0)
+                {
+                    _serviceResult.TOECode = TOECode.Fail;
+                    _serviceResult.Messasge = Properties.Resources.Msg_Failed;
+                } else { _serviceResult.Data = rowAffects; }
             }
             else
             {

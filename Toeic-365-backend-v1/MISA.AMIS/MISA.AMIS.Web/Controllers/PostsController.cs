@@ -11,14 +11,14 @@ using TOE.TOEIC.ApplicationCore;
 using TOE.TOEIC.ApplicationCore.Interfaces;
 using TOE.TOEIC.ApplicationCore.Entities;
 using TOE.TOEIC.Web.Controllers;
-using TOE.TOEIC.ApplicationCoore.Entities;
+using TOE.TOEIC.ApplicationCore.Entities;
 using Microsoft.AspNetCore.Cors;
 using TOE.TOEIC.Entities;
 using System.Threading;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.Logging;
 
-namespace MISA.CukCuk.Web.Controllers
+namespace TOE.TOEIC.Web.Controllers
 {
     /// <summary>
     /// Controller bài đăng

@@ -70,7 +70,7 @@ namespace TOE.TOEIC.Web.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError("Lỗi : "+ ex.Message);
+                _logger.LogError("Lỗi GetFilter: " + ex.Message);
                 serviceResult.Data = null;
                 serviceResult.Messasge = ex.Message;
                 serviceResult.TOECode = TOECode.Fail;
@@ -112,16 +112,18 @@ namespace TOE.TOEIC.Web.Controllers
             var serviceResult = new ServiceResult();
             try
             {
+                _logger.LogInformation($"Thêm bản ghi {typeof(TEntity).Name}: " + JsonConvert.SerializeObject(entity));
                 serviceResult = _baseService.Insert(entity);
                 if (serviceResult.TOECode == TOECode.InValid)
                     return BadRequest(serviceResult);
-                else if (serviceResult.TOECode == TOECode.Exception)
+                else if (serviceResult.TOECode == TOECode.Exception || serviceResult.TOECode == TOECode.Fail)
                     return StatusCode(500, serviceResult);
 
                 return StatusCode(201, serviceResult);
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Lỗi Insert {typeof(TEntity).Name}: " + ex.Message);
                 return StatusCode(500, ex.Message);
             }
 
@@ -139,15 +141,26 @@ namespace TOE.TOEIC.Web.Controllers
         [HttpPut("{id}")]
         public IActionResult Put([FromRoute] string id, [FromBody] TEntity entity)
         {
-            //Sử lí kiểu id động ở đây
-            var serviceResult = _baseService.Update(Guid.Parse(id), entity);
+            try
+            {
+                _logger.LogInformation($"Body put {typeof(TEntity).Name}:" + JsonConvert.SerializeObject(entity));
+                //Sử lí kiểu id động ở đây
+                var serviceResult = _baseService.Update(Guid.Parse(id), entity);
+                _logger.LogInformation($"ServiceResult Body put {typeof(TEntity).Name}:" + JsonConvert.SerializeObject(serviceResult));
 
-            if (serviceResult.TOECode == TOECode.InValid)
-                return BadRequest(serviceResult);
-            else if (serviceResult.TOECode == TOECode.Exception)
-                return StatusCode(500, serviceResult);
+                if (serviceResult.TOECode == TOECode.InValid)
+                    return BadRequest(serviceResult);
+                else if (serviceResult.TOECode == TOECode.Exception)
+                    return StatusCode(500, serviceResult);
 
-            return Ok(serviceResult);
+                return Ok(serviceResult);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error put {typeof(TEntity).Name}:" + ex.Message);
+                throw;
+            }
+           
         }
 
         /// <summary>

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace TOE.TOEIC.ApplicationCoore.Entities
+namespace TOE.TOEIC.ApplicationCore.Entities
 {
     /// <summary>
     /// Thực thể menu

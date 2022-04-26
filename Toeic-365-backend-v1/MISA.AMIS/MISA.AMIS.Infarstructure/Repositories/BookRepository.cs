@@ -7,22 +7,25 @@ using System.Text;
 using Dapper;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
-using TOE.TOEIC.ApplicationCoore.Entities;
-using TOE.TOEIC.ApplicationCore.Interfaces.IRepositories;
+using TOE.TOEIC.ApplicationCore.Entities;
 
 namespace TOE.TOEIC.Infrastructure
 {
-    public class DepartmentRepository : BaseRepository<Department>, IDepartmentRepository
+    /// <summary>
+    /// Repository danh mục bài viết
+    /// </summary>
+    /// CREATED BY: DVHAI (07/07/2021)
+    public class BookRepository : BaseRepository<BookItem>, IBookRepository
     {
         #region Constructer
-        public DepartmentRepository(IConfiguration configuration) : base(configuration)
+        public BookRepository(IConfiguration configuration) : base(configuration)
         {
 
         }
+
         #endregion
 
         #region Methods
-      
         #endregion
     }
 }

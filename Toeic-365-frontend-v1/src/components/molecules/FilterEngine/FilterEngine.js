@@ -17,6 +17,7 @@ FilterEngine.propTypes = {
   onChange: PropTypes.func,
   defaultControls: PropTypes.array,
   defaultFilter: PropTypes.array,
+  filterTypeOptions: PropTypes.array,
 };
 
 FilterEngine.defaultProps = {
@@ -27,6 +28,7 @@ FilterEngine.defaultProps = {
   onChange: () => {},
   defaultControls: [],
   defaultFilter: [],
+  filterTypeOptions: [],
 };
 
 function FilterEngine(props) {
@@ -38,6 +40,7 @@ function FilterEngine(props) {
     onChange,
     defaultControls,
     defaultFilter,
+    filterTypeOptions,
   } = props;
 
   const MAXIMUM_CONTROLS = 10;
@@ -46,21 +49,6 @@ function FilterEngine(props) {
     { label: 'AND', value: OPERATOR.AND },
     { label: 'OR', value: OPERATOR.OR },
     // { label: 'NOT', value: OPERATOR.NOT },
-  ];
-
-  const filterTypeOptions = [
-    {
-      label: 'Tất cả',
-      value: 0,
-    },
-    {
-      label: 'Nhan đề',
-      value: 1,
-    },
-    {
-      label: 'Tác giả',
-      value: 2,
-    },
   ];
 
   const filterOperatorOptions = [
@@ -92,8 +80,6 @@ function FilterEngine(props) {
   const [filterValue, setFilterValue] = useState({});
   const [controlHover, setControlHover] = useState(null);
   const [filterControls, setFilterControls] = useState([]);
-  const [firstKey, setFirstKey] = useState(null);
-  const filterControlRef = useRef([]);
 
   useEffect(() => {
     buildFilter();
@@ -141,7 +127,7 @@ function FilterEngine(props) {
             onChange={(data) => {
               setFilterBy((pre) => ({ ...pre, [keyHover]: data.value }));
             }}
-            defaultValue={+filterBy[keyHover]}
+            defaultValue={filterBy[keyHover]}
             options={filterTypeOptions}
             placeholder="Lọc theo"
           />{' '}

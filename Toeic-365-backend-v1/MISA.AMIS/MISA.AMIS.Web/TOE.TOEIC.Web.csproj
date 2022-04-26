@@ -27,4 +27,8 @@
     <ProjectReference Include="..\MISA.AMIS.Infarstructure\TOE.TOEIC.Infarstructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Uploads\" />
+  </ItemGroup>
+
 </Project>
