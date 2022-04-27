@@ -16,6 +16,7 @@ import {
   BUTTON_TYPE,
   DATE_FORMAT,
   GUID_NULL,
+  MAXIMUM_PAGESIZE,
   MENU_TYPE,
   OPERATOR,
 } from '../../../../constants/commonConstant';
@@ -108,7 +109,7 @@ function BookPage(props) {
     {
       field: 'image',
       sortable: true,
-      header: 'Loại tài liệu',
+      header: 'Hình ảnh',
       filterField: 'image',
       body: (row) => renderBookImage(row),
       style: { width: 200, maxWidth: 200 },
@@ -154,6 +155,7 @@ function BookPage(props) {
   };
 
   const DEFAULT_FILTER_VALUE = { controls: [], filter: [] };
+  const DEFAULT_DATA_CATE = { data: [], isLoading: false, totalRecord: 0 };
 
   const MIN_PAGE_SIZE = 10;
   const selector = useSelector(
@@ -178,7 +180,8 @@ function BookPage(props) {
   const [filterCount, setFilterCount] = useState(0);
   const [showFilter, setShowFilter] = useState(false);
   const refreshFilterKey = useRef(0);
-  const [dataMenus, setDataMenus] = useState([]);
+  const [dataCategory, setDataCategory] = useState(DEFAULT_DATA_CATE);
+  const [dataCreate, setDataCreate] = useState({});
 
   const OPTIONS = [
     {
@@ -251,6 +254,7 @@ function BookPage(props) {
 
   useEffect(() => {
     getBooksFilter();
+    getCategory();
   }, []);
 
   useEffect(() => {
@@ -290,6 +294,42 @@ function BookPage(props) {
         ],
       };
     }
+  };
+
+  const getCategory = () => {
+    let _filter = [
+      ['IsDeleted', OPERATOR.EQUAL, '0'],
+      OPERATOR.AND,
+      ['Status', OPERATOR.EQUAL, '1'],
+    ];
+
+    baseApi.post(
+      (res) => {
+        debugger;
+        let _data = res.data.pageData.map((item) => ({
+          ...item,
+          key: item?.categoryID,
+          label: item.title,
+          parentID: item.parentID,
+        }));
+        _data = listToTree(_data);
+
+        setDataCategory({
+          ...dataCategory,
+          totalRecord: res.data.totalRecord,
+          data: _data,
+        });
+      },
+      (err) => {},
+      () => {},
+      END_POINT.TOE_GET_CATEGORIES_FILTER,
+      {
+        filter: btoa(JSON.stringify(_filter)),
+        pageSize: MAXIMUM_PAGESIZE,
+        pageIndex: 1,
+      },
+      null
+    );
   };
 
   const getBooksFilter = (body = []) => {
@@ -495,6 +535,8 @@ function BookPage(props) {
 
   function renderBookFormat(row) {
     if (isLoading) return <Skeleton></Skeleton>;
+
+    return row.bookFormat;
   }
   function renderBookImage(row) {
     if (isLoading) return <Skeleton></Skeleton>;
@@ -612,6 +654,10 @@ function BookPage(props) {
             className="toe-admin-book-page__popup-create-book"
             show={true}
             onClose={() => setIsShowPopupCreateBook(false)}
+            onChange={(data) => {
+              setDataCreate({ ...dataCreate, ...data });
+            }}
+            dataCategory={dataCategory}
             {...getPopupCreateUserPops()}
           />
         )}

@@ -7,7 +7,6 @@ import RegisterPage from './components/pages/admin/RegisterPage/RegisterPage';
 import BookDetail from './components/pages/user/BookDetail/BookDetail';
 import RequiredAuth from './components/sections/RequiredAuth/RequiredAuth';
 import UserProfile from './components/pages/user/UserProfile/UserProfile';
-import { Toast } from 'primereact/toast';
 import { FIXED_MENU_ID, PATH_NAME } from './constants/commonConstant';
 import { AuthContext } from './contexts/authContext';
 import HtmlContentEditPage from './components/pages/admin/HtmlContentEditPage/HtmlContentEditPage';

@@ -62,6 +62,16 @@ const END_POINT = (function () {
       TOE_INSERT_BOOK: DEV_HOST + 'api/BookItems',
       TOE_GET_BOOK_BY_ID: DEV_HOST + 'api/BookItems/{0}',
       TOE_GET_BOOKS_FILTER: DEV_HOST + 'api/BookItems/Filter',
+
+      /**
+       * *Endpoint category
+       */
+      TOE_GET_CATEGORIES: DEV_HOST + 'api/category',
+      TOE_UPDATE_CATEGORY: DEV_HOST + 'api/category/{0}',
+      TOE_DELETE_CATEGORY: DEV_HOST + 'api/category/{0}',
+      TOE_INSERT_CATEGORY: DEV_HOST + 'api/category',
+      TOE_GET_CATEGORY_BY_ID: DEV_HOST + 'api/category/{0}',
+      TOE_GET_CATEGORIES_FILTER: DEV_HOST + 'api/categorys/Filter',
     };
   } else {
     return {};

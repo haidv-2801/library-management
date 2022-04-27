@@ -36,6 +36,7 @@ PopupCreateBook.propTypes = {
   onChange: PropTypes.func,
   defaultValue: PropTypes.any,
   title: PropTypes.any,
+  dataCategory: PropTypes.object,
 };
 
 PopupCreateBook.defaultProps = {
@@ -47,11 +48,21 @@ PopupCreateBook.defaultProps = {
   onChange: () => {},
   defaultValue: null,
   title: null,
+  dataCategory: {},
 };
 
 function PopupCreateBook(props) {
-  const { show, id, className, style, onClose, defaultValue, onChange, title } =
-    props;
+  const {
+    show,
+    id,
+    className,
+    style,
+    onClose,
+    defaultValue,
+    onChange,
+    title,
+    dataCategory,
+  } = props;
   const [dataCreate, setDataCreate] = useState(defaultValue ?? {});
 
   useEffect(() => {
@@ -105,7 +116,16 @@ function PopupCreateBook(props) {
         </div>
         <div className="row">
           <div className="col">
-            <TreeSelect label="Thể loại" />
+            <TreeSelect
+              label="Thể loại"
+              placeholder="Nhấp để chọn"
+              value={paging.menuID}
+              options={dataCategory.data}
+              prefixValue={'Thể loại'}
+              onChange={(data) => {
+                setDataCreate({ ...dataCreate, categoryID: data.value });
+              }}
+            />
           </div>
         </div>
         <div className="row">

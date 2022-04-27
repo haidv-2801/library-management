@@ -60,7 +60,7 @@ namespace TOE.TOEIC.Web.Controllers
             var serviceResult = new ServiceResult();
             try
             {
-                _logger.LogInformation("Filter base info : " + JsonConvert.SerializeObject(pagingRequest));
+                _logger.LogInformation($"Filter {typeof(TEntity).Name} info : " + JsonConvert.SerializeObject(pagingRequest));
                 var entity = _baseService.GetEntitiesFilter(pagingRequest);
 
                 if (entity == null)
