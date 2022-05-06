@@ -19,6 +19,13 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         IEnumerable<TEntity> GetEntities();
 
         /// <summary>
+        /// Lấy danh sách bản ghi
+        /// </summary>
+        /// <returns>Danh sách bản ghi</returns>
+        /// CREATED BY: DVHAI (07/07/2021)
+        ServiceResult GetEntitiesFilter(PagingRequest pagingRequest);
+
+        /// <summary>
         ///  Lấy bản ghi theo id
         /// </summary>
         /// <param name="entityId">Id của bản ghi</param>

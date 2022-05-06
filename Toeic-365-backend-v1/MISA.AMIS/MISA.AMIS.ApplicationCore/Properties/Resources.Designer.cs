@@ -106,6 +106,15 @@ namespace TOE.TOEIC.ApplicationCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Thông tin {0} không chính xác.
+        /// </summary>
+        public static string Msg_InCorrect {
+            get {
+                return ResourceManager.GetString("Msg_InCorrect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Thông tin {0} không đúng định dạng.
         /// </summary>
         public static string Msg_NotFormat {

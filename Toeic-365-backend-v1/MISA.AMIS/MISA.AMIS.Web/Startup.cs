@@ -8,7 +8,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using TOE.TOEIC.ApplicationCore;
 using TOE.TOEIC.ApplicationCore.Interfaces;
-using TOE.TOEIC.ApplicationCore.Interfaces.IRepositories;
 using TOE.TOEIC.ApplicationCore.MiddleWare;
 using TOE.TOEIC.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -18,6 +17,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using TOE.TOEIC.ApplicationCore.Helpers;
+using Nest;
 
 namespace TOE.TOEIC.Web
 {
@@ -69,6 +70,23 @@ namespace TOE.TOEIC.Web
               });
             services.AddMvc(x => x.EnableEndpointRouting = false);
 
+            //
+            services.AddScoped<ClientIpCheckActionFilter>(container =>
+            {
+                var loggerFactory = container.GetRequiredService<ILoggerFactory>();
+                var logger = loggerFactory.CreateLogger<ClientIpCheckActionFilter>();
+
+                return new ClientIpCheckActionFilter(
+                    Configuration["AdminSafeList"], logger);
+            });
+
+            //Add Elasticsearch
+            //services.AddElasticsearch(Configuration);
+            var url = Configuration["elasticsearch:url"];
+            var settings = new ConnectionSettings(new Uri(url)).DefaultIndex("posts");
+            var client = new ElasticClient(settings);
+            services.AddSingleton(client);
+
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen();
 
@@ -76,17 +94,25 @@ namespace TOE.TOEIC.Web
             services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
             services.AddScoped(typeof(IBaseService<>), typeof(BaseService<>));
 
-            //employee
-            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-            services.AddScoped<IEmployeeService, EmployeeService>();
+            //account
+            services.AddScoped<IAccountRepository, AccountRepository>();
+            services.AddScoped<IAccountService, AccountService>();
 
-            //departmenmt
-            services.AddScoped<IDepartmentRepository, DepartmentRepository>();
-            services.AddScoped<IDepartmentService, DepartmentService>();
+            //post
+            services.AddScoped<IPostRepository, PostRepository>();
+            services.AddScoped<IPostService, PostService>();
 
-            //user
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IUserService, UserService>();
+            //menu
+            services.AddScoped<IMenuRepository, MenuRepository>();
+            services.AddScoped<IMenuService, MenuService>();
+
+            //book
+            services.AddScoped<IBookRepository, BookRepository>();
+            services.AddScoped<IBookService, BookService>();
+
+            //elastic search
+            services.AddScoped(typeof(IElasticRepository<>), typeof(ElasticRepository<>));
+            services.AddScoped(typeof(IElasticService<>), typeof(ElasticService<>));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -102,6 +128,7 @@ namespace TOE.TOEIC.Web
             app.UseMiddleware<ErrorHandlingMiddleWare>();
 
             app.UseRouting();
+            app.UseStaticFiles();
 
             app.UseCors();
 
@@ -123,6 +150,8 @@ namespace TOE.TOEIC.Web
             {
                 endpoints.MapControllers();
             });
+
+            app.UseMiddleware<AdminSafeListMiddleware>(Configuration["AdminSafeList"]);
         }
     }
 }

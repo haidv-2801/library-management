@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
+import { PAGEGING } from '../../../constants/commonConstant';
 import { buildClass } from '../../../constants/commonFunction';
+import PopupSelection from '../../atomics/base/PopupSelectionV1/PopupSelection';
 import './table.scss';
 
 Table.propTypes = {
@@ -14,6 +16,9 @@ Table.propTypes = {
   data: PropTypes.array,
   configs: PropTypes.object,
   isLoading: PropTypes.bool,
+  hasOption: PropTypes.bool,
+  options: PropTypes.array,
+  rowClassName: PropTypes.func,
 };
 
 Table.defaultProps = {
@@ -24,12 +29,61 @@ Table.defaultProps = {
   data: [],
   configs: {},
   isLoading: false,
+  hasOption: false,
+  options: [],
+  rowClassName: () => {},
 };
 
 function Table(props) {
-  const { id, style, className, columns, data, configs, isLoading } = props;
+  const {
+    id,
+    style,
+    className,
+    columns,
+    data,
+    configs,
+    isLoading,
+    hasOption,
+    options,
+    rowClassName,
+  } = props;
+
+  const [showOption, setShowOption] = useState(null);
+
+  const handleShowOption = (e, key) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setShowOption(key);
+  };
 
   const renderColums = () => {
+    let _columns = columns;
+    if (hasOption && !_columns?.some((_) => _.field === 'option')) {
+      _columns.push({
+        field: 'option',
+        body: (data) => {
+          return (
+            <PopupSelection
+              wrapperClassName="table-option__menu"
+              placement="bottomRight"
+              options={[...options].map((item) => ({
+                ...item,
+                key: data[configs?.dataKey],
+              }))}
+              onChange={() => {}}
+            >
+              <div
+                className="toe-font-body table-option"
+                onClick={(e) => handleShowOption(e, data[configs?.dataKey])}
+              >
+                <i className="pi pi-ellipsis-v"></i>
+              </div>
+            </PopupSelection>
+          );
+        },
+        style: { width: 60, maxWidth: 60 },
+      });
+    }
     return columns?.map((col, _) => {
       return (
         <Column
@@ -65,11 +119,15 @@ function Table(props) {
           {...configs}
           value={data}
           rowHover
+          // scrollable
+          // scrollDirection="both"
           responsiveLayout="scroll"
           paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
-          currentPageReportTemplate="Hiển thị {first}-{last}/{totalRecords} bản ghi"
           paginatorClassName="toe-font-label toe-pagination"
-          rowsPerPageOptions={[10, 20, 50]}
+          paginator={false}
+          rowsPerPageOptions={PAGEGING}
+          emptyMessage="Không có dữ liệu hiển thị"
+          rowClassName={rowClassName}
         >
           {renderColums()}
         </DataTable>

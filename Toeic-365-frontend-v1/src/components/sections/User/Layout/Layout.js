@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { Layout as LayoutAntd } from 'antd';
 import PropTypes from 'prop-types';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { Layout as LayoutAntd, Menu } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { buildClass } from '../../../../constants/commonFunction';
-import useWindowResize from '../../../../hooks/useWindowResize';
 import { useScroll } from '../../../../hooks/useScrollDown';
+import useWindowResize from '../../../../hooks/useWindowResize';
 import Header from '../Header/Header';
-import 'antd/dist/antd.css';
+import HeaderTopBar from '../HeaderTopBar/HeaderTopBar';
 import './layout.scss';
 
 Layout.propTypes = {
@@ -66,6 +66,7 @@ function Layout(props) {
           width <= SCREEN_WIDTH && 'toe-layout-user-page-container__1024',
         ])}
       >
+        <HeaderTopBar />
         <Header showNav={showNav} />
         <div
           ref={homeRef}

@@ -1,4 +1,7 @@
 .toe-btn {
+  --main-color: #0d4e96;
+  --main-color: #f9ca01;
+  --main-color: #43c1c9;
   padding: 8px 16px;
   width: fit-content;
   border-radius: 8px;
@@ -8,6 +11,8 @@
   justify-content: center;
   cursor: pointer;
   white-space: nowrap;
+  height: 40px;
+  min-width: 100px;
 
   &:hover {
     opacity: 0.8;
@@ -17,18 +22,25 @@
     opacity: 0.7;
   }
 
+  &-shape {
+    &-normal {
+      border-radius: 0px;
+    }
+  }
+
   &-theme-1 {
-    background-color: #43c1c9;
-    color: #fff;
+    background-color: var(--main-color);
+    color: #fff !important;
   }
 
   &-theme-2 {
     background-color: #fff;
-    color: #43c1c9;
-    border: 1px solid #43c1c9;
+    color: var(--main-color);
+    border: 1px solid var(--main-color);
+    padding: 7px 16px;
 
     &:hover {
-      background-color: #43c1c9;
+      background-color: var(--main-color);
       color: #fff;
     }
   }
@@ -37,6 +49,7 @@
     background-color: #fff;
     border: 1px solid #bbbbbb;
     color: #454545;
+    padding: 7px 16px;
 
     &:hover {
       background-color: #e5e5e5;
@@ -47,6 +60,7 @@
     background-color: #fff;
     border: 1px solid #dc3545;
     color: #000000;
+    padding: 7px 16px;
 
     &:hover {
       color: #7eab49;
@@ -61,6 +75,7 @@
     background-color: #dc3545;
     border: 1px solid #dc3545;
     color: #ffffff;
+    padding: 7px 16px;
 
     &:hover {
       color: #7eab49;
@@ -87,6 +102,7 @@
   }
 
   &-left-icon {
+    justify-content: space-around;
     & > .toe-btn-left-icon {
       width: 20px;
     }

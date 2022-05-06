@@ -2,26 +2,31 @@ import axios from 'axios';
 import createAuthRefreshInterceptor from 'axios-auth-refresh';
 import { TOKEN_KEY, getCookie } from '../contexts/authContext';
 
+const { NODE_ENV } = process.env;
+
 let header = {
+  'Access-Control-Allow-Origin': '*',
   'Content-type': 'application/json; charset=UTF-8',
 };
 
+console.log(NODE_ENV);
+
 const authHeader = () => {
   let token = getCookie(TOKEN_KEY);
-  if (token) {
-    return {
-      Accept: '*',
-      Authorization: 'Bearer ' + token,
-    };
-  } else {
-    return {};
-  }
+  return token
+    ? {
+        Accept: '*',
+        Authorization: 'Bearer ' + token,
+      }
+    : {};
 };
 
 header = { ...header, ...authHeader() };
 
 const axiosClient = axios.create({
-  headers: { ...authHeader() },
+  headers: {
+    ...header,
+  },
   timeout: 60 * 1000, //timeout khi request chạm đến -> hủy bỏ request
 });
 

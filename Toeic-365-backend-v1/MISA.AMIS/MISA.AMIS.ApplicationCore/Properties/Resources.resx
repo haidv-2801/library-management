@@ -132,6 +132,9 @@
   <data name="Msg_Failed" xml:space="preserve">
     <value>Thao tác thất bại</value>
   </data>
+  <data name="Msg_InCorrect" xml:space="preserve">
+    <value>Thông tin {0} không chính xác</value>
+  </data>
   <data name="Msg_NotFormat" xml:space="preserve">
     <value>Thông tin {0} không đúng định dạng</value>
   </data>

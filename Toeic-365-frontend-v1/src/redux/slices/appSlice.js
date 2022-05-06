@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const defaultValue = {
   isLoadingApp: false,
   history: [],
+  menus: [],
 };
 
 const App = createSlice({
@@ -17,6 +18,10 @@ const App = createSlice({
 
     changeHistory: (state, action) => {
       state.history = action.payload;
+    },
+
+    changeDataMenus: (state, action) => {
+      state.menus = action.payload;
     },
   },
 });

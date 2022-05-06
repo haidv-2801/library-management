@@ -1,27 +1,29 @@
-import React, { useState, useRef, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import RegisterBg from '../../../../assets/images/register.svg';
-import RegisterBg1 from '../../../../assets/images/boy_bg_new_year_20_opt.gif';
-import { useNavigate } from 'react-router-dom';
-import { buildClass } from '../../../../constants/commonFunction';
-import { LoginOutlined, LoadingOutlined } from '@ant-design/icons';
+import { LoadingOutlined } from '@ant-design/icons';
+import 'primeflex/primeflex.css';
+import 'primeicons/primeicons.css';
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
-import MainLogo from '../../../../assets/images/toeiclogo.png';
-import Modal from '../../../atomics/base/Modal/Modal';
-import Button from '../../../atomics/base/Button/Button';
-import baseApi from '../../../../api/baseApi';
-import { ADMIN_ENDPOINT } from '../../../../constants/endpoint';
-import 'primeicons/primeicons.css';
-import 'primereact/resources/themes/lara-light-indigo/theme.css';
 import 'primereact/resources/primereact.css';
-import 'primeflex/primeflex.css';
-import './registerPage.scss';
+import 'primereact/resources/themes/lara-light-indigo/theme.css';
+import PropTypes from 'prop-types';
+import React, { useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import baseApi from '../../../../api/baseApi';
+import RegisterBg from '../../../../assets/images/register.svg';
+// import MainLogo from '../../../../assets/images/toeiclogo.png';
+import MainLogo from '../../../../assets/images/LogoUTC.jpg';
+import { Toast } from 'primereact/toast';
 import {
   BUTTON_TYPE,
-  REGEX,
   KEY_CODE,
+  PATH_NAME,
+  REGEX,
 } from '../../../../constants/commonConstant';
+import { buildClass } from '../../../../constants/commonFunction';
+import END_POINT from '../../../../constants/endpoint';
+import Button from '../../../atomics/base/Button/Button';
+import Modal from '../../../atomics/base/Modal/Modal';
+import './registerPage.scss';
 
 RegisterPage.propTypes = {
   id: PropTypes.string,
@@ -36,6 +38,7 @@ RegisterPage.defaultProps = {
 };
 
 function RegisterPage() {
+  const toast = useRef(null);
   const [registerInfo, setRegisterInfo] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const registerObjectRef = useRef({});
@@ -67,13 +70,65 @@ function RegisterPage() {
     )
       return;
 
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      navigate('/login');
-    }, 1000);
+    handleAdd();
+
+    // setIsLoading(true);
+    // setTimeout(() => {
+    //   setIsLoading(false);
+    //   navigate(PATH_NAME.LOGIN);
+    // }, 1000);
   };
 
+  const handleAdd = () => {
+    let _body = {
+      ...registerInfo,
+      createdDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
+      createdBy: registerInfo.userName,
+      modifiedDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
+      modifiedBy: registerInfo.userName,
+    };
+
+    baseApi.post(
+      (res) => {
+        if (res.data > 0) {
+          toast.current.show({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Đăng kí thành công',
+            life: 3000,
+          });
+          setTimeout(() => {
+            navigate(PATH_NAME.LOGIN);
+          }, 1000);
+        } else {
+          toast.current.show({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Đăng kí thất bại',
+            life: 3000,
+          });
+        }
+        setIsLoading(false);
+      },
+      (err) => {
+        let errMessage = err?.response?.data?.data || 'Có lỗi xảy ra';
+        toast.current.show({
+          severity: 'error',
+          summary: 'Đăng kí thất bại',
+          detail: errMessage,
+          life: 3000,
+        });
+        setIsLoading(false);
+      },
+      () => {
+        setIsLoading(true);
+      },
+      END_POINT.TOE_INSERT_USER,
+      _body,
+      null,
+      null
+    );
+  };
   const isEmail = (email) => {
     return regex.test(email);
   };
@@ -120,26 +175,27 @@ function RegisterPage() {
 
   return (
     <div className={buildClass(['toe-register-page'])}>
+      <Toast ref={toast}></Toast>
       <div
         className="toe-register-page__head"
-        onClick={() => navigate('/home')}
+        onClick={() => navigate(PATH_NAME.HOME)}
       >
         <img src={MainLogo} alt="logo" />
         <b className="name-app">
-          TOEIC<span style={{ color: '#43c1c9' }}>365</span>
+          Thư viện<span style={{ color: '#43c1c9' }}>365</span>
         </b>
       </div>
       <div className="toe-register-page__body"></div>
       <img className="toe-register-page-bg" src={RegisterBg} alt="login" />
       <Modal
-        title={' Chào mừng bạn đến với Toeic-365! 👋 '}
+        title={'Chào mừng bạn đến với Thư viện 365'}
         children={
           <div className="toe-register-page__modal-body">
             <div className="toe-register-page__modal-body__des toe-font-body">
               Vui lòng đăng kí tài khoản để trải nghiệm website 🚀!{' '}
               <span
                 className="text-high-light"
-                onClick={() => navigate('/login')}
+                onClick={() => navigate(PATH_NAME.LOGIN)}
               >
                 Đăng nhập
               </span>
@@ -205,7 +261,6 @@ function RegisterPage() {
                   className={buildClass([
                     !validate.password && 'toe-control-validate',
                   ])}
-                  panelStyle={{ fontSize: 12 }}
                   onKeyPress={(e) => {
                     if (e.charCode === KEY_CODE.ENTER) {
                       handleRegister();
@@ -234,7 +289,6 @@ function RegisterPage() {
                   className={buildClass([
                     !validate.rePassword && 'toe-control-validate',
                   ])}
-                  panelStyle={{ fontSize: 12 }}
                   onKeyPress={(e) => {
                     if (e.charCode === KEY_CODE.ENTER) {
                       handleRegister();

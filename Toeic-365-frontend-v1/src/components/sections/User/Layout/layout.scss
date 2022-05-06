@@ -5,16 +5,20 @@
   flex-direction: column;
   height: 100vh;
   position: relative;
+  background-color: #fff;
   --header-height: 74px;
+  --header-top-height: 0px;
 
   &__body {
     width: 100%;
     display: flex;
     flex: 1;
     flex-direction: column;
-    margin-top: calc(var(--header-height) + 1px);
+    margin-top: calc(var(--header-height) + var(--header-top-height) + 1px);
     overflow: scroll;
     overflow: auto;
+    // padding: 0px 24px;
+    background-color: #ffffff;
 
     &-left {
       width: fit-content;
@@ -128,27 +132,49 @@
 
   & .menu-item {
     cursor: pointer;
-    padding: 0px 21px;
-    font-size: 16px;
+    padding: 0px 10px;
+    font-size: 14px;
     position: relative;
+    border-right: 1px solid #bbbbbb;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+
+    &--selected {
+      color: #43c1c9;
+    }
 
     &::before {
       content: '';
       width: 0;
       height: 2px;
       bottom: -5px;
-      left: 20px;
       transition: all 0.2s linear;
       position: absolute;
       background-color: #7eab49;
     }
 
     &:hover::before {
-      width: calc(100% - 42px);
+      width: calc(100% - 19px);
     }
 
     &:hover {
       color: #7eab49;
+
+      & > span {
+        transition: 0.3s;
+        transform: rotate(-180deg);
+      }
+    }
+
+    & > span {
+      margin-right: 4px;
+      display: flex;
+      align-items: center;
+
+      & > svg {
+        font-size: 8px;
+      }
     }
   }
 
@@ -177,16 +203,40 @@
     }
 
     .toe-btn-toggle {
-      display: block;
+      display: flex;
     }
   }
 
   .toe-expanded-menu {
     position: absolute;
-    top: 100%;
+    top: calc(100%);
+    width: 100vw;
+    background-color: #fff;
+    padding: 16px 8px;
+    // box-shadow: 0px 0px 9px 1px #a2a0a0;
+
+    &__panel {
+      .p-panelmenu-header-link {
+        padding: 8px 16px;
+        font-size: 14px;
+        font-family: 'OpenSans-Regular', sans-serif;
+      }
+
+      .p-menuitem-text {
+        font-size: 14px;
+        font-family: 'OpenSans-Regular', sans-serif;
+      }
+
+      .p-panelmenu-icon {
+        font-size: 12px;
+      }
+    }
 
     .menu-item {
-      display: block;
+      display: flex;
+      justify-content: center;
+      line-height: 40px;
+      border-right: none;
     }
   }
 }

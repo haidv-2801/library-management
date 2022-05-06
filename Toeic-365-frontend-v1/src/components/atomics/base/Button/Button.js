@@ -1,17 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
+  BUTTON_SHAPE,
   BUTTON_THEME,
   BUTTON_TYPE,
 } from '../../../../constants/commonConstant';
 import { buildClass } from '../../../../constants/commonFunction';
 import './button.scss';
-
 Button.propTypes = {
   id: PropTypes.string,
   className: PropTypes.string,
   style: PropTypes.object,
-
   name: PropTypes.any,
   leftIcon: PropTypes.any,
   rightIcon: PropTypes.any,
@@ -28,6 +27,7 @@ Button.propTypes = {
     BUTTON_THEME.THEME_5,
     BUTTON_THEME.THEME_6,
   ]),
+  shape: PropTypes.oneOf([BUTTON_SHAPE.ROUND, BUTTON_SHAPE.NORMAL]),
   disabled: PropTypes.bool,
   onClick: PropTypes.func,
 };
@@ -43,6 +43,7 @@ Button.defaultProps = {
   theme: BUTTON_THEME.THEME_1,
   onClick: () => {},
   disabled: false,
+  shape: BUTTON_SHAPE.ROUND,
 };
 
 function Button(props) {
@@ -57,12 +58,15 @@ function Button(props) {
     name,
     onClick,
     disabled,
+    shape,
   } = props;
+
   return (
     <div
       id={id}
       style={style}
       className={buildClass([
+        'toe-font-body',
         'toe-btn',
         type == BUTTON_TYPE.NORMAL && 'toe-btn-normal',
         type == BUTTON_TYPE.LEFT_ICON && 'toe-btn-left-icon',
@@ -74,6 +78,7 @@ function Button(props) {
         theme == BUTTON_THEME.THEME_5 && 'toe-btn-theme-5',
         theme == BUTTON_THEME.THEME_6 && 'toe-btn-theme-6',
         disabled && 'toe-btn--disabled',
+        shape === BUTTON_SHAPE.NORMAL && 'toe-btn-shape-normal',
         className,
       ])}
       onClick={onClick}
@@ -82,7 +87,7 @@ function Button(props) {
         <div className="toe-btn-left-icon">{leftIcon}</div>
       ) : null}
 
-      <div className="toe-btn-content">{name}</div>
+      <div className="toe-btn-content ">{name}</div>
 
       {type == BUTTON_TYPE.RIGHT_ICON ? (
         <div className="toe-btn-right-icon">{rightIcon}</div>

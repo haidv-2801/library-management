@@ -10,6 +10,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.Configuration;
 using TOE.TOEIC.Entities;
 using TOE.TOEIC.ApplicationCore.Entities;
+using System.ComponentModel;
 
 namespace TOE.TOEIC.ApplicationCore.Interfaces
 {
@@ -28,7 +29,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
             _configuration = configuration;
             _connectionString = _configuration.GetConnectionString("TOEIC365ConnectionString");
             _dbConnection = new MySqlConnection(_connectionString);
-            _tableName = typeof(TEntity).Name;
+            _tableName = ClassDisplayName();
         }
         #endregion
 
@@ -59,7 +60,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
             var keyName = GetKeyProperty().Name;
 
             var dynamicParams = new DynamicParameters();
-            dynamicParams.Add($"@{keyName}", entityId);
+            dynamicParams.Add($"@v_{keyName}", entityId);
 
             //2. Tạo kết nối và truy vấn
             var entity = _dbConnection.Query<TEntity>($"Proc_Get{_tableName}ById", param: dynamicParams, commandType: CommandType.StoredProcedure).FirstOrDefault();
@@ -87,10 +88,10 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
                     var keyName = GetKeyProperty().Name;
 
                     var dynamicParams = new DynamicParameters();
-                    dynamicParams.Add($"@m_{keyName}", entityId);
+                    dynamicParams.Add($"@v_{keyName}", entityId);
 
                     //2. Kết nối tới CSDL:
-                    rowAffects = _dbConnection.Execute($"Proc_Delete{_tableName}ById", param: dynamicParams, transaction: transaction,commandType: CommandType.StoredProcedure);
+                    rowAffects = _dbConnection.Execute($"Proc_Delete{_tableName}ById", param: dynamicParams, transaction: transaction, commandType: CommandType.StoredProcedure);
 
                     transaction.Commit();
                 }
@@ -117,13 +118,14 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
                 {
                     //1.Duyệt các thuộc tính trên bản ghi và tạo parameters
                     var parameters = MappingDbType(entity);
+                    parameters.RemoveUnused = true;
 
                     //2.Thực hiện thêm bản ghi
                     rowAffects = _dbConnection.Execute($"Proc_Insert{_tableName}", param: parameters, transaction: transaction, commandType: CommandType.StoredProcedure);
 
                     transaction.Commit();
                 }
-                catch
+                catch (Exception ex)
                 {
                     transaction.Rollback();
                 }
@@ -148,12 +150,14 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
             {
                 try
                 {
-                    //1. Duyệt các thuộc tính trên customer và tạo parameters
-                    var parameters = MappingDbType(entity);
-
-                    //2. Ánh xạ giá trị id
+                    //1. Ánh xạ giá trị id
                     var keyName = GetKeyProperty().Name;
                     entity.GetType().GetProperty(keyName).SetValue(entity, entityId);
+
+                    //2. Duyệt các thuộc tính trên customer và tạo parameters
+                    var parameters = MappingDbType(entity);
+
+
 
                     //3. Kết nối tới CSDL:
                     rowAffects = _dbConnection.Execute($"Proc_Update{_tableName}", param: parameters, transaction: transaction, commandType: CommandType.StoredProcedure);
@@ -174,7 +178,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         /// </summary>
         /// <param name="entity">Thực thể</param>
         /// <returns>Dan sách các biến động</returns>
-        private DynamicParameters MappingDbType(TEntity entity)
+        protected DynamicParameters MappingDbType(TEntity entity)
         {
             var parameters = new DynamicParameters();
             try
@@ -187,11 +191,14 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
                     var propertyName = property.Name;
                     var propertyValue = property.GetValue(entity);
                     var propertyType = property.PropertyType;
+                    if (propertyName != "EntityState")
+                    {
+                        if (propertyType == typeof(Guid) || propertyType == typeof(Guid?))
+                            parameters.Add($"@{"v_" + propertyName}", propertyValue, DbType.String);
+                        else
+                            parameters.Add($"@{"v_" + propertyName}", propertyValue);
+                    }
 
-                    if (propertyType == typeof(Guid) || propertyType == typeof(Guid?))
-                        parameters.Add($"@{propertyName}", propertyValue, DbType.String);
-                    else
-                        parameters.Add($"@{propertyName}", propertyValue);
                 }
             }
             catch { }
@@ -204,7 +211,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         /// </summary>
         /// <returns></returns>
         /// CREATED BY: DVHAI (11/07/2021)
-        private PropertyInfo GetKeyProperty()
+        protected PropertyInfo GetKeyProperty()
         {
             try
             {
@@ -241,9 +248,9 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
 
             //3. Kiểm tra kiểu form
             if (entity.EntityState == EntityState.Add)
-                query = $"SELECT * FROM {_tableName} WHERE {propertyName} = '{propertyValue}'";
+                query = $"SELECT * FROM {_tableName} WHERE {propertyName} = '{propertyValue}' AND IsDeleted = FALSE";
             else if (entity.EntityState == EntityState.Update)
-                query = $"SELECT * FROM {_tableName} WHERE {propertyName} = '{propertyValue}' AND {keyName} <> '{keyValue}'";
+                query = $"SELECT * FROM {_tableName} WHERE {propertyName} = '{propertyValue}' AND {keyName} <> '{keyValue}' AND IsDeleted = FALSE";
             else
                 return null;
 
@@ -259,11 +266,47 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         /// <param name="propertyValue">Giá trị của thuộc tính</param>
         /// <returns>Thực thể</returns>
         /// CREATED BY: DVHAI 08/07/2021
-        public TEntity GetEntityByProperty(string propertyName, object propertyValue)
+        public IEnumerable<TEntity> GetEntitiesByProperty(string propertyName, object propertyValue)
         {
             string query = $"SELECT * FROM {_tableName} WHERE {propertyName} = '{propertyValue}'";
-            var entityReturn = _dbConnection.Query<TEntity>(query, commandType: CommandType.Text).FirstOrDefault();
-            return entityReturn;
+            var entityReturn = _dbConnection.Query<TEntity>(query, commandType: CommandType.Text);
+            return (IEnumerable<TEntity>)entityReturn;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="whereClause"></param>
+        /// <returns></returns>
+        public IEnumerable<TEntity> GetEntitiesFilter(string whereClause, string columnNames = "*", string viewName = "")
+        {
+            string resource = _tableName;
+            if (!string.IsNullOrEmpty(viewName))
+            {
+                resource = viewName;
+            }
+
+            if (columnNames == null) columnNames = "*";
+            string query = $"SELECT {columnNames} FROM {resource} WHERE {whereClause}";
+            var entityReturn = _dbConnection.Query<TEntity>(query, commandType: CommandType.Text);
+            return (IEnumerable<TEntity>)entityReturn;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="whereClause"></param>
+        /// <returns></returns>
+        public int CountTotalRecordByClause(string whereClause, string viewName = "")
+        {
+            string resource = _tableName;
+            if (!string.IsNullOrEmpty(viewName))
+            {
+                resource = viewName;
+            }
+            string queryTotal = $"SELECT COUNT(*) FROM {_tableName} WHERE {whereClause}";
+            var totalRecord = (int)_dbConnection.QuerySingle<int>(queryTotal, commandType: CommandType.Text);
+            return totalRecord;
         }
 
         /// <summary>
@@ -275,6 +318,17 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
             {
                 _dbConnection.Close();
             }
+        }
+
+        /// <summary>
+        /// Lấy tên class
+        /// </summary>
+        /// <returns></returns>
+        public string ClassDisplayName()
+        {
+            var displayName = typeof(TEntity).GetCustomAttributes(typeof(DisplayNameAttribute), true).FirstOrDefault() as DisplayNameAttribute;
+            if (displayName == null) return typeof(TEntity).Name;
+            return displayName.DisplayName;
         }
         #endregion
     }

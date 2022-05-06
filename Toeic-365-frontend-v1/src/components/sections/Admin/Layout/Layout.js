@@ -1,33 +1,20 @@
-import React, { useState, useEffect, useRef } from 'react';
-import PropTypes from 'prop-types';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { Layout as LayoutAntd, Menu } from 'antd';
-import 'antd/dist/antd.css';
 import {
-  MenuUnfoldOutlined,
-  MenuFoldOutlined,
-  UserOutlined,
-  VideoCameraOutlined,
-  UploadOutlined,
-  DesktopOutlined,
-  PieChartOutlined,
-  FileOutlined,
-  TeamOutlined,
   DashboardOutlined,
+  LeftOutlined,
   QuestionCircleOutlined,
+  UploadOutlined,
+  UserOutlined,
 } from '@ant-design/icons';
-import { buildClass } from '../../../../constants/commonFunction';
-import useOnClickOutside from '../../../../hooks/useClickOutSide';
-import PopupSelection from '../../../atomics/base/PopupSelection/PopupSelection';
+import { Layout as LayoutAntd, Menu } from 'antd';
+import PropTypes from 'prop-types';
+import React, { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
 import MainLogo from '../../../../assets/images/toeiclogo.png';
-import Avatar from '../../../../assets/images/me.jpg';
+import useOnClickOutside from '../../../../hooks/useClickOutSide';
 import useWindowResize from '../../../../hooks/useWindowResize';
 import Loading from '../../../atomics/base/Loading/Loading';
-import Table from '../../../molecules/Table/Table';
-import SmartText from '../../../atomics/base/SmartText/SmartText';
 import UserInfo from '../../UserInfo/UserInfo';
-import { fake } from '../../../pages/test/Test';
-import { useDispatch, useSelector } from 'react-redux';
 import './layout.scss';
 
 const { Header, Sider, Content } = LayoutAntd;
@@ -36,15 +23,19 @@ const { SubMenu } = Menu;
 Layout.propTypes = {
   title: PropTypes.any,
   rightButtons: PropTypes.array,
+  hasBackBtn: PropTypes.bool,
+  back: PropTypes.func,
 };
 
 Layout.defaultProps = {
   title: null,
   rightButtons: [],
+  hasBackBtn: false,
+  back: () => {},
 };
 
 function Layout(props) {
-  const { title, rightButtons, children } = props;
+  const { title, rightButtons, children, hasBackBtn, back } = props;
 
   //#region constant
   const DEFAULT_ITEM = '/admin/dashboard';
@@ -57,33 +48,66 @@ function Layout(props) {
       title: DEFAULT_TITLE,
       icon: <DashboardOutlined />,
     },
-    { key: 'separator' },
     {
-      key: '/admin/de-thi',
-      title: 'Quản lý đề thi',
+      key: '/admin/system',
+      title: 'Hệ thống',
       icon: <UserOutlined />,
+      children: [
+        {
+          key: '/admin/systems/user',
+          title: 'Tài khoản',
+        },
+        {
+          key: '/admin/systems/role',
+          title: 'Chức năng',
+        },
+        {
+          key: '/admin/systems/permission',
+          title: 'Phân quyền',
+        },
+        {
+          key: '/admin/systems/menu',
+          title: 'Menu',
+        },
+      ],
     },
     {
-      key: '/admin/phan-thi',
-      title: 'Quản lý phần thi',
-      icon: <UploadOutlined />,
-    },
-    { key: 'separator' },
-    {
-      key: '/admin/nhom-cau-hoi',
-      title: 'Quản lý nhóm câu hỏi',
-      icon: <QuestionCircleOutlined />,
-    },
-    {
-      key: '/admin/cau-hoi',
-      title: 'Quản lý câu hỏi',
-      icon: <QuestionCircleOutlined />,
-    },
-    { key: 'separator' },
-    {
-      key: '/admin/user',
-      title: 'Quản lý tài khoản',
+      key: '/admin/tin-tuc',
+      title: 'Tin tức',
       icon: <UserOutlined />,
+      children: [
+        {
+          key: '/admin/tin-tuc/post',
+          title: 'Bài viết',
+        },
+        {
+          key: '/admin/tin-tuc/page',
+          title: 'Trang',
+        },
+        {
+          key: '/admin/tin-tuc/slide',
+          title: 'Slide',
+        },
+        {
+          key: '/admin/yeu-cau-gop-y',
+          title: 'Yêu cầu góp ý',
+        },
+      ],
+    },
+    {
+      key: '/admin/danh-muc',
+      title: 'Danh mục',
+      icon: <UserOutlined />,
+      children: [
+        {
+          key: '/admin/danh-muc/ban-doc',
+          title: 'Bạn đọc',
+        },
+        {
+          key: '/admin/danh-muc/sach',
+          title: 'Ấn phẩm',
+        },
+      ],
     },
   ];
 
@@ -126,7 +150,7 @@ function Layout(props) {
 
   //#region method
   useEffect(() => {
-    document.title = 'Toeic-365';
+    document.title = 'Thư viện-365';
   }, []);
 
   useEffect(() => {
@@ -148,12 +172,12 @@ function Layout(props) {
       }
       if (item?.children) {
         return (
-          <SubMenu key={item.key} icon={item.icon} title={item.title}>
+          <SubMenu theme="light" key={item.key} title={item.title}>
             {item.children.map((child) => (
               <Menu.Item
-                style={!collapsedMenu ? { paddingLeft: 16 } : {}}
+                // style={!collapsedMenu ? { paddingLeft: 16 } : {}}
+                className="admin-menu"
                 key={child.key}
-                icon={child.icon}
               >
                 {child.title}
               </Menu.Item>
@@ -163,9 +187,9 @@ function Layout(props) {
       } else {
         return (
           <Menu.Item
-            style={!collapsedMenu ? { paddingLeft: 16 } : {}}
+            className="admin-menu"
+            // style={!collapsedMenu ? { paddingLeft: 16 } : {}}
             key={item.key}
-            icon={item.icon}
           >
             {item.title}
           </Menu.Item>
@@ -175,12 +199,12 @@ function Layout(props) {
   };
 
   const renderRightButtons = () => {
-    return rightButtons.map((btn) => btn);
+    return rightButtons.map((btn, _) => <div key={_}>{btn}</div>);
   };
 
   const handleSelectMenuItem = (data) => {
     history(data.key);
-    setmenuItemSelected(data?.domEvent?.currentTarget?.innerText);
+    // setmenuItemSelected(data?.domEvent?.currentTarget?.innerText);
   };
 
   const handleShowOption = () => {
@@ -199,37 +223,12 @@ function Layout(props) {
             }}
             className="toe-layout-admin-page-container__header-left"
           >
-            <img className="logo-app" src={MainLogo} alt="toeic-365" />
+            <img className="logo-app" src={MainLogo} alt="thư viện 365" />
             <b className="name-app">
-              TOEIC<span style={{ color: '#43c1c9' }}>365</span>
+              Thư viện <span style={{ color: '#43c1c9' }}>365</span>
             </b>
           </div>
           <div className="toe-layout-admin-page-container__header-right">
-            {/* <div className="user-name">DOVANHAI</div>
-            <div onClick={handleShowOption} className="user-avatar">
-              <img src={Avatar} alt="avatar" />
-            </div>
-            {isShowPopupSelection && (
-              <span ref={popupSelectionRef}>
-                <PopupSelection
-                  defaultValue={userSelectValue}
-                  onChange={(data) => {
-                    setUserSelectValue(data.value);
-                    if (data.value === POPUP_SELECTION_VALUES.LOGOUT) {
-                      // history('/login');
-                      //Xóa cache chrome
-                      window.location.replace('/login');
-                    } else if (
-                      data.value === POPUP_SELECTION_VALUES.USER_INFOMATION
-                    ) {
-                      //
-                    }
-                    setIsShowPopupSelection(false);
-                  }}
-                  options={POPUP_SELECTION_OPTIONS}
-                />
-              </span>
-            )} */}
             <UserInfo />
           </div>
         </div>
@@ -237,15 +236,22 @@ function Layout(props) {
           <div className="toe-layout-admin-page-container__body-left">
             <Sider
               collapsible
-              collapsed={collapsedMenu}
-              onCollapse={handleCollapsed}
+              // collapsed={collapsedMenu}
+              // onCollapse={handleCollapsed}
+              theme="light"
+              breakpoint="lg"
+              color="#fff"
             >
               <div className="logo" />
               <Menu
                 onSelect={handleSelectMenuItem}
-                theme="dark"
-                defaultSelectedKeys={[location?.pathname]}
+                theme="light"
                 mode="inline"
+                defaultSelectedKeys={[location.pathname]}
+                inlineIndent={24}
+                selectable
+                selectedKeys={location.pathname}
+                className="admin-menu"
               >
                 {renderMenu()}
               </Menu>
@@ -254,6 +260,15 @@ function Layout(props) {
           <div className="toe-layout-admin-page-container__body-right">
             <div className="toe-layout-admin-page-container__body-right__head">
               <div className="toe-layout-admin-page-container__body-right__head-title">
+                {hasBackBtn ? (
+                  <div
+                    onClick={back}
+                    className="toe-layout-admin-page-container__body-right__head-title-back"
+                  >
+                    <LeftOutlined />
+                  </div>
+                ) : null}
+
                 <div className="toe-font-large-title">
                   {title || menuItemSelected}
                 </div>

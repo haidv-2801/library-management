@@ -20,19 +20,17 @@
 
     &-right {
       cursor: pointer;
-      width: 25px;
-      height: 25px;
+      width: 32px;
+      height: 32px;
       display: flex;
       align-items: center;
       border-radius: 20%;
       justify-content: center;
 
       &:hover {
-        // background-color: #43c1c9;
-        border-radius: 50%;
-        opacity: 0.5;
+        background-color: #eceaea;
+        border-radius: 8px;
         transition: 0.2s;
-        // color: #fff;
       }
     }
   }

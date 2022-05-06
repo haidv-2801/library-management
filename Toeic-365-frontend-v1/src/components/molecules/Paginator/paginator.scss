@@ -1,0 +1,43 @@
+.toe-paginator {
+  width: 100%;
+  height: 60px;
+
+  display: flex;
+  align-items: center;
+
+  .p-dropdown {
+    min-width: 100px;
+    height: 40px;
+
+    &.p-inputwrapper-filled {
+      display: none;
+    }
+
+    &.dropdown-paginator.p-inputwrapper-filled {
+      display: flex;
+    }
+  }
+
+  .p-dropdown-label {
+    display: flex;
+    align-items: center;
+  }
+
+  .p-paginator-page {
+  }
+
+  .p-paginator-element {
+    cursor: pointer;
+    font-size: 14px;
+    width: 40px;
+    height: 40px;
+
+    .pi {
+      font-size: 14px;
+    }
+  }
+
+  .p-inputtext {
+    font-size: 14px;
+  }
+}

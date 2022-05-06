@@ -10,14 +10,17 @@ GroupCheck.propTypes = {
   id: PropTypes.string,
   className: PropTypes.string,
   style: PropTypes.object,
-  options: PropTypes.arrayOf({
-    label: PropTypes.any,
-    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  }),
+  options: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.any,
+      value: PropTypes.any,
+    })
+  ),
   defaultValue: PropTypes.any,
   disabled: PropTypes.bool,
   type: PropTypes.oneOf([CHECKBOX_TYPE.CIRCLE, CHECKBOX_TYPE.SQUARE]),
   onChange: PropTypes.func,
+  onClick: PropTypes.func,
 };
 
 GroupCheck.defaultProps = {
@@ -28,6 +31,7 @@ GroupCheck.defaultProps = {
   defaultValue: null,
   disabled: false,
   onChange: () => {},
+  onClick: () => {},
   type: CHECKBOX_TYPE.CIRCLE,
 };
 
@@ -41,6 +45,7 @@ function GroupCheck(props) {
     disabled,
     onChange,
     type,
+    onClick,
   } = props;
 
   return (
@@ -51,15 +56,15 @@ function GroupCheck(props) {
         }}
         value={defaultValue}
       >
-        {options.map((item) => {
+        {options.map((item, _) => {
           let isHide = false;
           if (typeof item?.onHide === 'function') isHide = item?.onHide(item);
           if (isHide) return null;
 
           return (
-            <div className="toe-group-check__container">
+            <div key={_} className="toe-group-check__container">
               <div className="toe-group-check__check">
-                <Radio value={item.value}>
+                <Radio onClick={() => onClick(item.value)} value={item.value}>
                   <div className="toe-group-check__label">{item.label}</div>
                 </Radio>
               </div>
