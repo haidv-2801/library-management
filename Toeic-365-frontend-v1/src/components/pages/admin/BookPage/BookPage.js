@@ -12,6 +12,7 @@ import baseApi from '../../../../api/baseApi';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   ADMIN_BOOK_PAGE_BOLUMN_SEARCH,
+  BOOK_FORMAT,
   BUTTON_THEME,
   BUTTON_TYPE,
   DATE_FORMAT,
@@ -33,6 +34,10 @@ import PopupCreateBook from './PopupCreateBook/PopupCreateBook';
 import FilterEngine from '../../../molecules/FilterEngine/FilterEngine';
 import SideBar from '../../../atomics/base/SideBar/SideBar';
 import { SearchOutlined } from '@ant-design/icons';
+import { getUserName } from '../../../../constants/commonAuth';
+import { uploadFiles } from '../../../../api/firebase';
+import fileDownload from 'js-file-download';
+import FileSaver, { saveAs } from 'file-saver';
 import './bookPage.scss';
 
 BookPage.propTypes = {
@@ -119,7 +124,7 @@ function BookPage(props) {
       sortable: true,
       header: 'Thể loại',
       filterField: 'categoryID',
-      body: (row) => renderBookImage(row),
+      body: (row) => renderBookCategory(row),
       style: { width: 200, maxWidth: 200 },
     },
     {
@@ -174,7 +179,7 @@ function BookPage(props) {
     page: 1,
     pageSize: MIN_PAGE_SIZE,
     type: -1,
-    menuID: -1,
+    bookID: -1,
   });
   const [filterValue, setFilterValue] = useState(DEFAULT_FILTER_VALUE);
   const [filterCount, setFilterCount] = useState(0);
@@ -191,7 +196,13 @@ function BookPage(props) {
         </div>
       ),
       value: 1,
-      onClick: (e) => {},
+      onClick: (e) => {
+        FileSaver.saveAs(
+          'https://firebasestorage.googleapis.com/v0/b/fir-library-upload.appspot.com/o/images%2F001_1.jpg?alt=media&token=07f95ae5-cf2f-4de3-9a0b-5656a92df579',
+          'test',
+          { autoBom: true }
+        );
+      },
     },
     {
       label: (
@@ -275,7 +286,7 @@ function BookPage(props) {
             theme={BUTTON_THEME.THEME_6}
             name="Hủy"
           />,
-          <Button name="Thêm" onClick={() => {}} />,
+          <Button name="Thêm" onClick={handleAdd} />,
         ],
       };
     } else if (popupMode === POPUP_MODE.EDIT) {
@@ -290,7 +301,7 @@ function BookPage(props) {
             name="Hủy"
             theme={BUTTON_THEME.THEME_6}
           />,
-          <Button name="Cập nhập" onClick={() => {}} />,
+          <Button name="Cập nhập" onClick={handleEdit} />,
         ],
       };
     }
@@ -305,7 +316,6 @@ function BookPage(props) {
 
     baseApi.post(
       (res) => {
-        debugger;
         let _data = res.data.pageData.map((item) => ({
           ...item,
           key: item?.categoryID,
@@ -387,8 +397,141 @@ function BookPage(props) {
     );
   };
 
-  const handleEdit = (key) => {
-    navigate(key);
+  const handleEdit = () => {
+    let _body = {
+      ...dataCreate,
+      modifiedDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
+      modifiedBy: getUserName(),
+    };
+
+    baseApi.put(
+      (res) => {
+        if (res.data > 0) {
+          toast.current.show({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Cập nhật thành công',
+            life: 3000,
+          });
+          getBooksFilter();
+        } else {
+          toast.current.show({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Cập nhật thất bại',
+            life: 3000,
+          });
+        }
+        setIsShowPopupCreateBook(false);
+      },
+      (err) => {
+        toast.current.show({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Cập nhật thất bại',
+          life: 3000,
+        });
+      },
+      () => {},
+      format(END_POINT.TOE_UPDATE_BOOK, dataDetail.bookID),
+      _body,
+      null,
+      null
+    );
+  };
+
+  const handleAdd = () => {
+    const imagePromise = uploadFiles(dataCreate.image, 'images');
+    const filePromise = uploadFiles(dataCreate.file, 'files');
+    if (dataCreate.image && dataCreate.file) {
+      Promise.all([imagePromise, filePromise])
+        .then((res) => {
+          updateBook(res[0], res[1]);
+        })
+        .catch((err) => {
+          toast.current.show({
+            severity: 'error',
+            summary: 'Thêm mới thất bại',
+            detail: JSON.stringify(err),
+            life: 3000,
+          });
+        });
+    } else if (dataCreate.file) {
+      filePromise
+        .then((res) => {
+          updateBook('', res);
+        })
+        .catch((err) => {
+          toast.current.show({
+            severity: 'error',
+            summary: 'Thêm mới thất bại',
+            detail: JSON.stringify(err),
+            life: 3000,
+          });
+        });
+    } else {
+      imagePromise
+        .then((res) => {
+          updateBook(res, '');
+        })
+        .catch((err) => {
+          toast.current.show({
+            severity: 'error',
+            summary: 'Thêm mới thất bại',
+            detail: JSON.stringify(err),
+            life: 3000,
+          });
+        });
+    }
+  };
+
+  const updateBook = (imgUrl = null, fileUrl = null) => {
+    let _body = {
+      ...dataCreate,
+      author: JSON.stringify(dataCreate?.authors),
+      createdDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
+      createdBy: getUserName(),
+      modifiedDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
+      modifiedBy: getUserName(),
+      image: imgUrl,
+      file: fileUrl,
+    };
+
+    baseApi.post(
+      (res) => {
+        if (res.data > 0) {
+          toast.current.show({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Thêm mới thành công',
+            life: 3000,
+          });
+          getBooksFilter();
+        } else {
+          toast.current.show({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Thêm mới thất bại',
+            life: 3000,
+          });
+        }
+        setIsShowPopupCreateBook(false);
+      },
+      (err) => {
+        let errMessage = err?.response?.data?.data || 'Có lỗi xảy ra';
+        toast.current.show({
+          severity: 'error',
+          summary: 'Thêm mới thất bại',
+          detail: errMessage,
+          life: 3000,
+        });
+      },
+      () => {},
+      END_POINT.TOE_INSERT_BOOK,
+      _body,
+      null,
+      null
+    );
   };
 
   const handleActive = (key) => {
@@ -431,7 +574,7 @@ function BookPage(props) {
       (res) => {
         let _data = res.data.data.map((item) => ({
           ...item,
-          key: item?.MenuID,
+          key: item?.bookID,
           label: (
             <div className="treeselect-item">
               <div className="treeselect-item__title">{item.Title}</div>
@@ -536,10 +679,32 @@ function BookPage(props) {
   function renderBookFormat(row) {
     if (isLoading) return <Skeleton></Skeleton>;
 
-    return row.bookFormat;
+    let bookFormat = '';
+    switch (row.bookFormat) {
+      case BOOK_FORMAT.EBOOK:
+        bookFormat = 'Tài liệu điện tử';
+      case BOOK_FORMAT.PAPER_BACK:
+        bookFormat = 'Tài liệu giấy';
+      default:
+        break;
+    }
+
+    return bookFormat;
   }
+
   function renderBookImage(row) {
     if (isLoading) return <Skeleton></Skeleton>;
+
+    return (
+      <img className="table-image" src={row.image} alt="image" width={100} />
+    );
+  }
+
+  function renderBookCategory(row) {
+    if (isLoading) return <Skeleton></Skeleton>;
+    return (
+      <SmartText innnerClassName="toe-font-label">{row.categoryID}</SmartText>
+    );
   }
   //#endregion
 
@@ -578,11 +743,11 @@ function BookPage(props) {
               />
               {/* <TreeSelect
                 placeholder="Nhấp để chọn"
-                value={paging.menuID}
+                value={paging.bookID}
                 options={dataMenus}
                 prefixValue={'Menu'}
                 onChange={(data) => {
-                  setPaging((pre) => ({ ...pre, menuID: data.value }));
+                  setPaging((pre) => ({ ...pre, bookID: data.value }));
                 }}
               /> */}
               <div className="toe-admin-book-page__filter">

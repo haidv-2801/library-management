@@ -5,14 +5,16 @@
   flex-direction: column;
   height: 100vh;
   position: relative;
+  background-color: #fff;
   --header-height: 74px;
+  --header-top-height: 0px;
 
   &__body {
     width: 100%;
     display: flex;
     flex: 1;
     flex-direction: column;
-    margin-top: calc(var(--header-height) + 1px);
+    margin-top: calc(var(--header-height) + var(--header-top-height) + 1px);
     overflow: scroll;
     overflow: auto;
     // padding: 0px 24px;

@@ -11,6 +11,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import baseApi from '../../../../api/baseApi';
 import { uploadFiles } from '../../../../api/firebase';
+import { getUserName } from '../../../../constants/commonAuth';
 import {
   BUTTON_THEME,
   BUTTON_TYPE,
@@ -283,9 +284,9 @@ function HtmlContentCreatingPage(props) {
       type: 1,
       menuID: data?.menuID,
       createdDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
-      createdBy: 'DOVANHAI',
+      createdBy: getUserName(),
       modifiedDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
-      modifiedBy: 'DOVANHAI',
+      modifiedBy: getUserName(),
       status: isActive,
       isDeleted: false,
     };

@@ -8,6 +8,7 @@ import { TEXT_FALL_BACK } from '../../../constants/commonConstant';
 Dropdown.propTypes = {
   id: PropTypes.string,
   className: PropTypes.string,
+  wrapperClass: PropTypes.string,
   style: PropTypes.object,
   options: PropTypes.array,
   configs: PropTypes.object,
@@ -29,6 +30,7 @@ Dropdown.propTypes = {
 Dropdown.defaultProps = {
   id: '',
   className: '',
+  wrapperClass: '',
   style: {},
   options: [],
   configs: {},
@@ -64,6 +66,7 @@ function Dropdown(props) {
     prefixItem,
     prefixValue,
     scrollHeight,
+    wrapperClass,
     label,
   } = props;
 
@@ -78,10 +81,7 @@ function Dropdown(props) {
         {prefixItem ? (
           <span className="p-dropdown-item__label-prefix">{prefixItem}:</span>
         ) : null}
-        <span className="p-dropdown-item__label-display">
-          {' '}
-          {label ?? TEXT_FALL_BACK.TYPE_1}
-        </span>
+        <span className="p-dropdown-item__label-display"> {label}</span>
         {hasSubLabel ? (
           <div className="p-dropdown-item__subLabel toe-font-hint">
             {subLabel}
@@ -102,17 +102,17 @@ function Dropdown(props) {
         {prefixValue ? (
           <span className="p-dropdown-item__value-prefix">{prefixValue}: </span>
         ) : null}
-        <span className="p-dropdown-item__value-display">
-          {data?.label ?? TEXT_FALL_BACK.TYPE_1}
-        </span>
+        <span className="p-dropdown-item__value-display">{data?.label}</span>
       </div>
     );
   };
 
   return (
-    <div className="toe-dropdown__wrapper">
+    <div className={buildClass(['toe-dropdown__wrapper', wrapperClass])}>
       {label ? (
-        <div className="toe-dropdown__wrapper-label toe-font-label">
+        <div
+          className={buildClass(['toe-dropdown__wrapper-label toe-font-label'])}
+        >
           {label}
         </div>
       ) : null}
@@ -137,7 +137,7 @@ function Dropdown(props) {
         filterPlaceholder="Nhập từ cần tìm"
         showClear={showClear}
         itemTemplate={customItemTemplate}
-        valueTemplate={customValueTemplate}
+        {...(defaultValue ? { valueTemplate: customValueTemplate } : {})}
         scrollHeight={scrollHeight}
       />
     </div>

@@ -4,6 +4,7 @@ import {
   ref,
   uploadBytesResumable,
   getDownloadURL,
+  getBlob,
 } from 'firebase/storage';
 
 const firebaseConfig = {
@@ -50,4 +51,31 @@ const uploadFiles = (file, folder = 'images') => {
   });
 };
 
-export { storage, uploadFiles };
+const dowloadFile = (url) => {
+  return new Promise((resolve, reject) => {
+    getDownloadURL(ref(storage, url))
+      .then((res) => {
+        // `url` is the download URL for 'images/stars.jpg'
+
+        // This can be downloaded directly:
+        const xhr = new XMLHttpRequest();
+        xhr.responseType = 'blob';
+        xhr.onload = (event) => {
+          const blob = xhr.response;
+        };
+        xhr.open('GET', res);
+        xhr.send();
+        debugger;
+        resolve(res);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+};
+
+export const getBlobFirebase = (url) => {
+  return getBlob(ref(storage, url));
+};
+
+export { storage, uploadFiles, dowloadFile };

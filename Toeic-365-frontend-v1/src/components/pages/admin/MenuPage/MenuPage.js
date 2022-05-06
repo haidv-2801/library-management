@@ -27,6 +27,7 @@ import Layout from '../../../sections/Admin/Layout/Layout';
 import PopupCreateMenu from './PopupCreateMenu/PopupCreateMenu';
 import Dropdown from '../../../molecules/Dropdown/Dropdown';
 import './menuPage.scss';
+import { getUserName } from '../../../../constants/commonAuth';
 
 MenuPage.propTypes = {
   id: PropTypes.string,
@@ -416,7 +417,7 @@ function MenuPage(props) {
     let _body = {
       ...dataCreate,
       modifiedDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
-      modifiedBy: 'DOVANHAI',
+      modifiedBy: getUserName(),
       parentID: dataCreate?.parentID,
       displayOrder: dataCreate.displayOrder || 0,
     };
@@ -461,9 +462,9 @@ function MenuPage(props) {
     let _body = {
       ...dataCreate,
       createdDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
-      createdBy: 'DOVANHAI',
+      createdBy: getUserName(),
       modifiedDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
-      modifiedBy: 'DOVANHAI',
+      modifiedBy: getUserName(),
       parentID: dataCreate?.parentID,
       displayOrder: dataCreate.displayOrder || 0,
     };

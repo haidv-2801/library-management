@@ -1,6 +1,6 @@
 .toe-layout-user-page-container__header {
   width: 100%;
-  // padding: 0px 5vw;
+  padding: 0px 10vw;
   height: var(--header-height);
   display: flex;
   align-items: center;
@@ -10,6 +10,8 @@
   flex-shrink: 0;
   position: absolute;
   z-index: 10;
+  top: 29px;
+  margin: 0 auto;
 
   &__submenu {
     &-dropdown {
@@ -26,7 +28,6 @@
     display: flex;
     align-items: center;
     white-space: nowrap;
-    margin-left: 5vw;
 
     & .name-app {
       font-size: 20px;

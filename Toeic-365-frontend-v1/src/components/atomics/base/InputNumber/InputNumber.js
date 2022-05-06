@@ -116,6 +116,7 @@ function InputNumber(props) {
         >
           {leftIcon ? leftIcon : null}
           <InputNumberPrime
+            inputId="integeronly"
             className="toe-input-number--inner"
             autoFocus={autoFocus}
             onValueChange={(e) => {
@@ -123,11 +124,9 @@ function InputNumber(props) {
               onChange(e.value);
             }}
             placeholder={placeholder}
-            maxLength={maxLength}
             tabIndex={tabIndex}
             disabled={disabled}
-            mode="decimal"
-            useGrouping={false}
+            // useGrouping={false}
             value={value}
           />
         </div>

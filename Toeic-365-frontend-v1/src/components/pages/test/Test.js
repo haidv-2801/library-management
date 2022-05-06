@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+
 import {
   Route,
   Routes,
@@ -58,9 +59,19 @@ import SideBar from '../../atomics/base/SideBar/SideBar';
 import TreeSelect from '../../atomics/base/TreeSelect/TreeSelect';
 import MenuBar from '../../atomics/base/MenuBar/MenuBar';
 import { FAKE_MENU_ITEM, FAKE_DATA_MENU } from './Fake';
-import { listToTree } from '../../../constants/commonFunction';
+import {
+  genFileNameWithTime,
+  listToTree,
+} from '../../../constants/commonFunction';
 import PaginatorAntd from '../../molecules/PaginatorAntd/PaginatorAntd';
 import BooksPageSeeAll from '../user/BooksPageSeeAll/BooksPageSeeAll';
+import { dowloadFile, getBlobFirebase } from '../../../api/firebase';
+import FileSaver from 'file-saver';
+import moment from 'moment';
+import { Document, Page } from 'react-pdf';
+import PdfDist from '../../molecules/PdfDist/PdfDist';
+import ReactPDfViewer from '../../molecules/ReactPdfViewer/ReactPdfViewer';
+
 const fake = [
   {
     id: '7172095f-daf0-4d6c-a866-30ec9c8a3f96',
@@ -254,36 +265,76 @@ const Test = () => {
   const preview = useRef();
   const [src, setSrc] = useState(null);
 
-  function previewFile() {
-    const reader = new FileReader();
+  const testDowload = () => {
+    getBlobFirebase(
+      'https://firebasestorage.googleapis.com/v0/b/fir-library-upload.appspot.com/o/images%2F001_1.jpg?alt=media&token=07f95ae5-cf2f-4de3-9a0b-5656a92df579'
+    ).then((res) => {
+      FileSaver.saveAs(res, genFileNameWithTime());
+    });
+  };
 
-    reader.addEventListener('load', () => setSrc(reader.result), false);
-    if (preview.files[0]) {
-      reader.readAsDataURL(preview.files[0]);
-    }
+  const [numPages, setNumPages] = useState(null);
+  const [pageNumber, setPageNumber] = useState(1);
+
+  function onDocumentLoadSuccess({ numPages }) {
+    setNumPages(numPages);
   }
 
   return (
     <div className="toe-test">
-      {/* <MenuBar
-        options={listToTree(
-          FAKE_DATA_MENU.map((item) => ({
-            ...item,
-            label: item.title,
-            key: item.menuID,
-            url: '',
-          })),
-          'items'
-        )}
+      {/* <PdfDist /> */}
+      {/* <ReactPDfViewer /> */}
+      {/* <div>
+        <Document
+          file="https://drive.google.com/viewerng/viewer?embedded=true&url=http://infolab.stanford.edu/pub/papers/google.pdf#toolbar=0&scrollbar=0"
+          onLoadSuccess={onDocumentLoadSuccess}
+        >
+          <Page pageNumber={pageNumber} />
+        </Document>
+        <p>
+          Page {pageNumber} of {numPages}
+        </p>
+      </div> */}
+      {/* <object
+        data="./171200038_Bui_Minh_Thao_CNTT1_K58.pdf"
+        type="application/pdf"
+      >
+        <div>No online PDF viewer installed</div>
+      </object> */}
+      {/* <embed
+        src="./171200038_Bui_Minh_Thao_CNTT1_K58.pdf"
+        width="800px"
+        height="2100px"
       /> */}
-      {/* <PaginatorAntd
-        totalRecords={30}
-        page={1}
-        onChange={(data) => {
-          console.log(data);
-        }}
+      {/* <iframe
+        src={
+          'https://drive.google.com/viewerng/viewer?embedded=true&url=http://infolab.stanford.edu/pub/papers/google.pdf#toolbar=0&scrollbar=0'
+        }
+        style={{ width: '100%', height: '100%', border: 'none' }}
+      ></iframe> */}
+      {/* <iframe
+        src="https://drive.google.com/viewerng/viewer?embedded=true&url=http://infolab.stanford.edu/pub/papers/google.pdf#toolbar=0&scrollbar=0"
+        frameBorder="0"
+        scrolling="auto"
+        height="100%"
+        width="100%"
+      ></iframe> */}
+
+      {/* <iframe
+        // src="../test/171200038_Bui_Minh_Thao_CNTT1_K58.pdf"
+        src="https://drive.google.com/viewerng/viewer?embedded=true&url=http://infolab.stanford.edu/pub/papers/google.pdf#toolbar=0&scrollbar=0"
+        frameBorder="0"
+        scrolling="auto"
+        height="100%"
+        width="100%"
+      ></iframe> */}
+
+      {/* <embed
+        src={
+          'https://drive.google.com/viewerng/viewer?embedded=true&url=http://infolab.stanford.edu/pub/papers/google.pdf#toolbar=0&scrollbar=0'
+        }
+        type="application/pdf"
       /> */}
-      <BooksPageSeeAll />
     </div>
   );
 };

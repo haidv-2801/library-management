@@ -30,11 +30,26 @@ namespace TOE.TOEIC.ApplicationCore.Entities
         [Display(Name = "Đáo hạn")]
         public DateTime DueDate { get; set; }
 
-        [Display(Name = "Mã sách")]
+        [Display(Name = "Ngày đặt trước")]
         public DateTime DateOfPurchase { get; set; }
 
         [Display(Name = "Thời gian xuất bản")]
         public DateTime PublicationDate { get; set; }
+
+        [Display(Name = "Số bản ghi")]
+        public int Amount { get; set; }
+
+        [Display(Name = "Số bản ghi đã đặt trước")]
+        public int Reserved { get; set; }
+
+        [Display(Name = "Số bản ghi đã cho mượn")]
+        public int Loaned { get; set; }
+
+        [Display(Name = "Số bản ghi đã bị mất")]
+        public int Lost { get; set; }
+
+        [Display(Name = "Số bản ghi có sẵn")]
+        public int Available { get; set; }
         #endregion
     }
 }

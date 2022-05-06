@@ -11,6 +11,7 @@ SmartText.propTypes = {
   rows: PropTypes.number,
   maxWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   className: PropTypes.string,
+  innnerClassName: PropTypes.string,
 };
 
 SmartText.defaultProps = {
@@ -18,18 +19,28 @@ SmartText.defaultProps = {
   rows: 1,
   maxWidth: '100%',
   className: '',
+  innnerClassName: '',
   style: {},
 };
 
 function SmartText(props) {
-  const { onEllipsis, rows, children, maxWidth, className, style } = props;
+  const {
+    onEllipsis,
+    rows,
+    children,
+    maxWidth,
+    className,
+    style,
+    innnerClassName,
+  } = props;
 
   return (
     <span
       style={{ maxWidth: maxWidth, ...style }}
-      className={buildClass(['toe-smarttext toe-font-body', className])}
+      className={buildClass(['toe-smarttext', className, 'toe-font-body'])}
     >
       <Paragraph
+        className={buildClass([innnerClassName])}
         ellipsis={{
           rows,
           onEllipsis: onEllipsis,

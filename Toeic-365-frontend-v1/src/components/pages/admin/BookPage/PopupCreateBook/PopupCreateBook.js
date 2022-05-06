@@ -12,6 +12,8 @@ import {
   BUTTON_THEME,
   MAXIMUM_FILE_SIZE,
   ACCEPT_FILE,
+  BOOK_FORMAT,
+  LANGUAGE,
 } from '../../../../../constants/commonConstant';
 import SmartText from '../../../../atomics/base/SmartText/SmartText';
 import Input from '../../../../atomics/base/Input/Input';
@@ -26,6 +28,8 @@ import { UploadOutlined } from '@ant-design/icons';
 import Dropdown from '../../../../molecules/Dropdown/Dropdown';
 import TreeSelect from '../../../../atomics/base/TreeSelect/TreeSelect';
 import './popupCreateBook.scss';
+import TextArea from '../../../../atomics/base/TextArea/TextArea';
+import InputNumber from '../../../../atomics/base/InputNumber/InputNumber';
 
 PopupCreateBook.propTypes = {
   id: PropTypes.string,
@@ -63,18 +67,49 @@ function PopupCreateBook(props) {
     title,
     dataCategory,
   } = props;
+
+  const DOCUMENT_TYPE = [
+    { label: 'Tài liệu số', value: BOOK_FORMAT.EBOOK },
+    { label: 'Tài liệu giấy', value: BOOK_FORMAT.PAPER_BACK },
+  ];
+
   const [dataCreate, setDataCreate] = useState(defaultValue ?? {});
 
   useEffect(() => {
     onChange(dataCreate);
   }, [dataCreate]);
 
-  const onBasicUpload = (data) => {};
-
-  const onSelectImage = (data) => {
-    debugger;
+  const onBasicUpload = (data) => {
+    setDataCreate({ ...dataCreate, file: data.file });
   };
 
+  const onSelectImage = (data) => {
+    setDataCreate({ ...dataCreate, image: data });
+  };
+
+  const handleKeydown = (name, event) => {
+    switch (name) {
+      case 'author':
+        if (event.which === KEY_CODE.ENTER) {
+          if (
+            dataCreate.authorText &&
+            !dataCreate?.authors?.some((item) => item === dataCreate.authorText)
+          )
+            setDataCreate({
+              ...dataCreate,
+              authors: [
+                ...(dataCreate.authors ?? []),
+                dataCreate.authorText?.trim(),
+              ],
+              authorText: '',
+            });
+        }
+        break;
+
+      default:
+        break;
+    }
+  };
   return (
     <Modal
       {...props}
@@ -86,32 +121,101 @@ function PopupCreateBook(props) {
       className={buildClass(['toe-popup-create-book', className])}
     >
       <div className="toe-popup-create-book__body flex">
+        <div className="row toe-font-title">Thông tin cơ bản</div>
         <div className="row">
           <div className="col">
-            <Input label={'Mã ấn phẩm'} />
+            <Input
+              label={'Mã ấn phẩm'}
+              onChange={(data) =>
+                setDataCreate({ ...dataCreate, bookCode: data })
+              }
+            />
           </div>
           <div className="col">
             {' '}
-            <Input label={'Tên ấn phẩm'} />
+            <Input
+              label={'Tên ấn phẩm'}
+              onChange={(data) =>
+                setDataCreate({ ...dataCreate, bookName: data })
+              }
+            />
           </div>
         </div>
         <div className="row">
           <div className="col">
-            <Dropdown label={'Ngôn ngữ'} />
+            <Dropdown
+              label={'Ngôn ngữ'}
+              placeholder={'Nhấp để chọn'}
+              filter={true}
+              defaultValue={dataCreate.languageCode}
+              options={LANGUAGE.map((item) => ({
+                label: item.LanguageName,
+                value: item.LanguageCode,
+              }))}
+              onChange={(data) => {
+                setDataCreate({ ...dataCreate, languageCode: data.value });
+              }}
+            />
           </div>
           <div className="col">
-            <Input label={'Tên khác'} />
+            <InputNumber
+              inputId="integeronly"
+              label={'Giá tiền'}
+              placeholder={'Nhập giá tiền'}
+              onChange={(data) => {
+                setDataCreate({ ...dataCreate, price: data });
+              }}
+              value={dataCreate.price}
+            />
           </div>
         </div>
         <div className="row">
           <div className="col">
-            <Input label={'Tác giả'} />
+            <Input
+              label={'Tác giả'}
+              onChange={(data) => {
+                setDataCreate({
+                  ...dataCreate,
+                  authorText: data,
+                });
+              }}
+              controlled
+              value={dataCreate.authorText}
+              onKeyDown={(e) => handleKeydown('author', e)}
+            />
+            <div className="col__tags row mb-2 mt-2">
+              {dataCreate?.authors?.map((item) => (
+                <div className="tag toe-font-hint">
+                  {item}
+                  <span
+                    className="tag-remove toe-font-label"
+                    onClick={() => {
+                      setDataCreate({
+                        ...dataCreate,
+                        authors: dataCreate.authors.filter((i) => i !== item),
+                      });
+                    }}
+                  >
+                    x
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
+        <div className="row toe-font-title">Thông tin khác</div>
+
         <div className="row">
           <div className="col">
             {' '}
-            <Dropdown label={'Loại lưu trữ'} />
+            <Dropdown
+              label={'Loại lưu trữ'}
+              options={DOCUMENT_TYPE}
+              defaultValue={dataCreate.bookFormat}
+              onChange={(data) =>
+                setDataCreate({ ...dataCreate, bookFormat: data.value })
+              }
+            />
           </div>
         </div>
         <div className="row">
@@ -119,7 +223,7 @@ function PopupCreateBook(props) {
             <TreeSelect
               label="Thể loại"
               placeholder="Nhấp để chọn"
-              value={paging.menuID}
+              value={dataCreate.categoryID}
               options={dataCategory.data}
               prefixValue={'Thể loại'}
               onChange={(data) => {
@@ -130,43 +234,60 @@ function PopupCreateBook(props) {
         </div>
         <div className="row">
           <div className="col">
-            <Input label={'Nhà xuất bản'} />
+            <Input
+              label={'Nhà xuất bản'}
+              placeholder="Nhập để chọn"
+              onChange={(data) => {
+                setDataCreate({ ...dataCreate, publisher: data });
+              }}
+            />
           </div>
           <div className="col">
             {' '}
-            <Input label={'Mã ISBN'} />
+            <Input
+              label={'Mã ISBN'}
+              placeholder="Nhập để chọn"
+              onChange={(data) => {
+                setDataCreate({ ...dataCreate, ISNB: data });
+              }}
+            />
           </div>
           <div className="col">
             {' '}
-            <Input label={'Mã ISSN'} />
+            <Input
+              label={'Mã ISSN'}
+              placeholder="Nhập để chọn"
+              onChange={(data) => {
+                setDataCreate({ ...dataCreate, ISSN: data });
+              }}
+            />
           </div>
         </div>
         <div className="row">
           <div className="col">
-            <div className="col__label toe-font-label">Hình ảnh</div>
+            <TextArea
+              placeholder={'Nhập mô tả'}
+              label={'Mô tả'}
+              onChange={(data) =>
+                setDataCreate({ ...dataCreate, description: data })
+              }
+            />
+          </div>
+        </div>
+        <div className="row">
+          <div className="col">
+            <div className="col__label toe-font-label">Ảnh bìa</div>
             <UpLoadImage onChange={onSelectImage} />
           </div>
+        </div>
+        <div className="row">
           <div className="col">
             <div className="col__label toe-font-label">File</div>
-            <Upload accept={ACCEPT_FILE}>
+            <Upload onChange={onBasicUpload} accept={ACCEPT_FILE}>
               <ButtonAntd icon={<UploadOutlined />}>Click to Upload</ButtonAntd>
             </Upload>
           </div>
         </div>
-        <div className="row">
-          <div className="col"></div>
-          <div className="col"></div>
-        </div>
-        <div className="row">
-          <div className="col"></div>
-          <div className="col"></div>
-        </div>
-        <div className="row">
-          <div className="col"></div>
-          <div className="col"></div>
-        </div>
-        <div className="row"></div>
-        <div className="row"></div>
       </div>
     </Modal>
   );

@@ -12,7 +12,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import baseApi from '../../../../api/baseApi';
 import LoginBg from '../../../../assets/images/login.svg';
-import MainLogo from '../../../../assets/images/toeiclogo.png';
+// import MainLogo from '../../../../assets/images/toeiclogo.png';
+import MainLogo from '../../../../assets/images/LogoUTC.jpg';
 import {
   BUTTON_TYPE,
   KEY_CODE,

@@ -51,6 +51,14 @@ function CardList(props) {
             );
           })
         : null}
+
+      <CardItem
+        title={'>>> * Tin tiêu điểm'}
+        subTitle={''}
+        imgSrc={''}
+        description={''}
+        onClick={() => {}}
+      />
     </div>
   );
 }

@@ -33,6 +33,7 @@
     }
 
     .btn-show-advanced-filter {
+      background-color: #fff;
       position: relative;
       cursor: pointer;
       width: 40px;
@@ -89,7 +90,6 @@
   }
 
   &__popup-create-book {
-    width: 70%;
-    min-width: 1000px;
+    width: calc(100% - 200px);
   }
 }

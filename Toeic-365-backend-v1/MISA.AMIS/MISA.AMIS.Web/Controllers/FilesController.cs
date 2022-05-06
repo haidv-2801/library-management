@@ -28,14 +28,13 @@ namespace TOE.TOEIC.Web.Controllers
     public class FilesController : ControllerBase
     {
         #region Declare
-        IBookService _bookService;
         IHostingEnvironment _hostingEnvironment;
+        string FolderName = "Uploads";
         #endregion
 
         #region Constructer
-        public FilesController(IBookService bookService, IHostingEnvironment hostingEnvironment)
+        public FilesController(IHostingEnvironment hostingEnvironment)
         {
-            _bookService = bookService;
             _hostingEnvironment = hostingEnvironment;
         }
         #endregion
@@ -51,7 +50,7 @@ namespace TOE.TOEIC.Web.Controllers
                 if (file.FileName != null)
                 {
                     var uniqueFileName = GetUniqueFileName(file.FileName);
-                    var uploads = Path.Combine(_hostingEnvironment.ContentRootPath, "Uploads");
+                    var uploads = Path.Combine(_hostingEnvironment.ContentRootPath, FolderName);
                     var filePath = Path.Combine(uploads, uniqueFileName);
                     file.CopyTo(new FileStream(filePath, FileMode.Create));
                     return Ok(uniqueFileName);
@@ -77,6 +76,7 @@ namespace TOE.TOEIC.Web.Controllers
                       + Guid.NewGuid().ToString().Substring(0, 4)
                       + Path.GetExtension(fileName);
         }
+
         #endregion
     }
 }

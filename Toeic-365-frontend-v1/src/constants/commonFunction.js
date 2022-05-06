@@ -782,3 +782,17 @@ export const ParseJson = (json) => {
   } catch (error) {}
   return res;
 };
+
+/**
+ *
+ * @param {*} url
+ * @param {*} fileName
+ */
+export const DowloadFile = (url, fileName) => {};
+
+/**
+ *
+ */
+export const genFileNameWithTime = (prefix = 'image') => {
+  return prefix + '_' + moment().format('HHmmss_DDMMYYYY');
+};

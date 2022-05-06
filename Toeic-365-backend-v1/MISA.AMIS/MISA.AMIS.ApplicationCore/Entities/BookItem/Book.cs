@@ -48,6 +48,9 @@ namespace TOE.TOEIC.ApplicationCore.Entities
 
         [Display(Name = "Đường dẫn ảnh")]
         public string Image { get; set; }
+
+        [Display(Name = "Đường dẫn tệp")]
+        public string File { get; set; }
         #endregion
     }
 }

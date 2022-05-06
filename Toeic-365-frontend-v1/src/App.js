@@ -7,7 +7,11 @@ import RegisterPage from './components/pages/admin/RegisterPage/RegisterPage';
 import BookDetail from './components/pages/user/BookDetail/BookDetail';
 import RequiredAuth from './components/sections/RequiredAuth/RequiredAuth';
 import UserProfile from './components/pages/user/UserProfile/UserProfile';
-import { FIXED_MENU_ID, PATH_NAME } from './constants/commonConstant';
+import {
+  FIXED_MENU_ID,
+  PATH_NAME,
+  UTC_WEB_TITLE,
+} from './constants/commonConstant';
 import { AuthContext } from './contexts/authContext';
 import HtmlContentEditPage from './components/pages/admin/HtmlContentEditPage/HtmlContentEditPage';
 import HtmlContentCreatingPage from './components/pages/admin/HtmlContentCreatingPage/HtmlContentCreatingPage';
@@ -17,6 +21,7 @@ import MenuPage from './components/pages/admin/MenuPage/MenuPage';
 import SearchPage from './components/pages/user/SearchPage/SearchPage';
 import ReaderPage from './components/pages/admin/ReaderPage/ReaderPage';
 import BookPage from './components/pages/admin/BookPage/BookPage';
+import Test from './components/pages/test/Test';
 import './main.scss';
 
 // const MenuPage = React.lazy(() =>
@@ -41,7 +46,7 @@ import './main.scss';
 //   import('./components/pages/admin/UserPage/UserPage')
 // );
 
-const Test = React.lazy(() => import('./components/pages/test/Test'));
+// const Test = React.lazy(() => import('./components/pages/test/Test'));
 
 const CommonListItemPage = React.lazy(() =>
   import('./components/pages/user/CommonListItemPage/CommonListItemPage')
@@ -68,7 +73,7 @@ function App() {
   const toast = useRef();
 
   useEffect(() => {
-    document.title = 'Thư viện 365';
+    document.title = UTC_WEB_TITLE.toUpperCase();
   }, []);
 
   return (

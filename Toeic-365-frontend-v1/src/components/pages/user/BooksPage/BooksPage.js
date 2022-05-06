@@ -137,6 +137,7 @@ function BooksPage(props) {
                   options={filterTypeOptions}
                   defaultValue={defaultFilterType}
                   className="toe-book-page__search-dropdown-filter"
+                  wrapperClass="toe-book-page__search-dropdown-filter__wrapper"
                 />
                 <Input
                   autoFocus

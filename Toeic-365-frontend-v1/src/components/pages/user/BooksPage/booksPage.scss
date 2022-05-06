@@ -83,6 +83,10 @@
 
     &-dropdown-filter {
       max-width: 200px;
+
+      &__wrapper {
+        width: fit-content;
+      }
     }
 
     &-engine {

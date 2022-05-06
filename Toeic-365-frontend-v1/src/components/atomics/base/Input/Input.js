@@ -30,6 +30,8 @@ Input.propTypes = {
   leftIcon: PropTypes.any,
   delay: PropTypes.number,
   delayAction: PropTypes.func,
+  onKeyDown: PropTypes.func,
+  onBlur: PropTypes.func,
   pattern: PropTypes.string,
 };
 
@@ -50,6 +52,7 @@ Input.defaultProps = {
   hasRequiredLabel: false,
   onChange: () => {},
   delayAction: () => {},
+  onKeyDown: () => {},
   maxLength: undefined,
   defaultValue: '',
   value: '',
@@ -58,6 +61,7 @@ Input.defaultProps = {
   type: 'input',
   leftIcon: null,
   delay: 0,
+  onBlur: () => {},
 };
 
 function Input(props) {
@@ -86,6 +90,8 @@ function Input(props) {
     controlled,
     name,
     pattern,
+    onKeyDown,
+    onBlur,
   } = props;
 
   const ref = useRef('');
@@ -155,6 +161,8 @@ function Input(props) {
             disabled={disabled}
             leficon
             name={name}
+            onKeyDown={onKeyDown}
+            onBlur={onBlur}
           />
         </div>
         {showMaxLength ? (

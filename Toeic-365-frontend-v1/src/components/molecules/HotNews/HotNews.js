@@ -5,6 +5,7 @@ import {
   DATE_FORMAT,
   DAYS_OF_WEEK,
   PATH_NAME,
+  UTC_INTRODUCE_VIDEO,
 } from '../../../constants/commonConstant';
 import { buildClass } from '../../../constants/commonFunction';
 import moment from 'moment';
@@ -73,7 +74,16 @@ function HotNews(props) {
         <h2 className="toe-hot-news__section-title toe-font-large-title">
           Giới thiệu thư viện
         </h2>
-        <div className="toe-hot-news__section-content"></div>
+        <div className="toe-hot-news__section-content__ytb">
+          <iframe
+            src={UTC_INTRODUCE_VIDEO}
+            allowfullscreen="allowfullscreen"
+            mozallowfullscreen="mozallowfullscreen"
+            msallowfullscreen="msallowfullscreen"
+            oallowfullscreen="oallowfullscreen"
+            webkitallowfullscreen="webkitallowfullscreen"
+          ></iframe>
+        </div>
       </div>
     </div>
   );

@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { format } from 'react-string-format';
 import baseApi from '../../../../api/baseApi';
 import { uploadFiles } from '../../../../api/firebase';
+import { getUserName } from '../../../../constants/commonAuth';
 import {
   BUTTON_THEME,
   BUTTON_TYPE,
@@ -239,10 +240,6 @@ function UserPage(props) {
     getUsersFilter();
   }, [paging]);
 
-  useEffect(() => {
-    console.log('dataCreate :>> ', dataCreate);
-  }, [dataCreate]);
-
   const getUsers = () => {
     baseApi.get(
       (res) => {
@@ -331,7 +328,7 @@ function UserPage(props) {
     let _body = {
       ...dataCreate,
       modifiedDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
-      modifiedBy: 'DOVANHAI',
+      modifiedBy: getUserName(),
       parentID: dataCreate?.parentID,
       displayOrder: dataCreate.displayOrder || 0,
     };
@@ -405,9 +402,9 @@ function UserPage(props) {
     let _body = {
       ...dataCreate,
       createdDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
-      createdBy: 'DOVANHAI',
+      createdBy: getUserName(),
       modifiedDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
-      modifiedBy: 'DOVANHAI',
+      modifiedBy: getUserName(),
       avatar: avatar,
     };
 
@@ -558,7 +555,7 @@ function UserPage(props) {
     let _body = {
       ...dataChangePw,
       modifiedDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
-      modifiedBy: 'DOVANHAI',
+      modifiedBy: getUserName(),
     };
 
     baseApi.put(

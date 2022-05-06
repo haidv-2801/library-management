@@ -36,6 +36,7 @@ import Layout from '../../../sections/Admin/Layout/Layout';
 import { uploadFiles } from '../../../../api/firebase';
 import Spinner from '../../../atomics/base/Spinner/Spinner';
 import './htmlContentEditPage.scss';
+import { getUserName } from '../../../../constants/commonAuth';
 
 HtmlContentEditPage.propTypes = {
   id: PropTypes.string,
@@ -274,7 +275,7 @@ function HtmlContentEditPage(props) {
       viewCount: 200,
       type: 1,
       modifiedDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
-      modifiedBy: 'DOVANHAI',
+      modifiedBy: getUserName(),
       status: isActive,
       isDeleted: false,
     };

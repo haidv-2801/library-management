@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import baseApi from '../../../../api/baseApi';
-import MainLogo from '../../../../assets/images/toeiclogo.png';
+import MainLogo from '../../../../assets/images/LogoUTC.jpg';
+// import MainLogo from '../../../../assets/images/toeiclogo.png';
 import {
   BUTTON_THEME,
   BUTTON_TYPE,
@@ -12,6 +13,7 @@ import {
   MENU_TYPE,
   OPERATOR,
   PATH_NAME,
+  UTC_WEB_TITLE,
 } from '../../../../constants/commonConstant';
 import {
   buildClass,
@@ -28,6 +30,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import store from '../../../../redux/store';
 import { appAction } from '../../../../redux/slices/appSlice';
 import './header.scss';
+import { format } from 'react-string-format';
+import HeaderTopBar from '../HeaderTopBar/HeaderTopBar';
 
 Header.propTypes = {
   id: PropTypes.string,
@@ -335,10 +339,12 @@ function Header(props) {
       >
         <img className="logo-app" src={MainLogo} alt="toeic-365" />
         <b className="name-app">
-          Thư viện<span style={{ color: '#43c1c9' }}>365</span>
+          {UTC_WEB_TITLE}
+          {/* Thư viện<span style={{ color: '#43c1c9' }}>365</span> */}
         </b>
       </div>
-      <div className="toe-layout-user-page-container__header-right">
+      <div className="toe-layout-user-page-container__header-right"></div>
+      {/* <div className="toe-layout-user-page-container__header-right">
         {showNav && (
           <>
             <MenuBar options={dataMenus} />
@@ -383,7 +389,7 @@ function Header(props) {
             name={'Danh sách bài test'}
           />
         )}
-      </div>
+      </div> */}
     </div>
   );
 }

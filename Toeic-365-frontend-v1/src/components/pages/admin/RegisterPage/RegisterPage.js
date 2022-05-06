@@ -10,7 +10,8 @@ import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import baseApi from '../../../../api/baseApi';
 import RegisterBg from '../../../../assets/images/register.svg';
-import MainLogo from '../../../../assets/images/toeiclogo.png';
+// import MainLogo from '../../../../assets/images/toeiclogo.png';
+import MainLogo from '../../../../assets/images/LogoUTC.jpg';
 import { Toast } from 'primereact/toast';
 import {
   BUTTON_TYPE,
