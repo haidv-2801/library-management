@@ -1,3 +1,5 @@
+@import '~antd/dist/antd.css';
+
 @keyframes main-appear {
   from {
     opacity: 0;
@@ -78,4 +80,43 @@
 .p-placeholder {
   font-size: 12px !important;
   color: #bbbbbb !important;
+}
+
+.p-tooltip {
+  border-radius: 8px;
+
+  &-text {
+    font-size: 14px;
+    padding: 6px 8px !important;
+    font-family: 'OpenSans-Regular', sans-serif;
+  }
+}
+
+.toast-demo button {
+  min-width: 10rem;
+  margin-right: 0.5rem;
+}
+
+@media screen and (max-width: 960px) {
+  .toast-demo button {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+}
+
+.tox-notification--warning {
+  display: none !important;
+  opacity: 0 !important;
+}
+
+.p-tabview .p-tabview-nav li .p-tabview-nav-link:not(.p-disabled):focus {
+  box-shadow: none;
+}
+
+.p-tabview-panels {
+  flex: 1;
+
+  .p-tabview-panel {
+    height: 100%;
+  }
 }

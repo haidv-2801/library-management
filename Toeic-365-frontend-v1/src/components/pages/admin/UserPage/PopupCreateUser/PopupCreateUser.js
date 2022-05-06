@@ -13,63 +13,129 @@ import {
 } from '../../../../../constants/commonConstant';
 import SmartText from '../../../../atomics/base/SmartText/SmartText';
 import Input from '../../../../atomics/base/Input/Input';
-import Modal from '../../../../atomics/base/Modal/Modal';
+import Modal from '../../../../atomics/base/ModalV2/Modal';
 import UpLoadImage from '../../../../molecules/UpLoadImage/UpLoadImage';
+import { Password } from 'primereact/password';
+import InputPassword from '../../../../atomics/base/InputPassword/InputPassword';
 import './popupCreateUser.scss';
 
 PopupCreateUser.propTypes = {
   id: PropTypes.string,
   className: PropTypes.string,
   style: PropTypes.object,
+  show: PropTypes.bool,
+  onClose: PropTypes.func,
+  onChange: PropTypes.func,
+  defaultValue: PropTypes.any,
 };
 
 PopupCreateUser.defaultProps = {
   id: '',
   className: '',
   style: {},
+  show: false,
+  onClose: () => {},
+  onChange: () => {},
+  defaultValue: null,
 };
 
 function PopupCreateUser(props) {
+  const { show, id, className, style, onClose, defaultValue, onChange } = props;
+  const [dataCreate, setDataCreate] = useState(defaultValue ?? {});
+
+  useEffect(() => {
+    onChange(dataCreate);
+  }, [dataCreate]);
+
   return (
-    <Modal {...props} className="toe-popup-create-user">
+    <Modal
+      {...props}
+      onClose={onClose}
+      show={show}
+      id={id}
+      style={style}
+      className={buildClass(['toe-popup-create-user', className])}
+    >
       <div className="toe-popup-create-user__left">
-        {/* <div className="toe-popup-create-user__left-avatar-wrapper">
-          <i class="pi pi-user"></i>
-        </div>
-        <Button
-          type={BUTTON_TYPE.LEFT_ICON}
-          leftIcon={<i class="pi pi-upload"></i>}
-          theme={BUTTON_THEME.THEME_6}
-          name="upload"
-        /> */}
-        <UpLoadImage />
+        <UpLoadImage
+          onChange={(img) => setDataCreate({ ...dataCreate, avatar: img })}
+        />
       </div>
       <div className="toe-popup-create-user__right">
         <div className="toe-popup-create-user__row">
           <Input
             autoFocus
             hasRequiredLabel
-            label="Tên người dùng"
-            placeholder="Nhập tên người dùng"
-          />
-        </div>
-        <div className="toe-popup-create-user__row">
-          <Input hasRequiredLabel label="Email" placeholder="Email" />
-        </div>
-        <div className="toe-popup-create-user__row">
-          <Input
-            hasRequiredLabel
-            label="Mật khẩu"
-            placeholder="Nhập mật khẩu (tối thiểu 8 kí tự)"
+            label="Tên tài khoản"
+            placeholder="Nhập tên tài khoản"
+            defaultValue={dataCreate?.userName}
+            onChange={(d) =>
+              setDataCreate({ ...dataCreate, userName: d?.trim() })
+            }
           />
         </div>
         <div className="toe-popup-create-user__row">
           <Input
             hasRequiredLabel
-            label="Nhập lại mật khẩu"
-            placeholder="Nhập lại mật khẩu"
+            label="Email"
+            placeholder="Nhập email"
+            defaultValue={dataCreate?.email}
+            onChange={(d) => setDataCreate({ ...dataCreate, email: d?.trim() })}
           />
         </div>
+        <div className="toe-popup-create-user__row">
+          <Input
+            hasRequiredLabel
+            label="Họ và tên"
+            placeholder="Nhập họ và tên"
+            defaultValue={dataCreate?.fullName}
+            onChange={(d) =>
+              setDataCreate({ ...dataCreate, fullName: d?.trim() })
+            }
+          />
+        </div>
+        <div className="toe-popup-create-user__row">
+          <Input
+            hasRequiredLabel
+            label="Số điện thoại"
+            placeholder="Nhập số điện thoại"
+            defaultValue={dataCreate?.phoneNumber}
+            onChange={(d) =>
+              setDataCreate({ ...dataCreate, phoneNumber: d?.trim() })
+            }
+          />
+        </div>
+        {!defaultValue ? (
+          <>
+            {' '}
+            <div className="toe-popup-create-user__row">
+              <InputPassword
+                hasRequiredLabel
+                label="Mật khẩu"
+                placeholder="Nhập mật khẩu (tối thiểu 8 kí tự)"
+                onChange={(d) =>
+                  setDataCreate({
+                    ...dataCreate,
+                    password: d.target.value?.trim(),
+                  })
+                }
+              />
+            </div>
+            <div className="toe-popup-create-user__row">
+              <InputPassword
+                onChange={(d) =>
+                  setDataCreate({
+                    ...dataCreate,
+                    rePassword: d.target.value?.trim(),
+                  })
+                }
+                hasRequiredLabel
+                label="Nhập lại mật khẩu"
+                placeholder="Nhập lại mật khẩu"
+              />
+            </div>
+          </>
+        ) : null}
       </div>
     </Modal>
   );

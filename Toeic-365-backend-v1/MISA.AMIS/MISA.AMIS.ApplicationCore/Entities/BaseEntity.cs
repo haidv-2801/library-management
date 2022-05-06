@@ -29,11 +29,18 @@ namespace TOE.TOEIC.ApplicationCore.Entities
 
     }
 
+    [AttributeUsage(AttributeTargets.Property)]
+    public class IExclude : Attribute
+    {
+
+    }
+
     public class BaseEntity
     {
         /// <summary>
         /// Trạng thái của Entity
         /// </summary>
+        [IExclude]
         public EntityState EntityState { get; set; }
 
         /// <summary>
@@ -59,6 +66,11 @@ namespace TOE.TOEIC.ApplicationCore.Entities
         /// <summary>
         /// Trạng thái insert của entity
         /// </summary>
-        public List<String> Status { get; set; }
+        public bool Status { get; set; } = true;
+
+        /// <summary>
+        /// Có xóa mềm không
+        /// </summary>
+        public bool IsDeleted { get; set; } = false;
     }
 }

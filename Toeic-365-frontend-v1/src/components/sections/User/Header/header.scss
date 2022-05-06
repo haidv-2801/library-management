@@ -1,6 +1,6 @@
 .toe-layout-user-page-container__header {
   width: 100%;
-  padding: 0px 15%;
+  padding: 0px 10vw;
   height: var(--header-height);
   display: flex;
   align-items: center;
@@ -10,15 +10,24 @@
   flex-shrink: 0;
   position: absolute;
   z-index: 10;
+  top: 29px;
+  margin: 0 auto;
+
+  &__submenu {
+    &-dropdown {
+      min-width: 190px;
+    }
+  }
 
   &.header--box-shadow {
     transition: all 0.2s linear;
-    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    box-shadow: 0 8px 12px -10px rgb(0 0 0 / 75%);
   }
 
   &-left {
     display: flex;
     align-items: center;
+    white-space: nowrap;
 
     & .name-app {
       font-size: 20px;
@@ -33,6 +42,8 @@
   &-right {
     display: flex;
     align-items: center;
+    gap: 16px;
+    margin-right: 5vw;
 
     & .user-name {
       margin-right: 8px;

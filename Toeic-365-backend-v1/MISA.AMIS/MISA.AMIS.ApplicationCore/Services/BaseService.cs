@@ -13,6 +13,12 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using TOE.TOEIC.ApplicationCore.Helpers;
+using System.Text.Json;
+using System.Web;
+using TOE.TOEIC.ApplicationCore.Enums;
 
 namespace TOE.TOEIC.ApplicationCore
 {
@@ -34,7 +40,9 @@ namespace TOE.TOEIC.ApplicationCore
             _baseRepository = baseRepository;
             _serviceResult = new ServiceResult()
             {
-                TOECode = TOECode.Success
+                Data = null,
+                TOECode = TOECode.Success,
+                Messasge = Properties.Resources.Msg_Success,
             };
         }
         #endregion
@@ -49,6 +57,136 @@ namespace TOE.TOEIC.ApplicationCore
         {
             var entities = _baseRepository.GetEntities();
             return entities;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pagingRequest"></param>
+        /// <returns></returns>
+        public ServiceResult GetEntitiesFilter(PagingRequest pagingRequest)
+        {
+
+            StringBuilder stringBuilder = new StringBuilder();
+            var filter = JsonConvert.DeserializeObject<JArray>(FunctionHelper.Base64Decode(pagingRequest.Filter));
+            List<string> columns = null;
+
+            if (filter != null && filter.Type == JTokenType.Array)
+            {
+                BuildFilterClause(ref stringBuilder, filter);
+            }
+            else
+            {
+                stringBuilder.Append(" 1 = 1 ");
+            }
+
+            int totalRecord = _baseRepository.CountTotalRecordByClause(stringBuilder.ToString());
+
+
+            if (!string.IsNullOrEmpty(pagingRequest.Sort))
+            {
+                var sort = JsonConvert.DeserializeObject<JArray>((pagingRequest.Sort));
+                if (sort != null && sort.Type == JTokenType.Array)
+                {
+                    stringBuilder.Append(" ORDER BY ");
+                    var listSort = new List<string>();
+
+                    foreach (var item in sort)
+                    {
+                        if (item.Type == JTokenType.Array)
+                        {
+                            string name = item[0].Value<string>().Trim();
+                            string sortType = item[1].Value<string>().Trim();
+                            if (!string.IsNullOrEmpty(name) && (sortType == SortType.ASC || sortType == SortType.DESC))
+                            {
+                                listSort.Add($"{name} {sortType}");
+                            }
+                        }
+                    }
+
+                    stringBuilder.Append(string.Join(", ", listSort));
+                }
+
+            }
+
+            if (pagingRequest.PageIndex > 0 && pagingRequest.PageSize > 0)
+            {
+                stringBuilder.Append($" LIMIT {pagingRequest.PageSize} OFFSET {pagingRequest.PageSize * (pagingRequest.PageIndex - 1)}");
+            }
+
+            if (!string.IsNullOrEmpty(pagingRequest.Columns))
+            {
+                columns = pagingRequest.Columns.Split(",".ToCharArray()).Select(item => item.Trim()).ToList();
+            }
+
+            if (totalRecord > 0)
+            {
+                string cols = columns == null ? "*" : string.Join(", ", columns);
+                var data = _baseRepository.GetEntitiesFilter(stringBuilder.ToString(), cols);
+
+                _serviceResult.Data = new
+                {
+                    totalRecord = totalRecord,
+                    totalPage = totalRecord % pagingRequest.PageSize == 0 ? (totalRecord / pagingRequest.PageSize) : (totalRecord / pagingRequest.PageSize) + 1,
+                    pageSize = pagingRequest.PageSize,
+                    pageNumber = pagingRequest.PageIndex,
+                    pageData = data
+                };
+            }
+            else
+            {
+                _serviceResult.Data = new
+                {
+                    totalRecord = totalRecord,
+                    totalPage = 0,
+                    pageSize = pagingRequest.PageSize,
+                    pageNumber = pagingRequest.PageIndex,
+                    pageData = new List<TEntity>()
+                };
+            }
+
+            return _serviceResult;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="stringBuilder"></param>
+        /// <param name="plainData"></param>
+        public void BuildFilterClause(ref StringBuilder stringBuilder, JToken plainData)
+        {
+            if (plainData.Type == JTokenType.Array)
+            {
+                stringBuilder.Append(" ( ");
+
+                JArray arr = ((JArray)plainData);
+                if (arr.Count == 3 && !arr.Any<JToken>(item => item.Type == JTokenType.Array))
+                {
+                    string name = arr[0].Value<string>();
+                    string opt = arr[1].Value<string>();
+                    object value = HttpUtility.UrlDecode(arr[2].Value<string>());
+                    stringBuilder.Append(BuildSingleOperator(name, opt, value));
+                }
+                else
+                {
+                    foreach (var jtoken in arr)
+                    {
+                        BuildFilterClause(ref stringBuilder, jtoken);
+                    }
+                }
+                stringBuilder.Append(" ) ");
+            }
+            else if (plainData.Type == JTokenType.String)
+            {
+                if (string.Compare(plainData.Value<string>(), "and", true) == 0)
+                {
+                    stringBuilder.Append(" AND ");
+                }
+                else if (string.Compare(plainData.Value<string>(), "or", true) == 0)
+                {
+                    stringBuilder.Append(" OR ");
+                }
+            }
         }
 
         /// <summary>
@@ -71,6 +209,9 @@ namespace TOE.TOEIC.ApplicationCore
         /// CREATED BY: DVHAI (11/07/2021)
         public virtual ServiceResult Insert(TEntity entity)
         {
+            //0.Custom lại giá trị khi update
+            entity = CustomValueWhenInsert(entity);
+
             entity.EntityState = EntityState.Add;
 
             //1. Validate tất cả các trường nếu được gắn thẻ
@@ -79,9 +220,12 @@ namespace TOE.TOEIC.ApplicationCore
             //2. Sử lí lỗi tương ứng
             if (isValid)
             {
-                _serviceResult.Data = _baseRepository.Insert(entity);
-                _serviceResult.TOECode = TOECode.Valid;
-                _serviceResult.Messasge = Properties.Resources.Msg_Success;
+                int rowAffects = _baseRepository.Insert(entity);
+                if (rowAffects == 0)
+                {
+                    _serviceResult.TOECode = TOECode.Fail;
+                    _serviceResult.Messasge = Properties.Resources.Msg_Failed;
+                } else { _serviceResult.Data = rowAffects; }
             }
             else
             {
@@ -102,6 +246,9 @@ namespace TOE.TOEIC.ApplicationCore
         /// CREATED BY: DVHAI (11/07/2021)
         public ServiceResult Update(Guid entityId, TEntity entity)
         {
+            //0.Custom lại giá trị khi update
+            entity = CustomValueWhenUpdate(entity);
+
             //1. Trạng thái
             entity.EntityState = EntityState.Update;
 
@@ -199,6 +346,26 @@ namespace TOE.TOEIC.ApplicationCore
         }
 
         /// <summary>
+        /// Custom lại value khi update
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        protected virtual TEntity CustomValueWhenUpdate(TEntity entity)
+        {
+            return entity;
+        }
+
+        /// <summary>
+        /// Custom lại value khi insert
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        protected virtual TEntity CustomValueWhenInsert(TEntity entity)
+        {
+            return entity;
+        }
+
+        /// <summary>
         /// Validate bắt buộc nhập
         /// </summary>
         /// <param name="entity">Thực thể</param>
@@ -273,6 +440,77 @@ namespace TOE.TOEIC.ApplicationCore
 
             return res;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="column"></param>
+        /// <param name="optr"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private string BuildSingleOperator(string column, string optr, object value)
+        {
+            StringBuilder stringBuilder = new StringBuilder(column);
+            FormatValueSql(ref value);
+
+            if (optr == Operator.EQUAL)
+            {
+                stringBuilder.Append($" {Operator.EQUAL} ");
+                stringBuilder.Append(value);
+            }
+            else if (optr == Operator.CONTAINS)
+            {
+                stringBuilder.Append($" LIKE CONCAT('%',{value},'%')");
+            }
+            else if (optr == Operator.START_WIDTH)
+            {
+                stringBuilder.Append($" LIKE CONCAT({value},'%')");
+            }
+            else if (optr == Operator.END_WIDTH)
+            {
+                stringBuilder.Append($" LIKE CONCAT('%',{value})");
+            }
+            else if (optr == Operator.NOT_EQUAL)
+            {
+                stringBuilder.Append($" {Operator.NOT_EQUAL} {value}");
+            }
+
+            return stringBuilder.ToString();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private void FormatValueSql(ref object value)
+        {
+            if (value.GetType() == typeof(string))
+            {
+                value = $"'{SecureHelper.SafeSqlLiteralForStringValue(value.ToString())}'";
+            }
+            else if (value.GetType() == typeof(TimeSpan))
+            {
+                value = $"'{((TimeSpan)value).ToString("HH:mm:ss")}'";
+            }
+            else if (value.GetType() == typeof(DateTime))
+            {
+                value = $"'{((DateTime)value).ToString("yyyy-MM-dd HH:mm:ss")}'";
+            }
+            else if (value.GetType() == typeof(int) || value.GetType() == typeof(decimal) || value.GetType() == typeof(double))
+            {
+                value = value.ToString();
+            }
+            else if (value.GetType() == typeof(bool))
+            {
+                value = ((bool)value) ? "TRUE" : "FALSE";
+            }
+            else if (value.GetType() == typeof(Guid))
+            {
+                value = $"'{((Guid)value).ToString()}'";
+            }
+        }
+
         #endregion
     }
 }
