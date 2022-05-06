@@ -11,4 +11,23 @@
     width: max-content;
     min-width: 12.5rem;
   }
+
+  .p-menuitem-link {
+    white-space: nowrap;
+    padding: 8px 8px !important;
+
+    &:focus {
+      outline: none;
+      box-shadow: none !important;
+    }
+
+    &:active {
+      outline: none;
+      box-shadow: none;
+    }
+  }
+
+  .p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-link {
+    padding: 0px 8px;
+  }
 }

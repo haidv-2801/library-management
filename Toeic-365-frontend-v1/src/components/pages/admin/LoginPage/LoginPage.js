@@ -174,7 +174,7 @@ function LoginPage(props) {
       <div className="toe-login-page__body"></div>
       <img className="toe-login-page-bg" src={LoginBg} alt="login" />
       <Modal
-        title={' Chào mừng bạn đến với Thư viện 365'}
+        title={' Chào mừng bạn đến với Thư viện GTVT'}
         children={
           <div className="toe-login-page__modal-body">
             <div className="toe-login-page__modal-body__des toe-font-body">

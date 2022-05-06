@@ -54,15 +54,7 @@ function CardItem(props) {
   const header = () => {
     return (
       <div className="toe-card-img" onClick={onClick}>
-        <Image
-          // src={
-          //   'https://images.unsplash.com/photo-1640622304964-3e2c2c0cd7cd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80'
-          // }
-          src={imgSrc}
-          alt="Image"
-          // width="auto"
-          // height={100}
-        />
+        <Image src={imgSrc} alt="Image" />
       </div>
     );
   };
@@ -88,7 +80,7 @@ function CardItem(props) {
       ) : (
         <Card
           title={
-            <div className="toe-font-title" onClick={onClick}>
+            <div className="toe-font-large-title" onClick={onClick}>
               {title}
             </div>
           }

@@ -223,9 +223,9 @@ function Layout(props) {
             }}
             className="toe-layout-admin-page-container__header-left"
           >
-            <img className="logo-app" src={MainLogo} alt="thư viện 365" />
+            <img className="logo-app" src={MainLogo} alt="Thư viện GTVT" />
             <b className="name-app">
-              Thư viện <span style={{ color: '#43c1c9' }}>365</span>
+              Thư viện <span style={{ color: '#43c1c9' }}>GTVT</span>
             </b>
           </div>
           <div className="toe-layout-admin-page-container__header-right">
