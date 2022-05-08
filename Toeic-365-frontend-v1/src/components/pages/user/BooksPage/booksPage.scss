@@ -11,7 +11,7 @@
 
     &-wrapper {
       flex: 1;
-      padding: 24px;
+      padding: 24px 10vw;
     }
 
     &-type {
@@ -38,10 +38,14 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, 125px);
       gap: 16px;
-      justify-content: center;
 
       &__book {
         margin-bottom: 20px;
+      }
+
+      &.js-loading {
+        gap: 16px;
+        display: flex;
       }
     }
 
@@ -107,5 +111,9 @@
     &:hover {
       background-color: #e9ecef;
     }
+  }
+
+  .skeleton-book {
+    margin-right: 16px;
   }
 }

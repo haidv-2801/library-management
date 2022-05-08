@@ -21,6 +21,7 @@ import MenuPage from './components/pages/admin/MenuPage/MenuPage';
 import SearchPage from './components/pages/user/SearchPage/SearchPage';
 import ReaderPage from './components/pages/admin/ReaderPage/ReaderPage';
 import BookPage from './components/pages/admin/BookPage/BookPage';
+import BooksPage from './components/pages/user/BooksPage/BooksPage';
 import Test from './components/pages/test/Test';
 import './main.scss';
 
@@ -60,9 +61,9 @@ const HtmlRenderPage = React.lazy(() =>
   import('./components/pages/user/HtmlRenderPage/HtmlRenderPage')
 );
 
-const BooksPage = React.lazy(() =>
-  import('./components/pages/user/BooksPage/BooksPage.js')
-);
+// const BooksPage = React.lazy(() =>
+//   import('./components/pages/user/BooksPage/BooksPage.js')
+// );
 
 const BooksPageSeeAll = React.lazy(() =>
   import('./components/pages/user/BooksPageSeeAll/BooksPageSeeAll')

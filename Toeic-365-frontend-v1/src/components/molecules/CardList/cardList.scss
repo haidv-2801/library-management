@@ -68,4 +68,14 @@
     grid-template-rows: auto;
     grid-template-areas: unset;
   }
+
+  .toe-more-data {
+    .p-card-title {
+      .toe-font-large-title {
+        &:hover {
+          color: #f9ca01;
+        }
+      }
+    }
+  }
 }

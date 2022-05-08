@@ -347,30 +347,7 @@ function Header(props) {
         {showNav && (
           <>
             <MenuBar options={dataMenus} />
-            {!authCtx.isLoggedIn ? (
-              {
-                /* <>
-                <Button
-                  className="toe-btn-login"
-                  style={{ marginLeft: 16 }}
-                  name="Đăng nhập"
-                  theme={BUTTON_THEME.THEME_6}
-                  onClick={handleLogin}
-                  rightIcon={<LoginOutlined />}
-                  type={BUTTON_TYPE.RIGHT_ICON}
-                />
-                <Button
-                  className="toe-btn-register"
-                  style={{ marginLeft: 16 }}
-                  name="Đăng ký"
-                  theme={BUTTON_THEME.THEME_4}
-                  onClick={handleRegister}
-                />
-              </> */
-              }
-            ) : (
-              <UserInfo />
-            )}
+            {!authCtx.isLoggedIn ? null : <UserInfo />}
             <Button
               className="toe-btn-toggle"
               leftIcon={<i className="pi pi-bars" />}

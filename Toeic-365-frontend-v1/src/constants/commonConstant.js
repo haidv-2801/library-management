@@ -440,3 +440,8 @@ export const UTC_INTRODUCE_VIDEO = 'https://www.youtube.com/embed/sUU8WhGQWDw';
 
 export const UTC_WEB_TITLE =
   'Trung tâm thông tin thư vện trường đại học giao thông vận tải';
+
+export const SORT_TYPE = {
+  DESC: 'DESC',
+  ASC: 'ASC',
+};

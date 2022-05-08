@@ -88,7 +88,7 @@ function FilterEngine(props) {
   useEffect(() => {
     if (!filterControls.length && !defaultFilter.length) {
       const id = uuid();
-      setFilterBy((pre) => ({ ...pre, [id]: filterTypeOptions[0].value }));
+      setFilterBy((pre) => ({ ...pre, [id]: filterTypeOptions[0]?.value }));
       setFilterChainType((pre) => ({ ...pre, [id]: OPERATOR.AND }));
       setFilterOperator((pre) => ({ ...pre, [id]: OPERATOR.CONTAINS }));
       setFilterControls([id]);

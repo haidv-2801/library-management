@@ -4,6 +4,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { PATH_NAME } from '../../../constants/commonConstant';
 import { buildClass } from '../../../constants/commonFunction';
 import CardItem from '../Card/Card';
+import ImgMore from '../../../assets/images/news.jpg';
 import './cardList.scss';
 
 CardList.propTypes = {
@@ -53,9 +54,10 @@ function CardList(props) {
         : null}
 
       <CardItem
+        className="toe-more-data"
         title={'>>> * Tin tiêu điểm'}
         subTitle={''}
-        imgSrc={''}
+        imgSrc={ImgMore}
         description={''}
         onClick={() => {}}
       />
