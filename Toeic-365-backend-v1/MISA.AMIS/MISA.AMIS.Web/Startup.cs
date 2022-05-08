@@ -19,6 +19,12 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using TOE.TOEIC.ApplicationCore.Helpers;
 using Nest;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
+using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.Owin.Cors;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace TOE.TOEIC.Web
 {
@@ -35,16 +41,17 @@ namespace TOE.TOEIC.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddDirectoryBrowser();
 
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowCROSPolicy",
                     builder =>
                     {
-                        builder.WithOrigins("*")
-                                            .AllowAnyHeader()
-                                            .AllowAnyMethod();
-                    });
+                        builder.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader().AllowAnyOrigin();
+            });
             });
 
             // Config authenication
@@ -116,7 +123,7 @@ namespace TOE.TOEIC.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ICorsService corsService, Microsoft.AspNetCore.Cors.Infrastructure.ICorsPolicyProvider corsPolicyProvider)
         {
             if (env.IsDevelopment())
             {
@@ -128,10 +135,46 @@ namespace TOE.TOEIC.Web
             app.UseMiddleware<ErrorHandlingMiddleWare>();
 
             app.UseRouting();
-            app.UseStaticFiles();
 
+
+            // Set up custom content types - associating file extension to MIME type
+            var provider = new FileExtensionContentTypeProvider();
+            // Add new mappings
+            provider.Mappings[".myapp"] = "application/x-msdownload";
+            provider.Mappings[".htm3"] = "text/html";
+            provider.Mappings[".image"] = "image/png";
+            // Replace an existing mapping
+            provider.Mappings[".rtf"] = "application/x-msdownload";
+            // Remove MP4 videos.
+            provider.Mappings.Remove(".mp4");
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                ServeUnknownFileTypes = true,
+                FileProvider = new PhysicalFileProvider(
+           Path.Combine(env.ContentRootPath, "Uploads")),
+                RequestPath = "/uploads",
+                OnPrepareResponse = ctx => {
+                    ctx.Context.Response.Headers.Append("Access-Control-Allow-Origin", "*");
+                    ctx.Context.Response.Headers.Append("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+                },
+            });
+
+            
+
+            // using Microsoft.Extensions.FileProviders;
+            // using System.IO;
+            app.UseFileServer(new FileServerOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(env.ContentRootPath, "Uploads")),
+                RequestPath = "/uploads",
+                EnableDirectoryBrowsing = true
+            });
+
+            
+            app.UseStaticFiles(); // For the wwwroot folder.
             app.UseCors();
-
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseMvc();

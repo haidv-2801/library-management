@@ -31,6 +31,7 @@
     ".NETCoreApp,Version=v3.1": {
       "TOE.TOEIC.Web/1.0.0": {
         "dependencies": {
+          "Microsoft.Owin.Cors": "4.2.1",
           "NLog": "4.7.15",
           "NLog.Web.AspNetCore": "4.14.0",
           "Swashbuckle.AspNetCore": "5.6.3",
@@ -681,6 +682,17 @@
         },
         "compile": {
           "lib/netstandard2.0/Microsoft.OpenApi.dll": {}
+        }
+      },
+      "Microsoft.Owin.Cors/4.2.1": {
+        "runtime": {
+          "lib/net45/Microsoft.Owin.Cors.dll": {
+            "assemblyVersion": "4.2.1.0",
+            "fileVersion": "4.200.122.20502"
+          }
+        },
+        "compile": {
+          "lib/net45/Microsoft.Owin.Cors.dll": {}
         }
       },
       "Microsoft.Win32.Primitives/4.3.0": {
@@ -3588,6 +3600,13 @@
       "sha512": "sha512-Nug3rO+7Kl5/SBAadzSMAVgqDlfGjJZ0GenQrLywJ84XGKO0uRqkunz5Wyl0SDwcR71bAATXvSdbdzPrYRYKGw==",
       "path": "microsoft.openapi/1.2.3",
       "hashPath": "microsoft.openapi.1.2.3.nupkg.sha512"
+    },
+    "Microsoft.Owin.Cors/4.2.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-N1M4WUfvSp+0LXvj6QaTX6pwGSR1o+D6quaUOpBT/bR5jMdN9EekNnxnVBozuNmxA9kkO33/DeyVz4RKbMRSHg==",
+      "path": "microsoft.owin.cors/4.2.1",
+      "hashPath": "microsoft.owin.cors.4.2.1.nupkg.sha512"
     },
     "Microsoft.Win32.Primitives/4.3.0": {
       "type": "package",

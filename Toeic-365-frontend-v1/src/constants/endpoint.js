@@ -72,6 +72,11 @@ const END_POINT = (function () {
       TOE_INSERT_CATEGORY: DEV_HOST + 'api/category',
       TOE_GET_CATEGORY_BY_ID: DEV_HOST + 'api/category/{0}',
       TOE_GET_CATEGORIES_FILTER: DEV_HOST + 'api/categorys/Filter',
+
+      /**
+       * *Endpoint upload
+       */
+      TOE_GET_FILE: DEV_HOST + 'uploads/{0}',
     };
   } else {
     return {};

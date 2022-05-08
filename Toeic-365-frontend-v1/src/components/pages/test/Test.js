@@ -71,6 +71,9 @@ import moment from 'moment';
 import { Document, Page } from 'react-pdf';
 import PdfDist from '../../molecules/PdfDist/PdfDist';
 import ReactPDfViewer from '../../molecules/ReactPdfViewer/ReactPdfViewer';
+import baseApi from '../../../api/baseApi';
+import END_POINT from '../../../constants/endpoint';
+import { format } from 'react-string-format';
 
 const fake = [
   {
@@ -275,6 +278,23 @@ const Test = () => {
 
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
+
+  useEffect(() => {
+    baseApi.get(
+      (res) => {
+        debugger;
+        var reader = new FileReader();
+        reader.onload = function () {};
+        let test = reader.readAsArrayBuffer(res);
+      },
+      (err) => {
+        debugger;
+      },
+      () => {},
+      format(END_POINT.TOE_GET_FILE, 'me1_f728.jpg'),
+      { 'Content-Type': 'image/*' }
+    );
+  }, []);
 
   function onDocumentLoadSuccess({ numPages }) {
     setNumPages(numPages);

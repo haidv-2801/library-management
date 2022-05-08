@@ -414,6 +414,15 @@
           "lib/netstandard2.0/Microsoft.OpenApi.dll": {}
         }
       },
+      "Microsoft.Owin.Cors/4.2.1": {
+        "type": "package",
+        "compile": {
+          "lib/net45/Microsoft.Owin.Cors.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Microsoft.Owin.Cors.dll": {}
+        }
+      },
       "Microsoft.Win32.Primitives/4.3.0": {
         "type": "package",
         "dependencies": {
@@ -2721,6 +2730,20 @@
         "lib/netstandard2.0/Microsoft.OpenApi.xml",
         "microsoft.openapi.1.2.3.nupkg.sha512",
         "microsoft.openapi.nuspec"
+      ]
+    },
+    "Microsoft.Owin.Cors/4.2.1": {
+      "sha512": "N1M4WUfvSp+0LXvj6QaTX6pwGSR1o+D6quaUOpBT/bR5jMdN9EekNnxnVBozuNmxA9kkO33/DeyVz4RKbMRSHg==",
+      "type": "package",
+      "path": "microsoft.owin.cors/4.2.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "lib/net45/Microsoft.Owin.Cors.dll",
+        "lib/net45/Microsoft.Owin.Cors.xml",
+        "microsoft.owin.cors.4.2.1.nupkg.sha512",
+        "microsoft.owin.cors.nuspec"
       ]
     },
     "Microsoft.Win32.Primitives/4.3.0": {
@@ -7122,6 +7145,7 @@
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v3.1": [
+      "Microsoft.Owin.Cors >= 4.2.1",
       "NLog >= 4.7.15",
       "NLog.Web.AspNetCore >= 4.14.0",
       "Swashbuckle.AspNetCore >= 5.6.3",
@@ -7175,6 +7199,10 @@
       "netcoreapp3.1": {
         "targetAlias": "netcoreapp3.1",
         "dependencies": {
+          "Microsoft.Owin.Cors": {
+            "target": "Package",
+            "version": "[4.2.1, )"
+          },
           "NLog": {
             "target": "Package",
             "version": "[4.7.15, )"
@@ -7209,5 +7237,17 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.100\\RuntimeIdentifierGraph.json"
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'Microsoft.Owin.Cors 4.2.1' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8' instead of the project target framework '.NETCoreApp,Version=v3.1'. This package may not be fully compatible with your project.",
+      "libraryId": "Microsoft.Owin.Cors",
+      "targetGraphs": [
+        ".NETCoreApp,Version=v3.1"
+      ]
+    }
+  ]
 }

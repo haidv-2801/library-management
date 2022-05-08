@@ -7,6 +7,7 @@ const { NODE_ENV } = process.env;
 let header = {
   'Access-Control-Allow-Origin': '*',
   'Content-type': 'application/json; charset=UTF-8',
+  Accept: '*',
 };
 
 console.log(NODE_ENV);

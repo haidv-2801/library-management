@@ -215,6 +215,10 @@
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
           "dependencies": {
+            "Microsoft.Owin.Cors": {
+              "target": "Package",
+              "version": "[4.2.1, )"
+            },
             "NLog": {
               "target": "Package",
               "version": "[4.7.15, )"
