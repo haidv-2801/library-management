@@ -10,7 +10,7 @@
     margin: auto;
 
     &-wrapper {
-      padding: 24px 10vw;
+      padding: var(--padding-page);
       min-width: 1024px;
     }
 

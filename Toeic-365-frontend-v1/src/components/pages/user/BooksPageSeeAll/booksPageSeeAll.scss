@@ -11,7 +11,7 @@
 
     &-wrapper {
       flex: 1;
-      padding: 24px;
+      padding: var(--padding-page);
     }
 
     &-main {
@@ -132,5 +132,10 @@
       flex-direction: column;
       margin-bottom: 16px;
     }
+  }
+
+  .list-author {
+    display: flex;
+    gap: 8px;
   }
 }

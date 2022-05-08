@@ -6,6 +6,7 @@
 
 :root {
   --main-color: #43c1c9;
+  --padding-page: 24px 10vw;
 }
 
 body {

@@ -7,11 +7,11 @@
     flex: 1;
     display: flex;
     max-width: 1366px;
-    margin: auto;
+    // margin: auto;
 
     &-wrapper {
       flex: 1;
-      padding: 24px;
+      padding: var(--padding-page);
     }
 
     &-main {
@@ -91,7 +91,7 @@
   &__item {
     width: 100%;
     display: flex !important;
-    gap: 8px;
+    gap: 16px;
 
     &-info {
       display: flex;
@@ -110,5 +110,9 @@
         margin-bottom: 8px;
       }
     }
+  }
+
+  .button-preview {
+    border: none;
   }
 }

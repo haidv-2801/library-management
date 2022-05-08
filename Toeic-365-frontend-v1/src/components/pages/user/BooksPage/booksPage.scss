@@ -11,7 +11,7 @@
 
     &-wrapper {
       flex: 1;
-      padding: 24px 10vw;
+      padding: var(--padding-page);
     }
 
     &-type {

@@ -3,13 +3,19 @@ import { Tooltip } from 'antd';
 import { Chip } from 'primereact/chip';
 import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from 'react-router-dom';
 import {
   BOOK_FORMAT,
   BUTTON_SHAPE,
   BUTTON_THEME,
   BUTTON_TYPE,
   OPERATOR,
+  SECTION_TEXT,
   SORT_TYPE,
 } from '../../../../constants/commonConstant';
 import Button from '../../../atomics/base/Button/Button';
@@ -28,10 +34,12 @@ import END_POINT from '../../../../constants/endpoint';
 import baseApi from '../../../../api/baseApi';
 import {
   buildClass,
+  DOCUMENT_SECTION,
   ParseJson,
   slugify,
 } from '../../../../constants/commonFunction';
 import { Skeleton } from 'primereact/skeleton';
+import { getNewPaperDocuments, getElectronicDocuments } from '../function';
 import './booksPage.scss';
 
 BooksPage.propTypes = {
@@ -76,20 +84,6 @@ function BooksPage(props) {
   ];
   const DEFAULT_PAGE_SIZE = 5;
 
-  const SECTION_TEXT = {
-    DOCUMENT_NEW: 'Tài liệu mới',
-    BORROWED_DOCUMENTS_A_LOT: 'Tài liệu mượn nhiều',
-    E_DOCUMENT_NEW: 'Tài liệu số',
-    BORROWED_EDOCUMENTS_A_LOT: 'Tài liệu số mượn nhiều',
-  };
-
-  const DOCUMENT_SECTION = {
-    DOCUMENT_NEW: slugify(SECTION_TEXT.DOCUMENT_NEW),
-    BORROWED_DOCUMENTS_A_LOT: slugify(SECTION_TEXT.BORROWED_DOCUMENTS_A_LOT),
-    E_DOCUMENT_NEW: slugify(SECTION_TEXT.E_DOCUMENT_NEW),
-    BORROWED_EDOCUMENTS_A_LOT: slugify(SECTION_TEXT.BORROWED_EDOCUMENTS_A_LOT),
-  };
-
   const DEFAULT_SECTION = {};
 
   const selector = useSelector(
@@ -116,24 +110,17 @@ function BooksPage(props) {
   });
 
   const params = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
-    getNewPaperDocuments();
-    getElectronicDocuments();
+    callGetNewPaperDocuments();
+    callGetElectronicDocuments();
   }, []);
 
-  const getNewPaperDocuments = () => {
-    let _filter = [
-      ['IsDeleted', OPERATOR.EQUAL, '0'],
-      OPERATOR.AND,
-      ['Status', OPERATOR.EQUAL, '1'],
-      OPERATOR.AND,
-      ['BookFormat', OPERATOR.EQUAL, BOOK_FORMAT.PAPER_BACK],
-    ];
-
-    baseApi.post(
+  const callGetNewPaperDocuments = () => {
+    getNewPaperDocuments(
       (res) => {
         let _data = res.data.pageData,
           _totalRecord = res.data.totalRecord;
@@ -159,28 +146,12 @@ function BooksPage(props) {
           isLoading: true,
         }));
         setIsLoading(true);
-      },
-      END_POINT.TOE_GET_BOOKS_FILTER,
-      {
-        filter: btoa(JSON.stringify(_filter)),
-        pageSize: DEFAULT_PAGE_SIZE,
-        pageIndex: 1,
-        sort: JSON.stringify([['CreatedDate', SORT_TYPE.DESC]]),
-      },
-      null
+      }
     );
   };
 
-  const getElectronicDocuments = () => {
-    let _filter = [
-      ['IsDeleted', OPERATOR.EQUAL, '0'],
-      OPERATOR.AND,
-      ['Status', OPERATOR.EQUAL, '1'],
-      OPERATOR.AND,
-      ['BookFormat', OPERATOR.EQUAL, BOOK_FORMAT.EBOOK],
-    ];
-
-    baseApi.post(
+  const callGetElectronicDocuments = () => {
+    getElectronicDocuments(
       (res) => {
         let _data = res.data.pageData,
           _totalRecord = res.data.totalRecord;
@@ -206,17 +177,8 @@ function BooksPage(props) {
           ...p,
           isLoading: true,
         }));
-
         setIsLoading(true);
-      },
-      END_POINT.TOE_GET_BOOKS_FILTER,
-      {
-        filter: btoa(JSON.stringify(_filter)),
-        pageSize: DEFAULT_PAGE_SIZE,
-        pageIndex: 1,
-        sort: JSON.stringify([['CreatedDate', SORT_TYPE.DESC]]),
-      },
-      null
+      }
     );
   };
 
