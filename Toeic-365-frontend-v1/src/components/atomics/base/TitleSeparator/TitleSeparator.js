@@ -32,7 +32,7 @@ function TitleSeparator(props) {
       style={{ width: width, ...style }}
       className={buildClass([
         'toe-title-separator',
-        'toe-font-body-big',
+        'toe-font-large-title',
         className,
       ])}
       onClick={onClick}

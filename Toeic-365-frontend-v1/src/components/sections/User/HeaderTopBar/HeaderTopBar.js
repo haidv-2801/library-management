@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PATH_NAME } from '../../../../constants/commonConstant';
+import { AuthContext } from '../../../../contexts/authContext';
+import UserInfo from '../../UserInfo/UserInfo';
 import './headerTopBar.scss';
 
 const HeaderTopBar = () => {
@@ -44,6 +46,7 @@ const HeaderTopBar = () => {
     },
   ];
 
+  const authCtx = useContext(AuthContext);
   const history = useNavigate();
 
   function handleLogin() {
@@ -63,6 +66,7 @@ const HeaderTopBar = () => {
   };
 
   const renderRight = () => {
+    if (authCtx.isLoggedIn) return null;
     return BUTTONS.map((item) => (
       <div
         className="toe-header-top-bar__item"

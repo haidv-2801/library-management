@@ -1,4 +1,4 @@
-import { GUID_NULL, TEXT_FALL_BACK } from './commonConstant';
+import { GUID_NULL, TEXT_FALL_BACK, SECTION_TEXT } from './commonConstant';
 
 /**
  * Build ra classname
@@ -795,4 +795,11 @@ export const DowloadFile = (url, fileName) => {};
  */
 export const genFileNameWithTime = (prefix = 'image') => {
   return prefix + '_' + moment().format('HHmmss_DDMMYYYY');
+};
+
+export const DOCUMENT_SECTION = {
+  DOCUMENT_NEW: slugify(SECTION_TEXT.DOCUMENT_NEW),
+  BORROWED_DOCUMENTS_A_LOT: slugify(SECTION_TEXT.BORROWED_DOCUMENTS_A_LOT),
+  E_DOCUMENT_NEW: slugify(SECTION_TEXT.E_DOCUMENT_NEW),
+  BORROWED_EDOCUMENTS_A_LOT: slugify(SECTION_TEXT.BORROWED_EDOCUMENTS_A_LOT),
 };

@@ -440,3 +440,15 @@ export const UTC_INTRODUCE_VIDEO = 'https://www.youtube.com/embed/sUU8WhGQWDw';
 
 export const UTC_WEB_TITLE =
   'Trung tâm thông tin thư vện trường đại học giao thông vận tải';
+
+export const SORT_TYPE = {
+  DESC: 'DESC',
+  ASC: 'ASC',
+};
+
+export const SECTION_TEXT = {
+  DOCUMENT_NEW: 'Tài liệu mới',
+  BORROWED_DOCUMENTS_A_LOT: 'Tài liệu mượn nhiều',
+  E_DOCUMENT_NEW: 'Tài liệu số',
+  BORROWED_EDOCUMENTS_A_LOT: 'Tài liệu số mượn nhiều',
+};

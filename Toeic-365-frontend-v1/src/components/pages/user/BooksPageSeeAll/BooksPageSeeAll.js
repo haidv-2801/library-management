@@ -1,13 +1,26 @@
 import PropTypes from 'prop-types';
-import React, { useState, useMemo } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { BOOK_FORMAT } from '../../../../constants/commonConstant';
-import { buildClass } from '../../../../constants/commonFunction';
+import React, { useState, useMemo, useEffect } from 'react';
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from 'react-router-dom';
+import {
+  BOOK_FORMAT,
+  SECTION_TEXT,
+} from '../../../../constants/commonConstant';
+import {
+  buildClass,
+  ParseJson,
+  DOCUMENT_SECTION,
+} from '../../../../constants/commonFunction';
 import Banner from '../../../molecules/Banner/Banner';
 import Book from '../../../molecules/Book/Book';
 import Paginator from '../../../molecules/Paginator/Paginator';
 import Footer from '../../../sections/User/FooterLib/Footer';
 import Layout from '../../../sections/User/Layout/Layout';
+import { getBookType, getNewPaperDocuments } from '../function';
 import './booksPageSeeAll.scss';
 
 BooksPageSeeAll.propTypes = {
@@ -34,7 +47,11 @@ function BooksPageSeeAll(props) {
   };
 
   const params = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { pathname } = useLocation();
+  const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
   const breadCrumbs = pathname
     .split('/')
     .filter(Boolean)
@@ -43,8 +60,36 @@ function BooksPageSeeAll(props) {
   const navigate = useNavigate();
   const [viewType, setViewType] = useState(VIEW_TYPE.SMALL);
 
-  const handleViewDetail = () => {
-    navigate('2342');
+  useEffect(() => {
+    const { slug } = params;
+    if (slug) {
+      switch (slug) {
+        case DOCUMENT_SECTION.BORROWED_DOCUMENTS_A_LOT:
+          break;
+        case DOCUMENT_SECTION.BORROWED_EDOCUMENTS_A_LOT:
+          break;
+        case DOCUMENT_SECTION.DOCUMENT_NEW:
+          getNewPaperDocuments(
+            (res) => {
+              let _data = res.data.pageData,
+                _totalRecord = res.data.totalRecord;
+              setData(_data);
+            },
+            (err) => {},
+            () => {}
+          );
+          break;
+        case DOCUMENT_SECTION.E_DOCUMENT_NEW:
+          break;
+        default:
+          break;
+      }
+    } else {
+    }
+  }, []);
+
+  const handleViewDetail = (bookID) => {
+    navigate(bookID);
   };
 
   const fake = useMemo(() => {
@@ -99,6 +144,50 @@ function BooksPageSeeAll(props) {
   };
 
   const renderSection = (title) => {
+    const _data = data.map((item, _) => {
+      return (
+        <div key={_} className="toe-book-see-all-page__body-content__item">
+          <Book
+            className="toe-book-see-all-page__body-content__book"
+            bookTitle={item?.bookName}
+            bookAuthor="Nguyễn Thị Thảo"
+            bookType={item?.bookFormat}
+            onClick={() => handleViewDetail(item.bookID)}
+          />
+          {viewType === VIEW_TYPE.SMALL && (
+            <div className="toe-book-see-all-page__body-content__item-info">
+              <h2
+                onClick={() => handleViewDetail(item.bookID)}
+                className="toe-book-see-all-page__body-content__item-info__row toe-font-label"
+              >
+                {item?.bookName}
+              </h2>
+              <div className="toe-book-see-all-page__body-content__item-info__row">
+                <span className="toe-font-label">Loại tài liệu:</span>{' '}
+                <span className="toe-font-body">
+                  {getBookType(item?.bookFormat)}
+                </span>
+              </div>
+              <div className="toe-book-see-all-page__body-content__item-info__row">
+                <span className="toe-font-label">Tác giả:</span>
+                <span className="toe-font-body list-author">
+                  {ParseJson(item?.author)?.join(', ')}
+                </span>
+              </div>
+              <div className="toe-book-see-all-page__body-content__item-info__row">
+                <span className="toe-font-label">Nhà xuất bản:</span>
+                <span className="toe-font-body">{item?.publisher}</span>
+              </div>
+              {/* <div className="toe-book-see-all-page__body-content__item-info__row">
+                <span className="toe-font-label">Thông tin xếp giá:</span>
+                <span className="toe-font-body">C1</span>
+              </div> */}
+            </div>
+          )}
+        </div>
+      );
+    });
+
     return (
       <div className="toe-book-see-all-page__body-section">
         <div className="toe-book-see-all-page__body-type toe-font-title">
@@ -110,7 +199,7 @@ function BooksPageSeeAll(props) {
             viewType === VIEW_TYPE.SMALL && 'view-type-small',
           ])}
         >
-          {fake}
+          {_data}
         </div>
       </div>
     );
@@ -158,7 +247,7 @@ function BooksPageSeeAll(props) {
               </div>
             </div>
           </div>
-          <Paginator totalRecords={100} />
+          {data.length ? <Paginator totalRecords={100} /> : null}
         </div>
         <Footer />
       </div>

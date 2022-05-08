@@ -338,38 +338,16 @@ function Header(props) {
         className="toe-layout-user-page-container__header-left"
       >
         <img className="logo-app" src={MainLogo} alt="toeic-365" />
-        <b className="name-app">
-          {UTC_WEB_TITLE}
+        <b className="name-app toe-font-large-title">
+          {UTC_WEB_TITLE.toUpperCase()}
           {/* Thư viện<span style={{ color: '#43c1c9' }}>365</span> */}
         </b>
       </div>
-      <div className="toe-layout-user-page-container__header-right"></div>
-      {/* <div className="toe-layout-user-page-container__header-right">
+      <div className="toe-layout-user-page-container__header-right">
         {showNav && (
           <>
             <MenuBar options={dataMenus} />
-            {!authCtx.isLoggedIn ? (
-              <>
-                <Button
-                  className="toe-btn-login"
-                  style={{ marginLeft: 16 }}
-                  name="Đăng nhập"
-                  theme={BUTTON_THEME.THEME_6}
-                  onClick={handleLogin}
-                  rightIcon={<LoginOutlined />}
-                  type={BUTTON_TYPE.RIGHT_ICON}
-                />
-                <Button
-                  className="toe-btn-register"
-                  style={{ marginLeft: 16 }}
-                  name="Đăng ký"
-                  theme={BUTTON_THEME.THEME_4}
-                  onClick={handleRegister}
-                />
-              </>
-            ) : (
-              <UserInfo />
-            )}
+            {!authCtx.isLoggedIn ? null : <UserInfo />}
             <Button
               className="toe-btn-toggle"
               leftIcon={<i className="pi pi-bars" />}
@@ -389,7 +367,7 @@ function Header(props) {
             name={'Danh sách bài test'}
           />
         )}
-      </div> */}
+      </div>
     </div>
   );
 }

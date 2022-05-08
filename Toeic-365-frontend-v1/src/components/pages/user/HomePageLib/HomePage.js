@@ -261,7 +261,7 @@ function HomePage(props) {
     <Layout>
       <div className="toe-home-page">
         <div className="toe-home-page__img-banner">
-          <h1 className="toe-home-page__img-banner__text">THƯ VIỆN 365</h1>
+          <h1 className="toe-home-page__img-banner__text">THƯ VIỆN GTVT</h1>
           {/* <img width={'auto'} height={'auto'} src={HomeHeaderImg} alt="" /> */}
         </div>
         {/* <h4 className="toe-home-page__noti-section">
@@ -336,6 +336,7 @@ function HomePage(props) {
         <div className="toe-home-page__noti-section">
           <TitleSeparator
             className=""
+            icon={<BellOutlined />}
             title={'giới thiệu sách mới'}
             onClick={() => {
               navigate(PATH_NAME.NEW_BOOKS_INTRODUCTION);

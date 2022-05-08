@@ -5,6 +5,7 @@ import React from 'react';
 import { BOOK_FORMAT, TEXT_FALL_BACK } from '../../../constants/commonConstant';
 import { buildClass } from '../../../constants/commonFunction';
 import SmartText from '../../atomics/base/SmartText/SmartText';
+import { getBookType } from '../../pages/user/function';
 import './book.scss';
 
 Book.propTypes = {
@@ -46,17 +47,6 @@ function Book(props) {
   function getRandomInt(max) {
     return Math.floor(Math.random() * max);
   }
-
-  const getBookType = (type) => {
-    switch (type) {
-      case BOOK_FORMAT.EBOOK:
-        return 'Tài liệu số';
-      case BOOK_FORMAT.PAPER_BACK:
-        return 'Tài liệu giấy';
-      default:
-        return TEXT_FALL_BACK.TYPE_1;
-    }
-  };
 
   return (
     <div

@@ -188,7 +188,7 @@ function RegisterPage() {
       <div className="toe-register-page__body"></div>
       <img className="toe-register-page-bg" src={RegisterBg} alt="login" />
       <Modal
-        title={'Chào mừng bạn đến với Thư viện 365'}
+        title={'Chào mừng bạn đến với Thư viện GTVT'}
         children={
           <div className="toe-register-page__modal-body">
             <div className="toe-register-page__modal-body__des toe-font-body">
