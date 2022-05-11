@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import baseApi from '../../../../api/baseApi';
-import MainLogo from '../../../../assets/images/LogoUTC.jpg';
+// import MainLogo from '../../../../assets/images/LogoUTC.jpg';
+import MainLogo from '../../../../assets/images/logo_utc.jpg';
 // import MainLogo from '../../../../assets/images/toeiclogo.png';
 import {
   BUTTON_THEME,
@@ -339,7 +340,7 @@ function Header(props) {
       >
         <img className="logo-app" src={MainLogo} alt="toeic-365" />
         <b className="name-app toe-font-large-title">
-          {UTC_WEB_TITLE.toUpperCase()}
+          {/* {UTC_WEB_TITLE.toUpperCase()} */}
           {/* Thư viện<span style={{ color: '#43c1c9' }}>365</span> */}
         </b>
       </div>

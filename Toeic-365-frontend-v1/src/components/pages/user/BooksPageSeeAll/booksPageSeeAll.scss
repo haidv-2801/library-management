@@ -24,8 +24,28 @@
       }
 
       &__left {
+        padding-right: 24px;
         border-right: 1px solid #e5e5e5;
-        margin-right: 16px;
+
+        .button-search {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          margin-bottom: 16px;
+
+          &__icon {
+            cursor: pointer;
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            background-color: #e5e5e5;
+          }
+        }
 
         .__other-resource {
           line-height: 40px;
@@ -44,6 +64,7 @@
       }
 
       &__right {
+        padding-left: 24px;
         // width: 100%;
         // display: grid;
         // grid-template-columns: repeat(auto-fit, 125px);
@@ -137,5 +158,20 @@
   .list-author {
     display: flex;
     gap: 8px;
+  }
+
+  &.category {
+    cursor: pointer;
+  }
+
+  .skeleton-list {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .cate-active {
+    color: #008b51;
+    background-color: #e5e5e5;
   }
 }

@@ -14,6 +14,8 @@ Paginator.propTypes = {
   page: PropTypes.number,
   totalRecords: PropTypes.number,
   onChange: PropTypes.func,
+  hasChangePageSize: PropTypes.bool,
+  hasShowLeftInfo: PropTypes.bool,
 };
 
 Paginator.defaultProps = {
@@ -22,13 +24,24 @@ Paginator.defaultProps = {
   style: {},
   pageSize: 10,
   page: 1,
+  hasChangePageSize: true,
+  hasShowLeftInfo: true,
   totalRecords: 0,
   onChange: () => {},
 };
 
 function Paginator(props) {
-  const { id, style, className, pageSize, page, totalRecords, onChange } =
-    props;
+  const {
+    id,
+    style,
+    className,
+    pageSize,
+    page,
+    totalRecords,
+    onChange,
+    hasChangePageSize,
+    hasShowLeftInfo,
+  } = props;
 
   let from = pageSize * (page - 1) + 1,
     to = Math.min(totalRecords, pageSize * page);
@@ -42,20 +55,26 @@ function Paginator(props) {
       first={(page - 1) * pageSize}
       rows={pageSize}
       leftContent={
-        !totalRecords ? null : `Hiển thị ${from}-${to}/${totalRecords} bản ghi`
+        hasShowLeftInfo
+          ? !totalRecords
+            ? null
+            : `Hiển thị ${from}-${to}/${totalRecords} bản ghi`
+          : null
       }
       rightContent={
-        !totalRecords ? null : (
-          <Dropdown
-            className="dropdown-paginator"
-            defaultValue={pageSize}
-            options={PAGEGING.map((_) => ({
-              label: 'Hiển thị ' + _ + ' trang',
-              value: _,
-            }))}
-            onChange={(data) => onChange({ page, pageSize: data.value })}
-          />
-        )
+        hasChangePageSize ? (
+          !totalRecords ? null : (
+            <Dropdown
+              className="dropdown-paginator"
+              defaultValue={pageSize}
+              options={PAGEGING.map((_) => ({
+                label: 'Hiển thị ' + _ + ' trang',
+                value: _,
+              }))}
+              onChange={(data) => onChange({ page, pageSize: data.value })}
+            />
+          )
+        ) : null
       }
       totalRecords={Math.max(0, totalRecords)}
       rowsPerPageOptions={PAGEGING}

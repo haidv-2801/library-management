@@ -59,7 +59,9 @@ const PdfDist = ({ src = defaultUrl }) => {
   useEffect(() => {
     const fetchPdf = async () => {
       try {
-        const loadingTask = pdfjs.getDocument(src);
+        const loadingTask = pdfjs.getDocument(
+          '../../pages/test/171200038_Bui_Minh_Thao_CNTT1_K58.pdf'
+        );
 
         const pdfDoc = await loadingTask.promise;
 

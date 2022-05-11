@@ -67,6 +67,7 @@
         display: flex;
         border: 1px solid #bbbbbb;
         padding: 8px 16px;
+        flex-wrap: wrap;
 
         & > * {
           flex: 1;
@@ -79,6 +80,9 @@
         .infomation-col__title {
           text-transform: uppercase;
           font-weight: bold;
+          margin-bottom: 16px;
+          border-bottom: 1px solid #bbbbbb;
+          padding-bottom: 8px;
         }
       }
     }
@@ -98,6 +102,9 @@
       flex-direction: column;
 
       &__row {
+        display: flex;
+        gap: 8px;
+
         &:first-child {
           font-size: 18px !important;
 
@@ -114,5 +121,19 @@
 
   .button-preview {
     border: none;
+  }
+
+  .tag {
+    padding: 4px 8px;
+    background-color: #e5e5e5;
+    color: #454545;
+    width: fit-content;
+    border-radius: 4px;
+  }
+
+  .infomation-col__title-row__tags {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
   }
 }

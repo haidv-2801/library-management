@@ -9,13 +9,19 @@ import baseApi from '../../../api/baseApi';
 
 const DEFAULT_PAGE_SIZE = 5;
 
-export const getNewPaperDocuments = (onSuccess, onFailure, beforeSend) => {
+export const getNewPaperDocuments = (
+  onSuccess,
+  onFailure,
+  beforeSend,
+  customFilter = []
+) => {
   let _filter = [
     ['IsDeleted', OPERATOR.EQUAL, '0'],
     OPERATOR.AND,
     ['Status', OPERATOR.EQUAL, '1'],
     OPERATOR.AND,
     ['BookFormat', OPERATOR.EQUAL, BOOK_FORMAT.PAPER_BACK],
+    ...customFilter,
   ];
 
   baseApi.post(

@@ -1,12 +1,13 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useState, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useState, useRef, useContext } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { format } from 'react-string-format';
 import {
   BOOK_FORMAT,
   BUTTON_SHAPE,
   BUTTON_THEME,
   BUTTON_TYPE,
+  PATH_NAME,
   TEXT_FALL_BACK,
 } from '../../../../constants/commonConstant';
 import END_POINT from '../../../../constants/endpoint';
@@ -22,6 +23,8 @@ import { ParseJson } from '../../../../constants/commonFunction';
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 import Button from '../../../atomics/base/Button/Button';
 import { Tooltip } from 'antd';
+import { AuthContext } from '../../../../contexts/authContext';
+import { isArray } from 'lodash';
 
 BookDetail.propTypes = {
   titlePage: PropTypes.string,
@@ -32,7 +35,9 @@ BookDetail.defaultProps = { titlePage: '' };
 function BookDetail(props) {
   const { children, titlePage } = props;
   const params = useParams();
+  const navigate = useNavigate();
   const cancelRequestRef = useRef();
+  const context = useContext(AuthContext);
   const [dataDetail, setDataDetail] = useState({});
   const [isShowPreview, setIsShowPreview] = useState(false);
 
@@ -61,6 +66,10 @@ function BookDetail(props) {
   };
 
   const item = () => {
+    debugger;
+    let authors = ParseJson(dataDetail.author);
+    if (isArray(authors))
+      authors = authors?.map((item) => <div className="tag">{item}</div>);
     return (
       <div className="toe-book-detail-page__item">
         <Book
@@ -85,9 +94,14 @@ function BookDetail(props) {
               {getBookType(dataDetail?.bookFormat)}
             </span>
           </div>
-          <div className="toe-book-detail-page__item-info__row">
+          <div
+            className="toe-book-detail-page__item-info__row"
+            style={{ display: 'flex' }}
+          >
             <span className="toe-font-label">Tác giả:</span>
-            <span className="toe-font-body">{dataDetail?.author}</span>
+            <span className="toe-font-body infomation-col__title-row__tags">
+              {authors}
+            </span>
           </div>
           <div className="toe-book-detail-page__item-info__row">
             <span className="toe-font-label">Nhà xuất bản:</span>
@@ -112,6 +126,15 @@ function BookDetail(props) {
     );
   };
 
+  const handleBorrowing = () => {
+    if (!context.isLoggedIn) {
+      navigate(PATH_NAME.LOGIN);
+    } else {
+    }
+  };
+
+  const handleBuying = () => {};
+
   const renderInformation = () => {
     return (
       <div className="book-detail__infomation">
@@ -131,10 +154,24 @@ function BookDetail(props) {
           </div>
         </div>
         <div className="book-detail__infomation-col">
-          <div className="infomation-col__title toe-font-label">Đặt mượn</div>
+          <div className="infomation-col__title toe-font-label">Thao tác</div>
+          <div className="infomation-col__title-row toe-font-body">
+            <a onClick={handleBorrowing}>Đặt mượn</a>
+            <span className="toe-font-hint">
+              (Yêu cầu có hiệu lực 2 ngày từ khi đặt mượn)
+            </span>
+          </div>
+          <div className="infomation-col__title-row toe-font-body">
+            <a onClick={handleBuying}>Đặt mua</a>
+          </div>
         </div>
         <div className="book-detail__infomation-col">
           <div className="infomation-col__title toe-font-label">Từ khóa</div>
+          <div className="infomation-col__title-row infomation-col__title-row__tags toe-font-body">
+            {dataDetail?.bookName?.split(' ').map((item) => (
+              <div className="tag">{item}</div>
+            ))}
+          </div>
         </div>
       </div>
     );

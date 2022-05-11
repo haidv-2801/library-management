@@ -77,6 +77,7 @@ const END_POINT = (function () {
        * *Endpoint upload
        */
       TOE_GET_FILE: DEV_HOST + 'uploads/{0}',
+      TOE_INSERT_FILE: DEV_HOST + 'api/file/insert',
     };
   } else {
     return {};

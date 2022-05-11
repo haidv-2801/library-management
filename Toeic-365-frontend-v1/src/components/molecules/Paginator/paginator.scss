@@ -23,9 +23,6 @@
     align-items: center;
   }
 
-  .p-paginator-page {
-  }
-
   .p-paginator-element {
     cursor: pointer;
     font-size: 14px;
@@ -39,5 +36,59 @@
 
   .p-inputtext {
     font-size: 14px;
+  }
+
+  .p-paginator-page.p-paginator-element.p-link {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 8px;
+    font-size: 12px;
+    min-width: auto;
+
+    &:focus {
+      box-shadow: none !important;
+    }
+
+    &.p-highlight {
+      background-color: #e5e5e5;
+      color: #454545;
+    }
+  }
+
+  .p-paginator.p-paginator-pages.p-paginator-page {
+    min-width: none !important;
+    min-width: auto;
+  }
+
+  .p-paginator-last.p-paginator-element.p-link {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 8px;
+    font-size: 12px;
+    min-width: auto;
+  }
+
+  .p-paginator-next.p-paginator-element.p-link {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 8px;
+    font-size: 12px;
+    min-width: auto;
+  }
+
+  .p-paginator-prev.p-paginator-element.p-link {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 8px;
+    font-size: 12px;
+    min-width: auto;
+  }
+
+  .p-paginator-first.p-paginator-element.p-link {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 8px;
+    font-size: 12px;
+    min-width: auto;
   }
 }

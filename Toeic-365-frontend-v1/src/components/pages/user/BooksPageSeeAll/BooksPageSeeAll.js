@@ -1,26 +1,36 @@
 import PropTypes from 'prop-types';
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   useLocation,
   useNavigate,
   useParams,
   useSearchParams,
 } from 'react-router-dom';
+import { SearchOutlined } from '@ant-design/icons';
+import { Skeleton } from 'primereact/skeleton';
+import baseApi from '../../../../api/baseApi';
 import {
   BOOK_FORMAT,
-  SECTION_TEXT,
+  BUTTON_TYPE,
+  KEY_CODE,
+  MAXIMUM_PAGESIZE,
+  OPERATOR,
+  PAGEGING,
+  SORT_TYPE,
 } from '../../../../constants/commonConstant';
 import {
   buildClass,
-  ParseJson,
   DOCUMENT_SECTION,
+  ParseJson,
 } from '../../../../constants/commonFunction';
+import END_POINT from '../../../../constants/endpoint';
 import Banner from '../../../molecules/Banner/Banner';
 import Book from '../../../molecules/Book/Book';
 import Paginator from '../../../molecules/Paginator/Paginator';
 import Footer from '../../../sections/User/FooterLib/Footer';
 import Layout from '../../../sections/User/Layout/Layout';
 import { getBookType, getNewPaperDocuments } from '../function';
+import Input from '../../../atomics/base/Input/Input';
 import './booksPageSeeAll.scss';
 
 BooksPageSeeAll.propTypes = {
@@ -50,7 +60,12 @@ function BooksPageSeeAll(props) {
   const [searchParams, setSearchParams] = useSearchParams();
   const { pathname } = useLocation();
   const [data, setData] = useState([]);
+  const [totalRecord, setTotalRecord] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [categories, setCategories] = useState([]);
+
+  const cateParam = searchParams.get('categoryID');
+  const searchParam = searchParams.get('search');
 
   const breadCrumbs = pathname
     .split('/')
@@ -59,6 +74,9 @@ function BooksPageSeeAll(props) {
 
   const navigate = useNavigate();
   const [viewType, setViewType] = useState(VIEW_TYPE.SMALL);
+  const [cateSelected, setCateSelected] = useState(-1);
+  const [textSearch, setTextSearch] = useState(null);
+  const textSearchRef = useRef('');
 
   useEffect(() => {
     const { slug } = params;
@@ -74,9 +92,15 @@ function BooksPageSeeAll(props) {
               let _data = res.data.pageData,
                 _totalRecord = res.data.totalRecord;
               setData(_data);
+              setTotalRecord * _totalRecord;
+              setIsLoading(false);
             },
-            (err) => {},
-            () => {}
+            (err) => {
+              setIsLoading(false);
+            },
+            () => {
+              setIsLoading(true);
+            }
           );
           break;
         case DOCUMENT_SECTION.E_DOCUMENT_NEW:
@@ -86,7 +110,62 @@ function BooksPageSeeAll(props) {
       }
     } else {
     }
+    callApiGetCategory();
   }, []);
+
+  useEffect(() => {
+    let moreFilter = [];
+    if (cateParam != -1) {
+      moreFilter = [OPERATOR.AND, ['categoryID', OPERATOR.EQUAL, cateParam]];
+    }
+
+    if (searchParam?.trim()) {
+      moreFilter.push(OPERATOR.AND);
+      moreFilter.push(['bookName', OPERATOR.CONTAINS, searchParam]);
+    }
+
+    getNewPaperDocuments(
+      (res) => {
+        let _data = res.data.pageData,
+          _totalRecord = res.data.totalRecord;
+        setData(_data);
+        setTotalRecord * _totalRecord;
+        setIsLoading(false);
+      },
+      (err) => {
+        setIsLoading(false);
+      },
+      () => {
+        setIsLoading(true);
+      },
+      moreFilter
+    );
+  }, [cateParam, searchParam]);
+
+  const callApiGetCategory = () => {
+    let _filter = [
+      ['IsDeleted', OPERATOR.EQUAL, '0'],
+      OPERATOR.AND,
+      ['Status', OPERATOR.EQUAL, '1'],
+    ];
+
+    baseApi.post(
+      (res) => {
+        let data = res.data.pageData;
+        setCategories([{ title: 'Tất cả', categoryID: -1 }, ...data]);
+      },
+      (err) => {},
+      () => {},
+      END_POINT.TOE_GET_CATEGORIES_FILTER,
+      {
+        filter: btoa(JSON.stringify(_filter)),
+        pageSize: MAXIMUM_PAGESIZE,
+        pageIndex: 1,
+        sort: JSON.stringify([['CreatedDate', SORT_TYPE.DESC]]),
+      },
+      null
+    );
+  };
 
   const handleViewDetail = (bookID) => {
     navigate(bookID);
@@ -144,6 +223,8 @@ function BooksPageSeeAll(props) {
   };
 
   const renderSection = (title) => {
+    if (isLoading) return renderSkeleton(5);
+    if (!data?.length) return 'Không có dữ liệu';
     const _data = data.map((item, _) => {
       return (
         <div key={_} className="toe-book-see-all-page__body-content__item">
@@ -209,6 +290,43 @@ function BooksPageSeeAll(props) {
     setViewType(viewtype);
   };
 
+  const handleFilterByCate = ({ categoryID }) => {
+    if (searchParam == null || textSearchRef.current) {
+      setSearchParams({ categoryID });
+    } else {
+      setSearchParams({
+        search: searchParam ?? textSearchRef.current,
+        categoryID,
+      });
+    }
+  };
+
+  const renderSkeleton = (number) => {
+    return (
+      <div className="skeleton-list">
+        {' '}
+        {Array.from(Array(number)).map((item, _) => (
+          <div className="skeleton-book">
+            <Skeleton key={_} height="200px" width="150px" />
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  const handleSetSearch = () => {
+    if (textSearchRef.current?.trim() != '') {
+      setSearchParams({
+        categoryID: cateParam,
+        search: encodeURI(textSearchRef.current?.trim()),
+      });
+    } else {
+      setSearchParams({
+        categoryID: cateParam ?? -1,
+      });
+    }
+  };
+
   return (
     <Layout>
       <div className="toe-book-see-all-page">
@@ -220,6 +338,43 @@ function BooksPageSeeAll(props) {
                 {renderReport('Tài nguyên khác')}
                 <div className="__other-resource">Z39.50</div>
                 <div className="__other-resource">OAI/PMH</div>
+
+                <div className="toe-font-body" style={{ marginTop: 24 }}>
+                  {renderReport('Thể loại')}
+                  <div className="button-search">
+                    <Input
+                      placeholder={'Tìm kiếm sách'}
+                      className="input-filter-book"
+                      onChange={(e) => (textSearchRef.current = e)}
+                      onKeyDown={(e) => {
+                        if (e.keyCode === KEY_CODE.ENTER) {
+                          handleSetSearch();
+                        }
+                      }}
+                    />
+                    <div
+                      className="button-search__icon"
+                      onClick={handleSetSearch}
+                    >
+                      <SearchOutlined />
+                    </div>
+                  </div>
+                  {categories.map((item) => (
+                    <div
+                      onClick={() => {
+                        handleFilterByCate(item);
+                        setCateSelected(item.categoryID);
+                      }}
+                      key={item.categoryID}
+                      className={buildClass([
+                        '__other-resource category',
+                        cateSelected === item.categoryID && 'cate-active',
+                      ])}
+                    >
+                      {item.title}
+                    </div>
+                  ))}
+                </div>
               </div>
               <div className="toe-book-see-all-page__body-main__right">
                 {renderReport('Tài liệu mượn nhiều')}
@@ -247,7 +402,15 @@ function BooksPageSeeAll(props) {
               </div>
             </div>
           </div>
-          {data.length ? <Paginator totalRecords={100} /> : null}
+          {data.length > Math.min(...PAGEGING) ? (
+            <Paginator
+              hasShowLeftInfo={false}
+              hasChangePageSize={false}
+              totalRecords={totalRecord}
+              onChange={(data) => {}}
+              pageSize={20}
+            />
+          ) : null}
         </div>
         <Footer />
       </div>

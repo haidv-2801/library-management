@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@phuocng/react-pdf-viewer": "^1.7.0",
     "@reduxjs/toolkit": "^1.7.1",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
@@ -31,6 +32,7 @@
     "react": "^17.0.2",
     "react-countdown": "^2.3.2",
     "react-dom": "^17.0.2",
+    "react-file-viewer": "^1.2.1",
     "react-pdf": "^5.7.2",
     "react-redux": "^7.2.6",
     "react-router-dom": "^6.2.1",

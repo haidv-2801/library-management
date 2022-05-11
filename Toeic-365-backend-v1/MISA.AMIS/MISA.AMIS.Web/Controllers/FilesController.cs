@@ -41,31 +41,25 @@ namespace TOE.TOEIC.Web.Controllers
 
         #region Methods
         [EnableCors("AllowCROSPolicy")]
-        [Route("/api/FileManager")]
+        [Route("/api/file/insert")]
         [HttpPost]
-        public ActionResult Create(IFormFile file)
+        [DisableFormValueModelBindingAttribute]
+        public ActionResult Create([FromBody]IFormFile file)
         {
             try
             {
-                if (file.FileName != null)
-                {
-                    var uniqueFileName = GetUniqueFileName(file.FileName);
-                    var uploads = Path.Combine(_hostingEnvironment.ContentRootPath, FolderName);
-                    var filePath = Path.Combine(uploads, uniqueFileName);
-                    file.CopyTo(new FileStream(filePath, FileMode.Create));
-                    return Ok(uniqueFileName);
-                }
-                else
-                {
-                    BadRequest();
-                }
+
+                var uniqueFileName = GetUniqueFileName(file.FileName);
+                var uploads = Path.Combine(_hostingEnvironment.ContentRootPath, FolderName);
+                var filePath = Path.Combine(uploads, uniqueFileName);
+                file.CopyTo(new FileStream(filePath, FileMode.Create));
+                return Ok(uniqueFileName);
+
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
-
-            return Ok();
         }
 
         private string GetUniqueFileName(string fileName)

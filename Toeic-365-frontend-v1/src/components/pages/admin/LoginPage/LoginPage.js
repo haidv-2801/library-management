@@ -88,7 +88,6 @@ function LoginPage(props) {
 
     baseApi.post(
       (res) => {
-        debugger;
         authCtx.login(res.token, res.userInfo);
         // window.history.back();
         const path = selector.history;

@@ -25,6 +25,7 @@ using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.Owin.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.Net.Http.Headers;
 
 namespace TOE.TOEIC.Web
 {
@@ -49,9 +50,9 @@ namespace TOE.TOEIC.Web
                     builder =>
                     {
                         builder.AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader().AllowAnyOrigin();
-            });
+                                .AllowAnyMethod()
+                                .AllowAnyHeader();
+                    });
             });
 
             // Config authenication
@@ -154,13 +155,18 @@ namespace TOE.TOEIC.Web
                 FileProvider = new PhysicalFileProvider(
            Path.Combine(env.ContentRootPath, "Uploads")),
                 RequestPath = "/uploads",
-                OnPrepareResponse = ctx => {
-                    ctx.Context.Response.Headers.Append("Access-Control-Allow-Origin", "*");
-                    ctx.Context.Response.Headers.Append("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+                OnPrepareResponse = ctx =>
+                {
+                    const int durationInSeconds = 86400;
+                    ctx.Context.Response.Headers[HeaderNames.CacheControl] = "public,max-age=" + durationInSeconds;
+
+                    ctx.Context.Response.Headers[HeaderNames.AccessControlAllowOrigin] = "*";
+                    ctx.Context.Response.Headers[HeaderNames.AccessControlMaxAge] = durationInSeconds.ToString();
+                    ctx.Context.Response.Headers[HeaderNames.Vary] = "Accept-Encoding";
                 },
             });
 
-            
+
 
             // using Microsoft.Extensions.FileProviders;
             // using System.IO;
@@ -172,7 +178,7 @@ namespace TOE.TOEIC.Web
                 EnableDirectoryBrowsing = true
             });
 
-            
+
             app.UseStaticFiles(); // For the wwwroot folder.
             app.UseCors();
             app.UseAuthentication();
