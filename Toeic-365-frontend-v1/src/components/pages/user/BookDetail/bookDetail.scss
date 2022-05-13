@@ -64,13 +64,21 @@
     .book-detail {
       &__infomation {
         width: 100%;
-        display: flex;
         border: 1px solid #bbbbbb;
         padding: 8px 16px;
-        flex-wrap: wrap;
+        display: flex;
+        flex-direction: column;
 
         & > * {
-          flex: 1;
+          width: 100%;
+          display: flex;
+          flex-wrap: wrap;
+        }
+
+        & > .info > * {
+          &:not(b) {
+            flex: 1;
+          }
         }
 
         &-col {
@@ -135,5 +143,15 @@
     display: flex;
     gap: 16px;
     flex-wrap: wrap;
+  }
+
+  a {
+    cursor: pointer;
+  }
+
+  .text-underline {
+    text-decoration: underline;
+    cursor: pointer;
+    font-style: italic;
   }
 }

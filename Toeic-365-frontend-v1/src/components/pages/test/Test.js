@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Document, Page } from 'react-pdf';
+import Message from '../../atomics/base/Message/Message';
 
 function MyPdf() {
   const [numPages, setNumPages] = useState(null);
@@ -11,12 +12,7 @@ function MyPdf() {
 
   return (
     <div>
-      <iframe
-        allowFullScreen={true}
-        src="https://drive.google.com/viewerng/viewer?embedded=true&url=http://infolab.stanford.edu/pub/papers/google.pdf#toolbar=0&scrollbar=0"
-        frameBorder="0"
-        scrolling="auto"
-      ></iframe>
+      <Message title={'test title'} />
     </div>
   );
 }

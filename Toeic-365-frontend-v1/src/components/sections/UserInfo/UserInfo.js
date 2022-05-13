@@ -2,12 +2,12 @@ import React, { useState, useRef, useContext } from 'react';
 import PopupSelection from '../../atomics/base/PopupSelection/PopupSelection';
 import PopupSelectionV1 from '../../atomics/base/PopupSelectionV1/PopupSelection';
 import Avatar from '../../../assets/images/me.jpg';
-import { buildClass } from '../../../constants/commonFunction';
+import { buildClass, isInAdminPage } from '../../../constants/commonFunction';
 import { AuthContext } from '../../../contexts/authContext';
 import useOnClickOutside from '../../../hooks/useClickOutSide';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './userInfo.scss';
-import { PATH_NAME } from '../../../constants/commonConstant';
+import { COMMON_AVATAR, PATH_NAME } from '../../../constants/commonConstant';
 
 const UserInfo = () => {
   const authCtx = useContext(AuthContext);
@@ -60,8 +60,10 @@ const UserInfo = () => {
             // history('/login');
             //Xóa cache chrome
             authCtx.logout();
+            if (isInAdminPage()) {
+              window.location.replace(PATH_NAME.LOGIN);
+            }
             // window.location.replace(PATH_NAME.HOME);
-            window.location.replace(PATH_NAME.LOGIN);
           } else if (data.value === POPUP_SELECTION_VALUES.USER_INFOMATION) {
             navigate(PATH_NAME.USER);
           } else if (data.value === POPUP_SELECTION_VALUES.ADMIN_PAGE) {
@@ -75,9 +77,7 @@ const UserInfo = () => {
         <div className="user-avatar">
           <img
             src={
-              authCtx.auth()?.avatar
-                ? authCtx.auth()?.avatar
-                : 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/220px-User_icon_2.svg.png'
+              authCtx.auth()?.avatar ? authCtx.auth()?.avatar : COMMON_AVATAR
             }
             alt="avatar"
           />

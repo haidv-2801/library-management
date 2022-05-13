@@ -2,12 +2,14 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState, useRef, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { format } from 'react-string-format';
+import { Toast } from 'primereact/toast';
 import {
   BOOK_FORMAT,
   BUTTON_SHAPE,
   BUTTON_THEME,
   BUTTON_TYPE,
   PATH_NAME,
+  REQUIRED_FILEDS_BORROWING_BOOK,
   TEXT_FALL_BACK,
 } from '../../../../constants/commonConstant';
 import END_POINT from '../../../../constants/endpoint';
@@ -25,6 +27,8 @@ import Button from '../../../atomics/base/Button/Button';
 import { Tooltip } from 'antd';
 import { AuthContext } from '../../../../contexts/authContext';
 import { isArray } from 'lodash';
+import { getUserID } from '../../../../constants/commonAuth';
+import Message from '../../../atomics/base/Message/Message';
 
 BookDetail.propTypes = {
   titlePage: PropTypes.string,
@@ -37,9 +41,12 @@ function BookDetail(props) {
   const params = useParams();
   const navigate = useNavigate();
   const cancelRequestRef = useRef();
+  const toast = useRef(null);
+
   const context = useContext(AuthContext);
   const [dataDetail, setDataDetail] = useState({});
   const [isShowPreview, setIsShowPreview] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     getDetailBook(params?.id);
@@ -65,8 +72,7 @@ function BookDetail(props) {
     );
   };
 
-  const item = () => {
-    debugger;
+  const bookItem = () => {
     let authors = ParseJson(dataDetail.author);
     if (isArray(authors))
       authors = authors?.map((item) => <div className="tag">{item}</div>);
@@ -130,7 +136,59 @@ function BookDetail(props) {
     if (!context.isLoggedIn) {
       navigate(PATH_NAME.LOGIN);
     } else {
+      REQUIRED_FILEDS_BORROWING_BOOK;
+      const userID = getUserID();
+      getUserByID(userID)
+        .then((res) => {
+          //Xem user hiện tại đã đủ thông tin chưa
+          const requireFields = Object.values(REQUIRED_FILEDS_BORROWING_BOOK);
+          const isEnough = requireFields.every(
+            (item) => res[item.en] && res[item.en]?.trim() != ''
+          );
+          if (isEnough) {
+          } else {
+            let err =
+                'Vui lòng {0} đầy đủ thông tin {1} để có thể tiếp thục thao tác.',
+              lostField = requireFields
+                .filter((item) => !res[item.en] || res[item.en]?.trim() === '')
+                .map((item) => item.vi);
+
+            setErrorMessage(
+              format(
+                err,
+                <span
+                  onClick={() => {
+                    navigate(PATH_NAME.USER);
+                  }}
+                  className="text-underline"
+                >
+                  cập nhật
+                </span>,
+                <b style={{ color: '' }}>{lostField.join(', ')}</b>
+              )
+            );
+          }
+        })
+        .catch((err) => {
+          toast.current.show({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Có lỗi xảy ra',
+            life: 3000,
+          });
+        });
     }
+  };
+
+  const getUserByID = (id) => {
+    return baseApi.get(
+      null,
+      null,
+      null,
+      format(END_POINT.TOE_GET_USER_BY_ID, id),
+      null,
+      null
+    );
   };
 
   const handleBuying = () => {};
@@ -138,39 +196,42 @@ function BookDetail(props) {
   const renderInformation = () => {
     return (
       <div className="book-detail__infomation">
-        <div className="book-detail__infomation-col">
-          <div className="infomation-col__title toe-font-label">
-            Thông tin xếp giá
+        {errorMessage ? <Message title={errorMessage} /> : null}
+        <div className="info">
+          <div className="book-detail__infomation-col">
+            <div className="infomation-col__title toe-font-label">
+              Thông tin xếp giá
+            </div>
+            <div className="infomation-col__title-row toe-font-body">
+              Tổng số bản: {dataDetail?.amount ?? TEXT_FALL_BACK.TYPE_4}
+            </div>
+            <div className="infomation-col__title-row toe-font-body">
+              Tổng số bản rỗi: {dataDetail?.available ?? TEXT_FALL_BACK.TYPE_4}
+            </div>
+            <div className="infomation-col__title-row toe-font-body">
+              Tổng số bản đang đặt chỗ:{' '}
+              {dataDetail?.reserved ?? TEXT_FALL_BACK.TYPE_4}
+            </div>
           </div>
-          <div className="infomation-col__title-row toe-font-body">
-            Tổng số bản: {dataDetail?.amount ?? TEXT_FALL_BACK.TYPE_4}
+          <div className="book-detail__infomation-col">
+            <div className="infomation-col__title toe-font-label">Thao tác</div>
+            <div className="infomation-col__title-row toe-font-body">
+              <a onClick={handleBorrowing}>Đặt mượn</a>
+              <span className="toe-font-hint">
+                (Yêu cầu có hiệu lực 2 ngày từ khi đặt mượn)
+              </span>
+            </div>
+            <div className="infomation-col__title-row toe-font-body">
+              <a onClick={handleBuying}>Đặt mua</a>
+            </div>
           </div>
-          <div className="infomation-col__title-row toe-font-body">
-            Tổng số bản rỗi: {dataDetail?.available ?? TEXT_FALL_BACK.TYPE_4}
-          </div>
-          <div className="infomation-col__title-row toe-font-body">
-            Tổng số bản đang đặt chỗ:{' '}
-            {dataDetail?.reserved ?? TEXT_FALL_BACK.TYPE_4}
-          </div>
-        </div>
-        <div className="book-detail__infomation-col">
-          <div className="infomation-col__title toe-font-label">Thao tác</div>
-          <div className="infomation-col__title-row toe-font-body">
-            <a onClick={handleBorrowing}>Đặt mượn</a>
-            <span className="toe-font-hint">
-              (Yêu cầu có hiệu lực 2 ngày từ khi đặt mượn)
-            </span>
-          </div>
-          <div className="infomation-col__title-row toe-font-body">
-            <a onClick={handleBuying}>Đặt mua</a>
-          </div>
-        </div>
-        <div className="book-detail__infomation-col">
-          <div className="infomation-col__title toe-font-label">Từ khóa</div>
-          <div className="infomation-col__title-row infomation-col__title-row__tags toe-font-body">
-            {dataDetail?.bookName?.split(' ').map((item) => (
-              <div className="tag">{item}</div>
-            ))}
+          <div className="book-detail__infomation-col">
+            <div className="infomation-col__title toe-font-label">Từ khóa</div>
+            <div className="infomation-col__title-row infomation-col__title-row__tags toe-font-body">
+              {dataDetail?.bookName?.split(' ').map((item) => (
+                <div className="tag">{item}</div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -188,7 +249,7 @@ function BookDetail(props) {
           <div className="toe-book-detail-page__body">
             <div className="toe-book-detail-page__body-main">
               <div className="toe-book-detail-page__body-main__left toe-font-body">
-                <div className="__row">{item()}</div>
+                <div className="__row">{bookItem()}</div>
                 <div className="__row">
                   <Tooltip title="Xem trước PDF">
                     <div style={{ width: 'fit-content' }}>
@@ -222,6 +283,7 @@ function BookDetail(props) {
           </div>
         </div>
         <Footer />
+        <Toast ref={toast}></Toast>
       </div>
     </Layout>
   );

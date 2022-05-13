@@ -452,3 +452,13 @@ export const SECTION_TEXT = {
   E_DOCUMENT_NEW: 'Tài liệu số',
   BORROWED_EDOCUMENTS_A_LOT: 'Tài liệu số mượn nhiều',
 };
+
+export const REQUIRED_FILEDS_BORROWING_BOOK = {
+  FULL_NAME: { en: 'fullName', vi: 'Họ và tên' },
+  EMAIL: { en: 'email', vi: 'Email' },
+  PHONE_NUMBER: { en: 'phoneNumber', vi: 'Số điện thoại' },
+  ADDRESS: { en: 'address', vi: 'Địa chỉ' },
+};
+
+export const COMMON_AVATAR =
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/220px-User_icon_2.svg.png';

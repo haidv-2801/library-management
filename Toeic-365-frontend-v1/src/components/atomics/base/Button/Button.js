@@ -30,6 +30,7 @@ Button.propTypes = {
   shape: PropTypes.oneOf([BUTTON_SHAPE.ROUND, BUTTON_SHAPE.NORMAL]),
   disabled: PropTypes.bool,
   onClick: PropTypes.func,
+  width: PropTypes.number,
 };
 
 Button.defaultProps = {
@@ -44,6 +45,7 @@ Button.defaultProps = {
   onClick: () => {},
   disabled: false,
   shape: BUTTON_SHAPE.ROUND,
+  width: null,
 };
 
 function Button(props) {
@@ -59,12 +61,13 @@ function Button(props) {
     onClick,
     disabled,
     shape,
+    width,
   } = props;
 
   return (
     <div
       id={id}
-      style={style}
+      style={{ maxWidth: width, ...style }}
       className={buildClass([
         'toe-font-body',
         'toe-btn',

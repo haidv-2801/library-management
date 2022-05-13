@@ -225,7 +225,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
             if (account != null)
             {
                 if (account.Status == false) return null;
-                return new { userInfo = new { roles = new string[] { "ROLE_ADMIN" }, Email = account.Email, UserName = account.UserName, FullName = account.FullName, PhoneNumer = account.PhoneNumber, CreatedDate = account.CreatedDate, Avatar = account.Avatar }, token = GenerateJSONWebToken(account) };
+                return new { userInfo = new { roles = new string[] { "ROLE_ADMIN" }, Email = account.Email, UserName = account.UserName, FullName = account.FullName, PhoneNumer = account.PhoneNumber, CreatedDate = account.CreatedDate, Avatar = account.Avatar, UserID = account.AccountID }, token = GenerateJSONWebToken(account) };
             }
 
             return account;

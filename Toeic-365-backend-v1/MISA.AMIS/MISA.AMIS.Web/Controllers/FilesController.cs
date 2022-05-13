@@ -48,7 +48,6 @@ namespace TOE.TOEIC.Web.Controllers
         {
             try
             {
-
                 var uniqueFileName = GetUniqueFileName(file.FileName);
                 var uploads = Path.Combine(_hostingEnvironment.ContentRootPath, FolderName);
                 var filePath = Path.Combine(uploads, uniqueFileName);

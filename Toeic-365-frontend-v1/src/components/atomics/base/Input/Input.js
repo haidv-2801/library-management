@@ -93,7 +93,6 @@ function Input(props) {
     onKeyDown,
     onBlur,
   } = props;
-
   const ref = useRef('');
   const [delayValue, setDelayValue] = useState(defaultValue);
 

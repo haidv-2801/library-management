@@ -1,4 +1,9 @@
-import { GUID_NULL, TEXT_FALL_BACK, SECTION_TEXT } from './commonConstant';
+import {
+  GUID_NULL,
+  TEXT_FALL_BACK,
+  SECTION_TEXT,
+  PATH_NAME,
+} from './commonConstant';
 
 /**
  * Build ra classname
@@ -795,6 +800,13 @@ export const DowloadFile = (url, fileName) => {};
  */
 export const genFileNameWithTime = (prefix = 'image') => {
   return prefix + '_' + moment().format('HHmmss_DDMMYYYY');
+};
+
+/**
+ *
+ */
+export const isInAdminPage = () => {
+  return window.location.pathname.indexOf(PATH_NAME.ADMIN) >= 0;
 };
 
 export const DOCUMENT_SECTION = {
