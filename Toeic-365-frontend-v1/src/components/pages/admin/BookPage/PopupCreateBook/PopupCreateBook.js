@@ -217,8 +217,6 @@ function PopupCreateBook(props) {
               }
             />
           </div>
-        </div>
-        <div className="row">
           <div className="col">
             <TreeSelect
               label="Thể loại"
@@ -228,6 +226,16 @@ function PopupCreateBook(props) {
               prefixValue={'Thể loại'}
               onChange={(data) => {
                 setDataCreate({ ...dataCreate, categoryID: data.value });
+              }}
+            />
+          </div>
+          <div className="col">
+            <Input
+              name="Số lượng bản ghi"
+              label={'Số lượng bản ghi'}
+              defaultValue={dataCreate?.amount ?? 1}
+              onChange={(data) => {
+                setDataCreate({ ...dataCreate, amount: data.value });
               }}
             />
           </div>

@@ -82,6 +82,7 @@ export const CHECKBOX_TYPE = {
 export const DATE_FORMAT = {
   TYPE_1: 'DD-MM-YYYY HH:mm:ss',
   TYPE_2: 'HH:mm DD-MM-YYYY',
+  TYPE_3: 'DD-MM-YYYY',
 };
 
 export const OPERATOR = {
@@ -462,3 +463,17 @@ export const REQUIRED_FILEDS_BORROWING_BOOK = {
 
 export const COMMON_AVATAR =
   'https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/220px-User_icon_2.svg.png';
+
+//#region book
+export const RESERVATION_STATUS = {
+  WAITING: 0,
+  PENDING: 1,
+  CANCELED: 2,
+  NONE: 3,
+};
+
+export const CLAIM = {
+  MAX_BOOKS_ISSUED_TO_A_USER: 5,
+  MAX_LENDING_DAYS: 10,
+};
+//#endregion

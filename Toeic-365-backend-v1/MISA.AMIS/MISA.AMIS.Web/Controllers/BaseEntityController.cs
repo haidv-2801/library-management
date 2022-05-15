@@ -158,7 +158,7 @@ namespace TOE.TOEIC.Web.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Error put {typeof(TEntity).Name}:" + ex.Message);
-                throw;
+                return BadRequest(ex.Message);
             }
            
         }

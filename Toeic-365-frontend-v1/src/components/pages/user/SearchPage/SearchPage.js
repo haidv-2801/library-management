@@ -74,19 +74,6 @@ function SearchPage(props) {
   const [defaultFilterType, setDefaultFilterType] = useState(0);
   const [commonSearchValue, setCommonSearchValue] = useState('');
 
-  const fake = Array.from(Array(8).keys()).map((item, _) => (
-    <Book
-      key={_}
-      className="toe-book-page__body-content__book"
-      bookTitle="Lập dự án kinh doanh và triển khai sản xuất đơn hàng áo Măng tô nữ trong sản xuất may công nghiệp"
-      bookAuthor="Nguyễn Thị Thảo"
-      bookType={BOOK_FORMAT.EBOOK}
-      onClick={() => {
-        navigate('item-type/2342');
-      }}
-    />
-  ));
-
   const params = useParams();
   const { pathname } = useLocation();
   const navigate = useNavigate();

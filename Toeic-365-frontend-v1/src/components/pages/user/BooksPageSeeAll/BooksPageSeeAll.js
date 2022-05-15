@@ -39,16 +39,6 @@ BooksPageSeeAll.propTypes = {
 
 BooksPageSeeAll.defaultProps = { titlePage: '' };
 
-const fake = Array.from(Array(8).keys()).map((item, _) => (
-  <Book
-    key={_}
-    className="toe-book-see-all-page__body-content__book"
-    bookTitle="Lập dự án kinh doanh và triển khai sản xuất đơn hàng áo Măng tô nữ trong sản xuất may công nghiệp"
-    bookAuthor="Nguyễn Thị Thảo"
-    bookType={BOOK_FORMAT.EBOOK}
-  />
-));
-
 function BooksPageSeeAll(props) {
   const { children, titlePage } = props;
   const VIEW_TYPE = {
@@ -115,13 +105,13 @@ function BooksPageSeeAll(props) {
 
   useEffect(() => {
     let moreFilter = [];
-    if (cateParam != -1) {
+    if (cateParam != -1 && cateParam != null) {
       moreFilter = [OPERATOR.AND, ['categoryID', OPERATOR.EQUAL, cateParam]];
     }
 
-    if (searchParam?.trim()) {
+    if (textSearchRef.current?.trim()) {
       moreFilter.push(OPERATOR.AND);
-      moreFilter.push(['bookName', OPERATOR.CONTAINS, searchParam]);
+      moreFilter.push(['bookName', OPERATOR.CONTAINS, textSearchRef.current]);
     }
 
     getNewPaperDocuments(
@@ -171,47 +161,6 @@ function BooksPageSeeAll(props) {
     navigate(bookID);
   };
 
-  const fake = useMemo(() => {
-    return Array.from(Array(8).keys()).map((item, _) => (
-      <div key={_} className="toe-book-see-all-page__body-content__item">
-        <Book
-          className="toe-book-see-all-page__body-content__book"
-          bookTitle="Lập dự án kinh doanh và triển khai sản xuất đơn hàng áo Măng tô nữ trong sản xuất may công nghiệp"
-          bookAuthor="Nguyễn Thị Thảo"
-          bookType={BOOK_FORMAT.EBOOK}
-          onClick={handleViewDetail}
-        />
-        {viewType === VIEW_TYPE.SMALL && (
-          <div className="toe-book-see-all-page__body-content__item-info">
-            <h2
-              onClick={handleViewDetail}
-              className="toe-book-see-all-page__body-content__item-info__row toe-font-label"
-            >
-              Lập dự án kinh doanh và triển khai sản xuất đơn hàng áo Măng tô nữ
-              trong sản xuất may công nghiệp
-            </h2>
-            <div className="toe-book-see-all-page__body-content__item-info__row">
-              <span className="toe-font-label">Loại tài liệu:</span>{' '}
-              <span className="toe-font-body">Tài liệu giấy</span>
-            </div>
-            <div className="toe-book-see-all-page__body-content__item-info__row">
-              <span className="toe-font-label">Tác giả:</span>
-              <span className="toe-font-body">Đỗ Văn Hải</span>
-            </div>
-            <div className="toe-book-see-all-page__body-content__item-info__row">
-              <span className="toe-font-label">Nhà xuất bản:</span>
-              <span className="toe-font-body">Kim Đồng</span>
-            </div>
-            <div className="toe-book-see-all-page__body-content__item-info__row">
-              <span className="toe-font-label">Thông tin xếp giá:</span>
-              <span className="toe-font-body">C1</span>
-            </div>
-          </div>
-        )}
-      </div>
-    ));
-  }, [viewType]);
-
   const renderReport = (title) => {
     return (
       <div className="toe-book-see-all-page__body-section">
@@ -233,6 +182,7 @@ function BooksPageSeeAll(props) {
             bookTitle={item?.bookName}
             bookAuthor="Nguyễn Thị Thảo"
             bookType={item?.bookFormat}
+            image={item?.image}
             onClick={() => handleViewDetail(item.bookID)}
           />
           {viewType === VIEW_TYPE.SMALL && (
@@ -291,7 +241,7 @@ function BooksPageSeeAll(props) {
   };
 
   const handleFilterByCate = ({ categoryID }) => {
-    if (searchParam == null || textSearchRef.current) {
+    if (searchParam == null || !textSearchRef.current?.trim()) {
       setSearchParams({ categoryID });
     } else {
       setSearchParams({

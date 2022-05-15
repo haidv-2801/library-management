@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState, useRef, useContext } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { format } from 'react-string-format';
 import { Toast } from 'primereact/toast';
 import {
@@ -21,7 +21,7 @@ import axios from 'axios';
 import baseApi from '../../../../api/baseApi';
 import SmartText from '../../../atomics/base/SmartText/SmartText';
 import { getBookType } from '../function';
-import { ParseJson } from '../../../../constants/commonFunction';
+import { buildClass, ParseJson } from '../../../../constants/commonFunction';
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 import Button from '../../../atomics/base/Button/Button';
 import { Tooltip } from 'antd';
@@ -29,6 +29,10 @@ import { AuthContext } from '../../../../contexts/authContext';
 import { isArray } from 'lodash';
 import { getUserID } from '../../../../constants/commonAuth';
 import Message from '../../../atomics/base/Message/Message';
+import { appAction } from '../../../../redux/slices/appSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { CartContext } from '../../../../contexts/cartContext';
+import { ConfirmPopup, confirmPopup } from 'primereact/confirmpopup';
 
 BookDetail.propTypes = {
   titlePage: PropTypes.string,
@@ -40,13 +44,17 @@ function BookDetail(props) {
   const { children, titlePage } = props;
   const params = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const cancelRequestRef = useRef();
   const toast = useRef(null);
 
   const context = useContext(AuthContext);
+  const cartContext = useContext(CartContext);
   const [dataDetail, setDataDetail] = useState({});
   const [isShowPreview, setIsShowPreview] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [visible, setVisible] = useState(false);
+  const { pathname, search } = useLocation();
 
   useEffect(() => {
     getDetailBook(params?.id);
@@ -63,6 +71,9 @@ function BookDetail(props) {
     baseApi.get(
       (res) => {
         setDataDetail(res);
+        if (!res.available) {
+          setErrorMessage('Tài liệu tạm thời không có sẵn');
+        }
       },
       (err) => {},
       () => {},
@@ -84,6 +95,7 @@ function BookDetail(props) {
           bookAuthor={ParseJson(dataDetail?.author)?.[0]}
           bookType={dataDetail?.bookFormat}
           onClick={() => {}}
+          image={dataDetail?.image}
         />
         <div className="toe-book-detail-page__item-info">
           <h2
@@ -135,8 +147,8 @@ function BookDetail(props) {
   const handleBorrowing = () => {
     if (!context.isLoggedIn) {
       navigate(PATH_NAME.LOGIN);
+      dispatch(appAction.changeHistory([pathname + search]));
     } else {
-      REQUIRED_FILEDS_BORROWING_BOOK;
       const userID = getUserID();
       getUserByID(userID)
         .then((res) => {
@@ -146,6 +158,7 @@ function BookDetail(props) {
             (item) => res[item.en] && res[item.en]?.trim() != ''
           );
           if (isEnough) {
+            handleAddToCard(dataDetail);
           } else {
             let err =
                 'Vui lòng {0} đầy đủ thông tin {1} để có thể tiếp thục thao tác.',
@@ -177,6 +190,19 @@ function BookDetail(props) {
             life: 3000,
           });
         });
+    }
+  };
+
+  const handleAddToCard = (dataDetail) => {
+    const success = cartContext.add({ id: dataDetail?.bookID, amount: 1 });
+    if (success) {
+      setVisible(true);
+      toast.current.show({
+        severity: 'success',
+        summary: 'Thành công',
+        detail: 'Thêm sách thành công',
+        life: 3000,
+      });
     }
   };
 
@@ -216,13 +242,24 @@ function BookDetail(props) {
           <div className="book-detail__infomation-col">
             <div className="infomation-col__title toe-font-label">Thao tác</div>
             <div className="infomation-col__title-row toe-font-body">
-              <a onClick={handleBorrowing}>Đặt mượn</a>
+              <a
+                id="js-button-add-to-cart"
+                className={buildClass([!dataDetail?.available && 'disable'])}
+                onClick={handleBorrowing}
+              >
+                Đặt mượn
+              </a>
               <span className="toe-font-hint">
                 (Yêu cầu có hiệu lực 2 ngày từ khi đặt mượn)
               </span>
             </div>
             <div className="infomation-col__title-row toe-font-body">
-              <a onClick={handleBuying}>Đặt mua</a>
+              <a
+                className={buildClass([!dataDetail?.available && 'disable'])}
+                onClick={handleBuying}
+              >
+                Đặt mua
+              </a>
             </div>
           </div>
           <div className="book-detail__infomation-col">
@@ -241,6 +278,12 @@ function BookDetail(props) {
   const handlePreview = () => {
     setIsShowPreview((p) => !p);
   };
+
+  const acceptGoToCart = () => {
+    navigate(PATH_NAME.USER + '?view=gio-hang');
+  };
+
+  const rejectGoToCart = () => {};
 
   return (
     <Layout>
@@ -284,6 +327,20 @@ function BookDetail(props) {
         </div>
         <Footer />
         <Toast ref={toast}></Toast>
+        <ConfirmPopup
+          className="toe-font-body"
+          target={document.getElementById('js-button-add-to-cart')}
+          visible={visible}
+          onHide={() => setVisible(false)}
+          message="Bạn có muốn đi đến giỏ hàng?"
+          icon="pi pi-shopping-cart"
+          acceptLabel="Đồng ý"
+          rejectLabel="Hủy"
+          acceptClassName="btn-accept-go-cart"
+          rejectClassName="btn-accept-go-cart"
+          accept={acceptGoToCart}
+          reject={rejectGoToCart}
+        />
       </div>
     </Layout>
   );

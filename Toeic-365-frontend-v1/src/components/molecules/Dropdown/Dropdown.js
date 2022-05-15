@@ -25,6 +25,7 @@ Dropdown.propTypes = {
   prefixValue: PropTypes.any,
   scrollHeight: PropTypes.number,
   label: PropTypes.any,
+  panelClassName: PropTypes.string,
 };
 
 Dropdown.defaultProps = {
@@ -47,6 +48,7 @@ Dropdown.defaultProps = {
   onChange: () => {},
   scrollHeight: 300,
   label: null,
+  panelClassName: '',
 };
 
 function Dropdown(props) {
@@ -68,6 +70,7 @@ function Dropdown(props) {
     scrollHeight,
     wrapperClass,
     label,
+    panelClassName,
   } = props;
 
   const customItemTemplate = ({ label, value, subLabel = null }) => {
@@ -119,7 +122,7 @@ function Dropdown(props) {
       <DropdownPrime
         id={id}
         style={style}
-        panelClassName="toe-font-body"
+        panelClassName={buildClass([panelClassName, 'toe-font-body'])}
         className={buildClass(['toe-dropdown', 'toe-font-body', className])}
         value={defaultValue}
         options={options}

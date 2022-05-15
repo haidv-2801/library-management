@@ -20,6 +20,28 @@
 
     .toe-btn {
       margin-right: 8px;
+      border-radius: 2px;
+      height: 32px;
+      background-color: var(--main-color1);
+      padding: 0px 8px;
+    }
+
+    .toe-dropdown {
+      height: 32px;
+      max-width: 158px;
+
+      .p-dropdown-item__value-display {
+        font-size: 12px;
+      }
+
+      .p-dropdown-label.p-inputtext {
+        padding: 0;
+        display: flex;
+        align-items: center;
+        padding-left: 12px;
+        font-family: 'OpenSans-Medium', sans-serif;
+        color: #000000;
+      }
     }
   }
 
@@ -54,5 +76,19 @@
     &:active {
       opacity: 0.8;
     }
+  }
+}
+
+.toe-dropdown-panel {
+  .p-dropdown-item__label-display {
+    font-size: 12px;
+  }
+
+  .p-dropdown-items-wrapper.p-dropdown-items {
+    font-size: 12px;
+  }
+
+  .p-dropdown-item {
+    padding: 4px 12px !important;
   }
 }

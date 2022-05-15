@@ -333,8 +333,6 @@ function UserPage(props) {
       displayOrder: dataCreate.displayOrder || 0,
     };
 
-    debugger;
-
     baseApi.put(
       (res) => {
         if (res.data > 0) {

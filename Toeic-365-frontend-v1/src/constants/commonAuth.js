@@ -9,6 +9,11 @@ export const getUserName = () => {
   return user?.fullName;
 };
 
+export const getAccountName = () => {
+  const user = JSON.parse(decodeURIComponent(getLocalStorage(USER_INFO)));
+  return user?.userName;
+};
+
 export const getUserID = () => {
   const user = JSON.parse(decodeURIComponent(getLocalStorage(USER_INFO)));
   return user?.userID;

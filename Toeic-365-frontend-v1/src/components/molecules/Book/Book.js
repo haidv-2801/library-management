@@ -16,6 +16,8 @@ Book.propTypes = {
   bookTitle: PropTypes.string,
   bookAuthor: PropTypes.string,
   onClick: PropTypes.func,
+  hasBottomTitle: PropTypes.bool,
+  image: PropTypes.string,
 };
 
 Book.defaultProps = {
@@ -26,11 +28,22 @@ Book.defaultProps = {
   bookTitle: '',
   bookAuthor: '',
   onClick: () => {},
+  hasBottomTitle: true,
+  image: '',
 };
 
 function Book(props) {
-  const { id, style, bookType, bookTitle, bookAuthor, className, onClick } =
-    props;
+  const {
+    id,
+    style,
+    bookType,
+    bookTitle,
+    bookAuthor,
+    className,
+    onClick,
+    hasBottomTitles,
+    image,
+  } = props;
 
   const BG_COLOR = [
     '#E4CA99',
@@ -60,20 +73,29 @@ function Book(props) {
           <BookOutlined />
         </div>
       </Tooltip>
-      <div
-        style={{
-          backgroundColor: BG_COLOR[getRandomInt(BG_COLOR.length)],
-        }}
-        className="toe-book__title"
-      >
-        {bookTitle || TEXT_FALL_BACK.TYPE_1}
-      </div>
+      {image ? (
+        <Tooltip title={bookTitle}>
+          <img className="toe-book__title" src={image} />
+        </Tooltip>
+      ) : (
+        <div
+          style={{
+            backgroundColor: BG_COLOR[getRandomInt(BG_COLOR.length)],
+          }}
+          className="toe-book__title"
+        >
+          {bookTitle || TEXT_FALL_BACK.TYPE_1}
+        </div>
+      )}
+
       <div className="toe-book__author">
         {bookAuthor || TEXT_FALL_BACK.TYPE_1}
       </div>
-      <div className="toe-book__bottom-title">
-        <SmartText rows={2}>{bookTitle || TEXT_FALL_BACK.TYPE_1}</SmartText>
-      </div>
+      {hasBottomTitles && (
+        <div className="toe-book__bottom-title">
+          <SmartText rows={2}>{bookTitle || TEXT_FALL_BACK.TYPE_1}</SmartText>
+        </div>
+      )}
     </div>
   );
 }

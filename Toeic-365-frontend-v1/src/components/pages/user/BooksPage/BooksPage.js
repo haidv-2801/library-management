@@ -202,6 +202,7 @@ function BooksPage(props) {
           onClick={() => {
             navigate(section + '/' + book.bookID);
           }}
+          image={book.image}
         />
       );
     });

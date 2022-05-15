@@ -10,7 +10,8 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
-import MainLogo from '../../../../assets/images/toeiclogo.png';
+// import MainLogo from '../../../../assets/images/toeiclogo.png';
+import MainLogo from '../../../../assets/images/logo_utc.jpg';
 import useOnClickOutside from '../../../../hooks/useClickOutSide';
 import useWindowResize from '../../../../hooks/useWindowResize';
 import Loading from '../../../atomics/base/Loading/Loading';
@@ -224,9 +225,9 @@ function Layout(props) {
             className="toe-layout-admin-page-container__header-left"
           >
             <img className="logo-app" src={MainLogo} alt="Thư viện GTVT" />
-            <b className="name-app">
+            {/* <b className="name-app">
               Thư viện <span style={{ color: '#43c1c9' }}>GTVT</span>
-            </b>
+            </b> */}
           </div>
           <div className="toe-layout-admin-page-container__header-right">
             <UserInfo />

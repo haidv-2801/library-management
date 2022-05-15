@@ -104,9 +104,10 @@
           width: 100%;
           align-items: center;
           justify-content: flex-start;
-          padding-left: 16px;
+          padding: 0px 16px;
           cursor: pointer;
           border-bottom: 1px solid #e5e5e5;
+          position: relative;
 
           &:hover {
             background-color: #e5e5e5;
@@ -117,6 +118,20 @@
             background-color: #e5e5e5;
           }
         }
+
+        .p-badge.p-badge-danger {
+          margin-left: auto;
+        }
+
+        .dot-notification {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background-color: red;
+          position: absolute;
+          top: 10px;
+          left: 7px;
+        }
       }
     }
 
@@ -126,6 +141,9 @@
 
     &-right {
       padding: 3rem;
+      min-width: 562px;
+      display: flex;
+      flex-direction: column;
 
       &__title {
         margin-bottom: 24px;
@@ -146,20 +164,116 @@
 
         & > * {
           flex: 1;
+          flex-shrink: 0;
         }
 
         &.bottom-buttons {
           display: flex;
           justify-content: flex-end;
+          margin-top: auto;
         }
 
         &.status {
           width: 100%;
+          display: flex;
+          flex-direction: column;
+          margin-bottom: 0;
+          align-items: flex-start;
+
           & > * {
             flex: unset;
           }
         }
       }
     }
+  }
+
+  .toe-book-see-all-page__body-section {
+    display: flex;
+    // border: 1px solid #d1d7dc;
+    padding: 10px;
+
+    .total-record {
+      margin-top: 24px;
+    }
+  }
+
+  .toe-book-see-all-page__body-content__item-cart {
+    .toe-book-see-all-page__body-content__book {
+      height: 160px;
+    }
+
+    .toe-book-see-all-page__body-content.view-type-small {
+      max-height: 180px;
+    }
+  }
+
+  .toe-book-see-all-page__body-content__item-info {
+    max-width: 340px;
+  }
+
+  .toe-book-see-all-page__body-content__cart-control {
+    padding-left: 16px;
+    font-size: 13px;
+    cursor: pointer;
+    min-width: 100px;
+    text-align: right;
+    line-height: 24px;
+    margin-left: auto;
+    display: flex;
+    flex-direction: column;
+
+    .row {
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 12px;
+
+      &.remove {
+        width: fit-content;
+        margin-left: auto;
+      }
+
+      &.amount {
+        margin-top: auto;
+
+        &:hover {
+          border-radius: unset;
+          background-color: transparent;
+        }
+      }
+
+      &:hover {
+        border-radius: 8px;
+        background-color: #f5f5f5;
+      }
+    }
+  }
+
+  .toe-book-see-all-page__body-content__book {
+    margin-bottom: 0px;
+  }
+
+  .pi {
+    &.pi-trash,
+    &.pi-send {
+      margin-left: 8px;
+    }
+  }
+
+  .nodata {
+    display: flex;
+
+    &__button {
+      cursor: pointer;
+      padding-left: 8px;
+      text-decoration: underline;
+    }
+  }
+
+  .button-send-request {
+    width: fit-content;
+    flex: none !important;
   }
 }

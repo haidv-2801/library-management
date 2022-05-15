@@ -120,8 +120,8 @@ function DynamicMenu(props) {
           onChange={(data) => setDataSearchTool(data.value)}
           options={SEARCH_TOOLS}
           placeholder="Chọn công cụ tìm kiếm"
-          showClear
           hasSubLabel
+          panelClassName="toe-dropdown-panel"
         />
       </div>
     </div>

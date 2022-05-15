@@ -91,6 +91,13 @@
           margin-bottom: 16px;
           border-bottom: 1px solid #bbbbbb;
           padding-bottom: 8px;
+
+          &-row {
+            .disable {
+              text-decoration: line-through;
+              color: #bbbbbb;
+            }
+          }
         }
       }
     }
@@ -153,5 +160,15 @@
     text-decoration: underline;
     cursor: pointer;
     font-style: italic;
+  }
+}
+
+.btn-accept-go-cart {
+  height: 32px;
+  font-size: 14px;
+  font-weight: 400;
+
+  &:focus {
+    box-shadow: none;
   }
 }

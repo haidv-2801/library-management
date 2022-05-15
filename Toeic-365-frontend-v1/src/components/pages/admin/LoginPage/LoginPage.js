@@ -59,49 +59,19 @@ function LoginPage(props) {
 
     //login
     callApiLogin();
-
-    // setIsLoading(true);
-    // setTimeout(() => {
-    //   setIsLoading(false);
-    //   navigate('/admin');
-    // }, 1000);
   };
 
   const callApiLogin = () => {
-    // const fake = {
-    //   token: 'bnh5yzdirjinqaorq0ox1tf383nb3xr',
-    //   userInfo: { fullName: 'DOVANHAI', roles: ['ROLE_ADMIN'] },
-    // };
-    // authCtx.login(fake.token, fake.userInfo);
-    // // window.history.back();
-    // const path = selector.history;
-    // if (path?.length) {
-    //   navigate(path[0]);
-    //   return;
-    // }
-
-    // navigate('/admin');
-
-    // setTimeout(() => {
-    //   dispatch(appAction.changeHistory([]));
-    // }, 0);
-
     baseApi.post(
       (res) => {
         authCtx.login(res.token, res.userInfo);
-        // window.history.back();
         const path = selector.history;
-
         if (path?.length) {
           navigate(path[0]);
+          dispatch(appAction.changeHistory([]));
           return;
         }
-
         navigate('/admin');
-
-        setTimeout(() => {
-          dispatch(appAction.changeHistory([]));
-        }, 0);
       },
       (err) => {
         switch (err.response.status) {

@@ -85,4 +85,10 @@ const END_POINT = (function () {
   }
 })();
 
+export const GEOTARGET_ENDPOINT = {
+  VN_CITY_PROVINCE: 'https://provinces.open-api.vn/api/',
+  VN_DISTRICT: 'https://provinces.open-api.vn/api/p/{0}?depth=2',
+  VN_WARD_COMMUNE: 'https://provinces.open-api.vn/api/d/{0}?depth=2',
+};
+
 export default END_POINT;
