@@ -60,7 +60,7 @@ function BookDetail(props) {
     getDetailBook(params?.id);
 
     return () => {
-      if (cancelRequestRef.current) {
+      if (cancelRequestRef.current?.Cancel) {
         cancelRequestRef.current?.Cancel();
       }
     };
@@ -194,7 +194,11 @@ function BookDetail(props) {
   };
 
   const handleAddToCard = (dataDetail) => {
-    const success = cartContext.add({ id: dataDetail?.bookID, amount: 1 });
+    const success = cartContext.add({
+      id: dataDetail?.bookID,
+      quantity: 1,
+      ...dataDetail,
+    });
     if (success) {
       setVisible(true);
       toast.current.show({
@@ -218,6 +222,12 @@ function BookDetail(props) {
   };
 
   const handleBuying = () => {};
+
+  const bookNotAvailable = () => {
+    return (
+      !dataDetail?.available || dataDetail?.amount === dataDetail?.reserved
+    );
+  };
 
   const renderInformation = () => {
     return (
@@ -244,7 +254,7 @@ function BookDetail(props) {
             <div className="infomation-col__title-row toe-font-body">
               <a
                 id="js-button-add-to-cart"
-                className={buildClass([!dataDetail?.available && 'disable'])}
+                className={buildClass([bookNotAvailable() && 'disable'])}
                 onClick={handleBorrowing}
               >
                 Đặt mượn
@@ -255,7 +265,7 @@ function BookDetail(props) {
             </div>
             <div className="infomation-col__title-row toe-font-body">
               <a
-                className={buildClass([!dataDetail?.available && 'disable'])}
+                className={buildClass([bookNotAvailable() && 'disable'])}
                 onClick={handleBuying}
               >
                 Đặt mua

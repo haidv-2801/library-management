@@ -74,7 +74,7 @@ function LoginPage(props) {
         navigate('/admin');
       },
       (err) => {
-        switch (err.response.status) {
+        switch (err?.response?.status) {
           case STATUS_CODE.UNAUTHORIZE:
             toast.current.show({
               severity: 'error',

@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using TOE.TOEIC.Entities;
 using TOE.TOEIC.ApplicationCore.Entities;
 using System.ComponentModel;
+using System.Threading.Tasks;
 
 namespace TOE.TOEIC.ApplicationCore.Interfaces
 {
@@ -330,6 +331,9 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
             if (displayName == null) return typeof(TEntity).Name;
             return displayName.DisplayName;
         }
+
+        public async Task<IEnumerable<TEntity>> QueryUsingCommandTextAsync(string commandText) => _dbConnection.Query<TEntity>(commandText, commandType: CommandType.Text).ToList();
+
         #endregion
     }
 }

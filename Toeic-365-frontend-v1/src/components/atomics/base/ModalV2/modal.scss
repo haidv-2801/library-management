@@ -43,6 +43,12 @@
     padding: 0px 24px;
     overflow: auto;
     padding-top: 16px;
+
+    .p-dialog-header-icon {
+      &:focus {
+        box-shadow: none !important;
+      }
+    }
   }
 
   .p-dialog-header {
@@ -50,6 +56,8 @@
 
     .p-dialog-header-icon {
       border-radius: 8px;
+      box-shadow: none !important;
+      outline: none;
     }
 
     .pi {

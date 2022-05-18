@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace TOE.TOEIC.ApplicationCore.Interfaces
 {
@@ -78,5 +79,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         /// <returns>Thực thể</returns>
         /// CREATED BY: DVHAI (07/07/2021)
         IEnumerable<TEntity> GetEntitiesByProperty(string propertyName, object propertyValue);
+
+        Task<IEnumerable<TEntity>> QueryUsingCommandTextAsync(string commandText);
     }
 }

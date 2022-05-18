@@ -121,6 +121,10 @@ namespace TOE.TOEIC.Web
             //elastic search
             services.AddScoped(typeof(IElasticRepository<>), typeof(ElasticRepository<>));
             services.AddScoped(typeof(IElasticService<>), typeof(ElasticService<>));
+
+            //book order
+            services.AddScoped<IBookOrderRepository, BookOrderRepository>();
+            services.AddScoped<IBookOrderService, BookOrderService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

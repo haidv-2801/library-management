@@ -1,15 +1,14 @@
-import PropTypes from 'prop-types';
-import React, { useState, useEffect, useRef, useContext } from 'react';
-import {
-  useNavigate,
-  useLocation,
-  useParams,
-  useSearchParams,
-} from 'react-router-dom';
-import baseApi from '../../../../api/baseApi';
-import { Toast } from 'primereact/toast';
-import { Skeleton } from 'primereact/skeleton';
+import { CameraOutlined, SaveOutlined } from '@ant-design/icons';
+import { Tag } from 'antd';
+import moment from 'moment';
 import { Badge } from 'primereact/badge';
+import { Toast } from 'primereact/toast';
+import PropTypes from 'prop-types';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { format } from 'react-string-format';
+import { Tooltip as TooltipPrime } from 'primereact/tooltip';
+import baseApi from '../../../../api/baseApi';
 import {
   getAccountName,
   getUserID,
@@ -30,26 +29,23 @@ import {
   slugify,
 } from '../../../../constants/commonFunction';
 import END_POINT, { GEOTARGET_ENDPOINT } from '../../../../constants/endpoint';
-import { USER_INFO } from '../../../../contexts/authContext';
-import Input from '../../../atomics/base/Input/Input';
-import TextAreaBase from '../../../atomics/base/TextArea/TextArea';
-import Footer from '../../../sections/User/Footer/Footer';
-import Layout from '../../../sections/User/Layout/Layout';
-import { format } from 'react-string-format';
-import './userProfile.scss';
-import Button from '../../../atomics/base/Button/Button';
-import { Tag } from 'antd';
-import { SaveOutlined, CameraOutlined } from '@ant-design/icons';
-import moment from 'moment';
-import Spinner from '../../../atomics/base/Spinner/Spinner';
-import InputPassword from '../../../atomics/base/InputPassword/InputPassword';
-import { AuthContext } from '../../../../contexts/authContext';
+import { AuthContext, USER_INFO } from '../../../../contexts/authContext';
 import { CartContext } from '../../../../contexts/cartContext';
-import Dropdown from '../../../molecules/Dropdown/Dropdown';
+import Button from '../../../atomics/base/Button/Button';
+import DatePicker from '../../../atomics/base/DatePicker/DatePicker';
+import Input from '../../../atomics/base/Input/Input';
+import InputPassword from '../../../atomics/base/InputPassword/InputPassword';
+import Modal from '../../../atomics/base/ModalV2/Modal';
 import Smarttext from '../../../atomics/base/SmartText/SmartText';
-import { getBookType } from '../function';
+import Spinner from '../../../atomics/base/Spinner/Spinner';
+import TextAreaBase from '../../../atomics/base/TextArea/TextArea';
 import Book from '../../../molecules/Book/Book';
-import { keyBy, merge, value, values } from 'lodash';
+import Dropdown from '../../../molecules/Dropdown/Dropdown';
+import Layout from '../../../sections/User/Layout/Layout';
+import { Tooltip } from 'antd';
+import { getBookType } from '../function';
+import './userProfile.scss';
+import { cloneDeep } from 'lodash';
 
 UserProfile.propTypes = {
   titlePage: PropTypes.string,
@@ -76,6 +72,12 @@ function UserProfile(props) {
     { label: MENU_NAME.BORROW_RETURN, value: slugify(MENU_NAME.BORROW_RETURN) },
   ];
 
+  const DEFAULT_BOOK_CHECKOUT = {
+    item: null,
+    from: null,
+    to: null,
+  };
+
   const params = useParams();
 
   const [searchParams, setSearchParams] = useSearchParams({
@@ -90,6 +92,7 @@ function UserProfile(props) {
   const currentView = searchParams.get('view');
   const [isHoverAvt, setIsHoverAvt] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [bookCheckout, setBookCheckout] = useState(DEFAULT_BOOK_CHECKOUT);
 
   const CONFIG_BUTTON = {
     theme: BUTTON_THEME.THEME_1,
@@ -109,6 +112,7 @@ function UserProfile(props) {
     districts: null,
     ward_commune_s: null,
   });
+  const [isShowPopupChooseTime, setIsShowPopupChooseTime] = useState(false);
 
   //cart
   const [cart, setCart] = useState([]);
@@ -140,7 +144,7 @@ function UserProfile(props) {
       case slugify(MENU_NAME.BORROW_RETURN):
         break;
       case slugify(MENU_NAME.CART):
-        getBooks();
+        // getBooks();
         break;
       default:
         setIsLoading(false);
@@ -157,25 +161,20 @@ function UserProfile(props) {
     baseApi.get(
       (res) => {
         if (res && res?.length) {
-          // setCart(
-          //   res.filter((item) =>
-          //     cartCtx.cart.some((c) => c.id === item.bookID)
-          //   ) ?? []
-          // );
+          let cartC = cloneDeep(cartCtx.cart);
+          if (cartC == null) return;
 
-          let cartC = cartCtx.cart;
-
-          cartC = cartC.map((itm) => ({
+          cartC = cartC?.map((itm) => ({
             ...res.find((item) => item.bookID === itm.id && item),
             ...itm,
           }));
 
-          setCart(cartC);
+          setCart(cloneDeep(cartC));
         }
         setIsLoading(false);
       },
       (err) => {
-        setIsLoading(true);
+        setIsLoading(false);
       },
       () => {},
       END_POINT.TOE_GET_BOOKS,
@@ -482,8 +481,21 @@ function UserProfile(props) {
     setCart(cart.filter((item) => item.bookID !== bookID));
   };
 
-  const renderSection = () => {
-    if (!cart?.length)
+  const handleCheckout = (item = null) => {
+    setIsShowPopupChooseTime(true);
+    //Checkout 1 sản phẩm
+    if (item) {
+      setBookCheckout({ ...bookCheckout, item: [item] });
+    }
+    //Checkout tất cả cart
+    else {
+      setBookCheckout({ ...bookCheckout, item: cartCtx.cart });
+    }
+  };
+
+  const cartView = () => {
+    const cart = cartCtx.cart;
+    if (!cart || !cart?.length)
       return (
         <div className="nodata">
           Không có dữ liệu.
@@ -497,67 +509,6 @@ function UserProfile(props) {
           </a>
         </div>
       );
-    const _data = cart.map((item, _) => {
-      return (
-        <div
-          key={_}
-          className="toe-book-see-all-page__body-content__item toe-book-see-all-page__body-content__item-cart"
-        >
-          <Book
-            className="toe-book-see-all-page__body-content__book"
-            bookTitle={item?.bookName}
-            bookAuthor="Nguyễn Thị Thảo"
-            bookType={item?.bookFormat}
-            hasBottomTitle={false}
-            // onClick={() => handleViewDetail(item.bookID)}
-            image={item?.image}
-          />
-          {true && (
-            <div className="toe-book-see-all-page__body-content__item-info">
-              <h2
-                // onClick={() => handleViewDetail(item.bookID)}
-                className="toe-book-see-all-page__body-content__item-info__row toe-font-label"
-              >
-                {item?.bookName}
-              </h2>
-              <div className="toe-book-see-all-page__body-content__item-info__row">
-                <span className="toe-font-label">Loại tài liệu:</span>{' '}
-                <span className="toe-font-body">
-                  {getBookType(item?.bookFormat)}
-                </span>
-              </div>
-              <div className="toe-book-see-all-page__body-content__item-info__row">
-                <span className="toe-font-label">Tác giả:</span>
-                <span className="toe-font-body list-author">
-                  {ParseJson(item?.author)?.join(', ')}
-                </span>
-              </div>
-              <div className="toe-book-see-all-page__body-content__item-info__row">
-                <span className="toe-font-label">Nhà xuất bản:</span>
-                <span className="toe-font-body">{item?.publisher}</span>
-              </div>
-            </div>
-          )}
-          <div className="toe-book-see-all-page__body-content__cart-control toe-font-body">
-            <div
-              className="row remove toe-font-label"
-              style={{ color: 'red', fontSize: 13 }}
-              onClick={() => handleRemoveCartItem(item)}
-            >
-              Xóa <i className="pi pi-trash"></i>
-            </div>
-            <div className="row" onClick={() => handleCheckout(item)}>
-              Gửi yêu cầu mượn
-              <i className={'pi pi-send'}></i>
-            </div>
-
-            <div className="row amount toe-font-label">
-              Số lượng: {item?.amount ?? 0}
-            </div>
-          </div>
-        </div>
-      );
-    });
 
     return (
       <>
@@ -567,7 +518,65 @@ function UserProfile(props) {
               'toe-book-see-all-page__body-content view-type-small',
             ])}
           >
-            {_data}
+            {cart.map((item, _) => {
+              return (
+                <div
+                  key={_}
+                  className="toe-book-see-all-page__body-content__item toe-book-see-all-page__body-content__item-cart"
+                >
+                  <Book
+                    className="toe-book-see-all-page__body-content__book"
+                    bookTitle={item?.bookName}
+                    bookAuthor="Nguyễn Thị Thảo"
+                    bookType={item?.bookFormat}
+                    hasBottomTitle={false}
+                    // onClick={() => handleViewDetail(item.bookID)}
+                    image={item?.image}
+                  />
+                  <div className="toe-book-see-all-page__body-content__item-info">
+                    <h2
+                      // onClick={() => handleViewDetail(item.bookID)}
+                      className="toe-book-see-all-page__body-content__item-info__row toe-font-label"
+                    >
+                      {item?.bookName}
+                    </h2>
+                    <div className="toe-book-see-all-page__body-content__item-info__row">
+                      <span className="toe-font-label">Loại tài liệu:</span>{' '}
+                      <span className="toe-font-body">
+                        {getBookType(item?.bookFormat)}
+                      </span>
+                    </div>
+                    <div className="toe-book-see-all-page__body-content__item-info__row">
+                      <span className="toe-font-label">Tác giả:</span>
+                      <span className="toe-font-body list-author">
+                        {ParseJson(item?.author)?.join(', ')}
+                      </span>
+                    </div>
+                    <div className="toe-book-see-all-page__body-content__item-info__row">
+                      <span className="toe-font-label">Nhà xuất bản:</span>
+                      <span className="toe-font-body">{item?.publisher}</span>
+                    </div>
+                  </div>
+                  <div className="toe-book-see-all-page__body-content__cart-control toe-font-body">
+                    <div
+                      className="row remove toe-font-label"
+                      style={{ color: 'red', fontSize: 13 }}
+                      onClick={() => handleRemoveCartItem(item)}
+                    >
+                      Xóa <i className="pi pi-trash"></i>
+                    </div>
+                    <div className="row" onClick={() => handleCheckout(item)}>
+                      Gửi yêu cầu mượn
+                      <i className={'pi pi-send'}></i>
+                    </div>
+
+                    <div className="row amount toe-font-label">
+                      Số lượng: {item?.quantity ?? 0}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
           <div className="toe-font-title total-record">
             Tổng: {cartCtx.total} bản ghi
@@ -585,19 +594,12 @@ function UserProfile(props) {
             }
             theme={BUTTON_THEME.THEME_1}
             {...CONFIG_BUTTON}
-            disabled={isLoading}
-            onClick={() => {
-              setIsLoading(true);
-              setTimeout(() => setIsLoading(false), 1000);
-            }}
+            disabled={isLoading || !cartCtx.total}
+            onClick={() => handleCheckout()}
           />
         </div>
       </>
     );
-  };
-
-  const cartView = () => {
-    return renderSection();
   };
 
   const secureView = () => {
@@ -616,7 +618,6 @@ function UserProfile(props) {
             })
           }
         />
-
         <InputPassword
           className="mb-3"
           hasRequiredLabel
@@ -629,7 +630,6 @@ function UserProfile(props) {
             })
           }
         />
-
         <InputPassword
           className="mb-3"
           hasRequiredLabel
@@ -649,7 +649,7 @@ function UserProfile(props) {
             type={BUTTON_TYPE.LEFT_ICON}
             leftIcon={<SaveOutlined />}
             theme={BUTTON_THEME.THEME_1}
-            onClick={handleChangeMenuView}
+            onClick={handleChangePw}
             {...CONFIG_BUTTON}
           />
         </div>
@@ -755,25 +755,6 @@ function UserProfile(props) {
     );
   };
 
-  const handleClickButtonBottom = () => {
-    switch (currentView) {
-      case slugify(MENU_NAME.ACCOUNT):
-        handleSave();
-        break;
-      case slugify(MENU_NAME.SECURITY):
-        handleChangePw();
-        break;
-      case slugify(MENU_NAME.NOTIFICATION):
-        break;
-      case slugify(MENU_NAME.BORROW_RETURN):
-        break;
-
-      default:
-        view = accountView();
-        break;
-    }
-  };
-
   const getLabelByView = (view) => {
     let _label = MENU_NAME.ACCOUNT;
     switch (view) {
@@ -796,6 +777,61 @@ function UserProfile(props) {
     }
     return _label;
   };
+
+  const onClosePopupTime = () => {
+    setIsShowPopupChooseTime(false);
+    setBookCheckout(DEFAULT_BOOK_CHECKOUT);
+  };
+
+  const handleAcceptBorrow = () => {
+    const body = {
+      BookOrderInfomation: JSON.stringify(bookCheckout.item),
+      Note: 'note',
+      FromDate: bookCheckout.from,
+      DueDate: bookCheckout.to,
+      createdDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
+      createdBy: getUserName(),
+      modifiedDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
+      modifiedBy: getUserName(),
+    };
+
+    baseApi.post(
+      (res) => {
+        if (res.data > 0) {
+          setIsShowPopupChooseTime(false);
+          toast.current.show({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Gửi yêu cầu thành công',
+            life: 3000,
+          });
+        } else {
+          toast.current.show({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Gửi yêu cầu thất bại',
+            life: 3000,
+          });
+        }
+      },
+      (err) => {
+        toast.current.show({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Có lỗi xảy ra',
+          life: 3000,
+        });
+      },
+      () => {},
+      END_POINT.TOE_INSERT_BOOK_ORDER,
+      body,
+      null
+    );
+  };
+
+  const totalBorrowingDay = Math.abs(
+    moment(bookCheckout?.from).diff(moment(bookCheckout?.to), 'days')
+  );
 
   return (
     <Layout>
@@ -821,8 +857,8 @@ function UserProfile(props) {
                       dataDetail?.avatar ? dataDetail?.avatar : COMMON_AVATAR
                     }
                     alt="avatar"
-                    onerror={(e) => {
-                      e.onerror = null;
+                    onError={(e) => {
+                      e.onError = null;
                       e.src = COMMON_AVATAR;
                     }}
                   />
@@ -852,6 +888,75 @@ function UserProfile(props) {
           </div>
         </div>
       </div>
+      <Modal
+        onClose={onClosePopupTime}
+        maximizable={false}
+        show={isShowPopupChooseTime}
+        innnerClassName="toe-popup-choose-time"
+        title={'Thông tin mượn'}
+        footerRight={[
+          <Button
+            onClick={onClosePopupTime}
+            theme={BUTTON_THEME.THEME_6}
+            name="Hủy"
+          />,
+          <Button
+            disabled={!bookCheckout?.from || !bookCheckout?.to}
+            name="Xác nhận"
+            onClick={handleAcceptBorrow}
+          />,
+        ]}
+      >
+        <div className="toe-popup-choose-time__body">
+          <div className="toe-popup-choose-time__row tags toe-font-label">
+            Thông tin:{' '}
+            <div className="toe-font-body">
+              {bookCheckout?.item?.map((item) => (
+                <div className="tag">{item?.bookName}</div>
+              ))}
+            </div>
+          </div>
+
+          <div className="toe-popup-choose-time__row toe-font-label">
+            Tổng số lượng: <div className="toe-font-body">{cartCtx.total}</div>
+          </div>
+
+          <div className="toe-popup-choose-time__row toe-font-label">
+            Tổng số ngày:{' '}
+            <div className="toe-font-body">
+              {isNaN(totalBorrowingDay) ? 0 : totalBorrowingDay}
+            </div>
+          </div>
+
+          <div className="toe-popup-choose-time__row">
+            <div className="_col">
+              <div className="_col-label toe-font-label">Từ</div>
+              <DatePicker
+                onChange={({ value }) => {
+                  setBookCheckout({
+                    ...bookCheckout,
+                    from: value,
+                    to: new Date(moment(value).add(10, 'days')),
+                  });
+                }}
+                defaultValue={bookCheckout.from}
+              />
+            </div>
+            <div className="_col">
+              <div className="_col-label toe-font-label">Đến</div>
+              <DatePicker
+                onChange={({ value }) => {
+                  setBookCheckout({ ...bookCheckout, to: value });
+                }}
+                defaultValue={bookCheckout.to}
+                disabled={!bookCheckout?.from}
+                min={new Date(moment(bookCheckout?.from).add(1, 'days'))}
+                max={new Date(moment(bookCheckout?.from).add(10, 'days'))}
+              />
+            </div>
+          </div>
+        </div>
+      </Modal>
       <Toast ref={toast}></Toast>
     </Layout>
   );

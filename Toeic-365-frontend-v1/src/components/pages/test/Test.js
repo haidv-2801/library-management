@@ -1,18 +1,16 @@
 import React, { useState } from 'react';
 import { Document, Page } from 'react-pdf';
+import { buildClass } from '../../../constants/commonFunction';
+import DatePicker from '../../atomics/base/DatePicker/DatePicker';
 import Message from '../../atomics/base/Message/Message';
 
 function MyPdf() {
-  const [numPages, setNumPages] = useState(null);
-  const [pageNumber, setPageNumber] = useState(1);
-
-  function onDocumentLoadSuccess({ numPages }) {
-    setNumPages(numPages);
-  }
-
   return (
     <div>
-      <Message title={'test title'} />
+      <DatePicker
+        // defaultValue={new Date(Date.now())}
+        className={buildClass(['toe-font-body toe-date-picker'])}
+      />
     </div>
   );
 }

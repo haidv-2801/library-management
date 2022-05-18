@@ -7,10 +7,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TOE.TOEIC.ApplicationCore.Entities
 {
-    public class BookOrderDTO : BaseEntity
+    public class BookOrderInformationDTO : BookItem
     {
         #region Property
-      
+        public string id { get; set; }
+
+        public int quantity { get; set; }
         #endregion
     }
 }

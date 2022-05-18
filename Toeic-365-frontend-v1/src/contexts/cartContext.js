@@ -16,7 +16,7 @@ export const CartContext = React.createContext({
 
 /**
  * id
- * amount
+ * quantity
  */
 const CartContextProvider = (props) => {
   const INITITAL = ParseJson(getLocalStorage(CART_ID));
@@ -26,17 +26,14 @@ const CartContextProvider = (props) => {
     try {
       let newCart = null;
       if (!cart) {
-        newCart = [{ id: item.id, amount: item.amount }];
+        newCart = [item];
       } else {
         let existsItem = cart.find((c) => c.id === item.id);
         if (existsItem) {
-          existsItem.amount += item.amount;
-          newCart = [
-            { id: existsItem.id, amount: existsItem.amount },
-            ...cart.filter((item) => item.id !== existsItem.id),
-          ];
+          existsItem.quantity += item.quantity;
+          newCart = [item, ...cart.filter((item) => item.id !== existsItem.id)];
         } else {
-          newCart = [{ id: item.id, amount: item.amount }, ...cart];
+          newCart = [item, ...cart];
         }
       }
       setCart(newCart);
@@ -50,8 +47,13 @@ const CartContextProvider = (props) => {
   const remove = (id) => {
     if (!cart) return;
     let newCart = cart.filter((item) => item.id !== id);
-    setCart(newCart);
-    setLocalStorage(newCart);
+    if (newCart.length === 0) {
+      setCart(null);
+      window.localStorage.removeItem(CART_ID);
+    } else {
+      setCart(newCart);
+      setLocalStorage(CART_ID, newCart);
+    }
   };
 
   const checkout = async () => {
@@ -60,7 +62,7 @@ const CartContextProvider = (props) => {
 
   const calcTotal = () => {
     if (!cart) return 0;
-    const total = cart.reduce((a, b) => Number(a.amount) + Number(b.amount));
+    const total = cart.reduce((pre, next) => pre + next.quantity, 0);
     return total;
   };
 

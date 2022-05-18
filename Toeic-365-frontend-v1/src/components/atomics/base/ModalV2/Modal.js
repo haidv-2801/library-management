@@ -15,6 +15,7 @@ Modal.propTypes = {
   footerRight: PropTypes.array,
   noXIcon: PropTypes.bool,
   show: PropTypes.bool,
+  maximizable: PropTypes.bool,
 };
 
 Modal.defaultProps = {
@@ -28,6 +29,7 @@ Modal.defaultProps = {
   footerRight: [],
   noXIcon: false,
   show: false,
+  maximizable: true,
 };
 
 function Modal(props) {
@@ -43,6 +45,7 @@ function Modal(props) {
     noXIcon,
     children,
     show,
+    maximizable,
   } = props;
 
   const renderFooter = () => {
@@ -79,7 +82,7 @@ function Modal(props) {
       style={style}
       header={renderTitle()}
       visible={show}
-      maximizable
+      maximizable={maximizable}
       modal
       resizable={true}
       footer={renderFooter()}

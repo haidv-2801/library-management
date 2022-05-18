@@ -2,7 +2,7 @@ import { SearchOutlined } from '@ant-design/icons';
 import { Tooltip } from 'antd';
 import { Chip } from 'primereact/chip';
 import PropTypes from 'prop-types';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
   useLocation,
   useNavigate,
@@ -95,6 +95,7 @@ function BooksPage(props) {
   const [defaultFilterType, setDefaultFilterType] = useState(0);
   const [commonSearchValue, setCommonSearchValue] = useState('');
   const [bookSection, setBookSection] = useState({});
+  const [isPressBtnSearch, setIsPressBtnSearch] = useState(false);
 
   //Data tai lieu
   const [documentNew, setDocumentNew] = useState({
@@ -107,6 +108,13 @@ function BooksPage(props) {
     data: [],
     totalRecord: 0,
     isLoading: false,
+  });
+
+  const [documentSearch, setDocumentSearch] = useState({
+    data: [],
+    totalRecord: 0,
+    isLoading: false,
+    searchOption: null,
   });
 
   const params = useParams();
@@ -189,7 +197,8 @@ function BooksPage(props) {
   const renderSection = (
     title,
     document = {},
-    section = DOCUMENT_SECTION.DOCUMENT_NEW
+    section = DOCUMENT_SECTION.DOCUMENT_NEW,
+    isAll = false
   ) => {
     const data = document?.data?.map((book) => {
       return (
@@ -218,17 +227,19 @@ function BooksPage(props) {
         >
           {document?.isLoading ? renderSkeleton(5) : data}
         </div>
-        <div className="toe-book-page__body-btn">
-          <Button
-            shape={BUTTON_SHAPE.NORMAL}
-            type={BUTTON_TYPE.RIGHT_ICON}
-            rightIcon={<Chip label={document?.totalRecord} />}
-            onClick={() => {
-              handleClickSeeAll(section);
-            }}
-            name={'Xem tất cả'}
-          />
-        </div>
+        {!isAll ? (
+          <div className="toe-book-page__body-btn">
+            <Button
+              shape={BUTTON_SHAPE.NORMAL}
+              type={BUTTON_TYPE.RIGHT_ICON}
+              rightIcon={<Chip label={document?.totalRecord} />}
+              onClick={() => {
+                handleClickSeeAll(section);
+              }}
+              name={'Xem tất cả'}
+            />
+          </div>
+        ) : null}
       </div>
     );
   };
@@ -249,6 +260,79 @@ function BooksPage(props) {
     ));
   };
 
+  const handleSearch = () => {
+    if (!commonSearchValue) setIsPressBtnSearch(false);
+    else {
+      getBooksFilter();
+      setIsPressBtnSearch(true);
+    }
+  };
+
+  const getBooksFilter = (body = []) => {
+    let _value = commonSearchValue?.trim();
+    let _filter = [
+      ['IsDeleted', OPERATOR.EQUAL, '0'],
+      OPERATOR.AND,
+      ['Status', OPERATOR.EQUAL, '0'],
+    ];
+    if (body.length) {
+      _filter.push(OPERATOR.AND);
+      _filter.push(body);
+    } else if (_value != '') {
+      _filter.push(OPERATOR.AND);
+      _filter.push([
+        ['BookCode', OPERATOR.CONTAINS, encodeURI(_value)],
+        OPERATOR.OR,
+        ['BookName', OPERATOR.CONTAINS, encodeURI(_value)],
+        OPERATOR.OR,
+        ['Description', OPERATOR.CONTAINS, encodeURI(_value)],
+        OPERATOR.OR,
+        ['Publisher', OPERATOR.CONTAINS, encodeURI(_value)],
+      ]);
+    }
+
+    baseApi.post(
+      (res) => {
+        let _data = res.data.pageData.sort((a, b) => {
+          const time = (date) => new Date(date).getTime();
+          if (time(b?.createdDate) - time(a?.modifiedDate) > 0) {
+            return time(b?.createdDate) - time(a?.createdDate);
+          } else {
+            return time(b?.modifiedDate) - time(a?.modifiedDate);
+          }
+        });
+
+        setDocumentSearch({
+          ...documentSearch,
+          data: _data,
+          totalRecord: res.data.totalRecord,
+          isLoading: false,
+        });
+      },
+      (err) => {
+        setDocumentSearch({
+          ...documentSearch,
+          isLoading: false,
+        });
+      },
+      () => {
+        setDocumentSearch({
+          ...documentSearch,
+          isLoading: true,
+        });
+      },
+      END_POINT.TOE_GET_BOOKS_FILTER,
+      {
+        filter: btoa(JSON.stringify(_filter)),
+        pageSize: 20,
+        pageIndex: 1,
+      },
+      null
+    );
+  };
+
+  const getSearchString = useMemo(() => commonSearchValue, [isPressBtnSearch]);
+
   return (
     <Layout>
       <div className="toe-book-page">
@@ -268,18 +352,21 @@ function BooksPage(props) {
                   defaultValue={defaultFilterType}
                   className="toe-book-page__search-dropdown-filter"
                   wrapperClass="toe-book-page__search-dropdown-filter__wrapper"
+                  onChange={({ value }) => setDefaultFilterType(value)}
                 />
                 <Input
                   autoFocus
-                  onChange={(e) => setCommonSearchValue(e)}
+                  onChange={(e) => {
+                    setCommonSearchValue(e);
+                    // if (isPressBtnSearch && !e) setIsPressBtnSearch(false);
+                  }}
                   placeholder={'Tìm kiếm sách, tin tức, thông báo, tài liệu...'}
                 />
                 <Button
                   type={BUTTON_TYPE.LEFT_ICON}
                   leftIcon={<SearchOutlined />}
                   name={'Tìm kiếm'}
-                  disabled={!commonSearchValue}
-                  onClick={() => {}}
+                  onClick={handleSearch}
                 />
                 <Tooltip title="Bộ lọc">
                   <div
@@ -291,25 +378,41 @@ function BooksPage(props) {
                 </Tooltip>
               </div>
               <div className="toe-book-page__search-engine"></div>
-              {renderSection(
-                SECTION_TEXT.DOCUMENT_NEW,
-                documentNew,
-                DOCUMENT_SECTION.DOCUMENT_NEW
+              {isPressBtnSearch ? (
+                <>
+                  <div className="toe-font-body toe-book-page__search-engine text-search">
+                    Từ khóa tìm kiếm: {getSearchString}
+                  </div>
+                  {renderSection(
+                    'Kết quả',
+                    documentSearch,
+                    DOCUMENT_SECTION.DOCUMENT_NEW
+                  )}
+                </>
+              ) : (
+                <>
+                  {renderSection(
+                    SECTION_TEXT.DOCUMENT_NEW,
+                    documentNew,
+                    DOCUMENT_SECTION.DOCUMENT_NEW
+                  )}
+                  {renderSection(
+                    SECTION_TEXT.BORROWED_DOCUMENTS_A_LOT,
+                    {},
+                    DOCUMENT_SECTION.BORROWED_DOCUMENTS_A_LOT
+                  )}
+                  {renderSection(
+                    SECTION_TEXT.E_DOCUMENT_NEW,
+                    EDocumentNew,
+                    DOCUMENT_SECTION.BORROWED_DOCUMENTS_A_LOT
+                  )}
+                  {renderSection(
+                    SECTION_TEXT.BORROWED_EDOCUMENTS_A_LOT,
+                    DOCUMENT_SECTION.BORROWED_EDOCUMENTS_A_LOT
+                  )}
+                </>
               )}
-              {renderSection(
-                SECTION_TEXT.BORROWED_DOCUMENTS_A_LOT,
-                {},
-                DOCUMENT_SECTION.BORROWED_DOCUMENTS_A_LOT
-              )}
-              {renderSection(
-                SECTION_TEXT.E_DOCUMENT_NEW,
-                EDocumentNew,
-                DOCUMENT_SECTION.BORROWED_DOCUMENTS_A_LOT
-              )}
-              {renderSection(
-                SECTION_TEXT.BORROWED_EDOCUMENTS_A_LOT,
-                DOCUMENT_SECTION.BORROWED_EDOCUMENTS_A_LOT
-              )}
+
               {renderReport('Thống kê')}
             </div>
           </div>
