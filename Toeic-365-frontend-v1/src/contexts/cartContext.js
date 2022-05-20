@@ -11,6 +11,7 @@ export const CartContext = React.createContext({
   total: 0,
   add: () => {},
   remove: () => {},
+  removeAll: () => {},
   checkout: () => {},
 });
 
@@ -56,6 +57,12 @@ const CartContextProvider = (props) => {
     }
   };
 
+  const removeAll = () => {
+    if (!cart) return;
+    setCart(null);
+    window.localStorage.removeItem(CART_ID);
+  };
+
   const checkout = async () => {
     const userID = getUserID();
   };
@@ -72,6 +79,7 @@ const CartContextProvider = (props) => {
     total: calcTotal(),
     add,
     remove,
+    removeAll,
     checkout: checkout,
   };
 

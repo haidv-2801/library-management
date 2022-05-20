@@ -276,9 +276,39 @@
 .selection-notification {
   min-height: 432px;
   max-width: 307px;
+  max-height: 60vh;
+  overflow-y: auto;
+  padding-top: 0px !important;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  // &:hover {
+  //   &::-webkit-scrollbar {
+  //     display: block;
+  //   }
+
+  //   -ms-overflow-style: block;
+  //   scrollbar-width: block;
+  // }
 
   .toe-popup-selection__item {
     height: fit-content;
     padding: 8px 12px;
+    white-space: normal;
+    border-bottom: 1px solid #e9ebee;
+
+    .toe-font-hint {
+      color: #bbbbbb;
+      // text-align: right;
+    }
+  }
+
+  .notification-item__content {
+    margin-bottom: 8px;
   }
 }

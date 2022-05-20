@@ -477,3 +477,5 @@ export const CLAIM = {
   MAX_LENDING_DAYS: 10,
 };
 //#endregion
+
+export const GOOGLE_API_KEY = 'AIzaSyCT4DCFBW26hCC0m2zBlAsnLXQh777UIUY';

@@ -19,9 +19,10 @@ import UserInfo from '../../UserInfo/UserInfo';
 import PopupSelectionV1 from '../../../atomics/base/PopupSelectionV1/PopupSelection';
 import './layout.scss';
 import END_POINT from '../../../../constants/endpoint';
-import { OPERATOR } from '../../../../constants/commonConstant';
+import { OPERATOR, SORT_TYPE } from '../../../../constants/commonConstant';
 import baseApi from '../../../../api/baseApi';
 import moment from 'moment';
+import { Skeleton } from 'primereact/skeleton';
 
 const { Header, Sider, Content } = LayoutAntd;
 const { SubMenu } = Menu;
@@ -113,6 +114,10 @@ function Layout(props) {
           key: '/admin/danh-muc/sach',
           title: 'Ấn phẩm',
         },
+        {
+          key: '/admin/danh-muc/muon-tra',
+          title: 'Mượn trả',
+        },
       ],
     },
   ];
@@ -148,7 +153,7 @@ function Layout(props) {
   const [userSelectValue, setUserSelectValue] = useState();
   const [width, height] = useWindowResize();
   const [notificationPaging, setNotificationPaging] = useState({
-    pageSize: 7,
+    pageSize: 20,
     pageIndex: 1,
   });
   const [dataNotifications, setDataNotifications] = useState({
@@ -187,15 +192,7 @@ function Layout(props) {
     ];
     baseApi.post(
       (res) => {
-        debugger;
-        let _data = res.data.pageData.sort((a, b) => {
-          const time = (date) => new Date(date).getTime();
-          if (time(b?.createdDate) - time(a?.modifiedDate) > 0) {
-            return time(b?.createdDate) - time(a?.createdDate);
-          } else {
-            return time(b?.modifiedDate) - time(a?.modifiedDate);
-          }
-        });
+        let _data = res.data.pageData;
 
         setDataNotifications({ data: _data, isLoading: false });
       },
@@ -208,6 +205,7 @@ function Layout(props) {
         filter: btoa(JSON.stringify(_filter)),
         pageSize: notificationPaging.pageSize,
         pageIndex: notificationPaging.pageIndex,
+        sort: JSON.stringify([['CreatedDate', SORT_TYPE.DESC]]),
       },
       null
     );
@@ -286,6 +284,7 @@ function Layout(props) {
               options={dataNotifications.data.map((item, _) => ({
                 label: (
                   <div className="notification-item">
+                    {' '}
                     <div className="notification-item__content">
                       {item.content}
                     </div>
@@ -297,7 +296,7 @@ function Layout(props) {
                 value: _,
               }))}
             >
-              <i className="pi pi-bell">
+              <i className="pi pi-bell" onClick={() => getNotification()}>
                 {dataNotifications.data.some((it) => it.isReaded === false) && (
                   <div className="dot"></div>
                 )}

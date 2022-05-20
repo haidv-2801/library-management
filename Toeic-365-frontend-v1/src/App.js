@@ -23,6 +23,7 @@ import ReaderPage from './components/pages/admin/ReaderPage/ReaderPage';
 import BookPage from './components/pages/admin/BookPage/BookPage';
 import BooksPageSeeAll from './components/pages/user/BooksPageSeeAll/BooksPageSeeAll';
 import BooksPage from './components/pages/user/BooksPage/BooksPage';
+import BookLendingPage from './components/pages/admin/BookLendingPage/BookLendingPage';
 import Test from './components/pages/test/Test';
 import './main.scss';
 
@@ -239,6 +240,15 @@ function App() {
                 element={
                   <RequiredAuth>
                     <BookPage />
+                  </RequiredAuth>
+                }
+              />
+              <Route
+                exact
+                path="muon-tra"
+                element={
+                  <RequiredAuth>
+                    <BookLendingPage />
                   </RequiredAuth>
                 }
               />

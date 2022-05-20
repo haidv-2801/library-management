@@ -3,14 +3,12 @@ import { Document, Page } from 'react-pdf';
 import { buildClass } from '../../../constants/commonFunction';
 import DatePicker from '../../atomics/base/DatePicker/DatePicker';
 import Message from '../../atomics/base/Message/Message';
+import GoogleMiniMap from '../../molecules/GoogleMiniMap/GoogleMiniMap';
 
 function MyPdf() {
   return (
     <div>
-      <DatePicker
-        // defaultValue={new Date(Date.now())}
-        className={buildClass(['toe-font-body toe-date-picker'])}
-      />
+      <GoogleMiniMap />
     </div>
   );
 }

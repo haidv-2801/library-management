@@ -788,6 +788,7 @@ function UserProfile(props) {
     const body = {
       BookOrderInformation: JSON.stringify(bookCheckout.item),
       Note: 'note',
+      accountID: getUserID(),
       FromDate: bookCheckout.from,
       DueDate: bookCheckout.to,
       createdDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
@@ -808,6 +809,18 @@ function UserProfile(props) {
             detail: 'Gửi yêu cầu thành công',
             life: 3000,
           });
+
+          debugger;
+
+          if (bookCheckout.item.length === cartCtx.size) {
+            cartCtx.removeAll();
+          } else {
+            cartCtx.remove(bookCheckout.item[0].bookID);
+          }
+
+          setTimeout(() => {
+            setBookCheckout(DEFAULT_BOOK_CHECKOUT);
+          }, 0);
         } else {
           toast.current.show({
             severity: 'error',
