@@ -14,9 +14,9 @@ namespace TOE.TOEIC.ApplicationCore.Enums
 
     public static class DataType
     {
-        public static readonly string DATE_TIME = "DateTime"; 
-        public static readonly string INTEGER = "Int32"; 
-        public static readonly string GUID = "Guid"; 
+        public static readonly string DATE_TIME = "DateTime";
+        public static readonly string INTEGER = "Int32";
+        public static readonly string GUID = "Guid";
     }
 
     public static class MenuType
@@ -49,5 +49,21 @@ namespace TOE.TOEIC.ApplicationCore.Enums
     {
         public static readonly int EBOOK = 0;
         public static readonly int PAPER_BACK = 1;
+    }
+
+    public enum ReservationStatus
+    {
+        WAITING = 0,
+        PENDING = 1,
+        CANCELED = 2,
+        NONE = 3
+    }
+
+    public enum BookStatus
+    {
+        AVAILABLE = 1,
+        RESERVED = 3,
+        LOANED = 2,
+        LOST = 0
     }
 }

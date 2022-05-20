@@ -55,6 +55,40 @@
           height: 36px;
         }
       }
+
+      .pi {
+        cursor: pointer;
+        position: relative;
+        font-size: 20px;
+
+        &:hover {
+          font-weight: bold;
+        }
+
+        .dot {
+          position: absolute;
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          top: 0;
+          right: 0;
+          background-color: red;
+        }
+      }
+
+      .notification-item {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 8px;
+
+        &__content {
+        }
+
+        &__time {
+          text-align: right;
+        }
+      }
     }
   }
 
@@ -211,6 +245,8 @@
           display: flex;
           align-items: center;
           gap: 8px;
+          white-space: pre-wrap;
+          flex-shrink: 0;
 
           & > * {
             cursor: pointer;
@@ -234,5 +270,15 @@
 
   .toe-btn {
     --main-color: #43c1c9;
+  }
+}
+
+.selection-notification {
+  min-height: 432px;
+  max-width: 307px;
+
+  .toe-popup-selection__item {
+    height: fit-content;
+    padding: 8px 12px;
   }
 }

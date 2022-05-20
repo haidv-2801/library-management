@@ -84,6 +84,11 @@ const END_POINT = (function () {
      * *Endpoint book order
      */
     TOE_INSERT_BOOK_ORDER: host + 'api/BookOrder/Insert',
+
+    /**
+     * *Endpoint notification
+     */
+    TOE_GET_NOTIFICATIONS_FILTER: host + 'api/Notifications/Filter',
   };
 })();
 

@@ -23,14 +23,18 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
     {
         #region Declare
         IBookOrderRepository _bookOrderRepository;
+        IBaseRepository<BookItem> _baseRepository;
         IBookService _bookService;
+        IBaseRepository<Notification> _notificationRepository;
         #endregion
 
         #region Constructer
-        public BookOrderService(IBookOrderRepository bookRepository, IBookService bookService) : base(bookRepository)
+        public BookOrderService(IBookOrderRepository bookRepository, IBookService bookService, IBaseRepository<BookItem> baseRepository, IBaseRepository<Notification> notificationRepository) : base(bookRepository)
         {
             _bookOrderRepository = bookRepository;
             _bookService = bookService;
+            _baseRepository = baseRepository;
+            _notificationRepository = notificationRepository;
         }
         #endregion
 
@@ -93,9 +97,9 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
 
         public async Task<ServiceResult> InsertBookOrder(BookOrder bookOrder)
         {
-            var bookOrderInformations = (List<BookOrderInformationDTO>)JsonConvert.DeserializeObject<List<BookOrderInformationDTO>>(bookOrder.BookOrderInfomation);
+            var bookOrderInformations = (List<BookOrderInformationDTO>)JsonConvert.DeserializeObject<List<BookOrderInformationDTO>>(bookOrder.BookOrderInformation);
             var validationMessages = new List<string>();
-            var bookIDs = bookOrderInformations.Select(book => book.id).ToList();
+            var bookIDs = bookOrderInformations.Select(book => "'" + book.id + "'").ToList();
             var query = "SELECT * FROM BOOK WHERE BookID IN";
             if (bookIDs.Count > 0)
             {
@@ -109,7 +113,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
                 return _serviceResult;
             }
 
-            var listBookByIDS = (List<BookItem>)await _bookOrderRepository.QueryUsingCommandTextAsync(query);
+            var listBookByIDS = (List<BookItem>)await _baseRepository.QueryUsingCommandTextAsync(query);
             if (listBookByIDS.Count < bookOrderInformations.Count)
             {
                 _serviceResult.Data = 0;
@@ -127,6 +131,17 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
             }
 
             int rowEffects = _bookOrderRepository.Insert(bookOrder);
+            int rowNotificationEffects = _notificationRepository.Insert(new Notification()
+            {
+                Content = string.Format("Bạn có 1 yêu cầu mượn mới từ {0}", bookOrder.CreatedBy),
+                To = Guid.Empty,
+                From = bookOrder.AccountID,
+                CreatedDate = DateTime.Now,
+                CreatedBy = bookOrder.CreatedBy,
+                ModifiedDate = DateTime.Now,
+                ModifiedBy = bookOrder.ModifiedBy
+            });
+
             if (rowEffects > 0)
             {
                 _serviceResult.Data = bookOrder.BookOrderID;

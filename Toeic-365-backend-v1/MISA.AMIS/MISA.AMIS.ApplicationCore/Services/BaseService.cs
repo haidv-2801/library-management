@@ -195,7 +195,7 @@ namespace TOE.TOEIC.ApplicationCore
         /// <param name="entityId">Id của bản ghi</param>
         /// <returns>Bản ghi duy nhất</returns>
         /// CREATED BY: DVHAI (11/07/2021)
-        public async Task<TEntity> GetEntityById(Guid entityId)
+        public TEntity GetEntityById(Guid entityId)
         {
             var entity = _baseRepository.GetEntityById(entityId);
             return entity;

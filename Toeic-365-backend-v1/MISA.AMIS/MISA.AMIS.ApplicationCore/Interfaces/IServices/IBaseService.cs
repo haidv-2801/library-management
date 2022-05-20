@@ -31,7 +31,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         /// <param name="entityId">Id của bản ghi</param>
         /// <returns>Bản ghi thông tin 1 bản ghi</returns>
         /// CREATED BY: DVHAI (07/07/2021)
-        Task<TEntity> GetEntityById(Guid entityId);
+        TEntity GetEntityById(Guid entityId);
 
         /// <summary>
         /// Thêm bản ghi

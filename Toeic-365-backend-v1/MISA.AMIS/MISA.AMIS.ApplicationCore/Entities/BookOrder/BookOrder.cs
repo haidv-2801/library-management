@@ -23,7 +23,7 @@ namespace TOE.TOEIC.ApplicationCore.Entities
 
         public Guid AccountID { get; set; } = Guid.Empty;
 
-        public string BookOrderInfomation { get; set; }
+        public string BookOrderInformation { get; set; }
 
         public string Note { get; set; }
 

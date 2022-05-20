@@ -16,7 +16,12 @@ import useOnClickOutside from '../../../../hooks/useClickOutSide';
 import useWindowResize from '../../../../hooks/useWindowResize';
 import Loading from '../../../atomics/base/Loading/Loading';
 import UserInfo from '../../UserInfo/UserInfo';
+import PopupSelectionV1 from '../../../atomics/base/PopupSelectionV1/PopupSelection';
 import './layout.scss';
+import END_POINT from '../../../../constants/endpoint';
+import { OPERATOR } from '../../../../constants/commonConstant';
+import baseApi from '../../../../api/baseApi';
+import moment from 'moment';
 
 const { Header, Sider, Content } = LayoutAntd;
 const { SubMenu } = Menu;
@@ -142,6 +147,14 @@ function Layout(props) {
   const [menuItemSelected, setmenuItemSelected] = useState(DEFAULT_TITLE);
   const [userSelectValue, setUserSelectValue] = useState();
   const [width, height] = useWindowResize();
+  const [notificationPaging, setNotificationPaging] = useState({
+    pageSize: 7,
+    pageIndex: 1,
+  });
+  const [dataNotifications, setDataNotifications] = useState({
+    data: [],
+    isLoading: false,
+  });
 
   useOnClickOutside(popupSelectionRef, () => {
     setIsShowPopupSelection(false);
@@ -152,6 +165,9 @@ function Layout(props) {
   //#region method
   useEffect(() => {
     document.title = 'Thư viện-365';
+
+    //get notificaiton
+    getNotification();
   }, []);
 
   useEffect(() => {
@@ -161,6 +177,41 @@ function Layout(props) {
       setCollapsedMenu(false);
     }
   }, [width]);
+
+  const getNotification = () => {
+    setDataNotifications({ ...dataNotifications, isLoading: true });
+    let _filter = [
+      ['IsDeleted', OPERATOR.EQUAL, '0'],
+      OPERATOR.AND,
+      ['Status', OPERATOR.EQUAL, '1'],
+    ];
+    baseApi.post(
+      (res) => {
+        debugger;
+        let _data = res.data.pageData.sort((a, b) => {
+          const time = (date) => new Date(date).getTime();
+          if (time(b?.createdDate) - time(a?.modifiedDate) > 0) {
+            return time(b?.createdDate) - time(a?.createdDate);
+          } else {
+            return time(b?.modifiedDate) - time(a?.modifiedDate);
+          }
+        });
+
+        setDataNotifications({ data: _data, isLoading: false });
+      },
+      (err) => {
+        setDataNotifications({ ...dataNotifications, isLoading: false });
+      },
+      () => {},
+      END_POINT.TOE_GET_NOTIFICATIONS_FILTER,
+      {
+        filter: btoa(JSON.stringify(_filter)),
+        pageSize: notificationPaging.pageSize,
+        pageIndex: notificationPaging.pageIndex,
+      },
+      null
+    );
+  };
 
   const handleCollapsed = (state) => {
     setCollapsedMenu(state);
@@ -229,7 +280,29 @@ function Layout(props) {
               Thư viện <span style={{ color: '#43c1c9' }}>GTVT</span>
             </b> */}
           </div>
-          <div className="toe-layout-admin-page-container__header-right">
+          <div className="toe-layout-admin-page-container__header-right toe-font-body">
+            <PopupSelectionV1
+              overlayClassName="selection-notification"
+              options={dataNotifications.data.map((item, _) => ({
+                label: (
+                  <div className="notification-item">
+                    <div className="notification-item__content">
+                      {item.content}
+                    </div>
+                    <div className="notification-item__time toe-font-hint">
+                      {moment(item.createdDate).fromNow()}
+                    </div>
+                  </div>
+                ),
+                value: _,
+              }))}
+            >
+              <i className="pi pi-bell">
+                {dataNotifications.data.some((it) => it.isReaded === false) && (
+                  <div className="dot"></div>
+                )}
+              </i>
+            </PopupSelectionV1>
             <UserInfo />
           </div>
         </div>

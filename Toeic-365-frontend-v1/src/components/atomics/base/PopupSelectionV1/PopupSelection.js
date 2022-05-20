@@ -16,6 +16,8 @@ PopupSelection.propTypes = {
   clickTargetElementRef: PropTypes.any,
   trigger: PropTypes.string,
   placement: PropTypes.string,
+  footer: PropTypes.any,
+  header: PropTypes.any,
 };
 
 PopupSelection.defaultProps = {
@@ -28,6 +30,8 @@ PopupSelection.defaultProps = {
   onChange: () => {},
   trigger: 'click',
   placement: 'bottomRight',
+  footer: null,
+  header: null,
 };
 
 function PopupSelection(props) {
@@ -42,6 +46,8 @@ function PopupSelection(props) {
     trigger,
     placement,
     overlayClassName,
+    footer,
+    header,
   } = props;
 
   const renderOption = () => {
@@ -51,6 +57,7 @@ function PopupSelection(props) {
         style={style}
         className={buildClass(['toe-popup-selection'], className)}
       >
+        <div className="toe-popup-selection__header">{header}</div>
         {options.map((item) => {
           if (item?.isHide) return null;
           return (
@@ -73,6 +80,7 @@ function PopupSelection(props) {
             </div>
           );
         })}
+        <div className="toe-popup-selection__footer">{footer}</div>
       </div>
     );
   };

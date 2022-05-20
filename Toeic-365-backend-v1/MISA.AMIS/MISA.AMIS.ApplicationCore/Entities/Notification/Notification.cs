@@ -34,7 +34,7 @@ namespace TOE.TOEIC.ApplicationCore.Entities
         public string ToEmail { get; set; }
 
         [Display(Name = "Trạng thái đọc")]
-        public bool IsReaded { get; set; }
+        public bool IsReaded { get; set; } = false;
         #endregion
     }
 }

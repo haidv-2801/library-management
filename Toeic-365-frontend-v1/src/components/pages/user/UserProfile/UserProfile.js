@@ -93,6 +93,7 @@ function UserProfile(props) {
   const [isHoverAvt, setIsHoverAvt] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [bookCheckout, setBookCheckout] = useState(DEFAULT_BOOK_CHECKOUT);
+  const [isRequestBorrowing, setIsRequestBorrowing] = useState(false);
 
   const CONFIG_BUTTON = {
     theme: BUTTON_THEME.THEME_1,
@@ -785,7 +786,7 @@ function UserProfile(props) {
 
   const handleAcceptBorrow = () => {
     const body = {
-      BookOrderInfomation: JSON.stringify(bookCheckout.item),
+      BookOrderInformation: JSON.stringify(bookCheckout.item),
       Note: 'note',
       FromDate: bookCheckout.from,
       DueDate: bookCheckout.to,
@@ -795,9 +796,11 @@ function UserProfile(props) {
       modifiedBy: getUserName(),
     };
 
+    setIsRequestBorrowing(true);
+
     baseApi.post(
       (res) => {
-        if (res.data > 0) {
+        if (res.data) {
           setIsShowPopupChooseTime(false);
           toast.current.show({
             severity: 'success',
@@ -813,6 +816,7 @@ function UserProfile(props) {
             life: 3000,
           });
         }
+        setIsRequestBorrowing(false);
       },
       (err) => {
         toast.current.show({
@@ -821,6 +825,7 @@ function UserProfile(props) {
           detail: 'Có lỗi xảy ra',
           life: 3000,
         });
+        setIsRequestBorrowing(false);
       },
       () => {},
       END_POINT.TOE_INSERT_BOOK_ORDER,
@@ -901,9 +906,15 @@ function UserProfile(props) {
             name="Hủy"
           />,
           <Button
-            disabled={!bookCheckout?.from || !bookCheckout?.to}
+            disabled={
+              !bookCheckout?.from || !bookCheckout?.to || isRequestBorrowing
+            }
             name="Xác nhận"
             onClick={handleAcceptBorrow}
+            type={
+              isRequestBorrowing ? BUTTON_TYPE.RIGHT_ICON : BUTTON_TYPE.NORMAL
+            }
+            rightIcon={<i className="pi pi-spin pi-spinner"></i>}
           />,
         ]}
       >
