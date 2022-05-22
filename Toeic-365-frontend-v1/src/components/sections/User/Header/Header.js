@@ -1,7 +1,8 @@
-import { DownOutlined, LoginOutlined } from '@ant-design/icons';
+import { DownOutlined } from '@ant-design/icons';
 import { PanelMenu } from 'primereact/panelmenu';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
 import baseApi from '../../../../api/baseApi';
 // import MainLogo from '../../../../assets/images/LogoUTC.jpg';
@@ -14,7 +15,6 @@ import {
   MENU_TYPE,
   OPERATOR,
   PATH_NAME,
-  UTC_WEB_TITLE,
 } from '../../../../constants/commonConstant';
 import {
   buildClass,
@@ -23,16 +23,12 @@ import {
 } from '../../../../constants/commonFunction';
 import END_POINT from '../../../../constants/endpoint';
 import { AuthContext } from '../../../../contexts/authContext';
+import { appAction } from '../../../../redux/slices/appSlice';
 import Button from '../../../atomics/base/Button/Button';
 import MenuBar from '../../../atomics/base/MenuBar/MenuBar';
 import PopupSelectionV1 from '../../../atomics/base/PopupSelectionV1/PopupSelection';
 import UserInfo from '../../UserInfo/UserInfo';
-import { useSelector, useDispatch } from 'react-redux';
-import store from '../../../../redux/store';
-import { appAction } from '../../../../redux/slices/appSlice';
 import './header.scss';
-import { format } from 'react-string-format';
-import HeaderTopBar from '../HeaderTopBar/HeaderTopBar';
 
 Header.propTypes = {
   id: PropTypes.string,
@@ -165,12 +161,37 @@ function Header(props) {
   const authCtx = useContext(AuthContext);
   const history = useNavigate();
   const [expandedMenu, setExpandedMenu] = useState(false);
-  const [currentLink, setCurrentLink] = useState('');
   const [dataMenus, setDataMenus] = useState([]);
+  const selector = useSelector((store) => store.app);
 
   useEffect(() => {
-    getMenus();
-  }, []);
+    setDataMenus(
+      listToTree(
+        selector.menus.map((item) => ({
+          ...item,
+          label: item.title,
+          key: item.menuID,
+          // url: handleControlByMenuType(item),
+          command: (e) => {
+            switch (item.type) {
+              case MENU_TYPE.NORMAL:
+              case MENU_TYPE.HTML_RENDER:
+                history('/' + item.slug);
+                break;
+              case MENU_TYPE.REDIRECT:
+                window.open(item?.link, '_blank');
+                break;
+              case MENU_TYPE.NONE_EVENT:
+                break;
+              default:
+                break;
+            }
+          },
+        })),
+        'items'
+      )
+    );
+  }, [selector.menus]);
 
   const renderMenu = (subPosition = 'bottomLeft') => {
     return MENU.map((item) => {
@@ -276,41 +297,6 @@ function Header(props) {
     );
   };
 
-  const handleControlByMenuType = (item) => {
-    return '';
-    switch (item.type) {
-      case MENU_TYPE.NORMAL:
-        return item.slug;
-      case MENU_TYPE.REDIRECT:
-        return '';
-      case MENU_TYPE.HTML_RENDER:
-        return '/html/' + item.slug;
-      case MENU_TYPE.NONE_EVENT:
-        return '';
-      case MENU_TYPE.REDIRECT:
-        return '';
-      default:
-        return '';
-    }
-  };
-
-  const handleChangePage = (item) => {
-    if (item?.redirect) {
-      window.open(item?.redirect, '_blank');
-    } else {
-      history(item.key);
-      setCurrentLink(item.key);
-    }
-  };
-
-  const handleLogin = () => {
-    history(PATH_NAME.LOGIN);
-  };
-
-  const handleRegister = () => {
-    history(PATH_NAME.REGISTER);
-  };
-
   const handleExpanedMenu = () => {
     setExpandedMenu(!expandedMenu);
   };
@@ -339,10 +325,7 @@ function Header(props) {
         className="toe-layout-user-page-container__header-left"
       >
         <img className="logo-app" src={MainLogo} alt="toeic-365" />
-        <b className="name-app toe-font-large-title">
-          {/* {UTC_WEB_TITLE.toUpperCase()} */}
-          {/* Thư viện<span style={{ color: '#43c1c9' }}>365</span> */}
-        </b>
+        <b className="name-app toe-font-large-title"></b>
       </div>
       <div className="toe-layout-user-page-container__header-right">
         {showNav && (

@@ -16,6 +16,8 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using TOE.TOEIC.ApplicationCore.Helpers;
+using TOE.TOEIC.ApplicationCore.Enums;
 
 namespace TOE.TOEIC.ApplicationCore.Interfaces
 {
@@ -130,6 +132,9 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
                 return _serviceResult;
             }
 
+            string maxCode = await _bookOrderRepository.GetNextBookOrderCode();
+            if (maxCode == null) maxCode = DefaultCode.BOOK_ORDER;
+            bookOrder.BookOrderCode = FunctionHelper.NextRecordCode(maxCode);
             int rowEffects = _bookOrderRepository.Insert(bookOrder);
             int rowNotificationEffects = _notificationRepository.Insert(new Notification()
             {
@@ -157,6 +162,9 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
 
             return _serviceResult;
         }
+
+        public async Task<string> GetNextBookOrderCode() => FunctionHelper.NextRecordCode(await _bookOrderRepository.GetNextBookOrderCode());
+
         #endregion
     }
 }

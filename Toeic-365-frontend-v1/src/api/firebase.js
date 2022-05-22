@@ -6,6 +6,7 @@ import {
   getDownloadURL,
   getBlob,
 } from 'firebase/storage';
+import { genFileNameWithTime } from '../constants/commonFunction';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBILsalGg1gkWGnHkHHaOKFwVufVjiBR4k',
@@ -22,7 +23,10 @@ var storage = getStorage(app);
 
 const uploadFiles = (file, folder = 'images') => {
   return new Promise((resolve, reject) => {
-    const storageRef = ref(storage, folder + '/' + file.name);
+    const storageRef = ref(
+      storage,
+      folder + '/' + genFileNameWithTime(file.name)
+    );
     const uploadTask = uploadBytesResumable(storageRef, file);
     uploadTask.on(
       'state_changed',

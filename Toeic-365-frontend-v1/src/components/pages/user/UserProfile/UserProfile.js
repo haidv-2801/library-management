@@ -1,13 +1,14 @@
 import { CameraOutlined, SaveOutlined } from '@ant-design/icons';
-import { Tag } from 'antd';
+import { Tag, Tooltip } from 'antd';
+import { cloneDeep } from 'lodash';
 import moment from 'moment';
 import { Badge } from 'primereact/badge';
+import { Skeleton } from 'primereact/skeleton';
 import { Toast } from 'primereact/toast';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { format } from 'react-string-format';
-import { Tooltip as TooltipPrime } from 'primereact/tooltip';
 import baseApi from '../../../../api/baseApi';
 import {
   getAccountName,
@@ -19,12 +20,16 @@ import {
   BUTTON_TYPE,
   COMMON_AVATAR,
   DATE_FORMAT,
+  MAXIMUM_PAGESIZE,
   OPERATOR,
   PATH_NAME,
+  RESERVATION_STATUS,
+  SORT_TYPE,
   TEXT_FALL_BACK,
 } from '../../../../constants/commonConstant';
 import {
   buildClass,
+  getOrderStatus,
   ParseJson,
   slugify,
 } from '../../../../constants/commonFunction';
@@ -36,16 +41,16 @@ import DatePicker from '../../../atomics/base/DatePicker/DatePicker';
 import Input from '../../../atomics/base/Input/Input';
 import InputPassword from '../../../atomics/base/InputPassword/InputPassword';
 import Modal from '../../../atomics/base/ModalV2/Modal';
-import Smarttext from '../../../atomics/base/SmartText/SmartText';
+import SmartText from '../../../atomics/base/SmartText/SmartText';
 import Spinner from '../../../atomics/base/Spinner/Spinner';
 import TextAreaBase from '../../../atomics/base/TextArea/TextArea';
 import Book from '../../../molecules/Book/Book';
 import Dropdown from '../../../molecules/Dropdown/Dropdown';
+import Table from '../../../molecules/Table/Table';
 import Layout from '../../../sections/User/Layout/Layout';
-import { Tooltip } from 'antd';
 import { getBookType } from '../function';
+import { isArray, isEmpty } from 'lodash';
 import './userProfile.scss';
-import { cloneDeep } from 'lodash';
 
 UserProfile.propTypes = {
   titlePage: PropTypes.string,
@@ -78,6 +83,8 @@ function UserProfile(props) {
     to: null,
   };
 
+  const MIN_PAGE_SIZE = 10;
+
   const params = useParams();
 
   const [searchParams, setSearchParams] = useSearchParams({
@@ -99,6 +106,111 @@ function UserProfile(props) {
     theme: BUTTON_THEME.THEME_1,
     disabled: isLoading,
   };
+
+  //#region mượn trả
+
+  const [lazyParams, setLazyParams] = useState({ page: 1, rows: 10 });
+  const [dataTable, setDataTable] = useState({ isLoading: false, data: [] });
+
+  const COLUMNS = [
+    {
+      field: 'bookOrderCode',
+      header: 'Mã phiếu',
+      filterField: 'bookOrderCode',
+      body: (row) => {
+        return <SmartText maxWidth={100}>{row?.bookOrderCode}</SmartText>;
+      },
+      style: { width: 100, maxWidth: 100 },
+    },
+    {
+      field: 'createdDate',
+      sortable: true,
+      header: 'Ngày lập',
+      filterField: 'createdDate',
+      body: (row) => {
+        if (isLoading) return <Skeleton></Skeleton>;
+        return (
+          <div className="toe-font-body">
+            {moment(row?.createdDate).format(DATE_FORMAT.TYPE_1) ??
+              TEXT_FALL_BACK.TYPE_1}
+          </div>
+        );
+      },
+      style: { width: 130, maxWidth: 130 },
+    },
+    {
+      field: 'fromDate',
+      sortable: true,
+      header: 'Từ ngày',
+      filterField: 'fromDate',
+      body: (row) => {
+        if (isLoading) return <Skeleton></Skeleton>;
+        return (
+          <div className="toe-font-body">
+            {moment(row?.fromDate).format(DATE_FORMAT.TYPE_3) ??
+              TEXT_FALL_BACK.TYPE_1}
+          </div>
+        );
+      },
+      style: { width: 140, maxWidth: 140 },
+    },
+    {
+      field: 'dueDate',
+      sortable: true,
+      header: 'Đến ngày',
+      filterField: 'dueDate',
+      body: (row) => {
+        if (isLoading) return <Skeleton></Skeleton>;
+        return (
+          <div className="toe-font-body">
+            {moment(row?.dueDate).format(DATE_FORMAT.TYPE_3) ??
+              TEXT_FALL_BACK.TYPE_1}
+          </div>
+        );
+      },
+      style: { width: 140, maxWidth: 140 },
+    },
+    {
+      field: 'bookOrderInformation',
+      sortable: true,
+      header: 'Mã sách',
+      filterField: 'bookOrderInformation',
+      body: (row) => {
+        return renderBookOrderInfomation(row.bookOrderInformation);
+      },
+      style: { width: 140, maxWidth: 140 },
+    },
+    {
+      field: 'orderStatus',
+      header: 'Trạng thái',
+      filterField: 'orderStatus',
+      body: (row) => {
+        return <div className="toe-font-body">{renderOrderStatus(row)}</div>;
+      },
+      style: { width: 180, maxWidth: 180 },
+    },
+  ];
+
+  const CONFIGS = {
+    /**
+     * *Config
+     */
+    dataKey: 'bookOrderID',
+    sortField: lazyParams?.sortField,
+    sortOrder: lazyParams?.sortOrder,
+    scrollHeight: 'calc(100% - 500px)',
+
+    /**
+     * *Method
+     */
+    onSort: (event) => {
+      console.log(event);
+    },
+    onSort: (event) => {
+      setLazyParams(event);
+    },
+  };
+  //#endregion
 
   //data
   const [dataDetail, setDataDetail] = useState({});
@@ -143,6 +255,7 @@ function UserProfile(props) {
       case slugify(MENU_NAME.NOTIFICATION):
         break;
       case slugify(MENU_NAME.BORROW_RETURN):
+        getBooksLendingFilter();
         break;
       case slugify(MENU_NAME.CART):
         // getBooks();
@@ -457,9 +570,9 @@ function UserProfile(props) {
             />
           </div>
           <div className="frame-right__body-row">
-            <Smarttext innnerClassName="toe-font-label">
+            <SmartText innnerClassName="toe-font-label">
               Địa chỉ: {getFullAddress()}
-            </Smarttext>
+            </SmartText>
           </div>
         </div>
         <div className="frame-right__body-row bottom-buttons">
@@ -663,7 +776,16 @@ function UserProfile(props) {
   };
 
   const borrowReturnView = () => {
-    return null;
+    return (
+      <div className="">
+        <Table
+          data={isLoading ? renderSkeleton() : dataTable.data}
+          configs={CONFIGS}
+          columns={COLUMNS}
+          rowClassName={() => 'cursor-pointer'}
+        />
+      </div>
+    );
   };
 
   const handleSave = () => {
@@ -789,12 +911,13 @@ function UserProfile(props) {
       BookOrderInformation: JSON.stringify(bookCheckout.item),
       Note: 'note',
       accountID: getUserID(),
-      FromDate: bookCheckout.from,
-      DueDate: bookCheckout.to,
+      FromDate: new Date(bookCheckout.from).addHours(7),
+      DueDate: new Date(bookCheckout.to).addHours(7),
       createdDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
       createdBy: getUserName(),
       modifiedDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
       modifiedBy: getUserName(),
+      orderStatus: RESERVATION_STATUS.WAITING,
     };
 
     setIsRequestBorrowing(true);
@@ -809,8 +932,6 @@ function UserProfile(props) {
             detail: 'Gửi yêu cầu thành công',
             life: 3000,
           });
-
-          debugger;
 
           if (bookCheckout.item.length === cartCtx.size) {
             cartCtx.removeAll();
@@ -850,6 +971,124 @@ function UserProfile(props) {
   const totalBorrowingDay = Math.abs(
     moment(bookCheckout?.from).diff(moment(bookCheckout?.to), 'days')
   );
+
+  const renderSkeleton = () => {
+    let number = Math.min(MIN_PAGE_SIZE, totalRecords || MIN_PAGE_SIZE),
+      arr = [],
+      obj = {};
+
+    for (const column of COLUMNS) {
+      obj[column.field] = <Skeleton></Skeleton>;
+    }
+
+    for (let index = 0; index < number; index++) {
+      arr.push(obj);
+    }
+
+    return arr;
+  };
+
+  const getBooksLendingFilter = (filters = [], body = {}) => {
+    let _filter = [
+      ['IsDeleted', OPERATOR.EQUAL, '0'],
+      OPERATOR.AND,
+      ['Status', OPERATOR.EQUAL, '1'],
+      OPERATOR.AND,
+      ['AccountID', OPERATOR.EQUAL, getUserID()],
+    ];
+
+    if (filters.length) {
+      _filter.push(OPERATOR.AND);
+      _filter.push(filters);
+    }
+
+    baseApi.post(
+      (res) => {
+        let _data = res.data.pageData;
+        setDataTable({
+          isLoading: false,
+          data: _data.map((_) => ({ ..._, key: _.bookOrderID })),
+        });
+      },
+      (err) => {
+        setDataTable({
+          data: [],
+          isLoading: false,
+        });
+      },
+      () => {
+        setDataTable({
+          ...dataTable,
+          isLoading: true,
+        });
+      },
+      END_POINT.TOE_BOOK_ORDERS_FILTER_V2,
+      {
+        filter: btoa(JSON.stringify(_filter)),
+        pageSize: MAXIMUM_PAGESIZE,
+        pageIndex: 1,
+        sort: JSON.stringify([['ModifiedDate', SORT_TYPE.DESC]]),
+        ...body,
+      },
+      null
+    );
+  };
+
+  function renderBookOrderInfomation(info) {
+    if (isLoading) return <Skeleton></Skeleton>;
+    let infoParsed = ParseJson(info);
+    if (isArray(infoParsed) && !isEmpty(infoParsed)) {
+      if (infoParsed.length === 1) {
+        return infoParsed[0].bookCode;
+      } else {
+        let tooltipContent = (
+          <div className="tt-wrapper">
+            {infoParsed.map((item) => {
+              return (
+                <div className="tt-row">
+                  <div className="tt-row__left">{item.bookCode}</div>|
+                  <div className="tt-row__right">{item.bookName}</div>
+                </div>
+              );
+            })}
+          </div>
+        );
+
+        return (
+          <Tooltip
+            openClassName="tt-tag-table-order"
+            overlayClassName="tt-tag-table-order"
+            title={tooltipContent}
+          >
+            <div
+              style={{ backgroundColor: '#ffc107', fontWeight: 700 }}
+              className="tag-table-info"
+              color={'#000000'}
+            >
+              {infoParsed.length}+
+            </div>
+          </Tooltip>
+        );
+      }
+    }
+  }
+
+  function renderOrderStatus(row) {
+    let status = row?.orderStatus;
+    if (isLoading) return <Skeleton></Skeleton>;
+    let statusObject = getOrderStatus(status);
+    return (
+      <div>
+        <Tag color={statusObject.color}>{statusObject.label}</Tag>
+        {status === RESERVATION_STATUS.CANCELED && (
+          <Tooltip title={row.note ?? TEXT_FALL_BACK.TYPE_1}>
+            <i className="pi pi-comment"></i>
+          </Tooltip>
+        )}
+        <div></div>
+      </div>
+    );
+  }
 
   return (
     <Layout>
@@ -942,7 +1181,13 @@ function UserProfile(props) {
           </div>
 
           <div className="toe-popup-choose-time__row toe-font-label">
-            Tổng số lượng: <div className="toe-font-body">{cartCtx.total}</div>
+            Tổng số lượng:{' '}
+            <div className="toe-font-body">
+              {bookCheckout?.item?.reduce(
+                (pre, next) => pre + next.quantity,
+                0
+              ) ?? 0}
+            </div>
           </div>
 
           <div className="toe-popup-choose-time__row toe-font-label">
@@ -959,10 +1204,13 @@ function UserProfile(props) {
                 onChange={({ value }) => {
                   setBookCheckout({
                     ...bookCheckout,
-                    from: value,
-                    to: new Date(moment(value).add(10, 'days')),
+                    from: new Date(moment(value).startOf('day').toString()),
+                    to: new Date(
+                      moment(value).add(10, 'days').startOf('day').toString()
+                    ),
                   });
                 }}
+                min={new Date()}
                 defaultValue={bookCheckout.from}
               />
             </div>
@@ -970,17 +1218,32 @@ function UserProfile(props) {
               <div className="_col-label toe-font-label">Đến</div>
               <DatePicker
                 onChange={({ value }) => {
-                  setBookCheckout({ ...bookCheckout, to: value });
+                  setBookCheckout({
+                    ...bookCheckout,
+                    to: new Date(moment(value).startOf('day').toString()),
+                  });
                 }}
                 defaultValue={bookCheckout.to}
                 disabled={!bookCheckout?.from}
-                min={new Date(moment(bookCheckout?.from).add(1, 'days'))}
-                max={new Date(moment(bookCheckout?.from).add(10, 'days'))}
+                min={
+                  new Date(
+                    moment(bookCheckout?.from)
+                      .add(1, 'days')
+                      .startOf('day')
+                      .toString()
+                  )
+                }
+                max={
+                  new Date(
+                    moment(bookCheckout?.from).add(10, 'days').startOf('day')
+                  )
+                }
               />
             </div>
           </div>
         </div>
       </Modal>
+
       <Toast ref={toast}></Toast>
     </Layout>
   );

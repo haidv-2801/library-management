@@ -56,7 +56,10 @@ namespace TOE.TOEIC.ApplicationCore.Enums
         WAITING = 0,
         PENDING = 1,
         CANCELED = 2,
-        NONE = 3
+        RETURNED = 3,
+        EXPIRED = 4,
+        LENDING = 5,
+        NONE = 6,
     }
 
     public enum BookStatus
@@ -66,4 +69,11 @@ namespace TOE.TOEIC.ApplicationCore.Enums
         LOANED = 2,
         LOST = 0
     }
+
+    public static class DefaultCode
+    {
+        public static readonly string BOOK_ORDER = "BR000001";
+        public static readonly string BOOK_ITEM = "B00001";
+    }
+
 }

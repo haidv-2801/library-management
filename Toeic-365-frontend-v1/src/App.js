@@ -1,30 +1,38 @@
 import React, { Suspense, useContext, useEffect, useRef } from 'react';
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import baseApi from './api/baseApi';
 import Loading from './components/atomics/base/Loading/Loading';
+import BookLendingPage from './components/pages/admin/BookLendingPage/BookLendingPage';
+import BookPage from './components/pages/admin/BookPage/BookPage';
+import HtmlContentCreatingPage from './components/pages/admin/HtmlContentCreatingPage/HtmlContentCreatingPage';
+import HtmlContentEditPage from './components/pages/admin/HtmlContentEditPage/HtmlContentEditPage';
 import LoginPage from './components/pages/admin/LoginPage/LoginPage';
+import MenuPage from './components/pages/admin/MenuPage/MenuPage';
 import NotFoundPage from './components/pages/admin/NotFoundPage/NotFoundPage';
+import PostPage from './components/pages/admin/PostPage/PostPage';
+import ReaderPage from './components/pages/admin/ReaderPage/ReaderPage';
 import RegisterPage from './components/pages/admin/RegisterPage/RegisterPage';
+import DashBoardPage from './components/pages/admin/DashBoardPage/DashBoardPage';
+import UserPage from './components/pages/admin/UserPage/UserPage';
+import Test from './components/pages/test/Test';
 import BookDetail from './components/pages/user/BookDetail/BookDetail';
-import RequiredAuth from './components/sections/RequiredAuth/RequiredAuth';
+import BooksPage from './components/pages/user/BooksPage/BooksPage';
+import BooksPageSeeAll from './components/pages/user/BooksPageSeeAll/BooksPageSeeAll';
+import SearchPage from './components/pages/user/SearchPage/SearchPage';
 import UserProfile from './components/pages/user/UserProfile/UserProfile';
+import RequiredAuth from './components/sections/RequiredAuth/RequiredAuth';
 import {
   FIXED_MENU_ID,
+  MAXIMUM_PAGESIZE,
+  OPERATOR,
   PATH_NAME,
   UTC_WEB_TITLE,
 } from './constants/commonConstant';
+import END_POINT from './constants/endpoint';
 import { AuthContext } from './contexts/authContext';
-import HtmlContentEditPage from './components/pages/admin/HtmlContentEditPage/HtmlContentEditPage';
-import HtmlContentCreatingPage from './components/pages/admin/HtmlContentCreatingPage/HtmlContentCreatingPage';
-import PostPage from './components/pages/admin/PostPage/PostPage';
-import UserPage from './components/pages/admin/UserPage/UserPage';
-import MenuPage from './components/pages/admin/MenuPage/MenuPage';
-import SearchPage from './components/pages/user/SearchPage/SearchPage';
-import ReaderPage from './components/pages/admin/ReaderPage/ReaderPage';
-import BookPage from './components/pages/admin/BookPage/BookPage';
-import BooksPageSeeAll from './components/pages/user/BooksPageSeeAll/BooksPageSeeAll';
-import BooksPage from './components/pages/user/BooksPage/BooksPage';
-import BookLendingPage from './components/pages/admin/BookLendingPage/BookLendingPage';
-import Test from './components/pages/test/Test';
+import { appAction } from './redux/slices/appSlice';
+import './constants/extension';
 import './main.scss';
 
 // const MenuPage = React.lazy(() =>
@@ -74,10 +82,39 @@ const HtmlRenderPage = React.lazy(() =>
 function App() {
   const authCtx = useContext(AuthContext);
   const toast = useRef();
+  const dispatch = useDispatch();
+  const selector = useSelector((store) => store.app);
 
   useEffect(() => {
     document.title = UTC_WEB_TITLE.toUpperCase();
+    getMenus();
   }, []);
+
+  const getMenus = () => {
+    let _filter = [
+      ['IsDeleted', OPERATOR.EQUAL, '0'],
+      OPERATOR.AND,
+      ['Status', OPERATOR.EQUAL, '1'],
+      OPERATOR.AND,
+      ['IsShowHome', OPERATOR.EQUAL, '1'],
+    ];
+
+    baseApi.post(
+      (res) => {
+        res = res.data.pageData.sort((a, b) => a.displayOrder - b.displayOrder);
+        dispatch(appAction.changeDataMenus([...res]));
+      },
+      (err) => {},
+      () => {},
+      END_POINT.TOE_GET_MENUS_FILTER,
+      {
+        filter: btoa(JSON.stringify(_filter)),
+        pageIndex: 1,
+        pageSize: MAXIMUM_PAGESIZE,
+      },
+      null
+    );
+  };
 
   return (
     <BrowserRouter>
@@ -188,7 +225,7 @@ function App() {
               path="dashboard"
               element={
                 <RequiredAuth>
-                  <UserPage />
+                  <DashBoardPage />
                 </RequiredAuth>
               }
             />

@@ -38,9 +38,28 @@ namespace TOE.TOEIC.Web.Controllers
             _logger = logger;
             _bookELKService = postELKService;
         }
-        #endregion upload
+        #endregion
 
         #region Methods
+        /// <summary>
+        /// Thêm một thực thể mới
+        /// </summary>
+        /// <param name="bookOrder"></param>
+        /// <returns>Sô bản ghi bị ảnh hưởng</returns>
+        /// CreatedBy: DVHAI 07/07/2021
+        [EnableCors("AllowCROSPolicy")]
+        [HttpGet("NextBookCode")]
+        public async Task<IActionResult> GetNextBookCode()
+        {
+            try
+            {
+                return Ok(await _bookService.GetNextBookCode());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
         #endregion
     }
 }

@@ -237,10 +237,17 @@
 
       &.amount {
         margin-top: auto;
+        padding: 4px 8px;
+        color: #000;
+        border-radius: 8px;
+        width: fit-content;
+        background-color: #ffc107;
+        font-weight: bold !important;
+        align-self: flex-end;
 
         &:hover {
-          border-radius: unset;
-          background-color: transparent;
+          color: #000;
+          background-color: #ffc107;
         }
       }
 
@@ -318,5 +325,24 @@
     .ant-tooltip {
       z-index: 9999;
     }
+  }
+}
+
+.tag-table-info {
+  padding: 2px 8px;
+  border-radius: 8px;
+  width: fit-content;
+  font-weight: bold !important;
+  font-size: 12px;
+}
+
+.tt-tag-table-order {
+  .ant-tooltip-inner {
+    width: 400px;
+  }
+
+  .tt-row {
+    display: flex;
+    gap: 8px;
   }
 }

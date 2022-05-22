@@ -3,7 +3,10 @@ import {
   TEXT_FALL_BACK,
   SECTION_TEXT,
   PATH_NAME,
+  RESERVATION_STATUS,
+  FILTER_TIME_VALUE,
 } from './commonConstant';
+import moment from 'moment';
 
 /**
  * Build ra classname
@@ -815,3 +818,102 @@ export const DOCUMENT_SECTION = {
   E_DOCUMENT_NEW: slugify(SECTION_TEXT.E_DOCUMENT_NEW),
   BORROWED_EDOCUMENTS_A_LOT: slugify(SECTION_TEXT.BORROWED_EDOCUMENTS_A_LOT),
 };
+
+/**
+ * Lấy text order theo status
+ * @param {*} status
+ */
+export const getOrderStatus = (status) => {
+  let statusObject = { label: 'Không xác định', color: '#bbbbbb' };
+
+  switch (status) {
+    case RESERVATION_STATUS.LENDING:
+      statusObject = { label: 'Đang mượn', color: '#007b7f' };
+      break;
+    case RESERVATION_STATUS.CANCELED:
+      statusObject = { label: 'Yêu cầu bị hủy', color: '#dc3545' };
+      break;
+    case RESERVATION_STATUS.EXPIRED:
+      statusObject = { label: 'Quá hạn trả', color: '#FF8800' };
+      break;
+    case RESERVATION_STATUS.PENDING:
+      statusObject = { label: 'Đang xử lý', color: '#0d47a1' };
+      break;
+    case RESERVATION_STATUS.RETURNED:
+      statusObject = { label: 'Đã trả', color: '#28a745' };
+      break;
+    case RESERVATION_STATUS.WAITING:
+      statusObject = { label: 'Đang yêu cầu', color: '#9933CC' };
+      break;
+    case RESERVATION_STATUS.NONE:
+    default:
+      break;
+  }
+
+  return statusObject;
+};
+
+export const commonFilterTime = [
+  {
+    label: 'Tuần này',
+    from: moment().startOf('week').valueOf(),
+    to: moment().add(1, 'weeks').startOf('week').valueOf() - 1,
+    value: FILTER_TIME_VALUE.THIS_WEEK,
+  },
+  {
+    label: 'Tuần trước',
+    from: moment().subtract(1, 'weeks').startOf('week').valueOf(),
+    to: moment().startOf('week').valueOf() - 1,
+    value: FILTER_TIME_VALUE.LAST_WEEK,
+  },
+  {
+    label: 'Tháng này',
+    from: moment().startOf('month').valueOf(),
+    to: moment().add(1, 'months').startOf('month').valueOf() - 1,
+    value: FILTER_TIME_VALUE.THIS_MONTH,
+  },
+  {
+    label: 'Tháng trước',
+    from: moment().subtract(1, 'months').startOf('month').valueOf(),
+    to: moment().startOf('month').valueOf() - 1,
+    value: FILTER_TIME_VALUE.LAST_MONTH,
+  },
+  {
+    label: 'Quý này',
+    from: moment().quarter(moment().quarter()).startOf('quarter').valueOf(),
+    to: moment().quarter(moment().quarter()).endOf('quarter').valueOf(),
+    value: FILTER_TIME_VALUE.THIS_QUARTER,
+  },
+  {
+    label: 'Quý trước',
+    from: moment()
+      .quarter(moment().quarter())
+      .subtract(1, 'quarters')
+      .startOf('quarter')
+      .valueOf(),
+    to: moment()
+      .quarter(moment().quarter())
+      .subtract(1, 'quarters')
+      .endOf('quarter')
+      .valueOf(),
+    value: FILTER_TIME_VALUE.LAST_QUARTER,
+  },
+  {
+    label: 'Năm này',
+    from: moment().startOf('year').valueOf(),
+    to: moment().add(1, 'years').startOf('year').valueOf() - 1,
+    value: FILTER_TIME_VALUE.THIS_YEAR,
+  },
+  {
+    label: 'Năm trước',
+    from: moment().subtract(1, 'years').startOf('year').valueOf(),
+    to: moment().startOf('year').valueOf() - 1,
+    value: FILTER_TIME_VALUE.LAST_YEAR,
+  },
+  {
+    label: 'Tùy chọn',
+    from: moment().startOf('day').valueOf(),
+    to: moment().endOf('day').valueOf(),
+    value: FILTER_TIME_VALUE.OPTION,
+  },
+];

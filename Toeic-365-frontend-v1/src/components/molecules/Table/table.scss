@@ -77,6 +77,12 @@
     border: 1px solid #bbbbbb !important;
     width: 20px !important;
     height: 20px !important;
+
+    &.p-highlight {
+      &:hover {
+        background-color: #43c1c9 !important;
+      }
+    }
   }
 
   .p-datatable .p-sortable-column.p-highlight:hover {

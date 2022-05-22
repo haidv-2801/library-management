@@ -305,7 +305,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
             {
                 resource = viewName;
             }
-            string queryTotal = $"SELECT COUNT(*) FROM {_tableName} WHERE {whereClause}";
+            string queryTotal = $"SELECT COUNT(*) FROM {resource} WHERE {whereClause}";
             var totalRecord = (int)_dbConnection.QuerySingle<int>(queryTotal, commandType: CommandType.Text);
             return totalRecord;
         }
@@ -332,7 +332,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
             return displayName.DisplayName;
         }
 
-        public async Task<IEnumerable<TEntity>> QueryUsingCommandTextAsync(string commandText) => _dbConnection.Query<TEntity>(commandText, commandType: CommandType.Text).ToList();
+        public async Task<IEnumerable<TEntity>> QueryUsingCommandTextAsync(string commandText) => (await _dbConnection.QueryAsync<TEntity>(commandText, commandType: CommandType.Text)).ToList();
 
         #endregion
     }

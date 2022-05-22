@@ -64,7 +64,7 @@ namespace TOE.TOEIC.ApplicationCore
         /// </summary>
         /// <param name="pagingRequest"></param>
         /// <returns></returns>
-        public ServiceResult GetEntitiesFilter(PagingRequest pagingRequest)
+        public ServiceResult GetEntitiesFilter(PagingRequest pagingRequest, string viewOrTableName = "")
         {
 
             StringBuilder stringBuilder = new StringBuilder();
@@ -80,7 +80,7 @@ namespace TOE.TOEIC.ApplicationCore
                 stringBuilder.Append(" 1 = 1 ");
             }
 
-            int totalRecord = _baseRepository.CountTotalRecordByClause(stringBuilder.ToString());
+            int totalRecord = _baseRepository.CountTotalRecordByClause(stringBuilder.ToString(), viewOrTableName);
 
 
             if (!string.IsNullOrEmpty(pagingRequest.Sort))
@@ -122,7 +122,7 @@ namespace TOE.TOEIC.ApplicationCore
             if (totalRecord > 0)
             {
                 string cols = columns == null ? "*" : string.Join(", ", columns);
-                var data = _baseRepository.GetEntitiesFilter(stringBuilder.ToString(), cols);
+                var data = _baseRepository.GetEntitiesFilter(stringBuilder.ToString(), cols, viewOrTableName);
 
                 _serviceResult.Data = new
                 {
@@ -207,10 +207,10 @@ namespace TOE.TOEIC.ApplicationCore
         /// <param name="entity">Thực thể cần thêm</param>
         /// <returns>Số bản ghi bị ảnh hưởng</returns>
         /// CREATED BY: DVHAI (11/07/2021)
-        public virtual ServiceResult Insert(TEntity entity)
+        public virtual async Task<ServiceResult> Insert(TEntity entity)
         {
             //0.Custom lại giá trị khi update
-            entity = CustomValueWhenInsert(entity);
+            entity = await CustomValueWhenInsert(entity);
 
             entity.EntityState = EntityState.Add;
 
@@ -360,7 +360,7 @@ namespace TOE.TOEIC.ApplicationCore
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        protected virtual TEntity CustomValueWhenInsert(TEntity entity)
+        protected virtual async Task<TEntity> CustomValueWhenInsert(TEntity entity)
         {
             return entity;
         }

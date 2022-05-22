@@ -1,39 +1,61 @@
-import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
-import { Tooltip } from 'antd';
+import {
+  ExportOutlined,
+  PlusOutlined,
+  SearchOutlined,
+} from '@ant-design/icons';
+import { Tag, Tooltip } from 'antd';
 import FileSaver from 'file-saver';
+import { isArray, isEmpty } from 'lodash';
 import moment from 'moment';
 import { Chip } from 'primereact/chip';
 import { Skeleton } from 'primereact/skeleton';
 import { Toast } from 'primereact/toast';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
+import { CSVLink } from 'react-csv';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'react-string-format';
 import baseApi from '../../../../api/baseApi';
 import { uploadFiles } from '../../../../api/firebase';
+import Modal from '../../../atomics/base/ModalV2/Modal';
+import TextAreaBase from '../../../atomics/base/TextArea/TextArea';
 import { getUserName } from '../../../../constants/commonAuth';
 import {
-  ADMIN_BOOK_PAGE_BOLUMN_SEARCH,
   BOOK_FORMAT,
   BUTTON_THEME,
   BUTTON_TYPE,
+  COLUMN_NOT_EXPORT,
   DATE_FORMAT,
-  GUID_NULL,
+  FILTER_TIME_VALUE,
+  LOCAL_STOATE_KEY,
   MAXIMUM_PAGESIZE,
   OPERATOR,
+  RESERVATION_STATUS,
+  SORT_TYPE,
 } from '../../../../constants/commonConstant';
-import { buildClass, listToTree } from '../../../../constants/commonFunction';
+import {
+  buildClass,
+  commonFilterTime,
+  genFileNameWithTime,
+  getOrderStatus,
+  listToTree,
+  ParseJson,
+} from '../../../../constants/commonFunction';
 import END_POINT from '../../../../constants/endpoint';
+import { setLocalStorage } from '../../../../contexts/authContext';
 import Button from '../../../atomics/base/Button/Button';
+import DatePicker from '../../../atomics/base/DatePicker/DatePicker';
 import Input from '../../../atomics/base/Input/Input';
+import PopupSelection from '../../../atomics/base/PopupSelectionV1/PopupSelection';
 import SideBar from '../../../atomics/base/SideBar/SideBar';
 import SmartText from '../../../atomics/base/SmartText/SmartText';
-import FilterEngine from '../../../molecules/FilterEngine/FilterEngine';
+import Dropdown from '../../../molecules/Dropdown/Dropdown';
 import Paginator from '../../../molecules/Paginator/Paginator';
 import Table from '../../../molecules/Table/Table';
 import Layout from '../../../sections/Admin/Layout/Layout';
 import './bookLendingPage.scss';
+import ToastConfirmDelete from '../../../molecules/ToastConfirmDelete/ToastConfirmDelete';
 
 BookLendingPage.propTypes = {
   id: PropTypes.string,
@@ -61,87 +83,108 @@ function BookLendingPage(props) {
       headerStyle: { width: '4em' },
     },
     {
-      field: 'bookCode',
-      sortable: true,
-      header: <SmartText>Mã phiếu</SmartText>,
-      filterField: 'bookCode',
+      field: 'bookOrderCode',
+      header: 'Mã phiếu',
+      filterField: 'bookOrderCode',
       body: (row) => {
-        return <SmartText maxWidth={170}>{row?.bookCode}</SmartText>;
+        return <SmartText maxWidth={100}>{row?.bookOrderCode}</SmartText>;
       },
-      style: { width: 170, maxWidth: 170 },
-    },
-    {
-      field: 'bookName',
-      sortable: true,
-      header: 'Tên phiếu',
-      filterField: 'bookName',
-      body: (row) => {
-        return (
-          <div className="toe-font-body">
-            {<SmartText rows={4}>{row?.bookName}</SmartText>}
-          </div>
-        );
-      },
-      style: { width: 250, maxWidth: 250 },
-    },
-    {
-      field: 'description',
-      sortable: true,
-      header: 'Mô tả',
-      filterField: 'description',
-      body: (row) => {
-        return (
-          <div className="toe-font-body">
-            {<SmartText rows={4}>{row?.description}</SmartText>}
-          </div>
-        );
-      },
-      style: { width: 200, maxWidth: 200 },
-    },
-    {
-      field: 'bookFormat',
-      sortable: true,
-      header: 'Loại tài liệu',
-      filterField: 'bookFormat',
-      body: (row) => renderBookFormat(row),
-      style: { width: 200, maxWidth: 200 },
-    },
-    {
-      field: 'image',
-      sortable: true,
-      header: 'Hình ảnh',
-      filterField: 'image',
-      body: (row) => renderBookImage(row),
-      style: { width: 200, maxWidth: 200 },
-    },
-    {
-      field: 'categoryID',
-      sortable: true,
-      header: 'Thể loại',
-      filterField: 'categoryID',
-      body: (row) => renderBookCategory(row),
-      style: { width: 200, maxWidth: 200 },
-    },
-    {
-      field: 'status',
-      sortable: true,
-      header: 'Trạng thái',
-      filterField: 'status',
-      body: (row) => {
-        return <div className="toe-font-body">{renderStatus(row?.status)}</div>;
-      },
-      style: { width: 180, maxWidth: 180 },
+      style: { width: 100, maxWidth: 100 },
     },
     {
       field: 'createdDate',
       sortable: true,
-      header: 'Ngày tạo',
+      header: 'Ngày lập',
       filterField: 'createdDate',
       body: (row) => {
         if (isLoading) return <Skeleton></Skeleton>;
         return (
           <div className="toe-font-body">
-            {moment(row?.createdDate).format(DATE_FORMAT.TYPE_1)}
+            {moment(row?.createdDate).format(DATE_FORMAT.TYPE_1) ??
+              TEXT_FALL_BACK.TYPE_1}
+          </div>
+        );
+      },
+      style: { width: 130, maxWidth: 130 },
+    },
+    {
+      field: 'fullName',
+      header: 'Tên bạn đọc',
+      filterField: 'fullName',
+      body: (row) => {
+        if (isLoading) return <Skeleton></Skeleton>;
+        return (
+          <div className="toe-font-body">
+            {<SmartText maxWidth={150}>{row?.fullName}</SmartText>}
+          </div>
+        );
+      },
+      style: { width: 150, maxWidth: 150 },
+    },
+    {
+      field: 'phoneNumber',
+      header: 'Số diện thoại',
+      filterField: 'phoneNumber',
+      body: (row) => {
+        if (isLoading) return <Skeleton></Skeleton>;
+        return (
+          <div className="toe-font-body">
+            {<SmartText maxWidth={140}>{row?.phoneNumber}</SmartText>}
+          </div>
+        );
+      },
+      style: { width: 140, maxWidth: 140 },
+    },
+    {
+      field: 'fromDate',
+      sortable: true,
+      header: 'Từ ngày',
+      filterField: 'fromDate',
+      body: (row) => {
+        if (isLoading) return <Skeleton></Skeleton>;
+        return (
+          <div className="toe-font-body">
+            {moment(row?.fromDate).format(DATE_FORMAT.TYPE_3) ??
+              TEXT_FALL_BACK.TYPE_1}
+          </div>
+        );
+      },
+      style: { width: 140, maxWidth: 140 },
+    },
+    {
+      field: 'dueDate',
+      sortable: true,
+      header: 'Đến ngày',
+      filterField: 'dueDate',
+      body: (row) => {
+        if (isLoading) return <Skeleton></Skeleton>;
+        return (
+          <div className="toe-font-body">
+            {moment(row?.dueDate).format(DATE_FORMAT.TYPE_3) ??
+              TEXT_FALL_BACK.TYPE_1}
+          </div>
+        );
+      },
+      style: { width: 140, maxWidth: 140 },
+    },
+    {
+      field: 'bookOrderInformation',
+      sortable: true,
+      header: 'Mã sách',
+      filterField: 'bookOrderInformation',
+      body: (row) => {
+        return renderBookOrderInfomation(row.bookOrderInformation);
+      },
+      style: { width: 140, maxWidth: 140 },
+    },
+    {
+      field: 'orderStatus',
+      header: 'Trạng thái',
+      filterField: 'orderStatus',
+      body: (row) => {
+        return (
+          <div className="toe-font-body">
+            {renderOrderStatus(row?.orderStatus)}
           </div>
         );
       },
@@ -154,7 +197,32 @@ function BookLendingPage(props) {
     ADD: 1,
   };
 
-  const DEFAULT_FILTER_VALUE = { controls: [], filter: [] };
+  const DROPDOWN_STATUS = [
+    { label: 'Tất cả', value: -1 },
+    {
+      label: 'Đang yêu cầu',
+      color: '#9933CC',
+      value: RESERVATION_STATUS.WAITING,
+    },
+    { label: 'Đang mượn', color: '#007b7f', value: RESERVATION_STATUS.LENDING },
+    {
+      label: 'Đang xử lý',
+      color: '#0d47a1',
+      value: RESERVATION_STATUS.PENDING,
+    },
+    { label: 'Đã trả', color: '#28a745', value: RESERVATION_STATUS.RETURNED },
+    {
+      label: 'Quá hạn trả',
+      color: '#FF8800',
+      value: RESERVATION_STATUS.EXPIRED,
+    },
+    {
+      label: 'Yêu cầu bị hủy',
+      color: '#dc3545',
+      value: RESERVATION_STATUS.CANCELED,
+    },
+  ];
+
   const DEFAULT_DATA_CATE = { data: [], isLoading: false, totalRecord: 0 };
 
   const MIN_PAGE_SIZE = 10;
@@ -162,10 +230,12 @@ function BookLendingPage(props) {
     (rootState) => rootState.filter.booksPageAdminFilterEnige
   );
   const requestDoneRef = useRef(true);
+  const isSearchingFilterEngine = useRef(false);
   const [selected, setSelected] = useState([]);
   const [popupMode, setpopupMode] = useState(POPUP_MODE.ADD);
   const [isLoading, setIsLoading] = useState(true);
-  const [isShowPopupCreateBook, setIsShowPopupCreateBook] = useState(false);
+  const [isShowPopupCreateBookOrder, setIsShowPopupCreateBookOrder] =
+    useState(false);
   const [lazyParams, setLazyParams] = useState({ page: 1, rows: 10 });
   const [totalRecords, setTotalRecords] = useState(0);
   const [dataTable, setDataTable] = useState([]);
@@ -174,14 +244,48 @@ function BookLendingPage(props) {
     page: 1,
     pageSize: MIN_PAGE_SIZE,
     type: -1,
-    bookID: -1,
+    bookOrderID: -1,
+    orderStatus: -1,
+    from: commonFilterTime.find(
+      (item) => item.value === FILTER_TIME_VALUE.THIS_MONTH
+    ).from,
+    to: commonFilterTime.find(
+      (item) => item.value === FILTER_TIME_VALUE.THIS_MONTH
+    ).to,
   });
-  const [filterValue, setFilterValue] = useState(DEFAULT_FILTER_VALUE);
+  const [rowIdSelected, setRowIdSelected] = useState(null);
+
+  const DEFAULT_FILTER_ENGINE = {
+    value: FILTER_TIME_VALUE.THIS_MONTH,
+    from: commonFilterTime.find(
+      (item) => item.value === FILTER_TIME_VALUE.THIS_MONTH
+    ).from,
+    to: commonFilterTime.find(
+      (item) => item.value === FILTER_TIME_VALUE.THIS_MONTH
+    ).to,
+  };
+
+  const [filterEngine, setFilterEngine] = useState(DEFAULT_FILTER_ENGINE);
+
+  const [filterTimeValue, setFilterTimeValue] = useState(
+    FILTER_TIME_VALUE.THIS_MONTH
+  );
   const [filterCount, setFilterCount] = useState(0);
   const [showFilter, setShowFilter] = useState(false);
   const refreshFilterKey = useRef(0);
   const [dataCategory, setDataCategory] = useState(DEFAULT_DATA_CATE);
   const [dataCreate, setDataCreate] = useState({});
+  const [isShowPopupNote, setIsShowPopupNote] = useState(false);
+  const [isShowPopupDelete, setisShowPopupDelete] = useState(false);
+  const [dataNote, setDataNote] = useState('');
+
+  const BOOK_ORDER_STATUS_OPTION = Object.keys(RESERVATION_STATUS).map(
+    (item) => ({
+      label: getOrderStatus(RESERVATION_STATUS[item]).label,
+      value: RESERVATION_STATUS[item],
+      onClick: () => handleOnClickStatusOption(RESERVATION_STATUS[item]),
+    })
+  );
 
   const OPTIONS = [
     {
@@ -210,12 +314,20 @@ function BookLendingPage(props) {
     },
     {
       label: (
-        <div className="table-option__menu-item">
-          <i className="pi pi-arrows-h"></i>Đổi trạng thái
-        </div>
+        <PopupSelection
+          overlayClassName="status-overlay"
+          options={BOOK_ORDER_STATUS_OPTION}
+          placement="left"
+        >
+          <div className="table-option__menu-item">
+            <i className="pi pi-arrows-h"></i>Đổi trạng thái
+          </div>
+        </PopupSelection>
       ),
       value: 4,
-      onClick: ({ key }) => handleActive(key),
+      onClick: ({ key }) => {
+        setRowIdSelected(key);
+      },
     },
     {
       label: (
@@ -224,7 +336,9 @@ function BookLendingPage(props) {
         </div>
       ),
       value: 3,
-      onClick: ({ key }) => handleRemove(key),
+      onClick: ({ key }) => {
+        setisShowPopupDelete(key);
+      },
     },
   ];
 
@@ -233,7 +347,7 @@ function BookLendingPage(props) {
      * *Config
      */
     resizableColumns: false,
-    dataKey: 'bookID',
+    dataKey: 'bookOrderID',
     selectionMode: isLoading ? null : 'checkbox',
     sortField: lazyParams?.sortField,
     sortOrder: lazyParams?.sortOrder,
@@ -259,13 +373,13 @@ function BookLendingPage(props) {
   };
 
   useEffect(() => {
-    getBooksFilter();
-    getCategory();
+    getBooksLendingFilter();
+    // getCategory();
   }, []);
 
   useEffect(() => {
     if (isLoading) return;
-    getBooksFilter();
+    getBooksLendingFilter();
   }, [paging]);
 
   const getPopupCreateUserPops = () => {
@@ -276,7 +390,7 @@ function BookLendingPage(props) {
           <Button
             onClick={() => {
               setpopupMode(POPUP_MODE.ADD);
-              setIsShowPopupCreateBook(false);
+              setIsShowPopupCreateBookOrder(false);
             }}
             theme={BUTTON_THEME.THEME_6}
             name="Hủy"
@@ -291,7 +405,7 @@ function BookLendingPage(props) {
           <Button
             onClick={() => {
               setpopupMode(POPUP_MODE.EDIT);
-              setIsShowPopupCreateBook(false);
+              setIsShowPopupCreateBookOrder(false);
             }}
             name="Hủy"
             theme={BUTTON_THEME.THEME_6}
@@ -337,39 +451,36 @@ function BookLendingPage(props) {
     );
   };
 
-  const getBooksFilter = (body = []) => {
-    let _filter = [['IsDeleted', OPERATOR.EQUAL, '0']];
-    if (body.length) {
+  const getBooksLendingFilter = (filters = [], body = {}) => {
+    let _filter = [
+      ['IsDeleted', OPERATOR.EQUAL, '0'],
+      OPERATOR.AND,
+      ['Status', OPERATOR.EQUAL, '1'],
+    ];
+    if (filters.length) {
       _filter.push(OPERATOR.AND);
-      _filter.push(body);
+      _filter.push(filters);
     } else if (paging.filterValue?.trim() != '') {
       let _value = paging.filterValue?.trim();
       _filter.push(OPERATOR.AND);
       _filter.push([
-        ['BookCode', OPERATOR.CONTAINS, encodeURI(_value)],
+        ['FullName', OPERATOR.CONTAINS, encodeURI(_value)],
         OPERATOR.OR,
-        ['BookName', OPERATOR.CONTAINS, encodeURI(_value)],
+        ['PhoneNumber', OPERATOR.CONTAINS, encodeURI(_value)],
         OPERATOR.OR,
-        ['Description', OPERATOR.CONTAINS, encodeURI(_value)],
-        OPERATOR.OR,
-        ['Publisher', OPERATOR.CONTAINS, encodeURI(_value)],
+        ['BookOrderCode', OPERATOR.CONTAINS, encodeURI(_value)],
       ]);
+    }
+
+    if (paging.orderStatus !== -1) {
+      _filter.push(OPERATOR.AND);
+      _filter.push(['OrderStatus', OPERATOR.EQUAL, paging.orderStatus]);
     }
 
     baseApi.post(
       (res) => {
-        let _data = res.data.pageData
-          .sort((a, b) => {
-            const time = (date) => new Date(date).getTime();
-            if (time(b?.createdDate) - time(a?.modifiedDate) > 0) {
-              return time(b?.createdDate) - time(a?.createdDate);
-            } else {
-              return time(b?.modifiedDate) - time(a?.modifiedDate);
-            }
-          })
-          .filter((menu) => menu.parentID !== GUID_NULL);
-
-        setDataTable(_data.map((_) => ({ ..._, key: _.bookID })));
+        let _data = res.data.pageData;
+        setDataTable(_data.map((_) => ({ ..._, key: _.bookOrderID })));
         setIsLoading(false);
         setTotalRecords(res.data.totalRecord);
         requestDoneRef.current = true;
@@ -382,11 +493,13 @@ function BookLendingPage(props) {
         setIsLoading(true);
         requestDoneRef.current = false;
       },
-      END_POINT.TOE_GET_BOOKS_FILTER,
+      END_POINT.TOE_BOOK_ORDERS_FILTER_V2,
       {
         filter: btoa(JSON.stringify(_filter)),
         pageSize: paging.pageSize,
         pageIndex: paging.page,
+        sort: JSON.stringify([['ModifiedDate', SORT_TYPE.DESC]]),
+        ...body,
       },
       null
     );
@@ -408,7 +521,7 @@ function BookLendingPage(props) {
             detail: 'Cập nhật thành công',
             life: 3000,
           });
-          getBooksFilter();
+          getBooksLendingFilter();
         } else {
           toast.current.show({
             severity: 'error',
@@ -417,7 +530,7 @@ function BookLendingPage(props) {
             life: 3000,
           });
         }
-        setIsShowPopupCreateBook(false);
+        setIsShowPopupCreateBookOrder(false);
       },
       (err) => {
         toast.current.show({
@@ -428,7 +541,7 @@ function BookLendingPage(props) {
         });
       },
       () => {},
-      format(END_POINT.TOE_UPDATE_BOOK, dataDetail.bookID),
+      format(END_POINT.TOE_UPDATE_BOOK, dataDetail.bookOrderID),
       _body,
       null,
       null
@@ -501,7 +614,7 @@ function BookLendingPage(props) {
             detail: 'Thêm mới thành công',
             life: 3000,
           });
-          getBooksFilter();
+          getBooksLendingFilter();
         } else {
           toast.current.show({
             severity: 'error',
@@ -510,7 +623,7 @@ function BookLendingPage(props) {
             life: 3000,
           });
         }
-        setIsShowPopupCreateBook(false);
+        setIsShowPopupCreateBookOrder(false);
       },
       (err) => {
         let errMessage = err?.response?.data?.data || 'Có lỗi xảy ra';
@@ -529,12 +642,13 @@ function BookLendingPage(props) {
     );
   };
 
-  const handleActive = (key) => {
-    let _body = dataTable.filter((item) => item?.bookID === key);
+  const handleChangeStatus = (status) => {
+    let _body = dataTable.filter((item) => item?.bookOrderID === rowIdSelected);
     if (_body.length) {
       _body = _body[0];
-      _body['status'] = !_body['status'];
+      _body['orderStatus'] = status;
       _body['modifiedDate'] = new Date(Date.now() + 7 * 60 * 60 * 1000);
+      if (status === RESERVATION_STATUS.CANCELED) _body['note'] = dataNote;
 
       baseApi.put(
         (res) => {
@@ -542,22 +656,28 @@ function BookLendingPage(props) {
             toast.current.show({
               severity: 'success',
               summary: 'Success',
-              detail: 'Sửa thành công',
+              detail: format(
+                'Chuyển trạng thái {0} thành công!',
+                <b>{getOrderStatus(status).label}</b>
+              ),
               life: 3000,
             });
-            getBooksFilter();
+            getBooksLendingFilter();
           }
         },
         (err) => {
           toast.current.show({
             severity: 'error',
             summary: 'Error',
-            detail: 'Sửa thất thất bại',
+            detail: format(
+              'Chuyển trạng thái {0} thất bại!',
+              <b>{getOrderStatus(status).label}</b>
+            ),
             life: 3000,
           });
         },
         () => {},
-        format(END_POINT.TOE_UPDATE_BOOK, _body?.bookID),
+        format(END_POINT.TOE_UPDATE_BOOK_ORDER, _body?.bookOrderID),
         _body,
         null
       );
@@ -569,7 +689,7 @@ function BookLendingPage(props) {
       (res) => {
         let _data = res.data.data.map((item) => ({
           ...item,
-          key: item?.bookID,
+          key: item?.bookOrderID,
           label: (
             <div className="treeselect-item">
               <div className="treeselect-item__title">{item.Title}</div>
@@ -608,7 +728,7 @@ function BookLendingPage(props) {
             detail: 'Xóa thành công',
             life: 3000,
           });
-          getBooksFilter();
+          getBooksLendingFilter();
         } else {
           toast.current.show({
             severity: 'error',
@@ -617,6 +737,7 @@ function BookLendingPage(props) {
             life: 3000,
           });
         }
+        setisShowPopupDelete(null);
       },
       (err) => {
         toast.current.show({
@@ -625,9 +746,10 @@ function BookLendingPage(props) {
           detail: 'Xóa thất bại',
           life: 3000,
         });
+        setisShowPopupDelete(null);
       },
       () => {},
-      format(END_POINT.TOE_DELETE_BOOK, key)
+      format(END_POINT.TOE_DELETE_BOOK_ORDER, key)
     );
   };
 
@@ -646,6 +768,69 @@ function BookLendingPage(props) {
 
     return arr;
   };
+
+  function renderOrderStatus(status) {
+    if (isLoading) return <Skeleton></Skeleton>;
+    let statusObject = getOrderStatus(status);
+    return <Tag color={statusObject.color}>{statusObject.label}</Tag>;
+  }
+
+  function handleOnClickStatusOption(status) {
+    switch (status) {
+      case RESERVATION_STATUS.LENDING:
+      case RESERVATION_STATUS.EXPIRED:
+      case RESERVATION_STATUS.PENDING:
+      case RESERVATION_STATUS.RETURNED:
+      case RESERVATION_STATUS.WAITING:
+        handleChangeStatus(status);
+        break;
+      case RESERVATION_STATUS.NONE:
+      case RESERVATION_STATUS.CANCELED:
+        setIsShowPopupNote(true);
+        break;
+      default:
+        break;
+    }
+  }
+
+  function renderBookOrderInfomation(info) {
+    if (isLoading) return <Skeleton></Skeleton>;
+    let infoParsed = ParseJson(info);
+    if (isArray(infoParsed) && !isEmpty(infoParsed)) {
+      if (infoParsed.length === 1) {
+        return infoParsed[0].bookCode;
+      } else {
+        let tooltipContent = (
+          <div className="tt-wrapper">
+            {infoParsed.map((item) => {
+              return (
+                <div className="tt-row">
+                  <div className="tt-row__left">{item.bookCode}</div>|
+                  <div className="tt-row__right">{item.bookName}</div>
+                </div>
+              );
+            })}
+          </div>
+        );
+
+        return (
+          <Tooltip
+            openClassName="tt-tag-table-order"
+            overlayClassName="tt-tag-table-order"
+            title={tooltipContent}
+          >
+            <div
+              style={{ backgroundColor: '#ffc107', fontWeight: 700 }}
+              className="tag-table-info"
+              color={'#000000'}
+            >
+              {infoParsed.length}+
+            </div>
+          </Tooltip>
+        );
+      }
+    }
+  }
 
   function renderStatus(status) {
     if (isLoading) return <Skeleton></Skeleton>;
@@ -667,8 +852,7 @@ function BookLendingPage(props) {
   }
 
   const handleFilter = () => {
-    setFilterCount(filterValue.controls.length);
-    getBooksFilter(filterValue.filter);
+    isSearchingFilterEngine.current = true;
   };
 
   function renderBookFormat(row) {
@@ -701,6 +885,52 @@ function BookLendingPage(props) {
       <SmartText innnerClassName="toe-font-label">{row.categoryID}</SmartText>
     );
   }
+
+  const handleDoubleClickRow = ({ data }) => {
+    let infoParsed = ParseJson(data.bookOrderInformation)?.map(
+      (item) => item.bookCode
+    );
+    setLocalStorage(
+      LOCAL_STOATE_KEY.BOOK_CODE_FROM_BOOK_LENDING,
+      JSON.stringify(infoParsed)
+    );
+
+    window.open('/admin/danh-muc/sach', '_blank');
+  };
+
+  const getDataExport = () => {
+    const dataExport = [];
+    const columns = COLUMNS.map((item) => item.field).filter(
+      (item) => !COLUMN_NOT_EXPORT.includes(item.toLowerCase())
+    );
+
+    dataExport.push(columns);
+
+    dataTable.forEach((item) => {
+      let raw = [];
+      columns.forEach((col) => {
+        if (col === 'bookOrderInformation') {
+          let parsed = ParseJson(item[col]);
+          raw.push(parsed?.map((item) => item.bookCode)?.join(','));
+          return;
+        }
+        if (col === 'orderStatus') {
+          getOrderStatus;
+          raw.push(getOrderStatus(item[col]).label);
+          return;
+        }
+
+        raw.push(item[col]);
+      });
+      dataExport.push(raw);
+    });
+
+    dataExport[0] = dataExport[0].map(
+      (item) => COLUMNS.find((it) => it.field?.trim() === item?.trim())?.header
+    );
+
+    return dataExport;
+  };
   //#endregion
 
   return (
@@ -708,12 +938,13 @@ function BookLendingPage(props) {
       title="Quản lý mượn trả"
       rightButtons={[
         <Button
-          onClick={() => setIsShowPopupCreateBook(true)}
+          onClick={() => setIsShowPopupCreateBookOrder(true)}
           leftIcon={<PlusOutlined />}
           type={BUTTON_TYPE.LEFT_ICON}
           name="Thêm mới phiếu"
         />,
       ]}
+      className="layout-book-lending-page"
     >
       <div
         id={id}
@@ -731,21 +962,23 @@ function BookLendingPage(props) {
                     filterValue: value,
                   });
                 }}
-                placeholder={'Tìm kiếm Tiêu đề, Alias, Mô tả...'}
+                placeholder={'Tìm kiếm Tên bạn đọc, mã sách, số phiếu...'}
                 value={paging.filterValue}
                 leftIcon={<i className="pi pi-search"></i>}
                 delay={300}
               />
-              {/* <TreeSelect
-                placeholder="Nhấp để chọn"
-                value={paging.bookID}
-                options={dataMenus}
-                prefixValue={'Menu'}
-                onChange={(data) => {
-                  setPaging((pre) => ({ ...pre, bookID: data.value }));
-                }}
-              /> */}
-              <div className="toe-admin-booklending-page__filter">
+              <Dropdown
+                className="dropdown-filter-by-menu"
+                defaultValue={paging.orderStatus}
+                options={DROPDOWN_STATUS}
+                hasSubLabel
+                onChange={({ value }) =>
+                  setPaging({ ...paging, orderStatus: value })
+                }
+                prefixValue={'Trạng thái'}
+                scrollHeight={350}
+              />
+              <div className="toe-admin-book-page__filter">
                 <Tooltip title="Bộ lọc">
                   <div
                     className="btn-show-advanced-filter"
@@ -755,7 +988,7 @@ function BookLendingPage(props) {
                   </div>
                 </Tooltip>
                 {filterCount ? (
-                  <div className="toe-admin-booklending-page__filter-count toe-font-hint">
+                  <div className="toe-admin-book-page__filter-count toe-font-hint">
                     {filterCount}
                   </div>
                 ) : null}
@@ -763,27 +996,38 @@ function BookLendingPage(props) {
               {filterCount ? (
                 <div
                   onClick={() => {
-                    setFilterValue(DEFAULT_FILTER_VALUE);
+                    setFilterTimeValue(DEFAULT_FILTER_VALUE);
                     getBooksFilter([]);
                     setFilterCount(0);
                   }}
-                  className="toe-admin-booklending-page__filter-remove toe-font-hint"
+                  className="toe-admin-book-page__filter-remove toe-font-hint"
                 >
                   Xóa tất cả lọc
                 </div>
               ) : null}
             </div>
-            <div className="toe-admin-booklending-page__row--right"> </div>
 
-            {/* <Dropdown
-              className="dropdown-filter-by-menu"
-              defaultValue={paging.type}
-              options={DROPDOWN_TYPE_OPTIONS}
-              hasSubLabel
-              prefixValue={'Loại Menu'}
-              scrollHeight={350}
-              onChange={({ value }) => setPaging({ ...paging, type: value })}
-            /> */}
+            <div className="toe-admin-booklending-page__row--right">
+              <div className="toe-admin-book-page__filter">
+                <Tooltip title="Dowload CSV">
+                  <CSVLink
+                    data={getDataExport()}
+                    asyncOnClick={true}
+                    onClick={(event, done) => {}}
+                    filename={genFileNameWithTime('DANH_SACH_MUON_TRA')}
+                  >
+                    <div className="btn-show-advanced-filter">
+                      <ExportOutlined />
+                    </div>
+                  </CSVLink>
+                </Tooltip>
+                {filterCount ? (
+                  <div className="toe-admin-book-page__filter-count toe-font-hint">
+                    {filterCount}
+                  </div>
+                ) : null}
+              </div>
+            </div>
           </div>
           {selected?.length ? (
             <Tooltip placement="bottomLeft" title="Xóa bản ghi">
@@ -800,6 +1044,8 @@ function BookLendingPage(props) {
           columns={COLUMNS}
           hasOption
           options={OPTIONS}
+          onRowDoubleClick={handleDoubleClickRow}
+          rowClassName={() => 'cursor-pointer'}
         />
         <Paginator
           onChange={({ page, pageSize }) => {
@@ -809,15 +1055,14 @@ function BookLendingPage(props) {
           pageSize={paging.pageSize}
           totalRecords={totalRecords}
         />
-        {isShowPopupCreateBook && null}
         {showFilter ? (
           <SideBar
+            className="sidebar-filter-booklending"
             show={showFilter}
             onClose={() => setShowFilter(false)}
-            title={'Bộ lọc nâng cao'}
+            title={'Bộ lọc'}
             onClickRefreshButton={() => {
-              setFilterValue({ filter: [], controls: [] });
-              refreshFilterKey.current++;
+              setFilterTimeValue(DEFAULT_FILTER_VALUE);
             }}
             bottomRightButtons={[
               <Button
@@ -833,18 +1078,78 @@ function BookLendingPage(props) {
               />,
             ]}
           >
-            <FilterEngine
-              key={refreshFilterKey.current}
-              defaultControls={selector.controls}
-              defaultFilter={selector.filter}
-              filterTypeOptions={ADMIN_BOOK_PAGE_BOLUMN_SEARCH}
-              onChange={({ filter, controls }) => {
-                setFilterValue({ filter, controls });
-              }}
-            />
+            <div className="sidebar-filter-booklending__row">
+              <Dropdown
+                options={commonFilterTime}
+                defaultValue={filterEngine.value}
+                label={'Ngày lập'}
+                onChange={({ value }) => {
+                  let timeBetween = commonFilterTime.find(
+                    (item) => item.value === value
+                  );
+                  console.log(
+                    moment(timeBetween.from).format(DATE_FORMAT.TYPE_1),
+                    '-----',
+                    moment(timeBetween.to).format(DATE_FORMAT.TYPE_1)
+                  );
+                  setFilterEngine({
+                    ...filterEngine,
+                    from: timeBetween.from,
+                    to: timeBetween.to,
+                    value,
+                  });
+                }}
+              />
+            </div>
+            {filterEngine.value === FILTER_TIME_VALUE.OPTION ? (
+              <div className="sidebar-filter-booklending__row date">
+                <div className="sidebar-filter-booklending__col">
+                  {' '}
+                  <div className="toe-font-label">Từ</div>
+                  <DatePicker defaultValue={new Date(filterEngine.from)} />{' '}
+                </div>
+                <div className="sidebar-filter-booklending__col">
+                  {' '}
+                  <div className="toe-font-label">Đến</div>
+                  <DatePicker defaultValue={new Date(filterEngine.to)} />
+                </div>
+              </div>
+            ) : null}
           </SideBar>
         ) : null}
       </div>
+      <Modal
+        maximizable={false}
+        onClose={() => setIsShowPopupNote(false)}
+        show={isShowPopupNote}
+        title={'Lý do hủy'}
+        footerRight={[
+          <Button
+            theme={BUTTON_THEME.THEME_6}
+            onClick={() => setIsShowPopupNote(false)}
+            name="Hủy"
+          />,
+          <Button
+            name="Xác nhận"
+            onClick={() => {
+              handleChangeStatus(RESERVATION_STATUS.CANCELED);
+            }}
+          />,
+        ]}
+      >
+        <TextAreaBase
+          placeholder={'Lý do hủy'}
+          onChange={(value) => setDataNote(value)}
+        />
+      </Modal>
+      {isShowPopupDelete ? (
+        <ToastConfirmDelete
+          onClose={() => setisShowPopupDelete(null)}
+          onAccept={() => {
+            handleRemove(isShowPopupDelete);
+          }}
+        />
+      ) : null}
       <Toast ref={toast}></Toast>
     </Layout>
   );

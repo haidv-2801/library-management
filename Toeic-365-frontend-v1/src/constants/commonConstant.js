@@ -469,7 +469,10 @@ export const RESERVATION_STATUS = {
   WAITING: 0,
   PENDING: 1,
   CANCELED: 2,
-  NONE: 3,
+  RETURNED: 3,
+  EXPIRED: 4,
+  LENDING: 5,
+  NONE: 6,
 };
 
 export const CLAIM = {
@@ -479,3 +482,26 @@ export const CLAIM = {
 //#endregion
 
 export const GOOGLE_API_KEY = 'AIzaSyCT4DCFBW26hCC0m2zBlAsnLXQh777UIUY';
+
+/**
+ * Các key lưu localstorage
+ */
+export const LOCAL_STOATE_KEY = {
+  BOOK_CODE_FROM_BOOK_LENDING: 'BOOK_CODE_FROM_BOOK_LENDING',
+};
+
+export const FILTER_TIME_VALUE = {
+  TODAY: 1,
+  YESTERDAY: 2,
+  THIS_WEEK: 3,
+  LAST_WEEK: 4,
+  THIS_MONTH: 5,
+  LAST_MONTH: 6,
+  THIS_QUARTER: 7,
+  LAST_QUARTER: 8,
+  THIS_YEAR: 9,
+  LAST_YEAR: 10,
+  OPTION: 11,
+};
+
+export const COLUMN_NOT_EXPORT = ['checkbox', 'option'];

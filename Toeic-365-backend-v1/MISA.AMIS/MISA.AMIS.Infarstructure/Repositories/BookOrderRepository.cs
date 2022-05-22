@@ -8,6 +8,7 @@ using Dapper;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
 using TOE.TOEIC.ApplicationCore.Entities;
+using System.Threading.Tasks;
 
 namespace TOE.TOEIC.Infrastructure
 {
@@ -23,6 +24,7 @@ namespace TOE.TOEIC.Infrastructure
 
         }
 
+        public async Task<string> GetNextBookOrderCode() => await _dbConnection.QueryFirstOrDefaultAsync<string>("Proc_NextBookOrderCode", commandType: CommandType.StoredProcedure);
         #endregion
 
         #region Methods

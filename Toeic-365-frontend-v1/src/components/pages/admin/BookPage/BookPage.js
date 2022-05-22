@@ -17,11 +17,17 @@ import {
   BUTTON_TYPE,
   DATE_FORMAT,
   GUID_NULL,
+  LOCAL_STOATE_KEY,
   MAXIMUM_PAGESIZE,
   MENU_TYPE,
   OPERATOR,
+  TEXT_FALL_BACK,
 } from '../../../../constants/commonConstant';
-import { buildClass, listToTree } from '../../../../constants/commonFunction';
+import {
+  buildClass,
+  listToTree,
+  ParseJson,
+} from '../../../../constants/commonFunction';
 import END_POINT from '../../../../constants/endpoint';
 import Button from '../../../atomics/base/Button/Button';
 import Input from '../../../atomics/base/Input/Input';
@@ -38,7 +44,10 @@ import { getUserName } from '../../../../constants/commonAuth';
 import { uploadFiles } from '../../../../api/firebase';
 import fileDownload from 'js-file-download';
 import FileSaver, { saveAs } from 'file-saver';
+import Spinner from '../../../atomics/base/Spinner/Spinner';
 import './bookPage.scss';
+import Overlay from '../../../atomics/base/Overlay/Overlay';
+import { getLocalStorage } from '../../../../contexts/authContext';
 
 BookPage.propTypes = {
   id: PropTypes.string,
@@ -97,7 +106,11 @@ function BookPage(props) {
       body: (row) => {
         return (
           <div className="toe-font-body">
-            {<SmartText rows={4}>{row?.description}</SmartText>}
+            {
+              <SmartText rows={4}>
+                {row?.description ?? TEXT_FALL_BACK.TYPE_1}
+              </SmartText>
+            }
           </div>
         );
       },
@@ -170,6 +183,7 @@ function BookPage(props) {
   const [selected, setSelected] = useState([]);
   const [popupMode, setpopupMode] = useState(POPUP_MODE.ADD);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoading2, setIsLoading2] = useState(false);
   const [isShowPopupCreateBook, setIsShowPopupCreateBook] = useState(false);
   const [lazyParams, setLazyParams] = useState({ page: 1, rows: 10 });
   const [totalRecords, setTotalRecords] = useState(0);
@@ -264,6 +278,9 @@ function BookPage(props) {
   };
 
   useEffect(() => {
+    let filterInfo = ParseJson(
+      getLocalStorage(LOCAL_STOATE_KEY.BOOK_CODE_FROM_BOOK_LENDING)
+    );
     getBooksFilter();
     getCategory();
   }, []);
@@ -398,6 +415,7 @@ function BookPage(props) {
   };
 
   const handleEdit = () => {
+    setIsLoading2(true);
     let _body = {
       ...dataCreate,
       modifiedDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
@@ -422,9 +440,11 @@ function BookPage(props) {
             life: 3000,
           });
         }
+        setIsLoading2(false);
         setIsShowPopupCreateBook(false);
       },
       (err) => {
+        setIsLoading2(false);
         toast.current.show({
           severity: 'error',
           summary: 'Error',
@@ -441,48 +461,27 @@ function BookPage(props) {
   };
 
   const handleAdd = () => {
-    const imagePromise = uploadFiles(dataCreate.image, 'images');
-    const filePromise = uploadFiles(dataCreate.file, 'files');
-    if (dataCreate.image && dataCreate.file) {
-      Promise.all([imagePromise, filePromise])
-        .then((res) => {
-          updateBook(res[0], res[1]);
-        })
-        .catch((err) => {
-          toast.current.show({
-            severity: 'error',
-            summary: 'Thêm mới thất bại',
-            detail: JSON.stringify(err),
-            life: 3000,
-          });
+    setIsLoading2(true);
+    let filePromise = dataCreate.file
+      ? uploadFiles(dataCreate.file, 'files')
+      : Promise.resolve(null);
+    let imagePromise = dataCreate.image
+      ? uploadFiles(dataCreate.image, 'images')
+      : Promise.resolve(null);
+
+    Promise.all([imagePromise, filePromise])
+      .then((res) => {
+        updateBook(res[0], res[1]);
+      })
+      .catch((err) => {
+        setIsLoading2(false);
+        toast.current.show({
+          severity: 'error',
+          summary: 'Thêm mới thất bại',
+          detail: JSON.stringify(err),
+          life: 3000,
         });
-    } else if (dataCreate.file) {
-      filePromise
-        .then((res) => {
-          updateBook('', res);
-        })
-        .catch((err) => {
-          toast.current.show({
-            severity: 'error',
-            summary: 'Thêm mới thất bại',
-            detail: JSON.stringify(err),
-            life: 3000,
-          });
-        });
-    } else {
-      imagePromise
-        .then((res) => {
-          updateBook(res, '');
-        })
-        .catch((err) => {
-          toast.current.show({
-            severity: 'error',
-            summary: 'Thêm mới thất bại',
-            detail: JSON.stringify(err),
-            life: 3000,
-          });
-        });
-    }
+      });
   };
 
   const updateBook = (imgUrl = null, fileUrl = null) => {
@@ -516,8 +515,10 @@ function BookPage(props) {
           });
         }
         setIsShowPopupCreateBook(false);
+        setIsLoading2(false);
       },
       (err) => {
+        setIsLoading2(false);
         let errMessage = err?.response?.data?.data || 'Có lỗi xảy ra';
         toast.current.show({
           severity: 'error',
@@ -820,6 +821,7 @@ function BookPage(props) {
             show={true}
             onClose={() => setIsShowPopupCreateBook(false)}
             onChange={(data) => {
+              console.log(data);
               setDataCreate({ ...dataCreate, ...data });
             }}
             dataCategory={dataCategory}
@@ -860,6 +862,12 @@ function BookPage(props) {
             />
           </SideBar>
         ) : null}
+        {isLoading2 && (
+          <Overlay className="spinner-middle-overlay">
+            {' '}
+            <Spinner show className="spinner-middle" />
+          </Overlay>
+        )}
       </div>
       <Toast ref={toast}></Toast>
     </Layout>

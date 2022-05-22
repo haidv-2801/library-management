@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { buildClass } from '../../../../../constants/commonFunction';
 import Button from '../../../../atomics/base/Button/Button';
 import baseApi from '../../../../../api/baseApi';
-import { ADMIN_ENDPOINT } from '../../../../../constants/endpoint';
+import END_POINT, { ADMIN_ENDPOINT } from '../../../../../constants/endpoint';
 import {
   BUTTON_TYPE,
   REGEX,
@@ -76,6 +76,12 @@ function PopupCreateBook(props) {
   const [dataCreate, setDataCreate] = useState(defaultValue ?? {});
 
   useEffect(() => {
+    getNextBookCode().then((res) =>
+      setDataCreate({ ...dataCreate, bookCode: res })
+    );
+  }, []);
+
+  useEffect(() => {
     onChange(dataCreate);
   }, [dataCreate]);
 
@@ -110,6 +116,17 @@ function PopupCreateBook(props) {
         break;
     }
   };
+
+  const getNextBookCode = async () => {
+    return await baseApi.get(
+      null,
+      null,
+      null,
+      END_POINT.TOE_GET_NEXT_BOOK_CODE,
+      null,
+      null
+    );
+  };
   return (
     <Modal
       {...props}
@@ -126,9 +143,8 @@ function PopupCreateBook(props) {
           <div className="col">
             <Input
               label={'Mã ấn phẩm'}
-              onChange={(data) =>
-                setDataCreate({ ...dataCreate, bookCode: data })
-              }
+              disabled
+              defaultValue={dataCreate.bookCode}
             />
           </div>
           <div className="col">
@@ -235,7 +251,7 @@ function PopupCreateBook(props) {
               label={'Số lượng bản ghi'}
               defaultValue={dataCreate?.amount ?? 1}
               onChange={(data) => {
-                setDataCreate({ ...dataCreate, amount: data.value });
+                setDataCreate({ ...dataCreate, amount: +data });
               }}
             />
           </div>

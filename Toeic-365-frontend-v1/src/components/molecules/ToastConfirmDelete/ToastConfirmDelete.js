@@ -1,33 +1,33 @@
-import PropTypes from 'prop-types';
 import React from 'react';
-import { buildClass } from '../../../constants/commonFunction';
+import PropTypes from 'prop-types';
+import { BUTTON_THEME } from '../../../constants/commonConstant';
+import Button from '../../atomics/base/Button/Button';
+import Modal from '../../atomics/base/ModalV2/Modal';
 import './toastConfirmDelete.scss';
 
 ToastConfirmDelete.propTypes = {
-  id: PropTypes.string,
-  className: PropTypes.string,
-  style: PropTypes.object,
-  onChange: PropTypes.func,
-  defaultValue: PropTypes.any,
+  onClose: PropTypes.func,
+  onAccept: PropTypes.func,
 };
 
-ToastConfirmDelete.defaultProps = {
-  id: '',
-  className: '',
-  style: {},
-  onChange: () => {},
-  defaultValue: null,
-};
+ToastConfirmDelete.defaultProps = {};
 
 function ToastConfirmDelete(props) {
-  const { id, style, className, onChange } = props;
-
+  const { onClose, onAccept } = props;
   return (
-    <div
-      id={id}
-      style={style}
-      className={buildClass(['toe-upload toe-font-body', className])}
-    ></div>
+    <Modal
+      title={'Xóa dữ liệu'}
+      show
+      maximizable={false}
+      footerRight={[
+        <Button theme={BUTTON_THEME.THEME_6} onClick={onClose} name="Hủy" />,
+        <Button name="Xác nhận" onClick={onAccept} />,
+      ]}
+      onClose={onClose}
+      className="toe-toast-delete"
+    >
+      Bạn có chắc muốn xóa?
+    </Modal>
   );
 }
 

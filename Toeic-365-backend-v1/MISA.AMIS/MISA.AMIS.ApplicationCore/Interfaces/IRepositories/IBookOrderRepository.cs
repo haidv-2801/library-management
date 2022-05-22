@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace TOE.TOEIC.ApplicationCore.Interfaces
 {
@@ -11,5 +12,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
     /// CREATED BY: DVHAI (07/07/2021)
     public interface IBookOrderRepository : IBaseRepository<BookOrder>
     {
+
+        Task<string> GetNextBookOrderCode();
     }
 }

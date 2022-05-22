@@ -24,26 +24,22 @@ namespace TOE.TOEIC.Web.Controllers
     [ApiController]
     public class BookOrderController : BaseEntityController<BookOrder>
     {
-        #region Declare
+        #region DeclareIBookOrderService _bookOrderService;
         IBookOrderService _bookOrderService;
+        IBaseService<BookOrderViewDTO> _bookOrderViewService;
         ILogger<BookOrder> _logger;
         #endregion
 
         #region Constructer
-        public BookOrderController(IBookOrderService bookOrderService, ILogger<BookOrder> logger) : base(bookOrderService, logger)
+        public BookOrderController(IBookOrderService bookOrderService, IBaseService<BookOrderViewDTO> bookOrderViewService, ILogger<BookOrder> logger) : base(bookOrderService, logger)
         {
             _bookOrderService = bookOrderService;
+            _bookOrderViewService = bookOrderViewService;
             _logger = logger;
         }
         #endregion
 
         #region Methods
-        /// <summary>
-        /// Thêm một thực thể mới
-        /// </summary>
-        /// <param name="bookOrder"></param>
-        /// <returns>Sô bản ghi bị ảnh hưởng</returns>
-        /// CreatedBy: DVHAI 07/07/2021
         [EnableCors("AllowCROSPolicy")]
         [HttpPost("Insert")]
         public async Task<IActionResult> Post([FromBody] BookOrder bookOrder)
@@ -63,6 +59,35 @@ namespace TOE.TOEIC.Web.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Lỗi Insert {typeof(BookOrder).Name}: " + ex.Message);
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [EnableCors("AllowCROSPolicy")]
+        [HttpGet("NextBookOrderCode")]
+        public async Task<IActionResult> GetNextBookOrderCode()
+        {
+            try
+            {
+                return Ok(_bookOrderService.GetNextBookOrderCode());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+
+        [EnableCors("AllowCROSPolicy")]
+        [HttpPost("BookOrderFilterV2")]
+        public IActionResult GetBookOrderFilterV2(PagingRequest pagingRequest)
+        {
+            try
+            {
+                return Ok( _bookOrderViewService.GetEntitiesFilter(pagingRequest, "view_bookorderview"));
+            }
+            catch (Exception ex)
+            {
                 return StatusCode(500, ex.Message);
             }
         }

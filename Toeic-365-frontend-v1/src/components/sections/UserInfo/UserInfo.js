@@ -76,6 +76,7 @@ const UserInfo = () => {
         break;
       case POPUP_SELECTION_VALUES.GUEST_PAGE:
         navigate('/');
+        break;
       case POPUP_SELECTION_VALUES.CHANGE_PASSWORD:
         navigate(PATH_NAME.USER + '?view=bao-mat');
         break;

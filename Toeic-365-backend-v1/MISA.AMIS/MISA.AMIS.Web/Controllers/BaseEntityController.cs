@@ -107,13 +107,13 @@ namespace TOE.TOEIC.Web.Controllers
         /// CreatedBy: DVHAI 07/07/2021
         [EnableCors("AllowCROSPolicy")]
         [HttpPost]
-        public IActionResult Post([FromBody] TEntity entity)
+        public async Task<IActionResult> Post([FromBody] TEntity entity)
         {
             var serviceResult = new ServiceResult();
             try
             {
                 _logger.LogInformation($"Thêm bản ghi {typeof(TEntity).Name}: " + JsonConvert.SerializeObject(entity));
-                serviceResult = _baseService.Insert(entity);
+                serviceResult = await _baseService.Insert(entity);
                 if (serviceResult.TOECode == TOECode.InValid)
                     return BadRequest(serviceResult);
                 else if (serviceResult.TOECode == TOECode.Exception || serviceResult.TOECode == TOECode.Fail)

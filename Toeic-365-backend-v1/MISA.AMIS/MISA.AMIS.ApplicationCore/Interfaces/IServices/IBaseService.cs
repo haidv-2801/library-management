@@ -23,7 +23,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         /// </summary>
         /// <returns>Danh sách bản ghi</returns>
         /// CREATED BY: DVHAI (07/07/2021)
-        ServiceResult GetEntitiesFilter(PagingRequest pagingRequest);
+        ServiceResult GetEntitiesFilter(PagingRequest pagingRequest, string viewOrTableName = "");
 
         /// <summary>
         ///  Lấy bản ghi theo id
@@ -39,7 +39,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         /// <param name="entity">Thông tin bản ghi</param>
         /// <returns>Số bản ghi</returns>
         /// CREATED BY: DVHAI (07/07/2021)
-        ServiceResult Insert(TEntity entity);
+        Task<ServiceResult> Insert(TEntity entity);
 
         /// <summary>
         /// Cập nhập thông tin bản ghi

@@ -32,17 +32,19 @@ Layout.propTypes = {
   rightButtons: PropTypes.array,
   hasBackBtn: PropTypes.bool,
   back: PropTypes.func,
+  className: PropTypes.string,
 };
 
 Layout.defaultProps = {
   title: null,
   rightButtons: [],
   hasBackBtn: false,
+  className: '',
   back: () => {},
 };
 
 function Layout(props) {
-  const { title, rightButtons, children, hasBackBtn, back } = props;
+  const { title, rightButtons, children, hasBackBtn, back, className } = props;
 
   //#region constant
   const DEFAULT_ITEM = '/admin/dashboard';
@@ -264,7 +266,7 @@ function Layout(props) {
   //#endregion
 
   return (
-    <LayoutAntd>
+    <LayoutAntd className={className}>
       <div className="toe-layout-admin-page-container">
         <div className="toe-layout-admin-page-container__header">
           <div

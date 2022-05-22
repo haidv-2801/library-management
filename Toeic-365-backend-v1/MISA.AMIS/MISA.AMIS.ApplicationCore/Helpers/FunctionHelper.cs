@@ -48,5 +48,27 @@ namespace TOE.TOEIC.ApplicationCore.Helpers
             }
             return ip;
         }
+
+        public static string NextRecordCode(string code)
+        {
+
+            //1. Tìm vị trí của chữ số đầu tiên
+            int firstDigitIndex = code.IndexOfAny(new char[]
+                { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' });
+
+            //2. Lấy ra tiền tố của mã nhân viên
+            string prefix = code.Substring(0, firstDigitIndex);
+
+            //3. Lấy hậu tố là số
+            string postFix = code.Substring(firstDigitIndex);
+            string postFixNum = (int.Parse(postFix) + 1).ToString();
+            if(postFixNum.Length < postFix.Length)
+            {
+                postFixNum = postFixNum.PadLeft(6, '0');
+            }
+
+            //4. Nối
+            return string.Concat(prefix, postFixNum);
+        }
     }
 }

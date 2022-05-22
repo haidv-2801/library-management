@@ -16,6 +16,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using TOE.TOEIC.ApplicationCore.Helpers;
 
 namespace TOE.TOEIC.ApplicationCore.Interfaces
 {
@@ -154,6 +155,15 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
 
             return propertyInfo.GetValue(book, null);
         }
+
+        protected override async Task<BookItem> CustomValueWhenInsert(BookItem entity)
+        {
+            entity.BookCode = FunctionHelper.NextRecordCode(await _bookRepository.GetNextBookCode()); 
+            return entity;
+        }
+
+        public async Task<string> GetNextBookCode() => FunctionHelper.NextRecordCode(await _bookRepository.GetNextBookCode());
+       
         #endregion
     }
 }

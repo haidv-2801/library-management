@@ -298,17 +298,18 @@
 
   .toe-popup-selection__item {
     height: fit-content;
-    padding: 8px 12px;
+    padding: 8px 18px;
     white-space: normal;
     border-bottom: 1px solid #e9ebee;
 
     .toe-font-hint {
-      color: #bbbbbb;
+      color: #505050;
       // text-align: right;
     }
   }
 
   .notification-item__content {
     margin-bottom: 8px;
+    font-size: 13px;
   }
 }

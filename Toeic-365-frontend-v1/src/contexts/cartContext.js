@@ -32,7 +32,10 @@ const CartContextProvider = (props) => {
         let existsItem = cart.find((c) => c.id === item.id);
         if (existsItem) {
           existsItem.quantity += item.quantity;
-          newCart = [item, ...cart.filter((item) => item.id !== existsItem.id)];
+          newCart = [
+            existsItem,
+            ...cart.filter((item) => item.id !== existsItem.id),
+          ];
         } else {
           newCart = [item, ...cart];
         }

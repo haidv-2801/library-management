@@ -19,6 +19,8 @@ Table.propTypes = {
   hasOption: PropTypes.bool,
   options: PropTypes.array,
   rowClassName: PropTypes.func,
+  onRowClick: PropTypes.func,
+  onRowDoubleClick: PropTypes.func,
 };
 
 Table.defaultProps = {
@@ -32,6 +34,8 @@ Table.defaultProps = {
   hasOption: false,
   options: [],
   rowClassName: () => {},
+  onRowClick: () => {},
+  onRowDoubleClick: () => {},
 };
 
 function Table(props) {
@@ -46,6 +50,8 @@ function Table(props) {
     hasOption,
     options,
     rowClassName,
+    onRowClick,
+    onRowDoubleClick,
   } = props;
 
   const [showOption, setShowOption] = useState(null);
@@ -74,7 +80,9 @@ function Table(props) {
             >
               <div
                 className="toe-font-body table-option"
-                onClick={(e) => handleShowOption(e, data[configs?.dataKey])}
+                onClick={(e) => {
+                  handleShowOption(e, data[configs?.dataKey]);
+                }}
               >
                 <i className="pi pi-ellipsis-v"></i>
               </div>
@@ -128,6 +136,8 @@ function Table(props) {
           rowsPerPageOptions={PAGEGING}
           emptyMessage="Không có dữ liệu hiển thị"
           rowClassName={rowClassName}
+          onRowClick={onRowClick}
+          onRowDoubleClick={onRowDoubleClick}
         >
           {renderColums()}
         </DataTable>

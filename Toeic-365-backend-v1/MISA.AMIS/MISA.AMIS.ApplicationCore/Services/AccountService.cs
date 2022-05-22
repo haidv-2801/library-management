@@ -114,7 +114,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        protected override Account CustomValueWhenInsert(Account entity)
+        protected override async Task<Account> CustomValueWhenInsert(Account entity)
         {
             entity.Password = CreateMD5(entity.Password);
             return entity;

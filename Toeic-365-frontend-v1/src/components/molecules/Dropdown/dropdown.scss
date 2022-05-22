@@ -3,13 +3,14 @@
   width: 100%;
   box-shadow: none !important;
   font-family: 'OpenSans-Medium', sans-serif !important;
+  border-color: #bbbbbb !important;
 
   &__wrapper {
     width: 100%;
   }
 
   &__wrapper-label {
-    margin-bottom: 4px;
+    margin-bottom: 8px;
   }
 
   &:hover {
@@ -26,6 +27,10 @@
 
   & .p-dropdown-panel.p-dropdown-items.p-dropdown-item {
     padding: 0;
+
+    &.p-highlight {
+      background-color: #bbbbbb !important;
+    }
   }
 
   & .p-inputtext {
@@ -51,6 +56,8 @@
   }
 
   .p-dropdown {
+    border-color: #bbbbbb;
+
     &-item {
       &__value--prefix {
         .p-dropdown-item__value-display {

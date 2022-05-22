@@ -93,4 +93,19 @@
     width: calc(100% - 200px);
     width: 732px;
   }
+
+  .spinner-middle-overlay {
+    z-index: 9999;
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  .spinner-middle {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    z-index: 9999;
+  }
 }

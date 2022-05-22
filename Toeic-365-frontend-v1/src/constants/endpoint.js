@@ -63,6 +63,7 @@ const END_POINT = (function () {
     TOE_INSERT_BOOK: host + 'api/BookItems',
     TOE_GET_BOOK_BY_ID: host + 'api/BookItems/{0}',
     TOE_GET_BOOKS_FILTER: host + 'api/BookItems/Filter',
+    TOE_GET_NEXT_BOOK_CODE: host + 'api/BookItems/NextBookCode',
 
     /**
      * *Endpoint category
@@ -84,6 +85,10 @@ const END_POINT = (function () {
      * *Endpoint book order
      */
     TOE_INSERT_BOOK_ORDER: host + 'api/BookOrder/Insert',
+    TOE_UPDATE_BOOK_ORDER: host + 'api/BookOrder/{0}',
+    TOE_NEXT_BOOK_ORDER: host + 'api/BookOrder/NextBookOrderCode',
+    TOE_BOOK_ORDERS_FILTER_V2: host + 'api/BookOrder/BookOrderFilterV2',
+    TOE_DELETE_BOOK_ORDER: host + 'api/BookOrder/{0}',
 
     /**
      * *Endpoint notification
