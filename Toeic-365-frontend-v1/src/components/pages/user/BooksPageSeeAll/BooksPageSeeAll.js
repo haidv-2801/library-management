@@ -82,7 +82,7 @@ function BooksPageSeeAll(props) {
               let _data = res.data.pageData,
                 _totalRecord = res.data.totalRecord;
               setData(_data);
-              setTotalRecord * _totalRecord;
+              setTotalRecord(_totalRecord);
               setIsLoading(false);
             },
             (err) => {
