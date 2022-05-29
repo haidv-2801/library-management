@@ -80,11 +80,11 @@ namespace TOE.TOEIC.Web.Controllers
 
         [EnableCors("AllowCROSPolicy")]
         [HttpPost("BookOrderFilterV2")]
-        public IActionResult GetBookOrderFilterV2(PagingRequest pagingRequest)
+        public async Task<IActionResult> GetBookOrderFilterV2(PagingRequest pagingRequest)
         {
             try
             {
-                return Ok( _bookOrderViewService.GetEntitiesFilter(pagingRequest, "view_bookorderview"));
+                return Ok( await _bookOrderViewService.GetEntitiesFilter(pagingRequest, "view_bookorderview"));
             }
             catch (Exception ex)
             {

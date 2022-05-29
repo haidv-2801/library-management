@@ -34,6 +34,9 @@ import { AuthContext } from './contexts/authContext';
 import { appAction } from './redux/slices/appSlice';
 import './constants/extension';
 import './main.scss';
+import SafeAddressPage from './components/pages/admin/SafeAddressPage/SafeAddressPage';
+import responsiveObserve from 'antd/lib/_util/responsiveObserve';
+import BooksPageSeeAllPrivate from './components/pages/user/BooksPageSeeAllPrivate/BooksPageSeeAllPrivate';
 
 // const MenuPage = React.lazy(() =>
 //   import('./components/pages/admin/MenuPage/MenuPage')
@@ -87,10 +90,10 @@ function App() {
 
   useEffect(() => {
     document.title = UTC_WEB_TITLE.toUpperCase();
-    getMenus();
+    checkAllowedAccessPrivateDocuments();
   }, []);
 
-  const getMenus = () => {
+  const getMenus = (hasPrivateMenu = false) => {
     let _filter = [
       ['IsDeleted', OPERATOR.EQUAL, '0'],
       OPERATOR.AND,
@@ -98,6 +101,11 @@ function App() {
       OPERATOR.AND,
       ['IsShowHome', OPERATOR.EQUAL, '1'],
     ];
+
+    if (hasPrivateMenu) {
+    } else {
+      _filter.push(OPERATOR.AND, ['IsPrivate', OPERATOR.EQUAL, '0']);
+    }
 
     baseApi.post(
       (res) => {
@@ -116,12 +124,42 @@ function App() {
     );
   };
 
+  const checkAllowedAccessPrivateDocuments = () => {
+    baseApi.get(
+      (res) => {
+        res = res?.status ? res.data : res;
+        getMenus(res);
+        dispatch(appAction.changeInPrivateAddresss(res));
+      },
+      (err) => {},
+      () => {},
+      END_POINT.TOE_SAFE_ADDRESS_ALLOWED_ACCESS,
+      null,
+      null
+    );
+  };
+
   return (
     <BrowserRouter>
       <Suspense fallback={<Loading show />}>
         <Routes>
           <Route exact path="/">
             <Route index element={<HomePage />} />
+
+            <Route
+              exact
+              path={PATH_NAME.PRIVATE_DOCUMENTS}
+              element={
+                selector.isInPrivateAddress ? (
+                  <BooksPageSeeAllPrivate titlePage="Tài liệu nội bộ" />
+                ) : (
+                  <NotFoundPage />
+                )
+              }
+            >
+              <Route exact path=":id" element={<BookDetail />} />
+            </Route>
+
             <Route exact path={PATH_NAME.HOME} element={<HomePage />} />
             <Route exact path={PATH_NAME.LOGIN} element={<LoginPage />} />
             <Route exact path={PATH_NAME.REGISTER} element={<RegisterPage />} />
@@ -216,6 +254,15 @@ function App() {
                 element={
                   <RequiredAuth>
                     <MenuPage />
+                  </RequiredAuth>
+                }
+              />
+              <Route
+                exact
+                path="safe-address"
+                element={
+                  <RequiredAuth>
+                    <SafeAddressPage />
                   </RequiredAuth>
                 }
               />

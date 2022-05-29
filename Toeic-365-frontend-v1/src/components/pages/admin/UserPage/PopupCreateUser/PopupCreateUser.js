@@ -53,6 +53,7 @@ function PopupCreateUser(props) {
       onClose={onClose}
       show={show}
       id={id}
+      maximizable={false}
       style={style}
       className={buildClass(['toe-popup-create-user', className])}
     >

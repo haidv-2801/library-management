@@ -16,14 +16,14 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         /// </summary>
         /// <returns>Danh sách bản ghi</returns>
         /// CREATED BY: DVHAI (07/07/2021)
-        IEnumerable<TEntity> GetEntities();
+        Task<IEnumerable<TEntity>> GetEntities();
 
         /// <summary>
         /// Lấy danh sách bản ghi
         /// </summary>
         /// <returns>Danh sách bản ghi</returns>
         /// CREATED BY: DVHAI (07/07/2021)
-        ServiceResult GetEntitiesFilter(PagingRequest pagingRequest, string viewOrTableName = "");
+        Task<ServiceResult> GetEntitiesFilter(PagingRequest pagingRequest, string viewOrTableName = "");
 
         /// <summary>
         ///  Lấy bản ghi theo id

@@ -19,6 +19,7 @@ using TOE.TOEIC.ApplicationCore.Helpers;
 using System.Text.Json;
 using System.Web;
 using TOE.TOEIC.ApplicationCore.Enums;
+using System.Net.NetworkInformation;
 
 namespace TOE.TOEIC.ApplicationCore
 {
@@ -53,10 +54,10 @@ namespace TOE.TOEIC.ApplicationCore
         /// </summary>
         /// <returns>Danh sách bản ghi</returns>
         /// CREATED BY: DVHAI 11/07/2021
-        public IEnumerable<TEntity> GetEntities()
+        public async Task<IEnumerable<TEntity>> GetEntities()
         {
-            var entities = _baseRepository.GetEntities();
-            return entities;
+            var entities = await _baseRepository.GetEntities();
+            return entities.ToList<TEntity>();
         }
 
         /// <summary>
@@ -64,9 +65,9 @@ namespace TOE.TOEIC.ApplicationCore
         /// </summary>
         /// <param name="pagingRequest"></param>
         /// <returns></returns>
-        public ServiceResult GetEntitiesFilter(PagingRequest pagingRequest, string viewOrTableName = "")
+        public async Task<ServiceResult> GetEntitiesFilter(PagingRequest pagingRequest, string viewOrTableName = "")
         {
-
+            viewOrTableName = CustomTableNameService(viewOrTableName);
             StringBuilder stringBuilder = new StringBuilder();
             var filter = JsonConvert.DeserializeObject<JArray>(FunctionHelper.Base64Decode(pagingRequest.Filter));
             List<string> columns = null;
@@ -80,7 +81,7 @@ namespace TOE.TOEIC.ApplicationCore
                 stringBuilder.Append(" 1 = 1 ");
             }
 
-            int totalRecord = _baseRepository.CountTotalRecordByClause(stringBuilder.ToString(), viewOrTableName);
+            int totalRecord = await _baseRepository.CountTotalRecordByClause(stringBuilder.ToString(), viewOrTableName);
 
 
             if (!string.IsNullOrEmpty(pagingRequest.Sort))
@@ -122,7 +123,7 @@ namespace TOE.TOEIC.ApplicationCore
             if (totalRecord > 0)
             {
                 string cols = columns == null ? "*" : string.Join(", ", columns);
-                var data = _baseRepository.GetEntitiesFilter(stringBuilder.ToString(), cols, viewOrTableName);
+                var data = await _baseRepository.GetEntitiesFilter(stringBuilder.ToString(), cols, viewOrTableName);
 
                 _serviceResult.Data = new
                 {
@@ -146,6 +147,16 @@ namespace TOE.TOEIC.ApplicationCore
             }
 
             return _serviceResult;
+        }
+
+        /// <summary>
+        /// Allow to custom table name from derived class
+        /// </summary>
+        /// <param name="tableName"></param>
+        /// <returns></returns>
+        protected virtual string CustomTableNameService(string tableName)
+        {
+            return tableName;
         }
 
         /// <summary>
@@ -209,7 +220,7 @@ namespace TOE.TOEIC.ApplicationCore
         /// CREATED BY: DVHAI (11/07/2021)
         public virtual async Task<ServiceResult> Insert(TEntity entity)
         {
-            //0.Custom lại giá trị khi update
+
             entity = await CustomValueWhenInsert(entity);
 
             entity.EntityState = EntityState.Add;
@@ -225,13 +236,16 @@ namespace TOE.TOEIC.ApplicationCore
                 {
                     _serviceResult.TOECode = TOECode.Fail;
                     _serviceResult.Messasge = Properties.Resources.Msg_Failed;
-                } else { _serviceResult.Data = rowAffects; }
+                }
+                else { _serviceResult.Data = rowAffects; }
             }
             else
             {
                 _serviceResult.TOECode = TOECode.InValid;
                 _serviceResult.Messasge = Properties.Resources.Msg_NotValid;
             }
+
+            AfterInsert();
 
             //3. Trả về kế quả
             return _serviceResult;
@@ -274,6 +288,9 @@ namespace TOE.TOEIC.ApplicationCore
                 _serviceResult.TOECode = TOECode.InValid;
                 _serviceResult.Messasge = Properties.Resources.Msg_NotValid;
             }
+
+            AfterUpdate();
+
             //3. Trả về kế quả
             return _serviceResult;
         }
@@ -299,6 +316,8 @@ namespace TOE.TOEIC.ApplicationCore
                 _serviceResult.TOECode = TOECode.InValid;
                 _serviceResult.Messasge = Properties.Resources.Msg_Failed;
             }
+
+            AfterDelete();
 
             return _serviceResult;
         }
@@ -343,6 +362,18 @@ namespace TOE.TOEIC.ApplicationCore
         protected virtual bool ValidateCustom(TEntity entity)
         {
             return true;
+        }
+
+        protected virtual void AfterInsert()
+        {
+        }
+
+        protected virtual void AfterUpdate()
+        {
+        }
+
+        protected virtual void AfterDelete()
+        {
         }
 
         /// <summary>
@@ -422,7 +453,7 @@ namespace TOE.TOEIC.ApplicationCore
         /// <param name="type">Kiểu dữ liệu</param>
         /// <param name="value">Giá trị kiểu string</param>
         /// <returns>Kiểu dữ liệu động</returns>
-        protected dynamic convertValue(Type type, string value)
+        protected dynamic ConvertValue(Type type, string value)
         {
             dynamic res = null;
 

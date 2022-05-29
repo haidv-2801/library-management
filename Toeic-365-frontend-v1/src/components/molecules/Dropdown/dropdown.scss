@@ -4,6 +4,7 @@
   box-shadow: none !important;
   font-family: 'OpenSans-Medium', sans-serif !important;
   border-color: #bbbbbb !important;
+  --main-color: #0d4e96;
 
   &__wrapper {
     width: 100%;
@@ -15,13 +16,13 @@
 
   &:hover {
     &:not(.p-disabled) {
-      border-color: #43c1c9 !important;
+      border-color: var(--main-color) !important;
     }
   }
 
   &.p-inputwrapper-focus {
     &:not(.p-disabled) {
-      border-color: #43c1c9 !important;
+      border-color: var(--main-color) !important;
     }
   }
 
@@ -95,11 +96,11 @@
       height: 32px;
 
       &:hover {
-        border-color: #43c1c9;
+        border-color: var(--main-color);
       }
 
       &:focus {
-        border-color: #43c1c9;
+        border-color: var(--main-color);
       }
     }
   }

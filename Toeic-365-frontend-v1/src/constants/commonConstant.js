@@ -15,6 +15,7 @@ export const PATH_NAME = {
   NOTIFICATION: '/thong-bao',
   RESOURCES: '/tai-nguyen-bo-suu-tap',
   SERVICES: '/dich-vu-tien-ich',
+  PRIVATE_DOCUMENTS: '/tai-lieu-noi-bo',
   BORROWING_RETURNING_BOOK: '/muon-tra-tai-lieu',
   NEW_BOOKS_INTRODUCTION: '/gioi-thieu-sach-moi',
 
@@ -125,6 +126,11 @@ export const MENU_TYPE = {
   NONE_EVENT: 3,
 };
 
+export const ADDRESS_TYPE = {
+  IP: 0,
+  MAC: 1,
+};
+
 export const FIXED_MENU_ID = {
   NEWS: '8d0fb05d-5ca6-4cf6-adfb-75e50d2a88c5',
   NOTIFICATION: 'be71f925-721b-4892-9a39-c450ea8ea88d',
@@ -182,7 +188,7 @@ export const ADMIN_BOOK_PAGE_BOLUMN_SEARCH = [
 export const MAXIMUM_FILE_SIZE = 1000000;
 
 export const ACCEPT_FILE =
-  '.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+  '.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,application/vnd.ms-excel';
 
 export const LANGUAGE = [
   {

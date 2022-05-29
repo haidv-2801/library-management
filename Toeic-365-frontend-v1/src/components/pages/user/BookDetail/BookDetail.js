@@ -303,28 +303,47 @@ function BookDetail(props) {
             <div className="toe-book-detail-page__body-main">
               <div className="toe-book-detail-page__body-main__left toe-font-body">
                 <div className="__row">{bookItem()}</div>
-                <div className="__row">
-                  <Tooltip title="Xem trước PDF">
-                    <div style={{ width: 'fit-content' }}>
-                      <Button
-                        className="button-preview"
-                        theme={BUTTON_THEME.THEME_4}
-                        type={BUTTON_TYPE.LEFT_ICON}
-                        leftIcon={
-                          isShowPreview ? (
-                            <EyeInvisibleOutlined />
-                          ) : (
-                            <EyeOutlined />
-                          )
-                        }
-                        shape={BUTTON_SHAPE.NORMAL}
-                        name={'Xem trước'}
-                        onClick={handlePreview}
-                      />
-                    </div>
-                  </Tooltip>
-                </div>
-                <div className="__row">{isShowPreview ? 'ádasd' : null}</div>
+                {dataDetail?.bookFormat === BOOK_FORMAT.EBOOK ? (
+                  <div className="__row">
+                    <Tooltip title="Xem trước PDF">
+                      <div style={{ width: 'fit-content' }}>
+                        <Button
+                          className="button-preview"
+                          theme={BUTTON_THEME.THEME_4}
+                          type={BUTTON_TYPE.LEFT_ICON}
+                          leftIcon={
+                            isShowPreview ? (
+                              <EyeInvisibleOutlined />
+                            ) : (
+                              <EyeOutlined />
+                            )
+                          }
+                          shape={BUTTON_SHAPE.NORMAL}
+                          name={'Xem trước'}
+                          onClick={handlePreview}
+                        />
+                      </div>
+                    </Tooltip>
+                  </div>
+                ) : null}
+
+                {isShowPreview ? (
+                  <div className="__row">
+                    {
+                      <iframe
+                        id="pdf-preview"
+                        style={{ border: 'border:1px solid #666CCC' }}
+                        title="PDF"
+                        scrolling="auto"
+                        src={require(dataDetail?.File)}
+                        frameborder={1}
+                        height={600}
+                        width={400}
+                      ></iframe>
+                    }
+                  </div>
+                ) : null}
+
                 <div className="__row">{renderInformation()}</div>
               </div>
               <div className="toe-book-detail-page__body-main__right toe-font-body">

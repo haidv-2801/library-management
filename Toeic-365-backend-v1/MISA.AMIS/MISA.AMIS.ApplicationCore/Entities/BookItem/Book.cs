@@ -51,6 +51,8 @@ namespace TOE.TOEIC.ApplicationCore.Entities
 
         [Display(Name = "Đường dẫn tệp")]
         public string File { get; set; }
+
+        public bool IsPrivate { get; set; }
         #endregion
     }
 }

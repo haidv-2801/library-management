@@ -1,11 +1,22 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using System.Text;
+using System.Threading.Tasks;
+using TOE.TOEIC.ApplicationCore.Entities;
+using TOE.TOEIC.ApplicationCore.Enums;
+using TOE.TOEIC.ApplicationCore.Helpers;
 
 namespace TOE.TOEIC.ApplicationCore.MiddleWare
 {
@@ -13,33 +24,103 @@ namespace TOE.TOEIC.ApplicationCore.MiddleWare
     {
         private readonly ILogger _logger;
         private readonly string _safelist;
+        private readonly HttpClient client;
+        private readonly IMemoryCache _memoryCache;
 
-        public ClientIpCheckActionFilter(string safelist, ILogger logger)
+        public ClientIpCheckActionFilter(string safelist, IMemoryCache memoryCache, ILogger logger)
         {
             _safelist = safelist;
             _logger = logger;
+            _memoryCache = memoryCache;
+            client = new HttpClient();
+            client.BaseAddress = new Uri("https://localhost:44364/");
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(
+                new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public override void OnActionExecuting(ActionExecutingContext context)
+        public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            var remoteIp = context.HttpContext.Connection.RemoteIpAddress;
+            //var remoteIp = context.HttpContext.Connection.RemoteIpAddress;
+            var remoteIp = FunctionHelper.GetIPV4Address();
+            var remoteMAC = PhysicalAddress.Parse(FunctionHelper.GetMACAddress());
+
             _logger.LogDebug("Remote IpAddress: {RemoteIp}", remoteIp);
-            var ip = _safelist.Split(';');
+            _logger.LogDebug("Remote MACAddress: {RemoteMAC}", remoteMAC);
+
+
+            //get default safe list from appsetting
+            var addresses = new List<SafeAddress>();
+
+            //#if DEBUG
+            //            var defaultIps = _safelist.Split(";").ToList<string>();
+            //            addresses = defaultIps.Select(item => new SafeAddress()
+            //            {
+            //                SafeAddressID = Guid.NewGuid(),
+            //                SafeAddressValue = FunctionHelper.GetMACAddress(),
+            //                Type = SafeAddressType.MAC
+            //            }).ToList<SafeAddress>();
+            //#else
+            //check address from cache
+            //if (!_memoryCache.TryGetValue<string>(CacheKey.ADDRESS_CACHE_KEY, out string cacheString))
+            //{
+
+            var response = await client.GetAsync("/api/SafeAddress");
+            if (response.IsSuccessStatusCode)
+            {
+                addresses = await response.Content.ReadAsAsync<List<SafeAddress>>();
+                //if (data.Count > 0)
+                //{
+                //    config expired time cache
+                //    MemoryCacheEntryOptions options = new MemoryCacheEntryOptions();
+                //    options.AbsoluteExpiration = DateTime.Now.AddDays(7);
+                //    options.SlidingExpiration = TimeSpan.FromMinutes(1);
+                //    _memoryCache.Set<string>(CacheKey.ADDRESS_CACHE_KEY, JsonConvert.SerializeObject(data), options);
+                //}
+                //else
+                //{
+                //    _memoryCache.Remove(CacheKey.ADDRESS_CACHE_KEY);
+                //}
+            }
+            else
+            {
+                //get safe address failed then ip get default values
+            }
+            //}
+            //if value is current in cache
+            //if(!string.IsNullOrEmpty(cacheString)) addresses = JsonConvert.DeserializeObject<List<SafeAddress>>(cacheString);
+            //#endif
+
+            var test = Dns.GetHostEntry((Dns.GetHostName()))
+                    .AddressList
+                    .Where(x => x.AddressFamily == AddressFamily.InterNetwork)
+                    .Select(x => x.ToString())
+                    .ToArray();
+
             var badIp = true;
 
-            if (remoteIp.IsIPv4MappedToIPv6)
+            foreach (var address in addresses)
             {
-                remoteIp = remoteIp.MapToIPv4();
-            }
 
-            foreach (var address in ip)
-            {
-                var testIp = IPAddress.Parse(address);
-
-                if (testIp.Equals(remoteIp))
+                if (address.Type == SafeAddressType.IP)
                 {
-                    badIp = false;
-                    break;
+                    var testIp = IPAddress.Parse(address.SafeAddressValue);
+
+                    if (testIp.Equals(IPAddress.Parse(remoteIp)))
+                    {
+                        badIp = false;
+                        break;
+                    }
+                }
+                else if (address.Type == SafeAddressType.MAC)
+                {
+                    var testMAC = PhysicalAddress.Parse(address.SafeAddressValue);
+
+                    if (testMAC.Equals(remoteMAC))
+                    {
+                        badIp = false;
+                        break;
+                    }
                 }
             }
 
@@ -50,7 +131,7 @@ namespace TOE.TOEIC.ApplicationCore.MiddleWare
                 return;
             }
 
-            base.OnActionExecuting(context);
+            await base.OnActionExecutionAsync(context, next);
         }
     }
 }

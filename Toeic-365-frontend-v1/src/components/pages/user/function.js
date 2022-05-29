@@ -8,6 +8,7 @@ import {
 import baseApi from '../../../api/baseApi';
 
 const DEFAULT_PAGE_SIZE = 5;
+const NotPrivateFilter = ['IsPrivate', OPERATOR.EQUAL, '0'];
 
 export const getNewPaperDocuments = (
   onSuccess,
@@ -21,6 +22,8 @@ export const getNewPaperDocuments = (
     ['Status', OPERATOR.EQUAL, '1'],
     OPERATOR.AND,
     ['BookFormat', OPERATOR.EQUAL, BOOK_FORMAT.PAPER_BACK],
+    OPERATOR.AND,
+    NotPrivateFilter,
     ...customFilter,
   ];
 
@@ -46,6 +49,8 @@ export const getElectronicDocuments = (onSuccess, onFailure, beforeSend) => {
     ['Status', OPERATOR.EQUAL, '1'],
     OPERATOR.AND,
     ['BookFormat', OPERATOR.EQUAL, BOOK_FORMAT.EBOOK],
+    OPERATOR.AND,
+    NotPrivateFilter,
   ];
 
   baseApi.post(

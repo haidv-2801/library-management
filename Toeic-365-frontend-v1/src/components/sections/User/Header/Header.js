@@ -310,14 +310,6 @@ function Header(props) {
         className,
       ])}
     >
-      {expandedMenu && (
-        <div className="toe-expanded-menu">
-          <PanelMenu
-            className="toe-expanded-menu__panel toe-font-body"
-            model={MENU_SMALL_SCREEN}
-          />
-        </div>
-      )}
       <div
         onClick={() => {
           history(PATH_NAME.HOME);
@@ -332,13 +324,6 @@ function Header(props) {
           <>
             <MenuBar options={dataMenus} />
             {!authCtx.isLoggedIn ? null : <UserInfo />}
-            <Button
-              className="toe-btn-toggle"
-              leftIcon={<i className="pi pi-bars" />}
-              type={BUTTON_TYPE.LEFT_ICON}
-              theme={BUTTON_THEME.THEME_4}
-              onClick={handleExpanedMenu}
-            />
           </>
         )}
 

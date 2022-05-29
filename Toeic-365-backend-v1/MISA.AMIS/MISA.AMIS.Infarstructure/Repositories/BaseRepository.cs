@@ -40,13 +40,13 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         /// </summary>
         /// <returns></returns>
         /// CREATED BY: DVHAI (11/07/2021)
-        public IEnumerable<TEntity> GetEntities()
+        public async Task<IEnumerable<TEntity>> GetEntities()
         {
             //1. Tạo kết nối và truy vấn                        
-            var entities = _dbConnection.Query<TEntity>($"Proc_Get{_tableName}s", commandType: CommandType.StoredProcedure).ToList();
+            var entities = await _dbConnection.QueryAsync<TEntity>($"Proc_Get{_tableName}s", commandType: CommandType.StoredProcedure);
 
             //2. Trả về dữ liệu
-            return entities;
+            return entities.ToList<TEntity>();
         }
 
         /// <summary>
@@ -279,7 +279,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         /// </summary>
         /// <param name="whereClause"></param>
         /// <returns></returns>
-        public IEnumerable<TEntity> GetEntitiesFilter(string whereClause, string columnNames = "*", string viewName = "")
+        public async Task<IEnumerable<TEntity>> GetEntitiesFilter(string whereClause, string columnNames = "*", string viewName = "")
         {
             string resource = _tableName;
             if (!string.IsNullOrEmpty(viewName))
@@ -289,8 +289,8 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
 
             if (columnNames == null) columnNames = "*";
             string query = $"SELECT {columnNames} FROM {resource} WHERE {whereClause}";
-            var entityReturn = _dbConnection.Query<TEntity>(query, commandType: CommandType.Text);
-            return (IEnumerable<TEntity>)entityReturn;
+            var entityReturn = (IEnumerable<TEntity>) await _dbConnection.QueryAsync<TEntity>(query, commandType: CommandType.Text);
+            return entityReturn;
         }
 
         /// <summary>
@@ -298,7 +298,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         /// </summary>
         /// <param name="whereClause"></param>
         /// <returns></returns>
-        public int CountTotalRecordByClause(string whereClause, string viewName = "")
+        public async Task<int> CountTotalRecordByClause(string whereClause, string viewName = "")
         {
             string resource = _tableName;
             if (!string.IsNullOrEmpty(viewName))
@@ -306,7 +306,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
                 resource = viewName;
             }
             string queryTotal = $"SELECT COUNT(*) FROM {resource} WHERE {whereClause}";
-            var totalRecord = (int)_dbConnection.QuerySingle<int>(queryTotal, commandType: CommandType.Text);
+            var totalRecord = (int)await _dbConnection.QuerySingleAsync<int>(queryTotal, commandType: CommandType.Text);
             return totalRecord;
         }
 

@@ -182,7 +182,7 @@ function RegisterPage() {
       >
         <img src={MainLogo} alt="logo" />
         <b className="name-app">
-          Thư viện<span style={{ color: '#43c1c9' }}>365</span>
+          Thư viện<span style={{ color: '#43c1c9' }}>GTVT</span>
         </b>
       </div>
       <div className="toe-register-page__body"></div>

@@ -16,7 +16,7 @@ function ToastConfirmDelete(props) {
   const { onClose, onAccept } = props;
   return (
     <Modal
-      title={'Xóa dữ liệu'}
+      title={''}
       show
       maximizable={false}
       footerRight={[

@@ -30,6 +30,7 @@ import TreeSelect from '../../../../atomics/base/TreeSelect/TreeSelect';
 import './popupCreateBook.scss';
 import TextArea from '../../../../atomics/base/TextArea/TextArea';
 import InputNumber from '../../../../atomics/base/InputNumber/InputNumber';
+import RadioButton from '../../../../atomics/base/RadioButton/RadioButton';
 
 PopupCreateBook.propTypes = {
   id: PropTypes.string,
@@ -302,6 +303,19 @@ function PopupCreateBook(props) {
           <div className="col">
             <div className="col__label toe-font-label">Ảnh bìa</div>
             <UpLoadImage onChange={onSelectImage} />
+          </div>
+          <div className="col">
+            <div className="col__label toe-font-label">Tài liệu nội bộ</div>
+            <RadioButton
+              label="Tài liệu nội bộ"
+              onChange={() => {
+                setDataCreate({
+                  ...dataCreate,
+                  isPrivate: !dataCreate.isPrivate,
+                });
+              }}
+              checked={dataCreate.isPrivate}
+            />
           </div>
         </div>
         <div className="row">

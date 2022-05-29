@@ -63,6 +63,7 @@ const END_POINT = (function () {
     TOE_INSERT_BOOK: host + 'api/BookItems',
     TOE_GET_BOOK_BY_ID: host + 'api/BookItems/{0}',
     TOE_GET_BOOKS_FILTER: host + 'api/BookItems/Filter',
+    TOE_GET_BOOKS_PRIVATE_FILTER: host + 'api/BookItems/private/filter',
     TOE_GET_NEXT_BOOK_CODE: host + 'api/BookItems/NextBookCode',
 
     /**
@@ -94,6 +95,16 @@ const END_POINT = (function () {
      * *Endpoint notification
      */
     TOE_GET_NOTIFICATIONS_FILTER: host + 'api/Notifications/Filter',
+
+    /**
+     * *Endpoint safeaddress
+     */
+    TOE_INSERT_SAFE_ADDRESS: host + 'api/SafeAddress',
+    TOE_UPDATE_SAFE_ADDRESS: host + 'api/SafeAddress/{0}',
+    TOE_DELETE_SAFE_ADDRESS: host + 'api/SafeAddress/{0}',
+    TOE_SAFE_ADDRESS_FILTER: host + 'api/SafeAddress/Filter',
+    TOE_SAFE_ADDRESS_ALLOWED_ACCESS:
+      host + 'api/SafeAddress/CheckAllowedAccess',
   };
 })();
 

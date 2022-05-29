@@ -26,6 +26,7 @@ using Microsoft.Owin.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Net.Http.Headers;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace TOE.TOEIC.Web
 {
@@ -43,6 +44,7 @@ namespace TOE.TOEIC.Web
         {
             services.AddControllers();
             services.AddDirectoryBrowser();
+            services.AddMemoryCache();
 
             services.AddCors(options =>
             {
@@ -54,6 +56,12 @@ namespace TOE.TOEIC.Web
                                 .AllowAnyHeader();
                     });
             });
+
+            services.AddHttpContextAccessor();
+
+            services.AddControllersWithViews().AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
 
             // Config authenication
             services.AddAuthentication(x =>
@@ -82,10 +90,11 @@ namespace TOE.TOEIC.Web
             services.AddScoped<ClientIpCheckActionFilter>(container =>
             {
                 var loggerFactory = container.GetRequiredService<ILoggerFactory>();
+                var cache = container.GetRequiredService<IMemoryCache>();
                 var logger = loggerFactory.CreateLogger<ClientIpCheckActionFilter>();
 
                 return new ClientIpCheckActionFilter(
-                    Configuration["AdminSafeList"], logger);
+                    Configuration["AdminSafeList"], cache, logger);
             });
 
             //Add Elasticsearch
@@ -125,6 +134,10 @@ namespace TOE.TOEIC.Web
             //book order
             services.AddScoped<IBookOrderRepository, BookOrderRepository>();
             services.AddScoped<IBookOrderService, BookOrderService>();
+
+            //safe address
+            services.AddScoped<ISafeAddressRepository, SafeAddressRepository>();
+            services.AddScoped<ISafeAddressService, SafeAddressService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

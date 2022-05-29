@@ -12,8 +12,11 @@ D:\nam4ki2\DATN\DA\Toiec-365\Toeic-365-backend-v1\MISA.AMIS\MISA.AMIS.Web\bin\De
 D:\nam4ki2\DATN\DA\Toiec-365\Toeic-365-backend-v1\MISA.AMIS\MISA.AMIS.Web\bin\Debug\netcoreapp3.1\Elasticsearch.Net.dll
 D:\nam4ki2\DATN\DA\Toiec-365\Toeic-365-backend-v1\MISA.AMIS\MISA.AMIS.Web\bin\Debug\netcoreapp3.1\EPPlus.dll
 D:\nam4ki2\DATN\DA\Toiec-365\Toeic-365-backend-v1\MISA.AMIS\MISA.AMIS.Web\bin\Debug\netcoreapp3.1\ExcelNumberFormat.dll
+D:\nam4ki2\DATN\DA\Toiec-365\Toeic-365-backend-v1\MISA.AMIS\MISA.AMIS.Web\bin\Debug\netcoreapp3.1\System.Net.Http.Formatting.dll
 D:\nam4ki2\DATN\DA\Toiec-365\Toeic-365-backend-v1\MISA.AMIS\MISA.AMIS.Web\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 D:\nam4ki2\DATN\DA\Toiec-365\Toeic-365-backend-v1\MISA.AMIS\MISA.AMIS.Web\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Http.Features.dll
+D:\nam4ki2\DATN\DA\Toiec-365\Toeic-365-backend-v1\MISA.AMIS\MISA.AMIS.Web\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.JsonPatch.dll
+D:\nam4ki2\DATN\DA\Toiec-365\Toeic-365-backend-v1\MISA.AMIS\MISA.AMIS.Web\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
 D:\nam4ki2\DATN\DA\Toiec-365\Toeic-365-backend-v1\MISA.AMIS\MISA.AMIS.Web\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.dll
 D:\nam4ki2\DATN\DA\Toiec-365\Toeic-365-backend-v1\MISA.AMIS\MISA.AMIS.Web\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.Abstractions.dll
 D:\nam4ki2\DATN\DA\Toiec-365\Toeic-365-backend-v1\MISA.AMIS\MISA.AMIS.Web\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.FileExtensions.dll
@@ -33,6 +36,7 @@ D:\nam4ki2\DATN\DA\Toiec-365\Toeic-365-backend-v1\MISA.AMIS\MISA.AMIS.Web\bin\De
 D:\nam4ki2\DATN\DA\Toiec-365\Toeic-365-backend-v1\MISA.AMIS\MISA.AMIS.Web\bin\Debug\netcoreapp3.1\MySqlConnector.dll
 D:\nam4ki2\DATN\DA\Toiec-365\Toeic-365-backend-v1\MISA.AMIS\MISA.AMIS.Web\bin\Debug\netcoreapp3.1\Nest.dll
 D:\nam4ki2\DATN\DA\Toiec-365\Toeic-365-backend-v1\MISA.AMIS\MISA.AMIS.Web\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
+D:\nam4ki2\DATN\DA\Toiec-365\Toeic-365-backend-v1\MISA.AMIS\MISA.AMIS.Web\bin\Debug\netcoreapp3.1\Newtonsoft.Json.Bson.dll
 D:\nam4ki2\DATN\DA\Toiec-365\Toeic-365-backend-v1\MISA.AMIS\MISA.AMIS.Web\bin\Debug\netcoreapp3.1\NLog.dll
 D:\nam4ki2\DATN\DA\Toiec-365\Toeic-365-backend-v1\MISA.AMIS\MISA.AMIS.Web\bin\Debug\netcoreapp3.1\NLog.Extensions.Logging.dll
 D:\nam4ki2\DATN\DA\Toiec-365\Toeic-365-backend-v1\MISA.AMIS\MISA.AMIS.Web\bin\Debug\netcoreapp3.1\NLog.Web.AspNetCore.dll

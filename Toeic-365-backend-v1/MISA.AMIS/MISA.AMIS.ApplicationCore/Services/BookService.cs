@@ -17,6 +17,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using TOE.TOEIC.ApplicationCore.Helpers;
+using TOE.TOEIC.ApplicationCore.Enums;
 
 namespace TOE.TOEIC.ApplicationCore.Interfaces
 {
@@ -34,7 +35,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         #endregion
 
         #region Methods
-       
+
         /// <summary>
         /// Validate tùy chỉn theo màn hình nhân viên
         /// </summary>
@@ -158,12 +159,33 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
 
         protected override async Task<BookItem> CustomValueWhenInsert(BookItem entity)
         {
-            entity.BookCode = FunctionHelper.NextRecordCode(await _bookRepository.GetNextBookCode()); 
+            var nextCode = await _bookRepository.GetNextBookCode();
+            if (nextCode == null)
+            {
+                nextCode = DefaultCode.BOOK_ITEM;
+            }
+            else
+            {
+                nextCode = FunctionHelper.NextRecordCode(nextCode);
+            }
+            entity.BookCode = nextCode;
             return entity;
         }
 
-        public async Task<string> GetNextBookCode() => FunctionHelper.NextRecordCode(await _bookRepository.GetNextBookCode());
-       
+        public async Task<string> GetNextBookCode()
+        {
+            var nextCode = await _bookRepository.GetNextBookCode();
+            if (nextCode == null)
+            {
+                nextCode = DefaultCode.BOOK_ITEM;
+            }
+            else
+            {
+                nextCode = FunctionHelper.NextRecordCode(nextCode);
+            }
+            return (string)nextCode;
+        }
+
         #endregion
     }
 }

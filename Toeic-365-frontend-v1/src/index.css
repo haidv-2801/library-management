@@ -6,6 +6,7 @@
 
 :root {
   --main-color: #43c1c9;
+  --main-color: #0d4e96;
   --padding-page: 24px 10vw;
 }
 
@@ -39,9 +40,9 @@ body {
 }
 
 .p-inputswitch.p-inputswitch-checked .p-inputswitch-slider {
-  background-color: #43c1c9;
+  background-color: var(--main-color);
 }
 
 .p-inputswitch.p-inputswitch-checked .p-inputswitch-slider:hover {
-  background-color: #43c1c9;
+  background-color: var(--main-color);
 }

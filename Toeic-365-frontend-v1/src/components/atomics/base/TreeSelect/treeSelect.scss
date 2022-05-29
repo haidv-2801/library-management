@@ -1,5 +1,4 @@
 .toe-treeSelect {
-  $main-color: #43c1c9;
   $icon-size: 12px;
   $font-size: 14px;
   $text-color: #454545;
@@ -11,17 +10,17 @@
   &.p-treeselect {
     &:focus {
       box-shadow: none;
-      border: 1px solid $main-color;
+      border: 1px solid var(--main-color);
     }
 
     &:hover {
-      border: 1px solid $main-color;
+      border: 1px solid var(--main-color);
     }
 
     &:not(.p-disabled) {
       &.p-focus {
         box-shadow: none;
-        border: 1px solid $main-color;
+        border: 1px solid var(--main-color);
       }
     }
 
@@ -136,12 +135,12 @@
 
         &:enabled:focus {
           box-shadow: none;
-          border-color: $main-color;
+          border-color: var(--main-color);
         }
 
         &:enabled:hover {
           box-shadow: none;
-          border-color: $main-color;
+          border-color: var(--main-color);
         }
 
         &::-webkit-input-placeholder {

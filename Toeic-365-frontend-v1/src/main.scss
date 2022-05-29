@@ -120,3 +120,17 @@
     height: 100%;
   }
 }
+
+.ant-radio-checked {
+  .ant-radio-inner {
+    border-color: var(--main-color);
+  }
+
+  &::after {
+    border-color: var(--main-color);
+  }
+}
+
+.ant-radio {
+  border-color: var(--main-color);
+}

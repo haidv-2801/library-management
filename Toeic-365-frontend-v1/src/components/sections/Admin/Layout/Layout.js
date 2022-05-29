@@ -1,28 +1,23 @@
-import {
-  DashboardOutlined,
-  LeftOutlined,
-  QuestionCircleOutlined,
-  UploadOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
+import { LeftOutlined } from '@ant-design/icons';
 import { Layout as LayoutAntd, Menu } from 'antd';
+import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
-// import MainLogo from '../../../../assets/images/toeiclogo.png';
+import baseApi from '../../../../api/baseApi';
 import MainLogo from '../../../../assets/images/logo_utc.jpg';
+import { OPERATOR, SORT_TYPE } from '../../../../constants/commonConstant';
+import END_POINT from '../../../../constants/endpoint';
 import useOnClickOutside from '../../../../hooks/useClickOutSide';
 import useWindowResize from '../../../../hooks/useWindowResize';
 import Loading from '../../../atomics/base/Loading/Loading';
-import UserInfo from '../../UserInfo/UserInfo';
 import PopupSelectionV1 from '../../../atomics/base/PopupSelectionV1/PopupSelection';
+import PanelMenu from '../../../molecules/PanelMenu/PanelMenu';
+import UserInfo from '../../UserInfo/UserInfo';
 import './layout.scss';
-import END_POINT from '../../../../constants/endpoint';
-import { OPERATOR, SORT_TYPE } from '../../../../constants/commonConstant';
-import baseApi from '../../../../api/baseApi';
-import moment from 'moment';
-import { Skeleton } from 'primereact/skeleton';
+import $ from 'jquery';
+import { buildClass } from '../../../../constants/commonFunction';
 
 const { Header, Sider, Content } = LayoutAntd;
 const { SubMenu } = Menu;
@@ -53,74 +48,95 @@ function Layout(props) {
 
   const MENU = [
     {
-      key: DEFAULT_ITEM,
-      title: DEFAULT_TITLE,
-      icon: <DashboardOutlined />,
+      url: DEFAULT_ITEM,
+      label: DEFAULT_TITLE,
+      icon: 'pi pi-chart-bar',
+      items: null,
+      className: 'js-admin-menu-event-dashboard',
     },
     {
-      key: '/admin/system',
-      title: 'Hệ thống',
-      icon: <UserOutlined />,
-      children: [
-        {
-          key: '/admin/systems/user',
-          title: 'Tài khoản',
-        },
-        {
-          key: '/admin/systems/role',
-          title: 'Chức năng',
-        },
-        {
-          key: '/admin/systems/permission',
-          title: 'Phân quyền',
-        },
-        {
-          key: '/admin/systems/menu',
-          title: 'Menu',
-        },
-      ],
+      label: null,
+      className: 'separator-line',
     },
     {
-      key: '/admin/tin-tuc',
-      title: 'Tin tức',
-      icon: <UserOutlined />,
-      children: [
-        {
-          key: '/admin/tin-tuc/post',
-          title: 'Bài viết',
-        },
-        {
-          key: '/admin/tin-tuc/page',
-          title: 'Trang',
-        },
-        {
-          key: '/admin/tin-tuc/slide',
-          title: 'Slide',
-        },
-        {
-          key: '/admin/yeu-cau-gop-y',
-          title: 'Yêu cầu góp ý',
-        },
-      ],
+      icon: 'pi pi-users',
+      url: '/admin/systems/user',
+      label: 'Tài khoản',
+      className: 'js-admin-menu-event-account',
     },
     {
-      key: '/admin/danh-muc',
-      title: 'Danh mục',
-      icon: <UserOutlined />,
-      children: [
-        {
-          key: '/admin/danh-muc/ban-doc',
-          title: 'Bạn đọc',
-        },
-        {
-          key: '/admin/danh-muc/sach',
-          title: 'Ấn phẩm',
-        },
-        {
-          key: '/admin/danh-muc/muon-tra',
-          title: 'Mượn trả',
-        },
-      ],
+      icon: 'pi pi-th-large',
+      url: '/admin/systems/role',
+      label: 'Chức năng',
+      className: 'js-admin-menu-event-role',
+    },
+    {
+      icon: 'pi pi-user-edit',
+      url: '/admin/systems/permission',
+      label: 'Phân quyền',
+      className: 'js-admin-menu-event-permission',
+    },
+    {
+      icon: 'pi pi-server',
+      url: '/admin/systems/safe-address',
+      label: 'Địa chỉ truy cập',
+      className: 'js-admin-menu-event-safe-address',
+    },
+    {
+      label: null,
+      className: 'separator-line',
+    },
+    {
+      icon: 'pi pi-list',
+      url: '/admin/systems/menu',
+      label: 'Menu',
+      className: 'js-admin-menu-event-menu',
+    },
+    {
+      url: '/admin/danh-muc/ban-doc',
+      icon: 'pi pi-users',
+      label: 'Bạn đọc',
+      className: 'js-admin-menu-event-safe-member',
+    },
+    {
+      url: '/admin/danh-muc/sach',
+      label: 'Ấn phẩm',
+      icon: 'pi pi-book',
+      className: 'js-admin-menu-event-safe-book',
+    },
+    {
+      icon: 'pi pi-arrows-h',
+      url: '/admin/danh-muc/muon-tra',
+      label: 'Mượn trả',
+      className: 'js-admin-menu-event-safe-lending',
+    },
+    {
+      label: null,
+      className: 'separator-line',
+    },
+    {
+      url: '/admin/tin-tuc/post',
+      icon: 'pi pi-bell',
+      label: 'Bài viết',
+      className: 'js-admin-menu-event-safe-post',
+    },
+    {
+      icon: 'pi pi-server',
+      url: '/admin/tin-tuc/page',
+      label: 'Trang',
+      className: 'js-admin-menu-event-safe-page',
+    },
+    {
+      icon: 'pi pi-server',
+      url: '/admin/tin-tuc/slide',
+      label: 'Slide',
+      className: 'js-admin-menu-event-safe-slide',
+    },
+    {
+      icon: 'pi pi-server',
+      url: '/admin/yeu-cau-gop-y',
+      label: 'Yêu cầu góp ý',
+      className: 'js-admin-menu-event-safe-feedback',
     },
   ];
 
@@ -151,7 +167,8 @@ function Layout(props) {
   const appSelector = useSelector((store) => store.app);
   const [collapsedMenu, setCollapsedMenu] = useState(false);
   const [isShowPopupSelection, setIsShowPopupSelection] = useState(false);
-  const [menuItemSelected, setmenuItemSelected] = useState(DEFAULT_TITLE);
+  const [menuItemSelected, setmenuItemSelected] = useState(DEFAULT_ITEM);
+  const [menuItemIndexSelected, setMenuItemIndexSelected] = useState(0);
   const [userSelectValue, setUserSelectValue] = useState();
   const [width, height] = useWindowResize();
   const [notificationPaging, setNotificationPaging] = useState({
@@ -178,12 +195,8 @@ function Layout(props) {
   }, []);
 
   useEffect(() => {
-    if (width < SCREEN_WIDTH) {
-      setCollapsedMenu(true);
-    } else {
-      setCollapsedMenu(false);
-    }
-  }, [width]);
+    console.log('menuItemIndexSelected :>> ', menuItemIndexSelected);
+  }, [menuItemIndexSelected]);
 
   const getNotification = () => {
     setDataNotifications({ ...dataNotifications, isLoading: true });
@@ -214,7 +227,13 @@ function Layout(props) {
   };
 
   const handleCollapsed = (state) => {
-    setCollapsedMenu(state);
+    if (state) {
+      setCollapsedMenu(state);
+    } else {
+      setTimeout(() => {
+        setCollapsedMenu(state);
+      }, 120);
+    }
   };
 
   const renderMenu = () => {
@@ -250,6 +269,38 @@ function Layout(props) {
     });
   };
 
+  const renderPanelMenu = () => {
+    return <PanelMenu items={MENU} />;
+  };
+
+  const renderPanelMenu1 = () => {
+    return (
+      <div className={buildClass(['admin-menu'])}>
+        {MENU.map((item, _) => {
+          return (
+            <div
+              key={_}
+              className={buildClass([
+                'admin-menu-item toe-font-body',
+                item.className,
+                location.pathname.indexOf(item.url) >= 0 && 'active',
+              ])}
+              onClick={() => {
+                history(item.url);
+                setMenuItemIndexSelected(item.url);
+              }}
+            >
+              <div className="admin-menu-item__icon">
+                <i className={item.icon}></i>
+              </div>
+              <div className="admin-menu-item__text">{item.label}</div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
   const renderRightButtons = () => {
     return rightButtons.map((btn, _) => <div key={_}>{btn}</div>);
   };
@@ -276,9 +327,6 @@ function Layout(props) {
             className="toe-layout-admin-page-container__header-left"
           >
             <img className="logo-app" src={MainLogo} alt="Thư viện GTVT" />
-            {/* <b className="name-app">
-              Thư viện <span style={{ color: '#43c1c9' }}>GTVT</span>
-            </b> */}
           </div>
           <div className="toe-layout-admin-page-container__header-right toe-font-body">
             <PopupSelectionV1
@@ -311,25 +359,14 @@ function Layout(props) {
           <div className="toe-layout-admin-page-container__body-left">
             <Sider
               collapsible
-              // collapsed={collapsedMenu}
-              // onCollapse={handleCollapsed}
+              onCollapse={handleCollapsed}
               theme="light"
               breakpoint="lg"
               color="#fff"
+              className={buildClass([collapsedMenu && 'sidermenu-collapsed'])}
             >
               <div className="logo" />
-              <Menu
-                onSelect={handleSelectMenuItem}
-                theme="light"
-                mode="inline"
-                defaultSelectedKeys={[location.pathname]}
-                inlineIndent={24}
-                selectable
-                selectedKeys={location.pathname}
-                className="admin-menu"
-              >
-                {renderMenu()}
-              </Menu>
+              {renderPanelMenu1()}
             </Sider>
           </div>
           <div className="toe-layout-admin-page-container__body-right">

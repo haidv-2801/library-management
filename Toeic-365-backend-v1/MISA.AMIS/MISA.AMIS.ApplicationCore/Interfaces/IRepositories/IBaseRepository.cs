@@ -13,21 +13,21 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         /// </summary>
         /// <returns>Danh sách bản ghi</returns>
         /// CREATED BY: DVHAI (07/07/2021)
-        IEnumerable<TEntity> GetEntities();
+        Task<IEnumerable<TEntity>> GetEntities();
 
         /// <summary>
         /// Base filter
         /// </summary>
         /// <param name="whereClause"></param>
         /// <returns></returns>
-        IEnumerable<TEntity> GetEntitiesFilter(string whereClause, string columnNames = "*", string viewName = "");
+        Task<IEnumerable<TEntity>> GetEntitiesFilter(string whereClause, string columnNames = "*", string viewName = "");
 
         /// <summary>
         /// Base filter
         /// </summary>
         /// <param name="whereClause"></param>
         /// <returns></returns>
-        int CountTotalRecordByClause(string whereClause, string viewName = "");
+        Task<int> CountTotalRecordByClause(string whereClause, string viewName = "");
 
         /// <summary>
         ///  Lấy bản ghi theo id

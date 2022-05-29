@@ -70,10 +70,20 @@ namespace TOE.TOEIC.ApplicationCore.Enums
         LOST = 0
     }
 
+    public enum SafeAddressType
+    {
+        IP,
+        MAC
+    }
+
     public static class DefaultCode
     {
         public static readonly string BOOK_ORDER = "BR000001";
         public static readonly string BOOK_ITEM = "B00001";
     }
 
+    public static class CacheKey
+    {
+        public static readonly string ADDRESS_CACHE_KEY = "ADDRESS_CACHE";
+    }
 }

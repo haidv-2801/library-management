@@ -16,6 +16,8 @@ using TOE.TOEIC.Entities;
 using System.Threading;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.Logging;
+using TOE.TOEIC.ApplicationCore.MiddleWare;
+using Newtonsoft.Json;
 
 namespace TOE.TOEIC.Web.Controllers
 {
@@ -41,6 +43,36 @@ namespace TOE.TOEIC.Web.Controllers
         #endregion
 
         #region Methods
+        [HttpPost]
+        [Route("private/filter")]
+        [EnableCors("AllowCROSPolicy")]
+        [ServiceFilter(typeof(ClientIpCheckActionFilter))]
+        public async Task<IActionResult> GetFilterPrivate(PagingRequest pagingRequest)
+        {
+            var serviceResult = new ServiceResult();
+            try
+            {
+                _logger.LogInformation($"Filter {typeof(BookItem).Name} info : " + JsonConvert.SerializeObject(pagingRequest));
+                var entity = await _bookService.GetEntitiesFilter(pagingRequest);
+
+                if (entity == null)
+                    return NotFound();
+
+                return Ok(entity);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Lỗi GetFilter: " + ex.Message);
+                serviceResult.Data = null;
+                serviceResult.Messasge = ex.Message;
+                serviceResult.TOECode = TOECode.Fail;
+            }
+
+            if (serviceResult.TOECode == TOECode.Fail) { return BadRequest(serviceResult); }
+
+            return Ok(serviceResult);
+        }
+
         /// <summary>
         /// Thêm một thực thể mới
         /// </summary>

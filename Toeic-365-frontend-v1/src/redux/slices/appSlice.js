@@ -1,9 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const defaultValue = {
-  isLoadingApp: false,
+  isLoadingApp: false, //loading of app
   history: [],
   menus: [],
+  isInPrivateAddress: false,
 };
 
 const App = createSlice({
@@ -22,6 +23,10 @@ const App = createSlice({
 
     changeDataMenus: (state, action) => {
       state.menus = action.payload;
+    },
+
+    changeInPrivateAddresss: (state, action) => {
+      state.isInPrivateAddress = action.payload;
     },
   },
 });

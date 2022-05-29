@@ -29,7 +29,7 @@ Modal.defaultProps = {
   footerRight: [],
   noXIcon: false,
   show: false,
-  maximizable: true,
+  maximizable: false,
 };
 
 function Modal(props) {

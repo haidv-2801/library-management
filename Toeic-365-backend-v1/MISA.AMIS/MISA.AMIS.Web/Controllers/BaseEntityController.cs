@@ -45,23 +45,23 @@ namespace TOE.TOEIC.Web.Controllers
         /// CreatedBy: DVHAI 07/07/2021
         [EnableCors("AllowCROSPolicy")]
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            var entities = _baseService.GetEntities();
+            var entities = await _baseService.GetEntities();
 
             return Ok(entities);
         }
 
+        [HttpPost]
+        [Route("Filter")]
         [EnableCors("AllowCROSPolicy")]
-        [HttpPost("Filter")]
-        [ServiceFilter(typeof(ClientIpCheckActionFilter))]
-        public IActionResult GetFilter(PagingRequest pagingRequest)
+        public virtual async Task<IActionResult> GetFilter(PagingRequest pagingRequest)
         {
             var serviceResult = new ServiceResult();
             try
             {
                 _logger.LogInformation($"Filter {typeof(TEntity).Name} info : " + JsonConvert.SerializeObject(pagingRequest));
-                var entity = _baseService.GetEntitiesFilter(pagingRequest);
+                var entity = await _baseService.GetEntitiesFilter(pagingRequest);
 
                 if (entity == null)
                     return NotFound();
@@ -160,7 +160,7 @@ namespace TOE.TOEIC.Web.Controllers
                 _logger.LogError($"Error put {typeof(TEntity).Name}:" + ex.Message);
                 return BadRequest(ex.Message);
             }
-           
+
         }
 
         /// <summary>

@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Http.Features;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using System.Text;
 
 namespace TOE.TOEIC.ApplicationCore.Helpers
@@ -47,6 +49,19 @@ namespace TOE.TOEIC.ApplicationCore.Helpers
                 ip = context.Request.HttpContext.Features.Get<IHttpConnectionFeature>().RemoteIpAddress.ToString();
             }
             return ip;
+        }
+
+        public static string GetIPV4Address()
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return ip.ToString();
+                }
+            }
+            return string.Empty;
         }
 
         public static string NextRecordCode(string code)

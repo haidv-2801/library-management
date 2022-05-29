@@ -23,6 +23,7 @@ import { GUID_NULL } from '../../../../../constants/commonConstant';
 import { listToTree } from '../../../../../constants/commonFunction';
 import InputNumber from '../../../../atomics/base/InputNumber/InputNumber';
 import './popupCreateMenu.scss';
+import RadioButton from '../../../../atomics/base/RadioButton/RadioButton';
 
 PopupCreateMenu.propTypes = {
   id: PropTypes.string,
@@ -83,6 +84,7 @@ function PopupCreateMenu(props) {
     displayOrder: 0,
     link: '',
     type: MENU_TYPE.NORMAL,
+    isPrivate: false,
   };
 
   //#region state
@@ -210,7 +212,7 @@ function PopupCreateMenu(props) {
             }}
           />
         </div>
-        <div className="toe-popup-create-menu__row --flex-center">
+        <div className="toe-popup-create-menu__row">
           <InputNumber
             hasRequiredLabel
             label="Mức độ hiển thị"
@@ -220,13 +222,32 @@ function PopupCreateMenu(props) {
               setData({ ...data, displayOrder: e });
             }}
           />
-          <GroupCheck
-            onClick={(e) => {
-              setData({ ...data, status: !data.status });
-            }}
-            defaultValue={data.status}
-            options={[{ label: 'Hoạt động', value: true }]}
-          />
+        </div>
+        <div className="toe-popup-create-menu__row --flex-center">
+          <div className="__col">
+            {' '}
+            <div className="__col-label toe-font-label">Trạng thái</div>
+            <RadioButton
+              checked={data.isPrivate}
+              onChange={(checked) => {
+                setData({ ...data, isPrivate: checked });
+              }}
+              label={'Private menu'}
+            />
+          </div>
+          <div className="__col">
+            <div
+              className="__col-label toe-font-label"
+              style={{ height: 20 }}
+            ></div>
+            <RadioButton
+              checked={data.status}
+              onChange={(checked) => {
+                setData({ ...data, status: checked });
+              }}
+              label={'Hoạt động'}
+            />
+          </div>
         </div>
         <div className="toe-popup-create-menu__row">
           <span className="toe-font-label">Loại hiển thị</span>
