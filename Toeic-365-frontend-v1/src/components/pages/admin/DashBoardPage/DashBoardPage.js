@@ -56,6 +56,7 @@ import Table from '../../../molecules/Table/Table';
 import Layout from '../../../sections/Admin/Layout/Layout';
 import './dashBoardPage.scss';
 import ToastConfirmDelete from '../../../molecules/ToastConfirmDelete/ToastConfirmDelete';
+import ScoreCard from '../../../molecules/ScoreCard/ScoreCard';
 
 DashBoardPage.propTypes = {
   id: PropTypes.string,
@@ -79,7 +80,14 @@ function DashBoardPage(props) {
 
   return (
     <Layout title="Tổng quan">
-      <div className="toe-dashboard-page"></div>
+      <div className="toe-dashboard-page">
+        <div className="toe-dashboard-page__section score-card">
+          <ScoreCard backgroundColor="#7C3AED" />
+          <ScoreCard backgroundColor="#EF4444" />
+          <ScoreCard backgroundColor="#F59E0B" />
+          <ScoreCard backgroundColor="#10B981" />
+        </div>
+      </div>
     </Layout>
   );
 }

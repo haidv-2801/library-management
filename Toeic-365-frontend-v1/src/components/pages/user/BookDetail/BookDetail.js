@@ -303,7 +303,8 @@ function BookDetail(props) {
             <div className="toe-book-detail-page__body-main">
               <div className="toe-book-detail-page__body-main__left toe-font-body">
                 <div className="__row">{bookItem()}</div>
-                {dataDetail?.bookFormat === BOOK_FORMAT.EBOOK ? (
+                {dataDetail?.bookFormat === BOOK_FORMAT.EBOOK &&
+                dataDetail.file ? (
                   <div className="__row">
                     <Tooltip title="Xem trước PDF">
                       <div style={{ width: 'fit-content' }}>
@@ -327,7 +328,7 @@ function BookDetail(props) {
                   </div>
                 ) : null}
 
-                {isShowPreview ? (
+                {isShowPreview && dataDetail.file ? (
                   <div className="__row">
                     {
                       <iframe
@@ -335,16 +336,19 @@ function BookDetail(props) {
                         style={{ border: 'border:1px solid #666CCC' }}
                         title="PDF"
                         scrolling="auto"
-                        src={require(dataDetail?.File)}
+                        src={!dataDetail.file ? null : require(dataDetail.file)}
                         frameborder={1}
                         height={600}
                         width={400}
+                        onError={(e) => {}}
                       ></iframe>
                     }
                   </div>
                 ) : null}
 
-                <div className="__row">{renderInformation()}</div>
+                {!dataDetail.isPrivate ? (
+                  <div className="__row">{renderInformation()}</div>
+                ) : null}
               </div>
               <div className="toe-book-detail-page__body-main__right toe-font-body">
                 {renderReport('Tài nguyên khác')}

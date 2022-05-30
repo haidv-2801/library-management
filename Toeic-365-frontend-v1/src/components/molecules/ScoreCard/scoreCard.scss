@@ -1,0 +1,26 @@
+.toe-audio-score-card {
+  height: 175px;
+  min-width: 200px;
+  // width: 350px;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  border-radius: 8px;
+  background-color: aliceblue;
+  gap: 16px;
+
+  &__label {
+  }
+
+  &__value {
+    flex: 1;
+  }
+
+  &__icon {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}

@@ -188,13 +188,15 @@
     margin-top: 8px;
   }
 
-  .p-menuitem-text {
-    display: block !important;
+  .admin-menu-item__text {
+    display: block;
   }
 
   .sidermenu-collapsed {
-    .p-menuitem-text {
-      display: none !important;
+    .admin-menu {
+      .admin-menu-item__text {
+        display: none;
+      }
     }
   }
 

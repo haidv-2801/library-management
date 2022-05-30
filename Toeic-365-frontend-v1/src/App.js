@@ -156,9 +156,12 @@ function App() {
                   <NotFoundPage />
                 )
               }
-            >
-              <Route exact path=":id" element={<BookDetail />} />
-            </Route>
+            ></Route>
+            <Route
+              exact
+              path={PATH_NAME.PRIVATE_DOCUMENTS + '/:id'}
+              element={<BookDetail />}
+            />
 
             <Route exact path={PATH_NAME.HOME} element={<HomePage />} />
             <Route exact path={PATH_NAME.LOGIN} element={<LoginPage />} />
