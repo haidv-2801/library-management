@@ -38,15 +38,15 @@ function UpLoadImage(props) {
       style={style}
       className={buildClass(['toe-upload toe-font-body', className])}
     >
-      <div className="toe-upload__img-wrapper">
+      {/* <div className="toe-upload__img-wrapper">
         {image ? <Image src={image} alt="Image" preview /> : null}
         {!image ? <i className="pi pi-user" /> : null}
-      </div>
+      </div> */}
       <input
         type="file"
         name="myImage"
         id="image"
-        accept="image/*"
+        accept="image/"
         // value={defaultValue}
         onChange={onImageChange}
       />

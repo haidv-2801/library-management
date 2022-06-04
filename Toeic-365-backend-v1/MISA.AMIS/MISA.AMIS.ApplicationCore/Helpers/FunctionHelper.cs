@@ -51,17 +51,10 @@ namespace TOE.TOEIC.ApplicationCore.Helpers
             return ip;
         }
 
-        public static string GetIPV4Address()
+        public static List<IPAddress> GetIPV4Address()
         {
             var host = Dns.GetHostEntry(Dns.GetHostName());
-            foreach (var ip in host.AddressList)
-            {
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
-                {
-                    return ip.ToString();
-                }
-            }
-            return string.Empty;
+            return host.AddressList.Where(item => item.AddressFamily == AddressFamily.InterNetwork).ToList();
         }
 
         public static string NextRecordCode(string code)

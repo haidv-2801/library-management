@@ -52,19 +52,14 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         {
             var addresses = await _safeAddressRepository.GetEntities();
             //var remoteIp = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress;
-            var remoteIp = FunctionHelper.GetIPV4Address();
+            var remoteIps = FunctionHelper.GetIPV4Address();
             var remoteMAC = PhysicalAddress.Parse(FunctionHelper.GetMACAddress());
 
             var badIp = true;
 
-            _logger.LogInformation("[IP ADDRESS]: " + remoteIp.ToString());
+            _logger.LogInformation("[IP ADDRESS]: " + remoteIps.ToString());
             _logger.LogInformation("[MAC ADDRESS]: " + remoteMAC.ToString());
 
-            var test = Dns.GetHostEntry((Dns.GetHostName()))
-                  .AddressList
-                  .Where(x => x.AddressFamily == AddressFamily.InterNetwork)
-                  .Select(x => x.ToString())
-                  .ToArray();
 
             foreach (var address in addresses)
             {
@@ -73,7 +68,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
                 {
                     var testIp = IPAddress.Parse(address.SafeAddressValue);
 
-                    if (testIp.Equals(IPAddress.Parse(remoteIp)))
+                    if (remoteIps.Any(x => x.Equals(testIp)))
                     {
                         badIp = false;
                         break;

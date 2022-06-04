@@ -496,6 +496,8 @@ function BookPage(props) {
       file: fileUrl,
     };
 
+    debugger;
+
     baseApi.post(
       (res) => {
         if (res.data > 0) {
@@ -821,7 +823,6 @@ function BookPage(props) {
             show={true}
             onClose={() => setIsShowPopupCreateBook(false)}
             onChange={(data) => {
-              console.log(data);
               setDataCreate({ ...dataCreate, ...data });
             }}
             dataCategory={dataCategory}

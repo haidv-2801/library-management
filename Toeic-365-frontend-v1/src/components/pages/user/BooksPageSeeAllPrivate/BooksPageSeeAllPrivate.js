@@ -193,7 +193,7 @@ function BooksPageSeeAllPrivate(props) {
           <Book
             className="toe-book-see-all-page__body-content__book"
             bookTitle={item?.bookName}
-            bookAuthor="Nguyễn Thị Thảo"
+            bookAuthor={item?.author}
             bookType={item?.bookFormat}
             image={item?.image}
             onClick={() => handleViewDetail(item.bookID)}

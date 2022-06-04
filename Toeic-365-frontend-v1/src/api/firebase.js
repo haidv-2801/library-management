@@ -60,17 +60,15 @@ const dowloadFile = (url) => {
     getDownloadURL(ref(storage, url))
       .then((res) => {
         // `url` is the download URL for 'images/stars.jpg'
-
         // This can be downloaded directly:
         const xhr = new XMLHttpRequest();
         xhr.responseType = 'blob';
         xhr.onload = (event) => {
-          const blob = xhr.response;
+          const file = new Blob([xhr.response], { type: 'application/pdf' });
+          resolve(file);
         };
         xhr.open('GET', res);
         xhr.send();
-        debugger;
-        resolve(res);
       })
       .catch((error) => {
         reject(error);

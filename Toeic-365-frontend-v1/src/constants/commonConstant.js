@@ -190,6 +190,8 @@ export const MAXIMUM_FILE_SIZE = 1000000;
 export const ACCEPT_FILE =
   '.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,application/vnd.ms-excel';
 
+export const ACCEPT_FILE_PDF = 'application/pdf';
+
 export const LANGUAGE = [
   {
     LanguageName: 'Vietnamese',

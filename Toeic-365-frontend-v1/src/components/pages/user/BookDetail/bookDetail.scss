@@ -9,6 +9,10 @@
     max-width: 1366px;
     // margin: auto;
 
+    .toe-font-label {
+      flex-shrink: 0;
+    }
+
     &-wrapper {
       flex: 1;
       padding: var(--padding-page);
@@ -114,11 +118,35 @@
 
     &-info {
       display: flex;
-      flex-direction: column;
+      flex: 1;
+
+      &__group {
+        margin-left: 16px;
+        flex: 1;
+      }
+
+      &__block {
+        padding: 16px;
+        width: 50%;
+
+        &:first-child {
+          padding-left: 0;
+        }
+      }
 
       &__row {
+        width: 100%;
         display: flex;
         gap: 8px;
+        padding-left: 16px;
+
+        &.title {
+          border-left: 5px solid #267b58;
+          padding-left: 8px;
+          font-size: 16px;
+          margin-top: 16px;
+          margin-bottom: 16px;
+        }
 
         &:first-child {
           font-size: 18px !important;
@@ -131,6 +159,10 @@
 
         margin-bottom: 8px;
       }
+    }
+
+    h2 {
+      padding-left: 0;
     }
   }
 
@@ -148,7 +180,7 @@
 
   .infomation-col__title-row__tags {
     display: flex;
-    gap: 16px;
+    gap: 8px;
     flex-wrap: wrap;
   }
 
@@ -160,6 +192,13 @@
     text-decoration: underline;
     cursor: pointer;
     font-style: italic;
+  }
+}
+
+.modal-pdf-reader {
+  &.p-dialog {
+    width: calc(100vw - 200px);
+    height: calc(100vh - 100px);
   }
 }
 

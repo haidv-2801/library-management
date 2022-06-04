@@ -14,6 +14,7 @@ import {
   ACCEPT_FILE,
   BOOK_FORMAT,
   LANGUAGE,
+  ACCEPT_FILE_PDF,
 } from '../../../../../constants/commonConstant';
 import SmartText from '../../../../atomics/base/SmartText/SmartText';
 import Input from '../../../../atomics/base/Input/Input';
@@ -86,8 +87,9 @@ function PopupCreateBook(props) {
     onChange(dataCreate);
   }, [dataCreate]);
 
-  const onBasicUpload = (data) => {
-    setDataCreate({ ...dataCreate, file: data.file });
+  const onBasicUpload = (event) => {
+    debugger;
+    setDataCreate({ ...dataCreate, file: event.target.files[0] });
   };
 
   const onSelectImage = (data) => {
@@ -321,9 +323,12 @@ function PopupCreateBook(props) {
         <div className="row">
           <div className="col">
             <div className="col__label toe-font-label">File</div>
-            <Upload onChange={onBasicUpload} accept={ACCEPT_FILE}>
-              <ButtonAntd icon={<UploadOutlined />}>Click to Upload</ButtonAntd>
-            </Upload>
+
+            <input
+              type="file"
+              accept={ACCEPT_FILE_PDF}
+              onChange={onBasicUpload}
+            />
           </div>
         </div>
       </div>

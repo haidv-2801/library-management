@@ -24,7 +24,7 @@ import { getBookType } from '../function';
 import { buildClass, ParseJson } from '../../../../constants/commonFunction';
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 import Button from '../../../atomics/base/Button/Button';
-import { Tooltip } from 'antd';
+import { Skeleton, Tooltip } from 'antd';
 import { AuthContext } from '../../../../contexts/authContext';
 import { isArray } from 'lodash';
 import { getUserID } from '../../../../constants/commonAuth';
@@ -33,6 +33,9 @@ import { appAction } from '../../../../redux/slices/appSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { CartContext } from '../../../../contexts/cartContext';
 import { ConfirmPopup, confirmPopup } from 'primereact/confirmpopup';
+import { dowloadFile, getBlobFirebase } from '../../../../api/firebase';
+import PhuocngPdf from '../../../molecules/PhuocngPdf/PhuocngPdf';
+import Modal from '../../../atomics/base/ModalV2/Modal';
 
 BookDetail.propTypes = {
   titlePage: PropTypes.string,
@@ -55,6 +58,9 @@ function BookDetail(props) {
   const [errorMessage, setErrorMessage] = useState('');
   const [visible, setVisible] = useState(false);
   const { pathname, search } = useLocation();
+  const [isLoading, setIsLoading] = useState(false);
+  const [bookBlob, setBookBlob] = useState(null);
+  const [errorLoadPdf, setErrorLoadPdf] = useState(false);
 
   useEffect(() => {
     getDetailBook(params?.id);
@@ -89,15 +95,36 @@ function BookDetail(props) {
       authors = authors?.map((item) => <div className="tag">{item}</div>);
     return (
       <div className="toe-book-detail-page__item">
-        <Book
-          className="toe-book-detail-page__book"
-          bookTitle={dataDetail?.bookName}
-          bookAuthor={ParseJson(dataDetail?.author)?.[0]}
-          bookType={dataDetail?.bookFormat}
-          onClick={() => {}}
-          image={dataDetail?.image}
-        />
-        <div className="toe-book-detail-page__item-info">
+        <div>
+          <Book
+            className="toe-book-detail-page__book"
+            bookTitle={dataDetail?.bookName}
+            bookAuthor={ParseJson(dataDetail?.author)?.[0]}
+            bookType={dataDetail?.bookFormat}
+            onClick={() => {}}
+            image={dataDetail?.image}
+          />
+          {dataDetail.file ? (
+            <Tooltip title="Đọc tài liệu">
+              <div style={{ width: 'fit-content' }}>
+                <Button
+                  className="button-preview"
+                  theme={BUTTON_THEME.THEME_4}
+                  type={BUTTON_TYPE.LEFT_ICON}
+                  leftIcon={
+                    isShowPreview ? <EyeInvisibleOutlined /> : <EyeOutlined />
+                  }
+                  shape={BUTTON_SHAPE.NORMAL}
+                  name={'Đọc tài liệu'}
+                  onClick={handlePreview}
+                />
+              </div>
+            </Tooltip>
+          ) : (
+            'Tài liệu chưa được tải lên.'
+          )}
+        </div>
+        <div className="toe-book-detail-page__item-info__group">
           <h2
             onClick={() => {}}
             className="toe-book-detail-page__item-info__row toe-font-label"
@@ -106,29 +133,80 @@ function BookDetail(props) {
               {dataDetail?.bookName}
             </SmartText>
           </h2>
-          <div className="toe-book-detail-page__item-info__row">
-            <span className="toe-font-label">Loại tài liệu:</span>{' '}
-            <span className="toe-font-body">
-              {getBookType(dataDetail?.bookFormat)}
-            </span>
+          <div className="toe-book-detail-page__item-info">
+            <div className="toe-book-detail-page__item-info__block">
+              <div className="toe-book-detail-page__item-info__row title toe-font-label">
+                Dữ liệu biên mục
+              </div>
+              <div className="toe-book-detail-page__item-info__row">
+                <span className="toe-font-label">Loại tài liệu:</span>{' '}
+                <span className="toe-font-body">
+                  {getBookType(dataDetail?.bookFormat)}
+                </span>
+              </div>
+              <div
+                className="toe-book-detail-page__item-info__row"
+                style={{ display: 'flex' }}
+              >
+                <span className="toe-font-label">Tác giả:</span>
+                <span className="toe-font-body infomation-col__title-row__tags">
+                  {authors}
+                </span>
+              </div>
+              <div className="toe-book-detail-page__item-info__row">
+                <span className="toe-font-label">Nhà xuất bản:</span>
+                <span className="toe-font-body">{dataDetail?.publisher}</span>
+              </div>
+            </div>
+            <div className="toe-book-detail-page__item-info__block">
+              <div className="toe-book-detail-page__item-info__row title toe-font-label">
+                Dữ liệu xếp giá
+              </div>
+              <div className="toe-book-detail-page__item-info__row">
+                <span className="toe-font-label">Tổng số bản:</span>{' '}
+                <span className="toe-font-body">
+                  {dataDetail?.amount ?? TEXT_FALL_BACK.TYPE_1}
+                </span>
+              </div>
+              <div className="toe-book-detail-page__item-info__row">
+                <span className="toe-font-label">Số bản chưa mượn:</span>{' '}
+                <span className="toe-font-body">
+                  {dataDetail?.available ?? TEXT_FALL_BACK.TYPE_1}
+                </span>
+              </div>
+              <div className="toe-book-detail-page__item-info__row">
+                <span className="toe-font-label">Số bản được giữ chỗ:</span>{' '}
+                <span className="toe-font-body">
+                  {dataDetail?.reserved ?? TEXT_FALL_BACK.TYPE_1}
+                </span>
+              </div>
+              <div className="toe-book-detail-page__item-info__row">
+                <span className="toe-font-label">Thông tin xếp giá:</span>
+                <span className="toe-font-body">
+                  {dataDetail?.placement ?? TEXT_FALL_BACK.TYPE_1}
+                </span>
+              </div>
+            </div>
           </div>
-          <div
-            className="toe-book-detail-page__item-info__row"
-            style={{ display: 'flex' }}
-          >
-            <span className="toe-font-label">Tác giả:</span>
-            <span className="toe-font-body infomation-col__title-row__tags">
-              {authors}
-            </span>
+
+          <div className="toe-book-detail-page__item-info">
+            <div className="toe-book-detail-page__item-info__block">
+              <div className="toe-book-detail-page__item-info__row title toe-font-label">
+                Các mục từ truy cập
+              </div>
+              <div className="toe-book-detail-page__item-info__row">
+                <span className="toe-font-label">Từ khóa:</span>{' '}
+                <span className="infomation-col__title-row infomation-col__title-row__tags toe-font-body">
+                  {dataDetail?.bookName
+                    ?.split(' ')
+                    .filter(Boolean)
+                    .map((item) => (
+                      <div className="tag">{item}</div>
+                    ))}
+                </span>
+              </div>
+            </div>
           </div>
-          <div className="toe-book-detail-page__item-info__row">
-            <span className="toe-font-label">Nhà xuất bản:</span>
-            <span className="toe-font-body">{dataDetail?.publisher}</span>
-          </div>
-          {/* <div className="toe-book-detail-page__item-info__row">
-            <span className="toe-font-label">Thông tin xếp giá:</span>
-            <span className="toe-font-body">C1</span>
-          </div> */}
         </div>
       </div>
     );
@@ -286,7 +364,12 @@ function BookDetail(props) {
   };
 
   const handlePreview = () => {
-    setIsShowPreview((p) => !p);
+    setIsShowPreview(true);
+    setErrorLoadPdf(!dataDetail.file);
+    // setIsLoading(true);
+    // setTimeout(() => {
+    //   setIsLoading(false);
+    // }, 500);
   };
 
   const acceptGoToCart = () => {
@@ -303,47 +386,31 @@ function BookDetail(props) {
             <div className="toe-book-detail-page__body-main">
               <div className="toe-book-detail-page__body-main__left toe-font-body">
                 <div className="__row">{bookItem()}</div>
-                {dataDetail?.bookFormat === BOOK_FORMAT.EBOOK &&
-                dataDetail.file ? (
-                  <div className="__row">
-                    <Tooltip title="Xem trước PDF">
-                      <div style={{ width: 'fit-content' }}>
-                        <Button
-                          className="button-preview"
-                          theme={BUTTON_THEME.THEME_4}
-                          type={BUTTON_TYPE.LEFT_ICON}
-                          leftIcon={
-                            isShowPreview ? (
-                              <EyeInvisibleOutlined />
-                            ) : (
-                              <EyeOutlined />
-                            )
-                          }
-                          shape={BUTTON_SHAPE.NORMAL}
-                          name={'Xem trước'}
-                          onClick={handlePreview}
-                        />
-                      </div>
-                    </Tooltip>
-                  </div>
-                ) : null}
 
-                {isShowPreview && dataDetail.file ? (
-                  <div className="__row">
-                    {
-                      <iframe
-                        id="pdf-preview"
-                        style={{ border: 'border:1px solid #666CCC' }}
-                        title="PDF"
-                        scrolling="auto"
-                        src={!dataDetail.file ? null : require(dataDetail.file)}
-                        frameborder={1}
-                        height={600}
-                        width={400}
-                        onError={(e) => {}}
-                      ></iframe>
-                    }
-                  </div>
+                {isShowPreview ? (
+                  <Modal
+                    maximizable={true}
+                    onClose={() => setIsShowPreview(false)}
+                    title={dataDetail.bookName}
+                    className="modal-pdf-reader"
+                    show
+                  >
+                    {isLoading ? (
+                      <>
+                        <Skeleton></Skeleton>
+                        <Skeleton></Skeleton>
+                        <Skeleton></Skeleton>
+                        <Skeleton></Skeleton>
+                      </>
+                    ) : errorLoadPdf ? (
+                      'Lỗi load file'
+                    ) : (
+                      <PhuocngPdf
+                        renderError={<div>Lỗi không tải được file</div>}
+                        url={dataDetail.file}
+                      />
+                    )}
+                  </Modal>
                 ) : null}
 
                 {!dataDetail.isPrivate ? (

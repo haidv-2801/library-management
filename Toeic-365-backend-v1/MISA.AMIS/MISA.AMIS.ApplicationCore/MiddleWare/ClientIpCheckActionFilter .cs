@@ -42,10 +42,10 @@ namespace TOE.TOEIC.ApplicationCore.MiddleWare
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             //var remoteIp = context.HttpContext.Connection.RemoteIpAddress;
-            var remoteIp = FunctionHelper.GetIPV4Address();
+            var remoteIps = FunctionHelper.GetIPV4Address();
             var remoteMAC = PhysicalAddress.Parse(FunctionHelper.GetMACAddress());
 
-            _logger.LogDebug("Remote IpAddress: {RemoteIp}", remoteIp);
+            _logger.LogDebug("Remote IpAddress: {RemoteIp}", string.Join(",", remoteIps.Select(x => x.ToString())));
             _logger.LogDebug("Remote MACAddress: {RemoteMAC}", remoteMAC);
 
 
@@ -91,12 +91,6 @@ namespace TOE.TOEIC.ApplicationCore.MiddleWare
             //if(!string.IsNullOrEmpty(cacheString)) addresses = JsonConvert.DeserializeObject<List<SafeAddress>>(cacheString);
             //#endif
 
-            var test = Dns.GetHostEntry((Dns.GetHostName()))
-                    .AddressList
-                    .Where(x => x.AddressFamily == AddressFamily.InterNetwork)
-                    .Select(x => x.ToString())
-                    .ToArray();
-
             var badIp = true;
 
             foreach (var address in addresses)
@@ -106,7 +100,7 @@ namespace TOE.TOEIC.ApplicationCore.MiddleWare
                 {
                     var testIp = IPAddress.Parse(address.SafeAddressValue);
 
-                    if (testIp.Equals(IPAddress.Parse(remoteIp)))
+                    if (remoteIps.Any(x => x.Equals(testIp)))
                     {
                         badIp = false;
                         break;
@@ -126,7 +120,7 @@ namespace TOE.TOEIC.ApplicationCore.MiddleWare
 
             if (badIp)
             {
-                _logger.LogWarning("Forbidden Request from IP: {RemoteIp}", remoteIp);
+                _logger.LogWarning("Forbidden Request from IP: {RemoteIp}", string.Join(",", remoteIps.Select(x => x.ToString())));
                 context.Result = new StatusCodeResult(StatusCodes.Status403Forbidden);
                 return;
             }

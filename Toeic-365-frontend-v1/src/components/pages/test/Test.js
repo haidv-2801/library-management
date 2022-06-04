@@ -1,14 +1,40 @@
 import React from 'react';
-import PanelMenu from '../../molecules/PanelMenu/PanelMenu';
-import PdfDist from '../../molecules/PdfDist/PdfDist';
-import ScoreCard from '../../molecules/ScoreCard/ScoreCard';
-let test =
-  'https://firebasestorage.googleapis.com/v0/b/fir-library-upload.appspot.com/o/files%2FLiving%20in%20the%20Light_%20A%20guide%20to%20personal%20transformation%20(%20PDFDrive%20).pdf_221810_29052022?alt=media&token=f4c2fe7f-edd3-49a6-ad8d-f7a275a085db';
+import { useState } from 'react';
+import Viewer, { Worker } from '@phuocng/react-pdf-viewer';
+import '@phuocng/react-pdf-viewer/cjs/react-pdf-viewer.css';
+import { Upload, Button } from 'antd';
+import { ACCEPT_FILE_PDF } from '../../../constants/commonConstant';
+import { uploadFiles } from '../../../api/firebase';
+import UpLoadImage from '../../molecules/UpLoadImage/UpLoadImage';
 
 function MyPdf() {
+  const [file, setFile] = useState(null);
+
+  const onBasicUpload = (data) => {
+    setFile(data.file);
+  };
+
+  const upLoad = () => {
+    uploadFiles(file, 'files')
+      .then((res) => {
+        debugger;
+      })
+      .catch((err) => {
+        debugger;
+      });
+  };
+
   return (
     <div>
-      <PdfDist />
+      <Upload multiple={false} onChange={onBasicUpload} accept={'*'}>
+        <Button>Click to choose file</Button>
+      </Upload>
+      <Button onClick={upLoad}>Upload</Button>
+      <UpLoadImage
+        onChange={(res) => {
+          setFile(res);
+        }}
+      />
     </div>
   );
 }
