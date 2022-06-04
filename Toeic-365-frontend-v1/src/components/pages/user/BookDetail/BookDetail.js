@@ -432,7 +432,7 @@ function BookDetail(props) {
           target={document.getElementById('js-button-add-to-cart')}
           visible={visible}
           onHide={() => setVisible(false)}
-          message="Bạn có muốn đi đến giỏ hàng?"
+          message="Bạn có muốn đi đến Giỏ mượn?"
           icon="pi pi-shopping-cart"
           acceptLabel="Đồng ý"
           rejectLabel="Hủy"

@@ -6,6 +6,7 @@ import { Upload, Button } from 'antd';
 import { ACCEPT_FILE_PDF } from '../../../constants/commonConstant';
 import { uploadFiles } from '../../../api/firebase';
 import UpLoadImage from '../../molecules/UpLoadImage/UpLoadImage';
+import ToastConfirmDelete from '../../molecules/ToastConfirmDelete/ToastConfirmDelete';
 
 function MyPdf() {
   const [file, setFile] = useState(null);
@@ -26,15 +27,7 @@ function MyPdf() {
 
   return (
     <div>
-      <Upload multiple={false} onChange={onBasicUpload} accept={'*'}>
-        <Button>Click to choose file</Button>
-      </Upload>
-      <Button onClick={upLoad}>Upload</Button>
-      <UpLoadImage
-        onChange={(res) => {
-          setFile(res);
-        }}
-      />
+      <ToastConfirmDelete title={'Bản ghi'} />
     </div>
   );
 }

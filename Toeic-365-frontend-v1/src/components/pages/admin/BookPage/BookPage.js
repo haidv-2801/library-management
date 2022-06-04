@@ -17,7 +17,7 @@ import {
   BUTTON_TYPE,
   DATE_FORMAT,
   GUID_NULL,
-  LOCAL_STOATE_KEY,
+  LOCAL_STORATE_KEY,
   MAXIMUM_PAGESIZE,
   MENU_TYPE,
   OPERATOR,
@@ -279,7 +279,7 @@ function BookPage(props) {
 
   useEffect(() => {
     let filterInfo = ParseJson(
-      getLocalStorage(LOCAL_STOATE_KEY.BOOK_CODE_FROM_BOOK_LENDING)
+      getLocalStorage(LOCAL_STORATE_KEY.BOOK_CODE_FROM_BOOK_LENDING)
     );
     getBooksFilter();
     getCategory();

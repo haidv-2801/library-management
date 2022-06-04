@@ -494,8 +494,10 @@ export const GOOGLE_API_KEY = 'AIzaSyCT4DCFBW26hCC0m2zBlAsnLXQh777UIUY';
 /**
  * Các key lưu localstorage
  */
-export const LOCAL_STOATE_KEY = {
+export const LOCAL_STORATE_KEY = {
   BOOK_CODE_FROM_BOOK_LENDING: 'BOOK_CODE_FROM_BOOK_LENDING',
+  REMEMBER_ME: 'REMEMBER_ME',
+  AVATAR: 'AVATAR',
 };
 
 export const FILTER_TIME_VALUE = {

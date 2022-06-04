@@ -28,7 +28,7 @@ import {
   COLUMN_NOT_EXPORT,
   DATE_FORMAT,
   FILTER_TIME_VALUE,
-  LOCAL_STOATE_KEY,
+  LOCAL_STORATE_KEY,
   MAXIMUM_PAGESIZE,
   OPERATOR,
   RESERVATION_STATUS,
@@ -891,7 +891,7 @@ function BookLendingPage(props) {
       (item) => item.bookCode
     );
     setLocalStorage(
-      LOCAL_STOATE_KEY.BOOK_CODE_FROM_BOOK_LENDING,
+      LOCAL_STORATE_KEY.BOOK_CODE_FROM_BOOK_LENDING,
       JSON.stringify(infoParsed)
     );
 

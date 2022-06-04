@@ -1,8 +1,12 @@
 import React, { useContext, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import { COMMON_AVATAR, PATH_NAME } from '../../../constants/commonConstant';
+import {
+  COMMON_AVATAR,
+  LOCAL_STORATE_KEY,
+  PATH_NAME,
+} from '../../../constants/commonConstant';
 import { buildClass, isInAdminPage } from '../../../constants/commonFunction';
-import { AuthContext } from '../../../contexts/authContext';
+import { AuthContext, getLocalStorage } from '../../../contexts/authContext';
 import PopupSelectionV1 from '../../atomics/base/PopupSelectionV1/PopupSelection';
 import './userInfo.scss';
 
@@ -32,7 +36,7 @@ const UserInfo = () => {
       isHide: !authCtx.isSysAdmin() || !isInAdminPage(),
     },
     {
-      label: 'Giỏ hàng',
+      label: 'Giỏ mượn',
       value: POPUP_SELECTION_VALUES.CART,
       isHide: isInAdminPage(),
     },
@@ -99,7 +103,9 @@ const UserInfo = () => {
         <div className="user-avatar">
           <img
             src={
-              authCtx.auth()?.avatar ? authCtx.auth()?.avatar : COMMON_AVATAR
+              getLocalStorage(LOCAL_STORATE_KEY.AVATAR)
+                ? getLocalStorage(LOCAL_STORATE_KEY.AVATAR)
+                : COMMON_AVATAR
             }
             alt="avatar"
           />

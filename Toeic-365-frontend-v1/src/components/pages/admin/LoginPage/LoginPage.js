@@ -16,17 +16,25 @@ import LoginBg from '../../../../assets/images/login.svg';
 import MainLogo from '../../../../assets/images/LogoUTC.jpg';
 import {
   BUTTON_TYPE,
+  CHECKBOX_TYPE,
   KEY_CODE,
+  LOCAL_STORATE_KEY,
   PATH_NAME,
   REGEX,
   STATUS_CODE,
 } from '../../../../constants/commonConstant';
-import { buildClass } from '../../../../constants/commonFunction';
+import { buildClass, ParseJson } from '../../../../constants/commonFunction';
 import END_POINT from '../../../../constants/endpoint';
-import { AuthContext } from '../../../../contexts/authContext';
+import {
+  AuthContext,
+  getLocalStorage,
+  removeLocalStorage,
+  setLocalStorage,
+} from '../../../../contexts/authContext';
 import { appAction } from '../../../../redux/slices/appSlice';
 import Button from '../../../atomics/base/Button/Button';
 import Modal from '../../../atomics/base/Modal/Modal';
+import RadioButton from '../../../atomics/base/RadioButton/RadioButton';
 import './loginPage.scss';
 
 LoginPage.propTypes = {
@@ -48,9 +56,14 @@ function LoginPage(props) {
   const toast = useRef(null);
   const dispatch = useDispatch();
   const selector = useSelector((store) => store.app);
-  const [loginInfo, setloginInfo] = useState({});
+  const [loginInfo, setloginInfo] = useState(
+    ParseJson(getLocalStorage(LOCAL_STORATE_KEY.REMEMBER_ME)) ?? {}
+  );
   const [validate, setvalidate] = useState({ email: true, password: true });
   const [isLoading, setIsLoading] = useState(false);
+  const [remember, setRemember] = useState(
+    ParseJson(getLocalStorage(LOCAL_STORATE_KEY.REMEMBER_ME))?.remember
+  );
   const regex = new RegExp(REGEX.EMAIL);
   const navigate = useNavigate();
 
@@ -72,6 +85,17 @@ function LoginPage(props) {
           return;
         }
         navigate('/admin');
+        //xử lý nhớ mật khẩu
+        if (remember)
+          setLocalStorage(
+            LOCAL_STORATE_KEY.REMEMBER_ME,
+            JSON.stringify({
+              password: loginInfo.password,
+              email: loginInfo.email,
+              remember: remember,
+            })
+          );
+        else removeLocalStorage(LOCAL_STORATE_KEY.REMEMBER_ME);
       },
       (err) => {
         switch (err?.response?.status) {
@@ -165,6 +189,7 @@ function LoginPage(props) {
                   className={buildClass([
                     !validate.email && 'toe-control-validate',
                   ])}
+                  value={loginInfo?.email ?? ''}
                   onChange={handleChangeControl}
                   placeholder="Email"
                   onKeyPress={(e) => {
@@ -179,7 +204,6 @@ function LoginPage(props) {
                   </span>
                 )}
               </span>
-
               <span className="p-float-label">
                 <Password
                   disabled={isLoading}
@@ -188,6 +212,7 @@ function LoginPage(props) {
                   className={buildClass([
                     !validate.password && 'toe-control-validate',
                   ])}
+                  value={loginInfo?.password ?? ''}
                   onChange={handleChangeControl}
                   toggleMask
                   placeholder="Mật khẩu"
@@ -207,6 +232,14 @@ function LoginPage(props) {
                   </span>
                 )}
               </span>
+              <div className="remember-password toe-font-body">
+                <RadioButton
+                  checked={remember}
+                  onChange={() => setRemember(!remember)}
+                  className="radio-button"
+                />{' '}
+                Nhớ mật khẩu
+              </div>
             </div>
           </div>
         }

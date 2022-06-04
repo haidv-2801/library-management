@@ -4,16 +4,21 @@ import { BUTTON_THEME } from '../../../constants/commonConstant';
 import Button from '../../atomics/base/Button/Button';
 import Modal from '../../atomics/base/ModalV2/Modal';
 import './toastConfirmDelete.scss';
+import { format } from 'react-string-format';
 
 ToastConfirmDelete.propTypes = {
   onClose: PropTypes.func,
   onAccept: PropTypes.func,
+  title: PropTypes.any,
 };
 
-ToastConfirmDelete.defaultProps = {};
+ToastConfirmDelete.defaultProps = {
+  title: '',
+};
 
 function ToastConfirmDelete(props) {
-  const { onClose, onAccept } = props;
+  const { onClose, onAccept, title } = props;
+
   return (
     <Modal
       title={''}
@@ -24,9 +29,9 @@ function ToastConfirmDelete(props) {
         <Button name="Xác nhận" onClick={onAccept} />,
       ]}
       onClose={onClose}
-      className="toe-toast-delete"
+      className="toe-toast-delete toe-font-body"
     >
-      Bạn có chắc muốn xóa?
+      {format('Bạn có chắc muốn xóa {0}?', <b>{title}</b>)}
     </Modal>
   );
 }

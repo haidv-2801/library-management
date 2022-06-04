@@ -20,6 +20,7 @@ import {
   BUTTON_TYPE,
   COMMON_AVATAR,
   DATE_FORMAT,
+  LOCAL_STORATE_KEY,
   MAXIMUM_PAGESIZE,
   OPERATOR,
   PATH_NAME,
@@ -34,7 +35,11 @@ import {
   slugify,
 } from '../../../../constants/commonFunction';
 import END_POINT, { GEOTARGET_ENDPOINT } from '../../../../constants/endpoint';
-import { AuthContext, USER_INFO } from '../../../../contexts/authContext';
+import {
+  AuthContext,
+  setLocalStorage,
+  USER_INFO,
+} from '../../../../contexts/authContext';
 import { CartContext } from '../../../../contexts/cartContext';
 import Button from '../../../atomics/base/Button/Button';
 import DatePicker from '../../../atomics/base/DatePicker/DatePicker';
@@ -51,6 +56,7 @@ import Layout from '../../../sections/User/Layout/Layout';
 import { getBookType } from '../function';
 import { isArray, isEmpty } from 'lodash';
 import './userProfile.scss';
+import { uploadFiles } from '../../../../api/firebase';
 
 UserProfile.propTypes = {
   titlePage: PropTypes.string,
@@ -66,7 +72,7 @@ function UserProfile(props) {
     SECURITY: 'Bảo mật',
     NOTIFICATION: 'Thông báo',
     BORROW_RETURN: 'Mượn trả',
-    CART: 'Giỏ hàng',
+    CART: 'Giỏ mượn',
   };
 
   const userMenu = [
@@ -92,6 +98,7 @@ function UserProfile(props) {
   });
   const cancelRequestRef = useRef(false);
   const toast = useRef(null);
+  const inputFile = useRef(null);
   const authCtx = useContext(AuthContext);
   const cartCtx = useContext(CartContext);
   const navigate = useNavigate();
@@ -101,6 +108,8 @@ function UserProfile(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [bookCheckout, setBookCheckout] = useState(DEFAULT_BOOK_CHECKOUT);
   const [isRequestBorrowing, setIsRequestBorrowing] = useState(false);
+  const [image, setImage] = useState(null);
+  const [imageToSave, setImageToSave] = useState(null);
 
   const CONFIG_BUTTON = {
     theme: BUTTON_THEME.THEME_1,
@@ -238,6 +247,11 @@ function UserProfile(props) {
           .then((res) => {
             if (res?.data?.pageData?.length) {
               setDataDetail(res?.data?.pageData[0]);
+              setImage(res?.data?.pageData[0].avatar);
+              setLocalStorage(
+                LOCAL_STORATE_KEY.AVATAR,
+                res?.data?.pageData[0].avatar
+              );
             }
             setIsLoading(false);
           })
@@ -790,49 +804,63 @@ function UserProfile(props) {
 
   const handleSave = () => {
     if (cancelRequestRef.current) return;
-    cancelRequestRef.current = true;
-    let _body = {
-      ...dataDetail,
-      modifiedDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
-      modifiedBy: getUserName(),
-      address: fullAddressText,
-    };
 
-    baseApi.put(
-      (res) => {
-        if (res.data > 0) {
-          toast.current.show({
-            severity: 'success',
-            summary: 'Success',
-            detail: 'Cập nhật thành công',
-            life: 3000,
-          });
-        } else {
+    setIsLoading(true);
+    let uploadImg = Promise.resolve(null);
+    if (imageToSave) uploadImg = uploadFiles(imageToSave, 'images');
+
+    uploadImg.then((imgPath) => {
+      cancelRequestRef.current = true;
+      if (imgPath) {
+        setImage(imgPath);
+        setLocalStorage(LOCAL_STORATE_KEY.AVATAR, imgPath);
+      }
+      setImageToSave(null);
+      let _body = {
+        ...dataDetail,
+        modifiedDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
+        modifiedBy: getUserName(),
+        address: fullAddressText,
+        avatar: imgPath ? imgPath : dataDetail.avatar,
+      };
+      baseApi.put(
+        (res) => {
+          if (res.data > 0) {
+            toast.current.show({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Cập nhật thành công',
+              life: 3000,
+            });
+          } else {
+            toast.current.show({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Cập nhật thất bại',
+              life: 3000,
+            });
+          }
+          setIsLoading(false);
+          cancelRequestRef.current = false;
+        },
+        (err) => {
+          let errMessage = err?.response?.data?.data || 'Có lỗi xảy ra';
           toast.current.show({
             severity: 'error',
-            summary: 'Error',
-            detail: 'Cập nhật thất bại',
+            summary: 'Cập nhật thất bại',
+            detail: errMessage,
             life: 3000,
           });
-        }
-        cancelRequestRef.current = false;
-      },
-      (err) => {
-        let errMessage = err?.response?.data?.data || 'Có lỗi xảy ra';
-        toast.current.show({
-          severity: 'error',
-          summary: 'Cập nhật thất bại',
-          detail: errMessage,
-          life: 3000,
-        });
-        cancelRequestRef.current = false;
-      },
-      () => {},
-      format(END_POINT.TOE_UPDATE_USER, dataDetail.accountID),
-      _body,
-      null,
-      null
-    );
+          cancelRequestRef.current = false;
+          setIsLoading(false);
+        },
+        () => {},
+        format(END_POINT.TOE_UPDATE_USER, dataDetail.accountID),
+        _body,
+        null,
+        null
+      );
+    });
   };
 
   const handleChangePw = () => {
@@ -1108,11 +1136,12 @@ function UserProfile(props) {
                   onMouseOver={() => {
                     setIsHoverAvt(true);
                   }}
+                  onClick={() => {
+                    inputFile.current.click();
+                  }}
                 >
                   <img
-                    src={
-                      dataDetail?.avatar ? dataDetail?.avatar : COMMON_AVATAR
-                    }
+                    src={image ? image : COMMON_AVATAR}
                     alt="avatar"
                     onError={(e) => {
                       e.onError = null;
@@ -1126,6 +1155,17 @@ function UserProfile(props) {
                     </div>
                   )}
                 </div>
+                <input
+                  type="file"
+                  id="file"
+                  accept="image/*"
+                  ref={inputFile}
+                  onChange={(event) => {
+                    setImageToSave(event.target.files[0]);
+                    setImage(URL.createObjectURL(event.target.files[0]));
+                  }}
+                  style={{ display: 'none' }}
+                />
                 <div className="user-profile__avt-name toe-font-title">
                   {dataDetail?.userName ??
                     getAccountName() ??
