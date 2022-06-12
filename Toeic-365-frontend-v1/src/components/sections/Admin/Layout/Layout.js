@@ -2,25 +2,20 @@ import { LeftOutlined } from '@ant-design/icons';
 import { Layout as LayoutAntd, Menu } from 'antd';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import React, { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useEffect, useRef, useState, useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import baseApi from '../../../../api/baseApi';
 import MainLogo from '../../../../assets/images/logo_utc.jpg';
 import { OPERATOR, SORT_TYPE } from '../../../../constants/commonConstant';
+import { buildClass } from '../../../../constants/commonFunction';
 import END_POINT from '../../../../constants/endpoint';
 import useOnClickOutside from '../../../../hooks/useClickOutSide';
-import useWindowResize from '../../../../hooks/useWindowResize';
 import Loading from '../../../atomics/base/Loading/Loading';
 import PopupSelectionV1 from '../../../atomics/base/PopupSelectionV1/PopupSelection';
-import PanelMenu from '../../../molecules/PanelMenu/PanelMenu';
 import UserInfo from '../../UserInfo/UserInfo';
+import { AuthContext } from '../../../../contexts/authContext';
+const { Sider } = LayoutAntd;
 import './layout.scss';
-import $ from 'jquery';
-import { buildClass } from '../../../../constants/commonFunction';
-
-const { Header, Sider, Content } = LayoutAntd;
-const { SubMenu } = Menu;
 
 Layout.propTypes = {
   title: PropTypes.any,
@@ -41,10 +36,11 @@ Layout.defaultProps = {
 function Layout(props) {
   const { title, rightButtons, children, hasBackBtn, back, className } = props;
 
+  const auth = useContext(AuthContext);
+
   //#region constant
   const DEFAULT_ITEM = '/admin/dashboard';
   const DEFAULT_TITLE = 'Tổng quan';
-  const SCREEN_WIDTH = 1366;
 
   const MENU = [
     {
@@ -62,40 +58,55 @@ function Layout(props) {
       icon: 'pi pi-users',
       url: '/admin/systems/user',
       label: 'Tài khoản',
-      className: 'js-admin-menu-event-account',
+      className: buildClass([
+        'js-admin-menu-event-account',
+        !auth.isSysAdmin() ? 'disabled' : '',
+      ]),
     },
     {
-      icon: 'pi pi-th-large',
+      icon: 'pi pi-sitemap',
       url: '/admin/systems/role',
       label: 'Chức năng',
       className: 'js-admin-menu-event-role',
+      className: buildClass([
+        'js-admin-menu-event-role',
+        !auth.isSysAdmin() ? 'disabled' : '',
+      ]),
     },
     {
       icon: 'pi pi-user-edit',
       url: '/admin/systems/permission',
       label: 'Phân quyền',
-      className: 'js-admin-menu-event-permission',
-    },
-    {
-      icon: 'pi pi-server',
-      url: '/admin/systems/safe-address',
-      label: 'Địa chỉ truy cập',
-      className: 'js-admin-menu-event-safe-address',
-    },
-    {
-      label: null,
-      className: 'separator-line',
+      className: buildClass([
+        'js-admin-menu-event-permission',
+        !auth.isSysAdmin() ? 'disabled' : '',
+      ]),
     },
     {
       icon: 'pi pi-list',
       url: '/admin/systems/menu',
       label: 'Menu',
       className: 'js-admin-menu-event-menu',
+      className: buildClass([
+        'js-admin-menu-event-menu',
+        !auth.isSysAdmin() ? 'disabled' : '',
+      ]),
     },
     {
+      label: null,
+      className: 'separator-line',
+    },
+    {
+      icon: 'pi pi-server',
+      url: '/admin/systems/safe-address',
+      label: 'Địa chỉ truy cập',
+      className: buildClass(['js-admin-menu-event-safe-address']),
+    },
+
+    {
       url: '/admin/danh-muc/ban-doc',
-      icon: 'pi pi-users',
-      label: 'Bạn đọc',
+      icon: 'pi pi-id-card',
+      label: 'Thẻ thư viện',
       className: 'js-admin-menu-event-safe-member',
     },
     {
@@ -127,34 +138,19 @@ function Layout(props) {
       className: 'js-admin-menu-event-safe-page',
     },
     {
-      icon: 'pi pi-server',
+      icon: 'pi pi-sliders-v',
       url: '/admin/tin-tuc/slide',
       label: 'Slide',
       className: 'js-admin-menu-event-safe-slide',
     },
     {
-      icon: 'pi pi-server',
+      icon: 'pi pi-comments',
       url: '/admin/yeu-cau-gop-y',
       label: 'Yêu cầu góp ý',
       className: 'js-admin-menu-event-safe-feedback',
     },
   ];
 
-  const POPUP_SELECTION_VALUES = {
-    LOGOUT: 1,
-    USER_INFOMATION: 2,
-  };
-
-  const POPUP_SELECTION_OPTIONS = [
-    {
-      label: 'Thông tin người dùng',
-      value: POPUP_SELECTION_VALUES.USER_INFOMATION,
-    },
-    {
-      label: <span style={{ color: 'red' }}>Đăng xuất</span>,
-      value: POPUP_SELECTION_VALUES.LOGOUT,
-    },
-  ];
   //#endregion
   const popupSelectionRef = useRef();
   //#region ref
@@ -164,13 +160,8 @@ function Layout(props) {
   //#region  state
   const history = useNavigate(DEFAULT_ITEM);
   const location = useLocation();
-  const appSelector = useSelector((store) => store.app);
   const [collapsedMenu, setCollapsedMenu] = useState(false);
-  const [isShowPopupSelection, setIsShowPopupSelection] = useState(false);
   const [menuItemSelected, setmenuItemSelected] = useState(DEFAULT_ITEM);
-  const [menuItemIndexSelected, setMenuItemIndexSelected] = useState(0);
-  const [userSelectValue, setUserSelectValue] = useState();
-  const [width, height] = useWindowResize();
   const [notificationPaging, setNotificationPaging] = useState({
     pageSize: 20,
     pageIndex: 1,
@@ -193,10 +184,6 @@ function Layout(props) {
     //get notificaiton
     getNotification();
   }, []);
-
-  useEffect(() => {
-    console.log('menuItemIndexSelected :>> ', menuItemIndexSelected);
-  }, [menuItemIndexSelected]);
 
   const getNotification = () => {
     setDataNotifications({ ...dataNotifications, isLoading: true });
@@ -236,43 +223,6 @@ function Layout(props) {
     }
   };
 
-  const renderMenu = () => {
-    return MENU.map((item, _) => {
-      if (item?.key === 'separator') {
-        return <div key={_} className="toe-line-separator"></div>;
-      }
-      if (item?.children) {
-        return (
-          <SubMenu theme="light" key={item.key} title={item.title}>
-            {item.children.map((child) => (
-              <Menu.Item
-                // style={!collapsedMenu ? { paddingLeft: 16 } : {}}
-                className="admin-menu"
-                key={child.key}
-              >
-                {child.title}
-              </Menu.Item>
-            ))}
-          </SubMenu>
-        );
-      } else {
-        return (
-          <Menu.Item
-            className="admin-menu"
-            // style={!collapsedMenu ? { paddingLeft: 16 } : {}}
-            key={item.key}
-          >
-            {item.title}
-          </Menu.Item>
-        );
-      }
-    });
-  };
-
-  const renderPanelMenu = () => {
-    return <PanelMenu items={MENU} />;
-  };
-
   const renderPanelMenu1 = () => {
     return (
       <div className={buildClass(['admin-menu'])}>
@@ -305,15 +255,6 @@ function Layout(props) {
     return rightButtons.map((btn, _) => <div key={_}>{btn}</div>);
   };
 
-  const handleSelectMenuItem = (data) => {
-    history(data.key);
-    // setmenuItemSelected(data?.domEvent?.currentTarget?.innerText);
-  };
-
-  const handleShowOption = () => {
-    setUserSelectValue(null);
-    setIsShowPopupSelection(true);
-  };
   //#endregion
 
   return (

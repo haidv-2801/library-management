@@ -11,5 +11,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
     public interface IBookService : IBaseService<BookItem>
     {
         Task<string> GetNextBookCode();
+
+        Task<long> GetTotalBook();
     }
 }

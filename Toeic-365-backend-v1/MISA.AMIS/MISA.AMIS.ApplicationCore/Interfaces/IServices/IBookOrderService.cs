@@ -13,5 +13,8 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         Task<ServiceResult> InsertBookOrder(BookOrder bookOrder);
 
         Task<string> GetNextBookOrderCode();
+
+
+        Task<long> GetTotalBookOrdered();
     }
 }

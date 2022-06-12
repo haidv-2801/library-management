@@ -1,6 +1,5 @@
 ﻿using ClosedXML.Excel;
 using TOE.TOEIC.ApplicationCore.Entities;
-using TOE.TOEIC.ApplicationCore.Entities;
 using TOE.TOEIC.ApplicationCore.Interfaces;
 using TOE.TOEIC.Entities;
 using OfficeOpenXml;
@@ -137,10 +136,12 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
             //2. Tên hiển thị
             var propertyDisplayName = GetAttributeDisplayName(propertyName);
 
+            var propertyValue = (string)propertyInfo.GetValue(post);
+
             //3. Tùy chỉnh nguồn dữ liệu để validate, trạng thái thêm hoắc sửa
             var entityDuplicate = _accountRepository.GetEntityByProperty(post, propertyInfo);
 
-            if (entityDuplicate != null)
+            if (entityDuplicate != null && !string.IsNullOrEmpty(propertyValue))
             {
                 isValid = false;
 
@@ -220,12 +221,14 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         public async Task<object> Login(AccountLoginDTO userRequest)
         {
             userRequest.Password = CreateMD5(userRequest.Password);
+
             var account = (Account)(await _accountRepository.Login(userRequest));
 
             if (account != null)
             {
                 if (account.Status == false) return null;
-                return new { userInfo = new { roles = new string[] { "ROLE_ADMIN" }, Email = account.Email, UserName = account.UserName, FullName = account.FullName, PhoneNumer = account.PhoneNumber, CreatedDate = account.CreatedDate, Avatar = account.Avatar, UserID = account.AccountID }, token = GenerateJSONWebToken(account) };
+                var roles = (await _accountRepository.GetRolesByAccountID(account.AccountID.ToString()));
+                return new { userInfo = new { roles = roles.Select(item => new { RoleName = item.RoleName, RoleType = item.RoleType }), Email = account.Email, UserName = account.UserName, FullName = account.FullName, PhoneNumer = account.PhoneNumber, CreatedDate = account.CreatedDate, Avatar = account.Avatar, UserID = account.AccountID }, token = GenerateJSONWebToken(account) };
             }
 
             return account;
@@ -263,7 +266,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public static string CreateMD5(string input)
+        public string CreateMD5(string input)
         {
             // Use input string to calculate MD5 hash
             using (System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create())

@@ -37,6 +37,7 @@ import {
 import END_POINT, { GEOTARGET_ENDPOINT } from '../../../../constants/endpoint';
 import {
   AuthContext,
+  getLocalStorage,
   setLocalStorage,
   USER_INFO,
 } from '../../../../contexts/authContext';
@@ -108,7 +109,9 @@ function UserProfile(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [bookCheckout, setBookCheckout] = useState(DEFAULT_BOOK_CHECKOUT);
   const [isRequestBorrowing, setIsRequestBorrowing] = useState(false);
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState(
+    getLocalStorage(LOCAL_STORATE_KEY.AVATAR) ?? COMMON_AVATAR
+  );
   const [imageToSave, setImageToSave] = useState(null);
 
   const CONFIG_BUTTON = {
@@ -1141,7 +1144,7 @@ function UserProfile(props) {
                   }}
                 >
                   <img
-                    src={image ? image : COMMON_AVATAR}
+                    src={image}
                     alt="avatar"
                     onError={(e) => {
                       e.onError = null;

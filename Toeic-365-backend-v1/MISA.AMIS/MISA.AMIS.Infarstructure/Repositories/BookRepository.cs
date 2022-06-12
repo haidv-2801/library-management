@@ -28,6 +28,8 @@ namespace TOE.TOEIC.Infrastructure
 
         #region Method
         public async Task<string> GetNextBookCode() => await _dbConnection.QueryFirstOrDefaultAsync<string>("Proc_NextBookCode", commandType: CommandType.StoredProcedure);
+
+        public async Task<long> GetTotalBook() => await _dbConnection.QueryFirstOrDefaultAsync<long>("Proc_GetTotalBook", commandType: CommandType.StoredProcedure);
         #endregion
     }
 }

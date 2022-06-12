@@ -31,6 +31,7 @@ import Footer from '../../../sections/User/FooterLib/Footer';
 import Layout from '../../../sections/User/Layout/Layout';
 import { getBookType, getNewPaperDocuments } from '../function';
 import Input from '../../../atomics/base/Input/Input';
+import { books } from '../../test/Fake';
 import './booksPageSeeAllPrivate.scss';
 
 BooksPageSeeAllPrivate.propTypes = {
@@ -122,7 +123,8 @@ function BooksPageSeeAllPrivate(props) {
     baseApi.post(
       (res) => {
         let _data = res.data.pageData;
-        setDataTable(_data.map((_) => ({ ..._, key: _.bookID })));
+        // setDataTable(_data.map((_) => ({ ..._, key: _.bookID })));
+        setDataTable(books.map((_) => ({ ..._, key: _.bookID })));
         setIsLoading(false);
         setTotalRecords(res.data.totalRecord);
       },

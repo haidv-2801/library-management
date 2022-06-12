@@ -138,6 +138,14 @@ namespace TOE.TOEIC.Web
             //safe address
             services.AddScoped<ISafeAddressRepository, SafeAddressRepository>();
             services.AddScoped<ISafeAddressService, SafeAddressService>();
+
+            //role address
+            services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<IRoleService, RoleService>();
+
+            //library card
+            services.AddScoped<ILibraryCardRepository, LibraryCardRepository>();
+            services.AddScoped<ILibraryCardService, LibraryCardService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -496,8 +496,6 @@ function BookPage(props) {
       file: fileUrl,
     };
 
-    debugger;
-
     baseApi.post(
       (res) => {
         if (res.data > 0) {

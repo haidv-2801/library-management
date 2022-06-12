@@ -105,6 +105,20 @@ const END_POINT = (function () {
     TOE_SAFE_ADDRESS_FILTER: host + 'api/SafeAddress/Filter',
     TOE_SAFE_ADDRESS_ALLOWED_ACCESS:
       host + 'api/SafeAddress/CheckAllowedAccess',
+
+    /**
+     * *Endpoint role
+     */
+    TOE_INSERT_ROLES: host + 'api/Roles',
+    TOE_UPDATE_ROLES: host + 'api/Roles/{0}',
+    TOE_DELETE_ROLES: host + 'api/Roles/{0}',
+    TOE_ROLES_FILTER: host + 'api/Roles/Filter',
+    TOE_ROLES_ALLOWED_ACCESS: host + 'api/Roles/CheckAllowedAccess',
+
+    /**
+     * *Endpoint report
+     */
+    TOE_SCORE_CARD: host + 'api/scorecard',
   };
 })();
 

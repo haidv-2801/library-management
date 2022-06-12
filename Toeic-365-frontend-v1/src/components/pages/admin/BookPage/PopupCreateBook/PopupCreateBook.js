@@ -90,7 +90,6 @@ function PopupCreateBook(props) {
   const onBasicUpload = (event) => {
     setDataCreate({
       ...dataCreate,
-      bookCode: '4747',
       file: event.target.files[0],
     });
   };

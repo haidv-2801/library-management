@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using TOE.TOEIC.ApplicationCore.Helpers;
 using TOE.TOEIC.ApplicationCore.Enums;
+using Newtonsoft.Json.Linq;
 
 namespace TOE.TOEIC.ApplicationCore.Interfaces
 {
@@ -164,6 +165,21 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         }
 
         public async Task<string> GetNextBookOrderCode() => FunctionHelper.NextRecordCode(await _bookOrderRepository.GetNextBookOrderCode());
+
+        public async Task<long> GetTotalBookOrdered()
+        {
+            var bookOrders = await _bookOrderRepository.GetEntities();
+            var jtokenArray = bookOrders.Select(book => JsonConvert.DeserializeObject(book.BookOrderInformation) as JArray);
+            var sum = jtokenArray.Select(item => GetTotalBookOrderJArray(item)).Sum();
+            return sum;
+        }
+
+        private long GetTotalBookOrderJArray(JArray array)
+        {
+            var castEnum = array.AsEnumerable();
+            long sum = castEnum.Sum(item => ((JToken)(item))["quantity"] as dynamic );
+            return sum;
+        }
 
         #endregion
     }

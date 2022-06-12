@@ -10,6 +10,14 @@ const RequiredAuth = ({ children }) => {
     return children;
   }
 
+  if (auth.isLoggedIn && auth.isStaff()) {
+    return children;
+  }
+
+  if (auth.isLoggedIn) {
+    return <Navigate to={PATH_NAME.HOME} />;
+  }
+
   return <Navigate to={PATH_NAME.LOGIN} />;
 };
 

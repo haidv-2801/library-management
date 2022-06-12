@@ -28,29 +28,33 @@ const UserInfo = () => {
     {
       label: <span className="toe-font-label">Trang quản trị</span>,
       value: POPUP_SELECTION_VALUES.ADMIN_PAGE,
-      isHide: !authCtx.isSysAdmin() || isInAdminPage(),
+      isHide: (!authCtx.isSysAdmin() && !authCtx.isStaff()) || isInAdminPage(),
     },
     {
       label: <span className="toe-font-label">Trang khách</span>,
       value: POPUP_SELECTION_VALUES.GUEST_PAGE,
-      isHide: !authCtx.isSysAdmin() || !isInAdminPage(),
+      isHide: (!authCtx.isSysAdmin() && !authCtx.isStaff()) || !isInAdminPage(),
     },
     {
       label: 'Giỏ mượn',
       value: POPUP_SELECTION_VALUES.CART,
       isHide: isInAdminPage(),
+      // icon: <GiShoppingCart size={16} fill={'#454545'} />,
     },
     {
       label: 'Thông tin người dùng',
       value: POPUP_SELECTION_VALUES.USER_INFOMATION,
+      // icon: <FaUserEdit size={16} fill={'#454545'} />,
     },
     {
       label: 'Đổi mật khẩu',
       value: POPUP_SELECTION_VALUES.CHANGE_PASSWORD,
+      // icon: <RiLockPasswordFill size={16} fill={'#454545'} />,
     },
     {
       label: <span style={{ color: 'red' }}>Đăng xuất</span>,
       value: POPUP_SELECTION_VALUES.LOGOUT,
+      // icon: <IoLogOutOutline size={16} fill={'red'} />,
     },
   ];
 
@@ -61,7 +65,6 @@ const UserInfo = () => {
     setUserSelectValue(data.value);
     switch (data.value) {
       case POPUP_SELECTION_VALUES.LOGOUT:
-        // history('/login');
         //Xóa cache chrome
         authCtx.logout();
         if (isInAdminPage()) {
@@ -85,7 +88,7 @@ const UserInfo = () => {
         navigate(PATH_NAME.USER + '?view=bao-mat');
         break;
       case POPUP_SELECTION_VALUES.CART:
-        navigate(PATH_NAME.USER + '?view=gio-hang');
+        navigate(PATH_NAME.USER + '?view=gio-muon');
         break;
       default:
         break;
@@ -108,6 +111,10 @@ const UserInfo = () => {
                 : COMMON_AVATAR
             }
             alt="avatar"
+            onError={(e) => {
+              e.onError = null;
+              e.src = COMMON_AVATAR;
+            }}
           />
         </div>
       </PopupSelectionV1>

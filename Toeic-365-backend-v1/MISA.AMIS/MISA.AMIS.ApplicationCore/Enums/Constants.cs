@@ -86,4 +86,12 @@ namespace TOE.TOEIC.ApplicationCore.Enums
     {
         public static readonly string ADDRESS_CACHE_KEY = "ADDRESS_CACHE";
     }
+
+    public enum Roles
+    {
+        STAFF = 1,
+        GUEST = 3,
+        MEMBER = 2,
+        ADMIN = 0
+    }
 }

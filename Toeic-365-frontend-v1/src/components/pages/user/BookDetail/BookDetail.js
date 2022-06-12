@@ -121,7 +121,7 @@ function BookDetail(props) {
               </div>
             </Tooltip>
           ) : (
-            'Tài liệu chưa được tải lên.'
+            'Bản xem trước chưa được tải lên.'
           )}
         </div>
         <div className="toe-book-detail-page__item-info__group">

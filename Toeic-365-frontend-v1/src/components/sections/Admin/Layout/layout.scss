@@ -43,12 +43,13 @@
       }
 
       & .user-avatar {
-        width: 40px;
-        height: 40px;
+        width: 36px;
+        height: 36px;
         overflow: hidden;
         border-radius: 50%;
         border: 1px solid #e9e5ee;
         cursor: pointer;
+        flex-shrink: 0;
 
         & > img {
           width: 36px;
@@ -81,9 +82,6 @@
         flex-direction: column;
         gap: 8px;
         margin-bottom: 8px;
-
-        &__content {
-        }
 
         &__time {
           text-align: right;
@@ -190,6 +188,13 @@
 
   .admin-menu-item__text {
     display: block;
+  }
+
+  .admin-menu-item {
+    &.disabled {
+      opacity: 0.4;
+      pointer-events: none;
+    }
   }
 
   .sidermenu-collapsed {

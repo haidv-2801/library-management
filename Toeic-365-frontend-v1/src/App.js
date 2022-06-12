@@ -37,6 +37,7 @@ import './main.scss';
 import SafeAddressPage from './components/pages/admin/SafeAddressPage/SafeAddressPage';
 import responsiveObserve from 'antd/lib/_util/responsiveObserve';
 import BooksPageSeeAllPrivate from './components/pages/user/BooksPageSeeAllPrivate/BooksPageSeeAllPrivate';
+import RolePage from './components/pages/admin/RolePage/RolePage';
 
 // const MenuPage = React.lazy(() =>
 //   import('./components/pages/admin/MenuPage/MenuPage')
@@ -145,7 +146,6 @@ function App() {
         <Routes>
           <Route exact path="/">
             <Route index element={<HomePage />} />
-
             <Route
               exact
               path={PATH_NAME.PRIVATE_DOCUMENTS}
@@ -218,7 +218,7 @@ function App() {
               index
               element={
                 <RequiredAuth>
-                  <UserPage />
+                  <DashBoardPage />
                 </RequiredAuth>
               }
             />
@@ -238,7 +238,7 @@ function App() {
                 path="role"
                 element={
                   <RequiredAuth>
-                    <UserPage />
+                    <RolePage />
                   </RequiredAuth>
                 }
               />
@@ -247,7 +247,7 @@ function App() {
                 path="permission"
                 element={
                   <RequiredAuth>
-                    <UserPage />
+                    <RolePage />
                   </RequiredAuth>
                 }
               />

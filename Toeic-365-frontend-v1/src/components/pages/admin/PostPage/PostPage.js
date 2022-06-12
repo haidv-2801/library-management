@@ -184,15 +184,15 @@ function PostPage(props) {
   const [dataMenus, setDataMenus] = useState([]);
 
   const OPTIONS = [
-    {
-      label: (
-        <div className="table-option__menu-item">
-          <i className="pi pi-eye"></i>Xem chi tiết
-        </div>
-      ),
-      value: 1,
-      onClick: (e) => console.log('first', e),
-    },
+    // {
+    //   label: (
+    //     <div className="table-option__menu-item">
+    //       <i className="pi pi-eye"></i>Xem chi tiết
+    //     </div>
+    //   ),
+    //   value: 1,
+    //   onClick: (e) => console.log('first', e),
+    // },
     {
       label: (
         <div className="table-option__menu-item">

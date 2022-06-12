@@ -123,7 +123,7 @@ function BookLendingPage(props) {
     },
     {
       field: 'phoneNumber',
-      header: 'Số diện thoại',
+      header: 'Số điện thoại',
       filterField: 'phoneNumber',
       body: (row) => {
         if (isLoading) return <Skeleton></Skeleton>;

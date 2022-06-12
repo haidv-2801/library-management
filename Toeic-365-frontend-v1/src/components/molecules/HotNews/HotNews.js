@@ -77,7 +77,7 @@ function HotNews(props) {
         <div className="toe-hot-news__section-content__ytb">
           <iframe
             src={UTC_INTRODUCE_VIDEO}
-            allowfullscreen="allowfullscreen"
+            allowFullScreen="allowfullscreen"
             mozallowfullscreen="mozallowfullscreen"
             msallowfullscreen="msallowfullscreen"
             oallowfullscreen="oallowfullscreen"

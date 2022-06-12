@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import cookie from 'js-cookie';
+import { LOCAL_STORATE_KEY } from '../constants/commonConstant';
+import { ROLES } from '../constants/commonAuth';
 
 const TOKEN_KEY = 'TOKEN_KEY';
 const USER_INFO = 'USER_INFO';
-const ROLE_ADMIN = 'ROLE_ADMIN';
+const ROLE_ADMIN = 'ADMIN';
 
 const getLocalStorage = (key) => {
-  return decodeURIComponent(localStorage.getItem(key));
+  const item = localStorage.getItem(key);
+  if (!item) return item;
+  return decodeURIComponent(item);
 };
 
 const setLocalStorage = (key, value) => {
@@ -36,7 +40,9 @@ export const AuthContext = React.createContext({
   logout: () => {},
   auth: () => {},
   isSysAdmin: () => {},
-  notSysAdmin: () => {},
+  isMember: () => {},
+  isGuest: () => {},
+  isStaff: () => {},
 });
 
 const AuthContextProvider = (props) => {
@@ -54,15 +60,24 @@ const AuthContextProvider = (props) => {
   const logoutHandler = () => {
     setToken(null);
     removeLocalStorage(USER_INFO);
+    removeLocalStorage(LOCAL_STORATE_KEY.AVATAR);
     removeCookie(TOKEN_KEY);
   };
 
   const isSysAdmin = () => {
-    return auth()?.roles?.includes(ROLE_ADMIN);
+    return auth()?.roles?.find((item) => item?.roleType === ROLES.ADMIN);
   };
 
-  const notSysAdmin = () => {
-    return !auth()?.roles?.includes(ROLE_ADMIN);
+  const isMember = () => {
+    return auth()?.roles?.find((item) => item?.roleType === ROLES.MEMBER);
+  };
+
+  const isGuest = () => {
+    return auth()?.roles?.find((item) => item?.roleType === ROLES.GUEST);
+  };
+
+  const isStaff = () => {
+    return auth()?.roles?.find((item) => item?.roleType === ROLES.STAFF);
   };
 
   const auth = () => {
@@ -84,7 +99,9 @@ const AuthContextProvider = (props) => {
     logout: logoutHandler,
     auth: auth,
     isSysAdmin: isSysAdmin,
-    notSysAdmin: notSysAdmin,
+    isMember: isMember,
+    isStaff: isStaff,
+    isGuest: isGuest,
   };
 
   return (

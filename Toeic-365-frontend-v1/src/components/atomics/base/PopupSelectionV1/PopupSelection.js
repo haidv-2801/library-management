@@ -76,6 +76,7 @@ function PopupSelection(props) {
                 if (typeof item?.onClick === 'function') item?.onClick(item);
               }}
             >
+              {item?.icon}
               {item?.label}
             </div>
           );

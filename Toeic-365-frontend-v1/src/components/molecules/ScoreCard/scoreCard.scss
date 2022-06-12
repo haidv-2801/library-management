@@ -1,22 +1,39 @@
-.toe-audio-score-card {
-  height: 175px;
+.toe-score-card {
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 1px 3px;
+  height: 135px;
   min-width: 200px;
-  // width: 350px;
   display: flex;
-  flex-direction: column;
   padding: 24px;
-  border-radius: 8px;
-  background-color: aliceblue;
-  gap: 16px;
+  border-radius: 4px;
+  background-color: #fff;
 
-  &__label {
+  &.isloading {
+    flex-direction: column;
   }
 
-  &__value {
+  gap: 16px;
+
+  &__skeleton {
+  }
+
+  &__row {
     flex: 1;
   }
 
+  &__label {
+    text-align: right;
+    margin-bottom: 16px;
+    font-size: 16px;
+    color: #858585;
+  }
+
+  &__value {
+    text-align: right;
+    font-size: 22px;
+  }
+
   &__icon {
+    border-radius: 6px;
     width: 60px;
     height: 60px;
     display: flex;

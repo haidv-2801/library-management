@@ -186,6 +186,8 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
             return (string)nextCode;
         }
 
+        public async Task<long> GetTotalBook() => await _bookRepository.GetTotalBook();
+
         #endregion
     }
 }

@@ -57,6 +57,9 @@ import Layout from '../../../sections/Admin/Layout/Layout';
 import './dashBoardPage.scss';
 import ToastConfirmDelete from '../../../molecules/ToastConfirmDelete/ToastConfirmDelete';
 import ScoreCard from '../../../molecules/ScoreCard/ScoreCard';
+import { ImBook } from 'react-icons/im';
+import { FaUserFriends, FaReceipt, FaNewspaper } from 'react-icons/fa';
+import { MdAssignmentReturned } from 'react-icons/md';
 
 DashBoardPage.propTypes = {
   id: PropTypes.string,
@@ -75,17 +78,71 @@ function DashBoardPage(props) {
 
   const navigate = useNavigate();
 
+  //#region state
+  const [isLoading, setIsLoading] = useState(false);
+  const [dataScoreCard, setDataScoreCard] = useState({});
+  //#endregion
+
+  useEffect(() => {
+    callApiGetDataScoreCard();
+  }, []);
+
   //#region
+  const callApiGetDataScoreCard = () => {
+    baseApi.get(
+      (res) => {
+        setDataScoreCard({
+          totalBooks: res.totalBooks,
+          totalBookOrdereds: res.totalBookOrdereds,
+          totalLibraryCards: res.totalLibraryCards,
+        });
+        setIsLoading(false);
+      },
+      (err) => {
+        setIsLoading(false);
+      },
+      () => {
+        setIsLoading(true);
+      },
+      END_POINT.TOE_SCORE_CARD,
+      null,
+      null
+    );
+  };
   //#endregion
 
   return (
     <Layout title="Tổng quan">
       <div className="toe-dashboard-page">
         <div className="toe-dashboard-page__section score-card">
-          <ScoreCard backgroundColor="#7C3AED" />
-          <ScoreCard backgroundColor="#EF4444" />
-          <ScoreCard backgroundColor="#F59E0B" />
-          <ScoreCard backgroundColor="#10B981" />
+          <ScoreCard
+            backgroundColor="#EF4444"
+            icon={<ImBook size={40} fill="#fff" />}
+            label={'Tổng số sách'}
+            value={dataScoreCard?.totalBooks ?? 0}
+            isLoading={isLoading}
+          />
+          <ScoreCard
+            backgroundColor="#7C3AED"
+            icon={<FaReceipt size={40} fill="#fff" />}
+            label={'Tổng số sách mượn'}
+            value={dataScoreCard?.totalBookOrdereds ?? 0}
+            isLoading={isLoading}
+          />
+          <ScoreCard
+            backgroundColor="#F59E0B"
+            icon={<FaNewspaper size={40} fill="#fff" />}
+            label={'Bài đăng mới hôm nay'}
+            value={dataScoreCard?.totalBookOrdereds ?? 0}
+            isLoading={isLoading}
+          />
+          <ScoreCard
+            icon={<FaUserFriends size={40} fill="#fff" />}
+            backgroundColor="#10B981"
+            label={'Tổng số thành viên'}
+            value={dataScoreCard?.totalLibraryCards ?? 0}
+            isLoading={isLoading}
+          />
         </div>
       </div>
     </Layout>

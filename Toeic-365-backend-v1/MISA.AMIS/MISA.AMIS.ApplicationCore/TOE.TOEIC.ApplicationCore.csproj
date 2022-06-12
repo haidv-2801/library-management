@@ -34,4 +34,9 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Entities\LibraryCard\DTO\" />
+    <Folder Include="Entities\Role\DTO\" />
+  </ItemGroup>
+
 </Project>

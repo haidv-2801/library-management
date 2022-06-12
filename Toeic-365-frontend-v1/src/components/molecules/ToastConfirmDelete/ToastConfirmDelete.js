@@ -29,7 +29,7 @@ function ToastConfirmDelete(props) {
         <Button name="Xác nhận" onClick={onAccept} />,
       ]}
       onClose={onClose}
-      className="toe-toast-delete toe-font-body"
+      className="toe-toast-delete toe-font-label"
     >
       {format('Bạn có chắc muốn xóa {0}?', <b>{title}</b>)}
     </Modal>

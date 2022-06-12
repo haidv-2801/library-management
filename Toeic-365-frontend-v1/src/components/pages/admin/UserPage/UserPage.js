@@ -26,6 +26,7 @@ import Modal from '../../../atomics/base/ModalV2/Modal';
 import SmartText from '../../../atomics/base/SmartText/SmartText';
 import Paginator from '../../../molecules/Paginator/Paginator';
 import Table from '../../../molecules/Table/Table';
+import ToastConfirmDelete from '../../../molecules/ToastConfirmDelete/ToastConfirmDelete';
 import Layout from '../../../sections/Admin/Layout/Layout';
 import PopupCreateUser from './PopupCreateUser/PopupCreateUser';
 import './userPage.scss';
@@ -47,6 +48,7 @@ function UserPage(props) {
 
   const navigate = useNavigate();
   const toast = useRef(null);
+  const [idDeleted, setIdDeleted] = useState(null);
 
   //#region
   const COLUMNS = [
@@ -479,29 +481,7 @@ function UserPage(props) {
   };
 
   const handleRemove = (key) => {
-    baseApi.delete(
-      (res) => {
-        if (res.data > 0) {
-          toast.current.show({
-            severity: 'success',
-            summary: 'Success',
-            detail: 'Xóa thành công',
-            life: 3000,
-          });
-          getUsersFilter();
-        }
-      },
-      (err) => {
-        toast.current.show({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Xóa thất bại',
-          life: 3000,
-        });
-      },
-      () => {},
-      format(END_POINT.TOE_DELETE_USER, key)
-    );
+    setIdDeleted(key);
   };
 
   const renderSkeleton = () => {
@@ -591,6 +571,35 @@ function UserPage(props) {
       null,
       null
     );
+  };
+
+  const handleDelete = () => {
+    if (idDeleted) {
+      baseApi.delete(
+        (res) => {
+          if (res.data > 0) {
+            toast.current.show({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Xóa thành công',
+              life: 3000,
+            });
+            getUsersFilter();
+            setIdDeleted(null);
+          }
+        },
+        (err) => {
+          toast.current.show({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Xóa thất bại',
+            life: 3000,
+          });
+        },
+        () => {},
+        format(END_POINT.TOE_DELETE_USER, idDeleted)
+      );
+    }
   };
 
   //#endregion
@@ -726,6 +735,12 @@ function UserPage(props) {
         ) : null}
       </div>
       <Toast ref={toast}></Toast>
+      {idDeleted ? (
+        <ToastConfirmDelete
+          onClose={() => setIdDeleted(null)}
+          onAccept={handleDelete}
+        />
+      ) : null}
     </Layout>
   );
 }
