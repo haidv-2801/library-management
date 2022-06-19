@@ -7,27 +7,12 @@ import { ACCEPT_FILE_PDF } from '../../../constants/commonConstant';
 import { uploadFiles } from '../../../api/firebase';
 import UpLoadImage from '../../molecules/UpLoadImage/UpLoadImage';
 import ToastConfirmDelete from '../../molecules/ToastConfirmDelete/ToastConfirmDelete';
+import MostBorrowedBookChart from '../admin/DashBoardPage/Control/MostBorrowedBookChart/MostBorrowedBookChart';
 
 function MyPdf() {
-  const [file, setFile] = useState(null);
-
-  const onBasicUpload = (data) => {
-    setFile(data.file);
-  };
-
-  const upLoad = () => {
-    uploadFiles(file, 'files')
-      .then((res) => {
-        debugger;
-      })
-      .catch((err) => {
-        debugger;
-      });
-  };
-
   return (
     <div>
-      <ToastConfirmDelete title={'Bản ghi'} />
+      <MostBorrowedBookChart />
     </div>
   );
 }

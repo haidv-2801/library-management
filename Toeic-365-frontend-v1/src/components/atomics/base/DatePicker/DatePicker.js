@@ -3,6 +3,7 @@ import React from 'react';
 import { Calendar } from 'primereact/calendar';
 import './datePicker.scss';
 import { buildClass } from '../../../../constants/commonFunction';
+import moment from 'moment';
 
 DatePicker.propTypes = {
   id: PropTypes.string,
@@ -57,7 +58,7 @@ function DatePicker(props) {
       placeholder={placeholder}
       maxDate={max}
       minDate={min}
-      value={defaultValue}
+      value={new Date(defaultValue)}
       onChange={onChange}
       // mask={mask}
       disabled={disabled}

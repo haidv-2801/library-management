@@ -3,7 +3,11 @@ import { Tooltip } from 'antd';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { BOOK_FORMAT, TEXT_FALL_BACK } from '../../../constants/commonConstant';
-import { buildClass, ParseJson } from '../../../constants/commonFunction';
+import {
+  buildClass,
+  isValidHttpUrl,
+  ParseJson,
+} from '../../../constants/commonFunction';
 import SmartText from '../../atomics/base/SmartText/SmartText';
 import { getBookType } from '../../pages/user/function';
 import './book.scss';
@@ -61,6 +65,13 @@ function Book(props) {
     return Math.floor(Math.random() * max);
   }
 
+  const getBookAuthor = (single = false) => {
+    let authors = ParseJson(bookAuthor);
+    if (!authors) return TEXT_FALL_BACK.TYPE_1;
+    if (single) return authors[0];
+    else return authors;
+  };
+
   return (
     <div
       id={id}
@@ -73,7 +84,7 @@ function Book(props) {
           <BookOutlined />
         </div>
       </Tooltip>
-      {image ? (
+      {isValidHttpUrl(image) ? (
         <Tooltip title={bookTitle}>
           <img className="toe-book__title" src={image} />
         </Tooltip>
@@ -84,13 +95,13 @@ function Book(props) {
           }}
           className="toe-book__title"
         >
-          {bookTitle || TEXT_FALL_BACK.TYPE_1}
+          <SmartText innerStyle={{ color: '#fff' }} rows={5}>
+            {bookTitle}
+          </SmartText>
         </div>
       )}
 
-      <div className="toe-book__author">
-        {bookAuthor || TEXT_FALL_BACK.TYPE_1}
-      </div>
+      <div className="toe-book__author">{getBookAuthor(true)}</div>
       {hasBottomTitles && (
         <div className="toe-book__bottom-title">
           <SmartText rows={2}>{bookTitle || TEXT_FALL_BACK.TYPE_1}</SmartText>

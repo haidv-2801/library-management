@@ -8,6 +8,7 @@ const { Paragraph } = Typography;
 SmartText.propTypes = {
   style: PropTypes.object,
   onEllipsis: PropTypes.func,
+  innerStyle: PropTypes.func,
   rows: PropTypes.number,
   maxWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   className: PropTypes.string,
@@ -20,6 +21,7 @@ SmartText.defaultProps = {
   maxWidth: '100%',
   className: '',
   innnerClassName: '',
+  innerStyle: {},
   style: {},
 };
 
@@ -32,6 +34,7 @@ function SmartText(props) {
     className,
     style,
     innnerClassName,
+    innerStyle,
   } = props;
 
   return (
@@ -46,6 +49,7 @@ function SmartText(props) {
           onEllipsis: onEllipsis,
           tooltip: children,
         }}
+        style={innerStyle}
       >
         {children}
       </Paragraph>

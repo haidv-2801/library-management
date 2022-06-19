@@ -51,6 +51,12 @@ namespace TOE.TOEIC.ApplicationCore.Enums
         public static readonly int PAPER_BACK = 1;
     }
 
+    public static class BookType
+    {
+        public static readonly int SYLLABUS = 0;
+        public static readonly int REFERENCE_BOOK = 1;
+    }
+
     public enum ReservationStatus
     {
         WAITING = 0,

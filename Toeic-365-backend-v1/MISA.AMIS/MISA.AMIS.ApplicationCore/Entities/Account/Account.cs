@@ -54,13 +54,6 @@ namespace TOE.TOEIC.ApplicationCore.Entities
 
         [Display(Name = "Địa chỉ")]
         public string Address { get; set; }
-
-        [Display(Name = "Tổng số sách đã mượn")]
-        public int TotalBookCheckedOut { get; set; } = 0;
-
-
-        [Display(Name = "Tổng số sách đang mượn")]
-        public int TotalBookCheckingOut { get; set; } = 0;
         #endregion
     }
 }

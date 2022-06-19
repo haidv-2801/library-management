@@ -77,7 +77,8 @@ function LoginPage(props) {
   const callApiLogin = () => {
     baseApi.post(
       (res) => {
-        authCtx.login(res.token, res.userInfo);
+        authCtx.login(res.token, res);
+
         const path = selector.history;
         if (path?.length) {
           navigate(path[0]);

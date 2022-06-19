@@ -4,10 +4,11 @@ import {
   TEXT_FALL_BACK,
   OPERATOR,
   BOOK_FORMAT,
+  BOOK_TYPE,
 } from '../../../constants/commonConstant';
 import baseApi from '../../../api/baseApi';
 
-const DEFAULT_PAGE_SIZE = 5;
+const DEFAULT_PAGE_SIZE = 10;
 const NotPrivateFilter = ['IsPrivate', OPERATOR.EQUAL, '0'];
 
 export const getNewPaperDocuments = (
@@ -74,6 +75,17 @@ export const getBookType = (type) => {
       return 'Tài liệu số';
     case BOOK_FORMAT.PAPER_BACK:
       return 'Tài liệu giấy';
+    default:
+      return TEXT_FALL_BACK.TYPE_1;
+  }
+};
+
+export const getBookFormat = (type) => {
+  switch (type) {
+    case BOOK_TYPE.SYLLABUS:
+      return 'Giáo trình';
+    case BOOK_TYPE.REFERENCE_BOOK:
+      return 'Sách tham khảo';
     default:
       return TEXT_FALL_BACK.TYPE_1;
   }

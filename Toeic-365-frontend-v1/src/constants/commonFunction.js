@@ -5,6 +5,7 @@ import {
   PATH_NAME,
   RESERVATION_STATUS,
   FILTER_TIME_VALUE,
+  MEMBER_TYPE,
 } from './commonConstant';
 import moment from 'moment';
 
@@ -917,3 +918,74 @@ export const commonFilterTime = [
     value: FILTER_TIME_VALUE.OPTION,
   },
 ];
+
+export const isValidHttpUrl = (text) => {
+  let url;
+
+  try {
+    url = new URL(text);
+  } catch (_) {
+    return false;
+  }
+
+  return url.protocol === 'http:' || url.protocol === 'https:';
+};
+
+export const DROPDOWN_STATUS = [
+  { label: 'Tất cả', value: -1 },
+  {
+    label: 'Đang yêu cầu',
+    color: '#9933CC',
+    value: RESERVATION_STATUS.WAITING,
+  },
+  { label: 'Đang mượn', color: '#007b7f', value: RESERVATION_STATUS.LENDING },
+  {
+    label: 'Đang xử lý',
+    color: '#0d47a1',
+    value: RESERVATION_STATUS.PENDING,
+  },
+  { label: 'Đã trả', color: '#28a745', value: RESERVATION_STATUS.RETURNED },
+  {
+    label: 'Quá hạn trả',
+    color: '#FF8800',
+    value: RESERVATION_STATUS.EXPIRED,
+  },
+  {
+    label: 'Yêu cầu bị hủy',
+    color: '#dc3545',
+    value: RESERVATION_STATUS.CANCELED,
+  },
+];
+
+export const requireRegisterView = (navigate) => {
+  return (
+    <div className="nodata">
+      Bạn chưa là thành viên của thư viện
+      <a
+        onClick={() => {
+          navigate('/nguoi-dung?view=tai-khoan');
+        }}
+        className="nodata__button"
+      >
+        Đăng ký ngay
+      </a>
+    </div>
+  );
+};
+
+export const getMemberTypeText = (type) => {
+  let typeText = 'Không xác định';
+  switch (type) {
+    case MEMBER_TYPE.LECTURER:
+      typeText = 'Giảng viên';
+      break;
+    case MEMBER_TYPE.GUEST:
+      typeText = 'Khách';
+      break;
+    case MEMBER_TYPE.STUDENT:
+      typeText = 'Sinh viên';
+      break;
+  }
+
+  return typeText;
+};

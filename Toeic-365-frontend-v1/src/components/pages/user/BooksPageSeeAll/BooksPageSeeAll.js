@@ -180,7 +180,7 @@ function BooksPageSeeAll(props) {
           <Book
             className="toe-book-see-all-page__body-content__book"
             bookTitle={item?.bookName}
-            bookAuthor="Nguyễn Thị Thảo"
+            bookAuthor={item?.author}
             bookType={item?.bookFormat}
             image={item?.image}
             onClick={() => handleViewDetail(item.bookID)}
@@ -252,16 +252,16 @@ function BooksPageSeeAll(props) {
   };
 
   const renderSkeleton = (number) => {
-    return (
-      <div className="skeleton-list">
-        {' '}
-        {Array.from(Array(number)).map((item, _) => (
-          <div className="skeleton-book">
-            <Skeleton key={_} height="200px" width="150px" />
-          </div>
-        ))}
-      </div>
-    );
+    let arr = [];
+    for (let i = 0; i < number; i++) {
+      arr.push(
+        <div className="skeleton-book" key={i}>
+          <Skeleton key={i} height="200px" width="150px" />
+        </div>
+      );
+    }
+
+    return <div className="skeleton-list"> {arr}</div>;
   };
 
   const handleSetSearch = () => {

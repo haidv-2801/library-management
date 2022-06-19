@@ -55,6 +55,14 @@ namespace TOE.TOEIC.Web.Controllers
             return Ok(new { totalBooks = res[2], totalBookOrdereds = res[0], totalLibraryCards = res[1] });
         }
 
+
+        [HttpGet]
+        [Route("/api/top-book-borrowed")]
+        [EnableCors("AllowCROSPolicy")]
+        public async Task<IActionResult> GetTopBookBorrowed()
+        {
+            return Ok(await _bookOrderService.TopBookBorrowed());
+        }
         #endregion
     }
 }

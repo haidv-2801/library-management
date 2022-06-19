@@ -4,7 +4,6 @@ import { LOCAL_STORATE_KEY } from '../constants/commonConstant';
 import { ROLES } from '../constants/commonAuth';
 
 const TOKEN_KEY = 'TOKEN_KEY';
-const USER_INFO = 'USER_INFO';
 const ROLE_ADMIN = 'ADMIN';
 
 const getLocalStorage = (key) => {
@@ -51,16 +50,21 @@ const AuthContextProvider = (props) => {
 
   const userIsLoggedIn = !!token;
 
-  const loginHandler = (token, userInfo) => {
+  const loginHandler = (token, user) => {
     setToken(token);
-    setLocalStorage(USER_INFO, JSON.stringify(userInfo));
+    setLocalStorage(LOCAL_STORATE_KEY.USER_INFO, JSON.stringify(user.userInfo));
+    setLocalStorage(
+      LOCAL_STORATE_KEY.MEMBER_INFO,
+      user.member ? JSON.stringify(user.member) : null
+    );
     setCookie(TOKEN_KEY, token);
   };
 
   const logoutHandler = () => {
     setToken(null);
-    removeLocalStorage(USER_INFO);
+    removeLocalStorage(LOCAL_STORATE_KEY.USER_INFO);
     removeLocalStorage(LOCAL_STORATE_KEY.AVATAR);
+    removeLocalStorage(LOCAL_STORATE_KEY.MEMBER_INFO);
     removeCookie(TOKEN_KEY);
   };
 
@@ -69,7 +73,8 @@ const AuthContextProvider = (props) => {
   };
 
   const isMember = () => {
-    return auth()?.roles?.find((item) => item?.roleType === ROLES.MEMBER);
+    const memberInfo = getLocalStorage(LOCAL_STORATE_KEY.MEMBER_INFO);
+    return !memberInfo;
   };
 
   const isGuest = () => {
@@ -83,7 +88,7 @@ const AuthContextProvider = (props) => {
   const auth = () => {
     if (userIsLoggedIn) {
       try {
-        const user = JSON.parse(getLocalStorage(USER_INFO));
+        const user = JSON.parse(getLocalStorage(LOCAL_STORATE_KEY.USER_INFO));
         if (user) return user;
       } catch {
         return null;
@@ -119,7 +124,6 @@ export {
   setCookie,
   getCookie,
   TOKEN_KEY,
-  USER_INFO,
 };
 
 export default AuthContextProvider;

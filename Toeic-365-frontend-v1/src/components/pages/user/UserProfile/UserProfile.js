@@ -12,6 +12,7 @@ import { format } from 'react-string-format';
 import baseApi from '../../../../api/baseApi';
 import {
   getAccountName,
+  getFullName,
   getUserID,
   getUserName,
 } from '../../../../constants/commonAuth';
@@ -20,8 +21,10 @@ import {
   BUTTON_TYPE,
   COMMON_AVATAR,
   DATE_FORMAT,
+  GUID_NULL,
   LOCAL_STORATE_KEY,
   MAXIMUM_PAGESIZE,
+  MEMBER_TYPE,
   OPERATOR,
   PATH_NAME,
   RESERVATION_STATUS,
@@ -30,8 +33,11 @@ import {
 } from '../../../../constants/commonConstant';
 import {
   buildClass,
+  DROPDOWN_STATUS,
+  getMemberTypeText,
   getOrderStatus,
   ParseJson,
+  requireRegisterView,
   slugify,
 } from '../../../../constants/commonFunction';
 import END_POINT, { GEOTARGET_ENDPOINT } from '../../../../constants/endpoint';
@@ -39,7 +45,6 @@ import {
   AuthContext,
   getLocalStorage,
   setLocalStorage,
-  USER_INFO,
 } from '../../../../contexts/authContext';
 import { CartContext } from '../../../../contexts/cartContext';
 import Button from '../../../atomics/base/Button/Button';
@@ -54,7 +59,7 @@ import Book from '../../../molecules/Book/Book';
 import Dropdown from '../../../molecules/Dropdown/Dropdown';
 import Table from '../../../molecules/Table/Table';
 import Layout from '../../../sections/User/Layout/Layout';
-import { getBookType } from '../function';
+import { getBookFormat, getBookType } from '../function';
 import { isArray, isEmpty } from 'lodash';
 import './userProfile.scss';
 import { uploadFiles } from '../../../../api/firebase';
@@ -71,14 +76,26 @@ function UserProfile(props) {
   const MENU_NAME = {
     ACCOUNT: 'Tài khoản',
     SECURITY: 'Bảo mật',
-    NOTIFICATION: 'Thông báo',
+    LIBRARY_CARD: 'Thẻ thư viện',
     BORROW_RETURN: 'Mượn trả',
     CART: 'Giỏ mượn',
   };
 
+  const TAB_VIEW_VALUE = {
+    LOANING: 0,
+    WAITING: 1,
+    HISTORY: 2,
+  };
+
+  const TAB_VIEW_LIST = [
+    { label: 'Đang mượn', value: RESERVATION_STATUS.CANCELED },
+    { label: 'Chờ xử lý', value: TAB_VIEW_VALUE.WAITING },
+    { label: 'Lịch sử', value: TAB_VIEW_VALUE.HISTORY },
+  ];
+
   const userMenu = [
     { label: MENU_NAME.CART, value: slugify(MENU_NAME.CART) },
-    { label: MENU_NAME.NOTIFICATION, value: slugify(MENU_NAME.NOTIFICATION) },
+    { label: MENU_NAME.LIBRARY_CARD, value: slugify(MENU_NAME.LIBRARY_CARD) },
     { label: MENU_NAME.ACCOUNT, value: slugify(MENU_NAME.ACCOUNT) },
     { label: MENU_NAME.SECURITY, value: slugify(MENU_NAME.SECURITY) },
     { label: MENU_NAME.BORROW_RETURN, value: slugify(MENU_NAME.BORROW_RETURN) },
@@ -90,7 +107,13 @@ function UserProfile(props) {
     to: null,
   };
 
-  const MIN_PAGE_SIZE = 10;
+  const MEMBERS = [
+    { label: 'Sinh viên', value: MEMBER_TYPE.STUDENT },
+    { label: 'Giảng viên', value: MEMBER_TYPE.LECTURER },
+    { label: 'Bạn đọc ngoài trường', value: MEMBER_TYPE.GUEST },
+  ];
+
+  const MIN_PAGE_SIZE = 5;
 
   const params = useParams();
 
@@ -113,6 +136,15 @@ function UserProfile(props) {
     getLocalStorage(LOCAL_STORATE_KEY.AVATAR) ?? COMMON_AVATAR
   );
   const [imageToSave, setImageToSave] = useState(null);
+  const [loanReportData, setLoanReportData] = useState({
+    data: [],
+    total: 0,
+    loan_status: -1,
+  });
+  const [expandedSection, setExpandedSection] = useState({
+    infoAccount: true,
+    infoRegisterCard: false,
+  });
 
   const CONFIG_BUTTON = {
     theme: BUTTON_THEME.THEME_1,
@@ -123,6 +155,7 @@ function UserProfile(props) {
 
   const [lazyParams, setLazyParams] = useState({ page: 1, rows: 10 });
   const [dataTable, setDataTable] = useState({ isLoading: false, data: [] });
+  const [totalRecords, setTotalRecords] = useState(0);
 
   const COLUMNS = [
     {
@@ -130,6 +163,7 @@ function UserProfile(props) {
       header: 'Mã phiếu',
       filterField: 'bookOrderCode',
       body: (row) => {
+        if (dataTable.isLoading) return <Skeleton></Skeleton>;
         return <SmartText maxWidth={100}>{row?.bookOrderCode}</SmartText>;
       },
       style: { width: 100, maxWidth: 100 },
@@ -140,7 +174,7 @@ function UserProfile(props) {
       header: 'Ngày lập',
       filterField: 'createdDate',
       body: (row) => {
-        if (isLoading) return <Skeleton></Skeleton>;
+        if (dataTable.isLoading) return <Skeleton></Skeleton>;
         return (
           <div className="toe-font-body">
             {moment(row?.createdDate).format(DATE_FORMAT.TYPE_1) ??
@@ -156,7 +190,7 @@ function UserProfile(props) {
       header: 'Từ ngày',
       filterField: 'fromDate',
       body: (row) => {
-        if (isLoading) return <Skeleton></Skeleton>;
+        if (dataTable.isLoading) return <Skeleton></Skeleton>;
         return (
           <div className="toe-font-body">
             {moment(row?.fromDate).format(DATE_FORMAT.TYPE_3) ??
@@ -172,7 +206,7 @@ function UserProfile(props) {
       header: 'Đến ngày',
       filterField: 'dueDate',
       body: (row) => {
-        if (isLoading) return <Skeleton></Skeleton>;
+        if (dataTable.isLoading) return <Skeleton></Skeleton>;
         return (
           <div className="toe-font-body">
             {moment(row?.dueDate).format(DATE_FORMAT.TYPE_3) ??
@@ -188,6 +222,8 @@ function UserProfile(props) {
       header: 'Mã sách',
       filterField: 'bookOrderInformation',
       body: (row) => {
+        if (dataTable.isLoading) return <Skeleton></Skeleton>;
+
         return renderBookOrderInfomation(row.bookOrderInformation);
       },
       style: { width: 140, maxWidth: 140 },
@@ -197,6 +233,8 @@ function UserProfile(props) {
       header: 'Trạng thái',
       filterField: 'orderStatus',
       body: (row) => {
+        if (dataTable.isLoading) return <Skeleton></Skeleton>;
+
         return <div className="toe-font-body">{renderOrderStatus(row)}</div>;
       },
       style: { width: 180, maxWidth: 180 },
@@ -227,16 +265,15 @@ function UserProfile(props) {
   //data
   const [dataDetail, setDataDetail] = useState({});
   const [dataChangePw, setDataChangePw] = useState({});
+  const [provinceCity, setProvinceCity] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wardCommnune, setWardCommnune] = useState([]);
   const [dataGeotarget, setDataGeotarget] = useState({
     province_city_s: [],
     districts: [],
     ward_commune_s: [],
   });
-  const [dataGeotargetSelected, setDataGeotargetSelected] = useState({
-    province_city_s: null,
-    districts: null,
-    ward_commune_s: null,
-  });
+
   const [isShowPopupChooseTime, setIsShowPopupChooseTime] = useState(false);
 
   //cart
@@ -246,30 +283,81 @@ function UserProfile(props) {
     switch (currentView) {
       case slugify(MENU_NAME.ACCOUNT):
         setIsLoading(true);
+
         getUserByID(getUserID())
           .then((res) => {
-            if (res?.data?.pageData?.length) {
-              setDataDetail(res?.data?.pageData[0]);
-              setImage(res?.data?.pageData[0].avatar);
-              setLocalStorage(
-                LOCAL_STORATE_KEY.AVATAR,
-                res?.data?.pageData[0].avatar
+            let dataAccount = res?.data?.pageData;
+            let dataMember = {},
+              dataDetail = {};
+
+            if (dataAccount?.length) {
+              dataAccount = dataAccount[0];
+              dataDetail = { ...dataAccount };
+              dataMember =
+                ParseJson(
+                  ParseJson(getLocalStorage(LOCAL_STORATE_KEY.MEMBER_INFO))
+                ) || {};
+              setDataDetail(dataDetail);
+              baseApi.get(
+                (res) => {
+                  // debugger;
+                  setDataDetail({ ...dataDetail, cardCode: res });
+                },
+                null,
+                null,
+                END_POINT.TOE_GET_NEXT_CARD_CODE,
+                null,
+                null
               );
             }
+
+            if (dataMember?.CardID)
+              getLibraryCardByID(dataMember?.CardID)
+                .then((dataLCard) => {
+                  let detail = dataAccount;
+                  let optionParser = ParseJson(dataLCard.option) || {};
+
+                  getGeotarget().then((res) => {
+                    if (optionParser?.districts) {
+                      getGeotarget(
+                        GEOTARGET_ENDPOINT.VN_DISTRICT,
+                        optionParser?.province_city_s
+                      ).then((res) => {
+                        getGeotarget(
+                          GEOTARGET_ENDPOINT.VN_WARD_COMMUNE,
+                          optionParser?.districts
+                        ).then((res) => {});
+                      });
+                    }
+                  });
+
+                  dataDetail = {
+                    ...detail,
+                    ...dataLCard,
+                    option: optionParser,
+                  };
+
+                  setImage(detail.avatar);
+                  setLocalStorage(LOCAL_STORATE_KEY.AVATAR, detail.avatar);
+                })
+                .catch((err) => {})
+                .finally(() => {
+                  setDataDetail(dataDetail);
+                });
             setIsLoading(false);
           })
           .catch((err) => {
             setIsLoading(false);
             const user = window.localStorage.getItem(
-              ParseJson(decodeURIComponent(USER_INFO))
+              ParseJson(decodeURIComponent(LOCAL_STORATE_KEY.USER_INFO))
             );
-            setDataDetail(user);
-          });
-        getGeotarget();
+          })
+          .finally(() => {});
+        // getGeotarget();
         break;
       case slugify(MENU_NAME.SECURITY):
         break;
-      case slugify(MENU_NAME.NOTIFICATION):
+      case slugify(MENU_NAME.LIBRARY_CARD):
         break;
       case slugify(MENU_NAME.BORROW_RETURN):
         getBooksLendingFilter();
@@ -281,7 +369,7 @@ function UserProfile(props) {
         setIsLoading(false);
         break;
     }
-  }, [currentView]);
+  }, [currentView, loanReportData]);
 
   if (!authCtx.isLoggedIn) {
     navigate(PATH_NAME.LOGIN);
@@ -340,42 +428,61 @@ function UserProfile(props) {
     ));
   };
 
-  const getGeotarget = (endpoint = null, code = null) => {
+  function getGeotarget(endpoint = null, code = null) {
     let completeEndpoint = endpoint ?? GEOTARGET_ENDPOINT.VN_CITY_PROVINCE;
     if (endpoint && code) {
       completeEndpoint = format(completeEndpoint, code);
     }
     //Lấy tỉnh thành
-    baseApi.get(
+    return baseApi.get(
       (res) => {
         switch (endpoint) {
           case GEOTARGET_ENDPOINT.VN_DISTRICT:
-            setDataGeotarget({
-              ...dataGeotarget,
-              districts: res.districts.map((item) => ({
+            // setDataGeotarget({
+            //   ...dataGeotarget,
+            //   districts: res.districts.map((item) => ({
+            //     label: item.name,
+            //     value: item.code,
+            //   })),
+            // });
+            setDistricts(
+              res.districts.map((item) => ({
                 label: item.name,
                 value: item.code,
-              })),
-            });
+              }))
+            );
             break;
           case GEOTARGET_ENDPOINT.VN_WARD_COMMUNE:
-            setDataGeotarget({
-              ...dataGeotarget,
-              ward_commune_s: res.wards.map((item) => ({
+            // setDataGeotarget({
+            //   ...dataGeotarget,
+            //   ward_commune_s: res.wards.map((item) => ({
+            //     label: item.name,
+            //     value: item.code,
+            //   })),
+            // });
+            setWardCommnune(
+              res.wards.map((item) => ({
                 label: item.name,
                 value: item.code,
-              })),
-            });
+              }))
+            );
             break;
           case null:
           default:
-            setDataGeotarget({
-              ...dataGeotarget,
-              province_city_s: res.map((item) => ({
+            // setDataGeotarget({
+            //   ...dataGeotarget,
+            //   province_city_s: res.map((item) => ({
+            //     label: item.name,
+            //     value: item.code,
+            //   })),
+            // });
+
+            setProvinceCity(
+              res.map((item) => ({
                 label: item.name,
                 value: item.code,
-              })),
-            });
+              }))
+            );
             break;
         }
       },
@@ -385,7 +492,7 @@ function UserProfile(props) {
       null,
       null
     );
-  };
+  }
 
   const getUserByID = (id) => {
     setIsLoading(true);
@@ -412,6 +519,17 @@ function UserProfile(props) {
     );
   };
 
+  const getLibraryCardByID = (id) => {
+    return baseApi.get(
+      null,
+      null,
+      null,
+      format(END_POINT.TOE_GET_CATEGORY_BY_ID, id),
+      null,
+      null
+    );
+  };
+
   const handleChangeMenuView = (value) => {
     if (isLoading) return <Spinner show />;
     let view = accountView();
@@ -423,8 +541,8 @@ function UserProfile(props) {
       case slugify(MENU_NAME.SECURITY):
         view = secureView();
         break;
-      case slugify(MENU_NAME.NOTIFICATION):
-        view = notifyView();
+      case slugify(MENU_NAME.LIBRARY_CARD):
+        view = libraryCardView();
         break;
       case slugify(MENU_NAME.BORROW_RETURN):
         view = borrowReturnView();
@@ -442,166 +560,289 @@ function UserProfile(props) {
   };
 
   const getFullAddress = () => {
-    let fullAddress = [dataDetail?.address];
+    let option = dataDetail?.option || {};
+    let fullAddress = [option?.address];
 
-    if (dataGeotargetSelected.ward_commune_s) {
+    if (option.ward_commune_s) {
       fullAddress.push(
-        dataGeotarget.ward_commune_s.find(
-          (item) => item.value === dataGeotargetSelected.ward_commune_s
-        )?.label
+        wardCommnune.find((item) => item.value === option.ward_commune_s)?.label
       );
     }
 
-    if (dataGeotargetSelected.districts) {
+    if (option.districts) {
       fullAddress.push(
-        dataGeotarget.districts.find(
-          (item) => item.value === dataGeotargetSelected.districts
-        )?.label
+        districts.find((item) => item.value === option.districts)?.label
       );
     }
 
-    if (dataGeotargetSelected.province_city_s) {
+    if (option.province_city_s) {
       fullAddress.push(
-        dataGeotarget.province_city_s.find(
-          (item) => item.value === dataGeotargetSelected.province_city_s
-        )?.label
+        provinceCity.find((item) => item.value === option.province_city_s)
+          ?.label
       );
     }
     fullAddress = fullAddress.filter(Boolean);
     return fullAddress.join(', ');
   };
 
-  var fullAddressText = getFullAddress();
+  console.log('authCtx.isMember()', authCtx.isMember());
 
+  var fullAddressText = getFullAddress();
   const accountView = () => {
     return (
       <>
         <div className="user-profile__frame-right__body toe-font-body">
-          <div className="frame-right__body-row">
-            <Input
-              label={'Tên tài khoản'}
-              disabled
-              placeholder={'Nhập tên tài khoản'}
-              defaultValue={dataDetail?.userName ?? TEXT_FALL_BACK.TYPE_1}
-            />
-            <Input
-              label={'Họ và tên'}
-              placeholder={'Nhập họ và tên'}
-              hasRequiredLabel
-              onChange={(e) => {
-                setDataDetail({ ...dataDetail, fullName: e });
-              }}
-              defaultValue={dataDetail?.fullName}
-            />
-          </div>
-          <div className="frame-right__body-row">
-            <Input
-              label={'Email'}
-              defaultValue={dataDetail?.email}
-              disabled
-              placeholder={'Nhập email'}
-              hasRequiredLabel
-            />
-            <Input
-              label={'SĐT'}
-              placeholder={'Nhập số điện thoại'}
-              hasRequiredLabel
-              onChange={(e) => {
-                setDataDetail({ ...dataDetail, phoneNumber: e });
-              }}
-              defaultValue={dataDetail?.phoneNumber ?? TEXT_FALL_BACK.TYPE_1}
-            />
-          </div>
-          <div className="frame-right__body-row">
-            <Input
-              label={'Ngày tham gia'}
-              disabled
-              placeholder={TEXT_FALL_BACK.TYPE_1}
-              defaultValue={
-                moment(dataDetail?.createdDate).format(DATE_FORMAT.TYPE_3) ??
-                TEXT_FALL_BACK.TYPE_1
-              }
-            />
-            <div className="frame-right__body-row status">
-              <div className="toe-font-label">Trạng thái</div>
-              <div className="toe-font-label">
-                {' '}
-                <Tag color={dataDetail?.status ? '#87d068' : '#e5e5e5'}>
-                  {dataDetail?.status ? 'Hoạt động' : 'Ngừng hoạt động'}
-                </Tag>
-              </div>
+          <div className="frame-right__body-section">
+            <div className="frame-right__body-row">
+              <Input
+                label={'Email'}
+                defaultValue={dataDetail?.email}
+                disabled
+                placeholder={'Nhập email'}
+                hasRequiredLabel
+              />
+              <Input
+                label={'Tên tài khoản'}
+                disabled
+                placeholder={'Nhập tên tài khoản'}
+                defaultValue={dataDetail?.userName}
+              />
+            </div>
+            <div className="frame-right__body-row">
+              <Input
+                label={'Ngày tham gia'}
+                disabled
+                placeholder={TEXT_FALL_BACK.TYPE_1}
+                defaultValue={
+                  moment(dataDetail?.createdDate).format(DATE_FORMAT.TYPE_3) ??
+                  TEXT_FALL_BACK.TYPE_1
+                }
+              />
+              <Input
+                label={'Họ và tên'}
+                placeholder={'Nhập họ và tên'}
+                hasRequiredLabel
+                onChange={(e) => {
+                  setDataDetail({ ...dataDetail, fullName: e });
+                }}
+                defaultValue={dataDetail?.fullName}
+              />
             </div>
           </div>
-          <div className="frame-right__body-row">
-            <Dropdown
-              options={dataGeotarget.province_city_s}
-              label={'Tỉnh/Thành phố'}
-              filter={true}
-              defaultValue={dataGeotargetSelected.province_city_s}
-              onChange={({ value }) => {
-                setDataGeotargetSelected({
-                  province_city_s: value,
-                  districts: null,
-                  ward_commune_s: null,
-                });
-                if (value) getGeotarget(GEOTARGET_ENDPOINT.VN_DISTRICT, value);
-              }}
-            />
-            <Dropdown
-              options={dataGeotarget.districts}
-              label={'Quận/Huyện'}
-              filter={true}
-              defaultValue={dataGeotargetSelected.districts}
-              onChange={({ value }) => {
-                setDataGeotargetSelected({
-                  ...dataGeotargetSelected,
-                  districts: value,
-                  ward_commune_s: null,
-                });
-                if (value)
-                  getGeotarget(GEOTARGET_ENDPOINT.VN_WARD_COMMUNE, value);
-              }}
-            />
-            <Dropdown
-              options={dataGeotarget.ward_commune_s}
-              label={'Phường/Xã'}
-              defaultValue={dataGeotargetSelected.ward_commune_s}
-              filter={true}
-              onChange={({ value }) => {
-                setDataGeotargetSelected({
-                  ...dataGeotargetSelected,
-                  ward_commune_s: value,
-                });
-              }}
-            />
-          </div>
 
-          <div className="frame-right__body-row">
-            <TextAreaBase
-              label="Địa chỉ"
-              value={dataDetail?.address}
-              placeholder={'Nhập địa chỉ VD: quận huyện..'}
-              onChange={(e) => {
-                setDataDetail({ ...dataDetail, address: e });
+          <div className="frame-right__body-section">
+            <span
+              className="frame-right__body-section__title toe-font-label"
+              onClick={() => {
+                setExpandedSection({
+                  ...expandedSection,
+                  infoRegisterCard: !expandedSection.infoRegisterCard,
+                });
               }}
-            />
-          </div>
-          <div className="frame-right__body-row">
-            <SmartText innnerClassName="toe-font-label">
-              Địa chỉ: {getFullAddress()}
-            </SmartText>
+            >
+              Thông tin đăng kí thẻ thư viện{' '}
+              <i
+                className={`pi pi-chevron-${
+                  expandedSection.infoRegisterCard ? 'down' : 'up'
+                }`}
+              ></i>
+            </span>
+            {expandedSection.infoRegisterCard && (
+              <span>
+                <div className="frame-right__body-row">
+                  <Input
+                    label={'Số thẻ'}
+                    placeholder={'Số thẻ'}
+                    disabled
+                    defaultValue={dataDetail?.cardCode || null}
+                  />
+                </div>
+                <div className="frame-right__body-row">
+                  <Input
+                    label={'SĐT'}
+                    placeholder={'Nhập số điện thoại'}
+                    hasRequiredLabel
+                    onChange={(e) => {
+                      setDataDetail({ ...dataDetail, phoneNumber: e });
+                    }}
+                    defaultValue={dataDetail?.phoneNumber || null}
+                  />
+                  <div className="_col">
+                    <div
+                      className="_col-label toe-font-label"
+                      style={{ marginBottom: 8 }}
+                    >
+                      Ngày sinh
+                    </div>
+                    <DatePicker
+                      onChange={({ value }) => {
+                        setDataDetail({
+                          ...dataDetail,
+                          option: {
+                            ...(dataDetail?.option || {}),
+                            birthDay: new Date(
+                              moment(value).startOf('day').toString()
+                            ),
+                          },
+                        });
+                      }}
+                      max={new Date()}
+                      defaultValue={dataDetail?.option?.birthDay}
+                    />
+                  </div>
+                </div>
+                <div className="frame-right__body-row">
+                  <Input
+                    label={'Số CMND/CCCD'}
+                    placeholder={'Nhập số CCCD'}
+                    hasRequiredLabel
+                    onChange={(e) => {
+                      setDataDetail({
+                        ...dataDetail,
+                        option: {
+                          ...(dataDetail?.option || {}),
+                          identityNumber: e,
+                        },
+                      });
+                    }}
+                    defaultValue={dataDetail?.option?.identityNumber || null}
+                  />
+                  <div className="_col">
+                    <div
+                      className="_col-label toe-font-label"
+                      style={{ marginBottom: 8 }}
+                    >
+                      Bạn là
+                    </div>
+                    <Dropdown
+                      options={MEMBERS}
+                      onChange={({ value }) =>
+                        setDataDetail({ ...dataDetail, memberType: value })
+                      }
+                      defaultValue={dataDetail?.memberType}
+                      disabled={authCtx.isMember()}
+                    />
+                  </div>
+                </div>
+                {dataDetail?.memberType === MEMBER_TYPE.STUDENT && (
+                  <div className="frame-right__body-row">
+                    <Input
+                      label={'Mã sinh viên'}
+                      placeholder={'Nhập mã sinh viên'}
+                      hasRequiredLabel
+                      onChange={(e) => {
+                        setDataDetail({
+                          ...dataDetail,
+                          option: {
+                            ...(dataDetail?.option || {}),
+                            studentCode: e,
+                          },
+                        });
+                      }}
+                      defaultValue={dataDetail?.option?.studentCode || null}
+                    />
+                  </div>
+                )}
+                <div className="frame-right__body-row address">
+                  <Dropdown
+                    options={provinceCity}
+                    label={'Tỉnh/Thành phố'}
+                    filter={true}
+                    defaultValue={dataDetail?.option?.province_city_s}
+                    onChange={({ value }) => {
+                      setDataDetail({
+                        ...dataDetail,
+                        option: {
+                          ...dataDetail?.option,
+                          province_city_s: value,
+                          districts: null,
+                          ward_commune_s: null,
+                        },
+                      });
+                      if (value)
+                        getGeotarget(GEOTARGET_ENDPOINT.VN_DISTRICT, value);
+                    }}
+                  />
+                  <Dropdown
+                    options={districts}
+                    label={'Quận/Huyện'}
+                    filter={true}
+                    defaultValue={dataDetail?.option?.districts}
+                    onChange={({ value }) => {
+                      setDataDetail({
+                        ...dataDetail,
+                        option: {
+                          ...dataDetail?.option,
+                          districts: value,
+                          ward_commune_s: null,
+                        },
+                      });
+                      if (value)
+                        getGeotarget(GEOTARGET_ENDPOINT.VN_WARD_COMMUNE, value);
+                    }}
+                  />
+                  <Dropdown
+                    options={wardCommnune}
+                    label={'Phường/Xã'}
+                    defaultValue={dataDetail?.option?.ward_commune_s}
+                    filter={true}
+                    onChange={({ value }) => {
+                      setDataDetail({
+                        ...dataDetail,
+                        option: {
+                          ...dataDetail?.option,
+                          ward_commune_s: value,
+                        },
+                      });
+                    }}
+                  />
+                </div>
+
+                <div className="frame-right__body-row">
+                  <TextAreaBase
+                    label="Địa chỉ"
+                    value={dataDetail?.option?.address}
+                    placeholder={'Nhập địa chỉ VD: quận huyện..'}
+                    onChange={(e) => {
+                      setDataDetail({
+                        ...dataDetail,
+                        option: {
+                          ...dataDetail?.option,
+                          address: e,
+                        },
+                      });
+                    }}
+                  />
+                </div>
+                <div className="frame-right__body-row">
+                  <SmartText innnerClassName="toe-font-label">
+                    Địa chỉ: {getFullAddress()}
+                  </SmartText>
+                </div>
+              </span>
+            )}
           </div>
         </div>
         <div className="frame-right__body-row bottom-buttons">
           <Button
-            width={100}
+            {...CONFIG_BUTTON}
+            width={80}
             name={'Lưu'}
             type={BUTTON_TYPE.LEFT_ICON}
             leftIcon={<SaveOutlined />}
-            theme={BUTTON_THEME.THEME_1}
+            theme={
+              !authCtx.isMember() ? BUTTON_THEME.THEME_3 : BUTTON_THEME.THEME_1
+            }
             onClick={handleSave}
-            {...CONFIG_BUTTON}
           />
+          {authCtx.isMember() ? null : (
+            <Button
+              {...CONFIG_BUTTON}
+              name={'Lưu và đăng ký thành viên'}
+              theme={BUTTON_THEME.THEME_1}
+              onClick={() => handleSave(true)}
+            />
+          )}
         </div>
       </>
     );
@@ -626,6 +867,10 @@ function UserProfile(props) {
 
   const cartView = () => {
     const cart = cartCtx.cart;
+    if (!authCtx.isMember()) {
+      return requireRegisterView(navigate);
+    }
+
     if (!cart || !cart?.length)
       return (
         <div className="nodata">
@@ -658,11 +903,10 @@ function UserProfile(props) {
                   <Book
                     className="toe-book-see-all-page__body-content__book"
                     bookTitle={item?.bookName}
-                    bookAuthor="Nguyễn Thị Thảo"
                     bookType={item?.bookFormat}
                     hasBottomTitle={false}
-                    // onClick={() => handleViewDetail(item.bookID)}
                     image={item?.image}
+                    // onClick={() => handleViewDetail(item.bookID)}
                   />
                   <div className="toe-book-see-all-page__body-content__item-info">
                     <h2
@@ -674,15 +918,15 @@ function UserProfile(props) {
                     <div className="toe-book-see-all-page__body-content__item-info__row">
                       <span className="toe-font-label">Loại tài liệu:</span>{' '}
                       <span className="toe-font-body">
-                        {getBookType(item?.bookFormat)}
+                        {getBookFormat(item?.bookType)}
                       </span>
                     </div>
-                    <div className="toe-book-see-all-page__body-content__item-info__row">
+                    {/* <div className="toe-book-see-all-page__body-content__item-info__row">
                       <span className="toe-font-label">Tác giả:</span>
                       <span className="toe-font-body list-author">
                         {ParseJson(item?.author)?.join(', ')}
                       </span>
-                    </div>
+                    </div> */}
                     <div className="toe-book-see-all-page__body-content__item-info__row">
                       <span className="toe-font-label">Nhà xuất bản:</span>
                       <span className="toe-font-body">{item?.publisher}</span>
@@ -716,7 +960,7 @@ function UserProfile(props) {
         <div className="frame-right__body-row bottom-buttons">
           <Button
             className="button-send-request"
-            name={'Gửi yêu cầu mượn'}
+            name={'Gửi yêu cầu mượn tất cả'}
             type={BUTTON_TYPE.RIGHT_ICON}
             rightIcon={
               <i
@@ -788,15 +1032,33 @@ function UserProfile(props) {
     );
   };
 
-  const notifyView = () => {
+  const libraryCardView = () => {
+    const cardInfo = getLocalStorage(LOCAL_STORATE_KEY.MEMBER_INFO);
+    if (!cardInfo) {
+      return requireRegisterView(navigate);
+    }
     return null;
   };
 
   const borrowReturnView = () => {
     return (
-      <div className="">
+      <div className="loan-report-table">
+        <Dropdown
+          className="loan-report-table__dropdown"
+          defaultValue={loanReportData.loan_status}
+          options={DROPDOWN_STATUS}
+          hasSubLabel
+          onChange={({ value }) =>
+            setLoanReportData({
+              ...loanReportData,
+              loan_status: value,
+            })
+          }
+          prefixValue={'Trạng thái'}
+          scrollHeight={350}
+        />
         <Table
-          data={isLoading ? renderSkeleton() : dataTable.data}
+          data={dataTable.data}
           configs={CONFIGS}
           columns={COLUMNS}
           rowClassName={() => 'cursor-pointer'}
@@ -805,65 +1067,151 @@ function UserProfile(props) {
     );
   };
 
-  const handleSave = () => {
+  const handleSave = (registerMember = false) => {
     if (cancelRequestRef.current) return;
 
     setIsLoading(true);
     let uploadImg = Promise.resolve(null);
     if (imageToSave) uploadImg = uploadFiles(imageToSave, 'images');
 
-    uploadImg.then((imgPath) => {
-      cancelRequestRef.current = true;
-      if (imgPath) {
-        setImage(imgPath);
-        setLocalStorage(LOCAL_STORATE_KEY.AVATAR, imgPath);
-      }
-      setImageToSave(null);
-      let _body = {
-        ...dataDetail,
-        modifiedDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
-        modifiedBy: getUserName(),
-        address: fullAddressText,
-        avatar: imgPath ? imgPath : dataDetail.avatar,
-      };
-      baseApi.put(
-        (res) => {
-          if (res.data > 0) {
-            toast.current.show({
-              severity: 'success',
-              summary: 'Success',
-              detail: 'Cập nhật thành công',
-              life: 3000,
-            });
-          } else {
-            toast.current.show({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Cập nhật thất bại',
-              life: 3000,
-            });
-          }
-          setIsLoading(false);
-          cancelRequestRef.current = false;
-        },
-        (err) => {
-          let errMessage = err?.response?.data?.data || 'Có lỗi xảy ra';
-          toast.current.show({
-            severity: 'error',
-            summary: 'Cập nhật thất bại',
-            detail: errMessage,
-            life: 3000,
-          });
-          cancelRequestRef.current = false;
-          setIsLoading(false);
-        },
-        () => {},
-        format(END_POINT.TOE_UPDATE_USER, dataDetail.accountID),
-        _body,
-        null,
-        null
-      );
-    });
+    uploadImg
+      .then((imgPath) => {
+        cancelRequestRef.current = true;
+        if (imgPath) {
+          setImage(imgPath);
+          setLocalStorage(LOCAL_STORATE_KEY.AVATAR, imgPath);
+        }
+        setImageToSave(null);
+
+        let _body = {
+          ...dataDetail,
+          modifiedDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
+          modifiedBy: getUserName(),
+          address: fullAddressText,
+          avatar: imgPath ? imgPath : dataDetail.avatar,
+          option: JSON.stringify(dataDetail?.option || {}),
+        };
+
+        let updatePromise = () =>
+          baseApi.put(
+            (res) => {
+              if (res.data > 0) {
+                toast.current.show({
+                  severity: 'success',
+                  summary: 'Success',
+                  detail: 'Cập nhật thành công',
+                  life: 3000,
+                });
+                getLocalStorage(LOCAL_STORATE_KEY.us);
+              } else {
+                toast.current.show({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Cập nhật thất bại',
+                  life: 3000,
+                });
+              }
+              setIsLoading(false);
+              cancelRequestRef.current = false;
+            },
+            (err) => {
+              let errMessage = err?.response?.data?.data || 'Có lỗi xảy ra';
+              toast.current.show({
+                severity: 'error',
+                summary: 'Cập nhật thất bại',
+                detail: errMessage,
+                life: 3000,
+              });
+              cancelRequestRef.current = false;
+              setIsLoading(false);
+            },
+            () => {},
+            format(END_POINT.TOE_UPDATE_USER, dataDetail.accountID),
+            _body,
+            null,
+            null
+          );
+
+        let insertCardPromise = () =>
+          baseApi.post(
+            (res) => {
+              if (res.data > 0) {
+                toast.current.show({
+                  severity: 'success',
+                  summary: 'Success',
+                  detail: 'Cập nhật thành công',
+                  life: 3000,
+                });
+                getLocalStorage(LOCAL_STORATE_KEY.us);
+              } else {
+                toast.current.show({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Cập nhật thất bại',
+                  life: 3000,
+                });
+              }
+              setIsLoading(false);
+              cancelRequestRef.current = false;
+            },
+            (err) => {
+              let errMessage = err?.response?.data?.data || 'Có lỗi xảy ra';
+              toast.current.show({
+                severity: 'error',
+                summary: 'Cập nhật thất bại',
+                detail: errMessage,
+                life: 3000,
+              });
+              cancelRequestRef.current = false;
+              setIsLoading(false);
+            },
+            () => {},
+            format(END_POINT.TOE_INSERT_LIBRARY_CARD),
+            _body,
+            null,
+            null
+          );
+
+        let registerMemberPromise = () => {
+          let _endpoint = format(
+            END_POINT.TOE_UPDATE_LIBRARY_CARD,
+            dataDetail?.cardID
+          );
+
+          return baseApi.put(
+            (res) => {
+              debugger;
+            },
+            (err) => {
+              debugger;
+
+              setIsLoading(false);
+              cancelRequestRef.current = false;
+            },
+            () => {},
+            _endpoint,
+            {
+              ..._body,
+              joinDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
+              cardCode: 'LC000001',
+            },
+            null,
+            null
+          );
+        };
+
+        Promise.all(
+          authCtx.isMember() ? registerMemberPromise() : insertCardPromise(),
+          updatePromise()
+        )
+          .then((res) => {
+            setIsLoading(false);
+          })
+          .catch((err) => {});
+      })
+      .catch((err) => {
+        setIsLoading(false);
+      });
   };
 
   const handleChangePw = () => {
@@ -915,8 +1263,8 @@ function UserProfile(props) {
       case slugify(MENU_NAME.SECURITY):
         _label = MENU_NAME.SECURITY;
         break;
-      case slugify(MENU_NAME.NOTIFICATION):
-        _label = MENU_NAME.NOTIFICATION;
+      case slugify(MENU_NAME.LIBRARY_CARD):
+        _label = MENU_NAME.LIBRARY_CARD;
         break;
       case slugify(MENU_NAME.BORROW_RETURN):
         _label = MENU_NAME.BORROW_RETURN;
@@ -1009,7 +1357,7 @@ function UserProfile(props) {
       obj = {};
 
     for (const column of COLUMNS) {
-      obj[column.field] = <Skeleton></Skeleton>;
+      obj[column.field] = <Skeleton shape="rectangle"></Skeleton>;
     }
 
     for (let index = 0; index < number; index++) {
@@ -1028,6 +1376,11 @@ function UserProfile(props) {
       ['AccountID', OPERATOR.EQUAL, getUserID()],
     ];
 
+    if (loanReportData.loan_status !== -1) {
+      _filter.push(OPERATOR.AND);
+      _filter.push(['orderStatus', OPERATOR.EQUAL, loanReportData.loan_status]);
+    }
+
     if (filters.length) {
       _filter.push(OPERATOR.AND);
       _filter.push(filters);
@@ -1040,6 +1393,7 @@ function UserProfile(props) {
           isLoading: false,
           data: _data.map((_) => ({ ..._, key: _.bookOrderID })),
         });
+        setTotalRecords(res.data.totalRecords);
       },
       (err) => {
         setDataTable({
@@ -1170,9 +1524,18 @@ function UserProfile(props) {
                   style={{ display: 'none' }}
                 />
                 <div className="user-profile__avt-name toe-font-title">
-                  {dataDetail?.userName ??
+                  {dataDetail?.fullName ??
+                    getFullName() ??
                     getAccountName() ??
                     TEXT_FALL_BACK.TYPE_1}
+                </div>
+
+                <div className="user-profile__avt-name toe-font-label">
+                  Loại bạn đọc:{' '}
+                  {getMemberTypeText(
+                    ParseJson(ParseJson(LOCAL_STORATE_KEY.MEMBER_INFO))
+                      ?.MemberType || 99
+                  )}
                 </div>
               </div>
               <div className="user-profile__menu toe-font-body">
@@ -1183,7 +1546,13 @@ function UserProfile(props) {
               <div className="user-profile__frame-right__title toe-font-title">
                 {getLabelByView(currentView) || TEXT_FALL_BACK.TYPE_1}
               </div>
-              {handleChangeMenuView(currentView)}
+              {currentView === slugify(MENU_NAME.ACCOUNT) && accountView()}
+              {currentView === slugify(MENU_NAME.SECURITY) && secureView()}
+              {currentView === slugify(MENU_NAME.LIBRARY_CARD) &&
+                libraryCardView()}
+              {currentView === slugify(MENU_NAME.BORROW_RETURN) &&
+                borrowReturnView()}
+              {currentView === slugify(MENU_NAME.CART) && cartView()}
             </div>
           </div>
         </div>
@@ -1293,3 +1662,15 @@ function UserProfile(props) {
 }
 
 export default UserProfile;
+
+{
+  /* <div className="frame-right__body-row status">
+<div className="toe-font-label">Trạng thái</div>
+<div className="toe-font-label">
+  {' '}
+  <Tag color={dataDetail?.status ? '#87d068' : '#e5e5e5'}>
+    {dataDetail?.status ? 'Hoạt động' : 'Ngừng hoạt động'}
+  </Tag>
+</div>
+</div> */
+}

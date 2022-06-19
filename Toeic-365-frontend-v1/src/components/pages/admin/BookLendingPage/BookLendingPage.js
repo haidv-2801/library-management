@@ -37,6 +37,7 @@ import {
 import {
   buildClass,
   commonFilterTime,
+  DROPDOWN_STATUS,
   genFileNameWithTime,
   getOrderStatus,
   listToTree,
@@ -196,32 +197,6 @@ function BookLendingPage(props) {
     EDIT: 0,
     ADD: 1,
   };
-
-  const DROPDOWN_STATUS = [
-    { label: 'Tất cả', value: -1 },
-    {
-      label: 'Đang yêu cầu',
-      color: '#9933CC',
-      value: RESERVATION_STATUS.WAITING,
-    },
-    { label: 'Đang mượn', color: '#007b7f', value: RESERVATION_STATUS.LENDING },
-    {
-      label: 'Đang xử lý',
-      color: '#0d47a1',
-      value: RESERVATION_STATUS.PENDING,
-    },
-    { label: 'Đã trả', color: '#28a745', value: RESERVATION_STATUS.RETURNED },
-    {
-      label: 'Quá hạn trả',
-      color: '#FF8800',
-      value: RESERVATION_STATUS.EXPIRED,
-    },
-    {
-      label: 'Yêu cầu bị hủy',
-      color: '#dc3545',
-      value: RESERVATION_STATUS.CANCELED,
-    },
-  ];
 
   const DEFAULT_DATA_CATE = { data: [], isLoading: false, totalRecord: 0 };
 

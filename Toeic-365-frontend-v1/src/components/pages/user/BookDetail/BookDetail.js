@@ -1,10 +1,18 @@
-import PropTypes from 'prop-types';
-import React, { useEffect, useState, useRef, useContext } from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { format } from 'react-string-format';
+import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons';
+import { Skeleton, Tooltip } from 'antd';
+import axios from 'axios';
+import { isArray } from 'lodash';
+import moment from 'moment';
+import { ConfirmPopup } from 'primereact/confirmpopup';
 import { Toast } from 'primereact/toast';
+import PropTypes from 'prop-types';
+import { useContext, useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { format } from 'react-string-format';
+import baseApi from '../../../../api/baseApi';
+import { getUserID } from '../../../../constants/commonAuth';
 import {
-  BOOK_FORMAT,
   BUTTON_SHAPE,
   BUTTON_THEME,
   BUTTON_TYPE,
@@ -12,39 +20,38 @@ import {
   REQUIRED_FILEDS_BORROWING_BOOK,
   TEXT_FALL_BACK,
 } from '../../../../constants/commonConstant';
+import {
+  buildClass,
+  ParseJson,
+  requireRegisterView,
+} from '../../../../constants/commonFunction';
 import END_POINT from '../../../../constants/endpoint';
+import { AuthContext } from '../../../../contexts/authContext';
+import { CartContext } from '../../../../contexts/cartContext';
+import { appAction } from '../../../../redux/slices/appSlice';
+import Button from '../../../atomics/base/Button/Button';
+import Message from '../../../atomics/base/Message/Message';
+import Modal from '../../../atomics/base/ModalV2/Modal';
+import SmartText from '../../../atomics/base/SmartText/SmartText';
 import Book from '../../../molecules/Book/Book';
+import PhuocngPdf from '../../../molecules/PhuocngPdf/PhuocngPdf';
 import Footer from '../../../sections/User/Footer/Footer';
 import Layout from '../../../sections/User/Layout/Layout';
+import { getBookFormat, getBookType } from '../function';
 import './bookDetail.scss';
-import axios from 'axios';
-import baseApi from '../../../../api/baseApi';
-import SmartText from '../../../atomics/base/SmartText/SmartText';
-import { getBookType } from '../function';
-import { buildClass, ParseJson } from '../../../../constants/commonFunction';
-import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
-import Button from '../../../atomics/base/Button/Button';
-import { Skeleton, Tooltip } from 'antd';
-import { AuthContext } from '../../../../contexts/authContext';
-import { isArray } from 'lodash';
-import { getUserID } from '../../../../constants/commonAuth';
-import Message from '../../../atomics/base/Message/Message';
-import { appAction } from '../../../../redux/slices/appSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { CartContext } from '../../../../contexts/cartContext';
-import { ConfirmPopup, confirmPopup } from 'primereact/confirmpopup';
-import { dowloadFile, getBlobFirebase } from '../../../../api/firebase';
-import PhuocngPdf from '../../../molecules/PhuocngPdf/PhuocngPdf';
-import Modal from '../../../atomics/base/ModalV2/Modal';
 
 BookDetail.propTypes = {
   titlePage: PropTypes.string,
+  isPrivate: PropTypes.bool,
 };
 
-BookDetail.defaultProps = { titlePage: '' };
+BookDetail.defaultProps = {
+  titlePage: '',
+  isPrivate: false,
+};
 
 function BookDetail(props) {
-  const { children, titlePage } = props;
+  const { children, titlePage, isPrivate } = props;
   const params = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -99,7 +106,7 @@ function BookDetail(props) {
           <Book
             className="toe-book-detail-page__book"
             bookTitle={dataDetail?.bookName}
-            bookAuthor={ParseJson(dataDetail?.author)?.[0]}
+            bookAuthor={dataDetail?.author}
             bookType={dataDetail?.bookFormat}
             onClick={() => {}}
             image={dataDetail?.image}
@@ -127,7 +134,7 @@ function BookDetail(props) {
         <div className="toe-book-detail-page__item-info__group">
           <h2
             onClick={() => {}}
-            className="toe-book-detail-page__item-info__row toe-font-label"
+            className="toe-book-detail-page__item-info__row toe-font-label book-name"
           >
             <SmartText innnerClassName="toe-font-large-title" rows={3}>
               {dataDetail?.bookName}
@@ -136,10 +143,26 @@ function BookDetail(props) {
           <div className="toe-book-detail-page__item-info">
             <div className="toe-book-detail-page__item-info__block">
               <div className="toe-book-detail-page__item-info__row title toe-font-label">
+                Mô tả
+              </div>
+              <div className="toe-book-detail-page__item-info__row">
+                {dataDetail?.description ?? TEXT_FALL_BACK.TYPE_1}
+              </div>
+            </div>
+          </div>
+          <div className="toe-book-detail-page__item-info">
+            <div className="toe-book-detail-page__item-info__block">
+              <div className="toe-book-detail-page__item-info__row title toe-font-label">
                 Dữ liệu biên mục
               </div>
               <div className="toe-book-detail-page__item-info__row">
                 <span className="toe-font-label">Loại tài liệu:</span>{' '}
+                <span className="toe-font-body">
+                  {getBookFormat(dataDetail?.bookType)}
+                </span>
+              </div>
+              <div className="toe-book-detail-page__item-info__row">
+                <span className="toe-font-label">Định dạng tài liệu:</span>{' '}
                 <span className="toe-font-body">
                   {getBookType(dataDetail?.bookFormat)}
                 </span>
@@ -150,43 +173,57 @@ function BookDetail(props) {
               >
                 <span className="toe-font-label">Tác giả:</span>
                 <span className="toe-font-body infomation-col__title-row__tags">
-                  {authors}
+                  {authors || TEXT_FALL_BACK.TYPE_1}
                 </span>
               </div>
               <div className="toe-book-detail-page__item-info__row">
                 <span className="toe-font-label">Nhà xuất bản:</span>
-                <span className="toe-font-body">{dataDetail?.publisher}</span>
-              </div>
-            </div>
-            <div className="toe-book-detail-page__item-info__block">
-              <div className="toe-book-detail-page__item-info__row title toe-font-label">
-                Dữ liệu xếp giá
-              </div>
-              <div className="toe-book-detail-page__item-info__row">
-                <span className="toe-font-label">Tổng số bản:</span>{' '}
                 <span className="toe-font-body">
-                  {dataDetail?.amount ?? TEXT_FALL_BACK.TYPE_1}
+                  {dataDetail?.publisher || TEXT_FALL_BACK.TYPE_1}
                 </span>
               </div>
               <div className="toe-book-detail-page__item-info__row">
-                <span className="toe-font-label">Số bản chưa mượn:</span>{' '}
+                <span className="toe-font-label">Năm xuất bản:</span>
                 <span className="toe-font-body">
-                  {dataDetail?.available ?? TEXT_FALL_BACK.TYPE_1}
-                </span>
-              </div>
-              <div className="toe-book-detail-page__item-info__row">
-                <span className="toe-font-label">Số bản được giữ chỗ:</span>{' '}
-                <span className="toe-font-body">
-                  {dataDetail?.reserved ?? TEXT_FALL_BACK.TYPE_1}
-                </span>
-              </div>
-              <div className="toe-book-detail-page__item-info__row">
-                <span className="toe-font-label">Thông tin xếp giá:</span>
-                <span className="toe-font-body">
-                  {dataDetail?.placement ?? TEXT_FALL_BACK.TYPE_1}
+                  {dataDetail?.publicationDate
+                    ? moment(dataDetail?.publicationDate).format('YYYY')
+                    : TEXT_FALL_BACK.TYPE_1}
                 </span>
               </div>
             </div>
+          </div>
+          <div className="toe-book-detail-page__item-info">
+            {!dataDetail?.isPrivate ? (
+              <div className="toe-book-detail-page__item-info__block">
+                <div className="toe-book-detail-page__item-info__row title toe-font-label">
+                  Dữ liệu xếp giá
+                </div>
+                <div className="toe-book-detail-page__item-info__row">
+                  <span className="toe-font-label">Tổng số bản:</span>{' '}
+                  <span className="toe-font-body">
+                    {dataDetail?.amount ?? TEXT_FALL_BACK.TYPE_1}
+                  </span>
+                </div>
+                <div className="toe-book-detail-page__item-info__row">
+                  <span className="toe-font-label">Số bản chưa mượn:</span>{' '}
+                  <span className="toe-font-body">
+                    {dataDetail?.available ?? TEXT_FALL_BACK.TYPE_1}
+                  </span>
+                </div>
+                <div className="toe-book-detail-page__item-info__row">
+                  <span className="toe-font-label">Số bản được giữ chỗ:</span>{' '}
+                  <span className="toe-font-body">
+                    {dataDetail?.reserved ?? TEXT_FALL_BACK.TYPE_1}
+                  </span>
+                </div>
+                <div className="toe-book-detail-page__item-info__row">
+                  <span className="toe-font-label">Thông tin xếp giá:</span>
+                  <span className="toe-font-body">
+                    {dataDetail?.placement ?? TEXT_FALL_BACK.TYPE_1}
+                  </span>
+                </div>
+              </div>
+            ) : null}
           </div>
 
           <div className="toe-book-detail-page__item-info">
@@ -200,13 +237,47 @@ function BookDetail(props) {
                   {dataDetail?.bookName
                     ?.split(' ')
                     .filter(Boolean)
-                    .map((item) => (
-                      <div className="tag">{item}</div>
+                    .map((item, _) => (
+                      <div className="tag" key={_}>
+                        {item}
+                      </div>
                     ))}
                 </span>
               </div>
             </div>
           </div>
+          {!dataDetail?.isPrivate ? (
+            <>
+              <div className="toe-book-detail-page__item-info">
+                <div className="toe-book-detail-page__item-info__block">
+                  <div className="toe-book-detail-page__item-info__row title toe-font-label">
+                    Thao tác
+                  </div>
+                  {!context.isMember() ? (
+                    requireRegisterView(navigate)
+                  ) : (
+                    <div className="toe-book-detail-page__item-info__row">
+                      <a
+                        id="js-button-add-to-cart"
+                        className={buildClass([
+                          bookNotAvailable() && 'disable',
+                        ])}
+                        onClick={handleBorrowing}
+                      >
+                        Đặt mượn
+                      </a>
+                      <span className="toe-font-hint">
+                        (Yêu cầu có hiệu lực 2 ngày từ khi đặt mượn)
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="toe-book-detail-page__item-info warning">
+                {errorMessage ? <Message title={errorMessage} /> : null}
+              </div>
+            </>
+          ) : null}
         </div>
       </div>
     );
@@ -272,6 +343,7 @@ function BookDetail(props) {
   };
 
   const handleAddToCard = (dataDetail) => {
+    delete dataDetail?.author;
     const success = cartContext.add({
       id: dataDetail?.bookID,
       quantity: 1,
@@ -299,81 +371,19 @@ function BookDetail(props) {
     );
   };
 
-  const handleBuying = () => {};
-
   const bookNotAvailable = () => {
     return (
       !dataDetail?.available || dataDetail?.amount === dataDetail?.reserved
     );
   };
 
-  const renderInformation = () => {
-    return (
-      <div className="book-detail__infomation">
-        {errorMessage ? <Message title={errorMessage} /> : null}
-        <div className="info">
-          <div className="book-detail__infomation-col">
-            <div className="infomation-col__title toe-font-label">
-              Thông tin xếp giá
-            </div>
-            <div className="infomation-col__title-row toe-font-body">
-              Tổng số bản: {dataDetail?.amount ?? TEXT_FALL_BACK.TYPE_4}
-            </div>
-            <div className="infomation-col__title-row toe-font-body">
-              Tổng số bản rỗi: {dataDetail?.available ?? TEXT_FALL_BACK.TYPE_4}
-            </div>
-            <div className="infomation-col__title-row toe-font-body">
-              Tổng số bản đang đặt chỗ:{' '}
-              {dataDetail?.reserved ?? TEXT_FALL_BACK.TYPE_4}
-            </div>
-          </div>
-          <div className="book-detail__infomation-col">
-            <div className="infomation-col__title toe-font-label">Thao tác</div>
-            <div className="infomation-col__title-row toe-font-body">
-              <a
-                id="js-button-add-to-cart"
-                className={buildClass([bookNotAvailable() && 'disable'])}
-                onClick={handleBorrowing}
-              >
-                Đặt mượn
-              </a>
-              <span className="toe-font-hint">
-                (Yêu cầu có hiệu lực 2 ngày từ khi đặt mượn)
-              </span>
-            </div>
-            <div className="infomation-col__title-row toe-font-body">
-              <a
-                className={buildClass([bookNotAvailable() && 'disable'])}
-                onClick={handleBuying}
-              >
-                Đặt mua
-              </a>
-            </div>
-          </div>
-          <div className="book-detail__infomation-col">
-            <div className="infomation-col__title toe-font-label">Từ khóa</div>
-            <div className="infomation-col__title-row infomation-col__title-row__tags toe-font-body">
-              {dataDetail?.bookName?.split(' ').map((item) => (
-                <div className="tag">{item}</div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   const handlePreview = () => {
     setIsShowPreview(true);
     setErrorLoadPdf(!dataDetail.file);
-    // setIsLoading(true);
-    // setTimeout(() => {
-    //   setIsLoading(false);
-    // }, 500);
   };
 
   const acceptGoToCart = () => {
-    navigate(PATH_NAME.USER + '?view=gio-hang');
+    navigate(PATH_NAME.USER + '?view=gio-muon');
   };
 
   const rejectGoToCart = () => {};
@@ -411,10 +421,6 @@ function BookDetail(props) {
                       />
                     )}
                   </Modal>
-                ) : null}
-
-                {!dataDetail.isPrivate ? (
-                  <div className="__row">{renderInformation()}</div>
                 ) : null}
               </div>
               <div className="toe-book-detail-page__body-main__right toe-font-body">

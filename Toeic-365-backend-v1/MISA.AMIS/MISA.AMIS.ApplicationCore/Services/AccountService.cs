@@ -27,14 +27,16 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
     {
         #region Declare
         IAccountRepository _accountRepository;
+        ILibraryCardService _libraryCardService;
         IConfiguration _config;
         #endregion
 
         #region Constructer
-        public AccountService(IAccountRepository accountRepository, IConfiguration config) : base(accountRepository)
+        public AccountService(IAccountRepository accountRepository, ILibraryCardService libraryCardService, IConfiguration config) : base(accountRepository)
         {
             _accountRepository = accountRepository;
             _config = config;
+            _libraryCardService = libraryCardService;
         }
         #endregion
 
@@ -227,8 +229,14 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
             if (account != null)
             {
                 if (account.Status == false) return null;
+
+                //get role
                 var roles = (await _accountRepository.GetRolesByAccountID(account.AccountID.ToString()));
-                return new { userInfo = new { roles = roles.Select(item => new { RoleName = item.RoleName, RoleType = item.RoleType }), Email = account.Email, UserName = account.UserName, FullName = account.FullName, PhoneNumer = account.PhoneNumber, CreatedDate = account.CreatedDate, Avatar = account.Avatar, UserID = account.AccountID }, token = GenerateJSONWebToken(account) };
+
+                //get member info
+                var memberInfo = await _libraryCardService.GetLibraryCardByAccountID(account.AccountID);
+
+                return new { userInfo = new { roles = roles.Select(item => new { RoleName = item.RoleName, RoleType = item.RoleType }), Email = account.Email, UserName = account.UserName, FullName = account.FullName, PhoneNumer = account.PhoneNumber, CreatedDate = account.CreatedDate, Avatar = account.Avatar, UserID = account.AccountID }, token = GenerateJSONWebToken(account), member = memberInfo != null ? JsonConvert.SerializeObject(memberInfo) : null };
             }
 
             return account;
@@ -290,9 +298,9 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         /// <param name="entityId"></param>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public ServiceResult ChangePassword(Guid entityId, AccountPasswordChangeDTO entity)
+        public async Task<ServiceResult> ChangePassword(Guid entityId, AccountPasswordChangeDTO entity)
         {
-            Account acc = _accountRepository.GetEntityById(entityId);
+            Account acc = await _accountRepository.GetEntityById(entityId);
 
             if (acc == null)
             {

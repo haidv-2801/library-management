@@ -19,6 +19,16 @@ namespace TOE.TOEIC.ApplicationCore.Entities
 
         public string CardCode { get; set; }
 
+        public int MemberType { get; set; }
+
+        [Display(Name = "Tổng số sách đã mượn")]
+        public int TotalBookCheckedOut { get; set; } = 0;
+
+        [Display(Name = "Tổng số sách đang mượn")]
+        public int TotalBookCheckingOut { get; set; } = 0;
+
+        public string Option { get; set; }
+
         public DateTime JoinDate { get; set; }
 
         public DateTime ExpiredDate { get; set; }

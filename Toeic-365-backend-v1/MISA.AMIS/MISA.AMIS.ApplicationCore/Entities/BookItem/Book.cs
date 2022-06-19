@@ -53,6 +53,8 @@ namespace TOE.TOEIC.ApplicationCore.Entities
         public string File { get; set; }
 
         public bool IsPrivate { get; set; }
+
+        public int BookType { get; set; } = 0;
         #endregion
     }
 }

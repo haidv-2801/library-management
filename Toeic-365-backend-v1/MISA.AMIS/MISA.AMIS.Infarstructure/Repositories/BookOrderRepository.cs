@@ -24,6 +24,15 @@ namespace TOE.TOEIC.Infrastructure
 
         }
 
+        public async Task<long> CountTotalBookUserLoanByOrderStatus(string orderStatus, Guid accountID)
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add(@"OrderStatus", orderStatus);
+            parameters.Add(@"AccountID", accountID.ToString());
+            var result = await _dbConnection.QueryFirstOrDefaultAsync<long>("Proc_CountTotalBookUserLoanByOrderStatus", param: parameters, commandType: CommandType.StoredProcedure);
+            return result;
+        }
+
         public async Task<string> GetNextBookOrderCode() => await _dbConnection.QueryFirstOrDefaultAsync<string>("Proc_NextBookOrderCode", commandType: CommandType.StoredProcedure);
         #endregion
 

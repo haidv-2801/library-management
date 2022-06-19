@@ -15,5 +15,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         Task<string> GetNextBookCode();
 
         Task<long> GetTotalBook();
+
+        Task<List<BookItem>> GetBooksByIDs(string ids);
     }
 }

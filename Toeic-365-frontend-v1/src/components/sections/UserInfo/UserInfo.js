@@ -1,9 +1,15 @@
 import React, { useContext, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import {
+  getAccountName,
+  getFullName,
+  getUserName,
+} from '../../../constants/commonAuth';
+import {
   COMMON_AVATAR,
   LOCAL_STORATE_KEY,
   PATH_NAME,
+  TEXT_FALL_BACK,
 } from '../../../constants/commonConstant';
 import { buildClass, isInAdminPage } from '../../../constants/commonFunction';
 import { AuthContext, getLocalStorage } from '../../../contexts/authContext';
@@ -75,7 +81,7 @@ const UserInfo = () => {
         if (!authCtx.isLoggedIn) {
           navigate(PATH_NAME.LOGIN);
         } else {
-          navigate(PATH_NAME.USER);
+          navigate(PATH_NAME.USER + '?view=tai-khoan');
         }
         break;
       case POPUP_SELECTION_VALUES.ADMIN_PAGE:
@@ -97,7 +103,9 @@ const UserInfo = () => {
 
   return (
     <div className={buildClass(['toe-user-info'])}>
-      <div className="user-name">{authCtx.auth()?.userName}</div>
+      <div className="user-name">
+        {getFullName() || getAccountName() || TEXT_FALL_BACK.TYPE_1}
+      </div>
       <PopupSelectionV1
         defaultValue={userSelectValue}
         onChange={handleChangeOption}

@@ -1,37 +1,24 @@
-import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
-import { buildClass } from '../../../../../constants/commonFunction';
-import Button from '../../../../atomics/base/Button/Button';
+import { useEffect, useState } from 'react';
 import baseApi from '../../../../../api/baseApi';
-import END_POINT, { ADMIN_ENDPOINT } from '../../../../../constants/endpoint';
 import {
-  BUTTON_TYPE,
-  REGEX,
-  KEY_CODE,
-  BUTTON_THEME,
-  MAXIMUM_FILE_SIZE,
-  ACCEPT_FILE,
-  BOOK_FORMAT,
-  LANGUAGE,
   ACCEPT_FILE_PDF,
+  BOOK_FORMAT,
+  GUID_NULL,
+  KEY_CODE,
+  LANGUAGE,
 } from '../../../../../constants/commonConstant';
-import SmartText from '../../../../atomics/base/SmartText/SmartText';
+import { buildClass } from '../../../../../constants/commonFunction';
+import END_POINT from '../../../../../constants/endpoint';
 import Input from '../../../../atomics/base/Input/Input';
-import Modal from '../../../../atomics/base/ModalV2/Modal';
-import UpLoadImage from '../../../../molecules/UpLoadImage/UpLoadImage';
-import { Password } from 'primereact/password';
-import InputPassword from '../../../../atomics/base/InputPassword/InputPassword';
-import FilterEngine from '../../../../molecules/FilterEngine/FilterEngine';
-import { FileUpload } from 'primereact/fileupload';
-import { Upload, message, Button as ButtonAntd } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
-import Dropdown from '../../../../molecules/Dropdown/Dropdown';
-import TreeSelect from '../../../../atomics/base/TreeSelect/TreeSelect';
-import './popupCreateBook.scss';
-import TextArea from '../../../../atomics/base/TextArea/TextArea';
 import InputNumber from '../../../../atomics/base/InputNumber/InputNumber';
+import Modal from '../../../../atomics/base/ModalV2/Modal';
 import RadioButton from '../../../../atomics/base/RadioButton/RadioButton';
+import TextArea from '../../../../atomics/base/TextArea/TextArea';
+import TreeSelect from '../../../../atomics/base/TreeSelect/TreeSelect';
+import Dropdown from '../../../../molecules/Dropdown/Dropdown';
+import UpLoadImage from '../../../../molecules/UpLoadImage/UpLoadImage';
+import './popupCreateBook.scss';
 
 PopupCreateBook.propTypes = {
   id: PropTypes.string,
@@ -52,7 +39,7 @@ PopupCreateBook.defaultProps = {
   show: false,
   onClose: () => {},
   onChange: () => {},
-  defaultValue: null,
+  defaultValue: {},
   title: null,
   dataCategory: {},
 };
@@ -159,6 +146,7 @@ function PopupCreateBook(props) {
               onChange={(data) =>
                 setDataCreate({ ...dataCreate, bookName: data })
               }
+              defaultValue={dataCreate?.bookName}
             />
           </div>
         </div>
@@ -203,6 +191,9 @@ function PopupCreateBook(props) {
               controlled
               value={dataCreate.authorText}
               onKeyDown={(e) => handleKeydown('author', e)}
+              onBlur={() => {
+                handleKeydown('author', { which: KEY_CODE.ENTER });
+              }}
             />
             <div className="col__tags row mb-2 mt-2">
               {dataCreate?.authors?.map((item) => (
@@ -226,7 +217,7 @@ function PopupCreateBook(props) {
         </div>
         <div className="row toe-font-title">Thông tin khác</div>
 
-        <div className="row">
+        <div className="row col-a">
           <div className="col">
             {' '}
             <Dropdown
@@ -250,6 +241,8 @@ function PopupCreateBook(props) {
               }}
             />
           </div>
+        </div>
+        <div className="row">
           <div className="col">
             <Input
               name="Số lượng bản ghi"
@@ -260,8 +253,6 @@ function PopupCreateBook(props) {
               }}
             />
           </div>
-        </div>
-        <div className="row">
           <div className="col">
             <Input
               label={'Nhà xuất bản'}
@@ -271,6 +262,9 @@ function PopupCreateBook(props) {
               }}
             />
           </div>
+        </div>
+        {/* <div className="row">
+          {' '}
           <div className="col">
             {' '}
             <Input
@@ -291,7 +285,7 @@ function PopupCreateBook(props) {
               }}
             />
           </div>
-        </div>
+        </div> */}
         <div className="row">
           <div className="col">
             <TextArea
@@ -303,13 +297,24 @@ function PopupCreateBook(props) {
             />
           </div>
         </div>
-        <div className="row">
+        <div className="row flex align-items-center">
           <div className="col">
             <div className="col__label toe-font-label">Ảnh bìa</div>
             <UpLoadImage onChange={onSelectImage} />
           </div>
           <div className="col">
-            <div className="col__label toe-font-label">Tài liệu nội bộ</div>
+            <div className="col">
+              <div className="col__label toe-font-label">File</div>
+              <input
+                type="file"
+                accept={ACCEPT_FILE_PDF}
+                onChange={onBasicUpload}
+              />
+            </div>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col">
             <RadioButton
               label="Tài liệu nội bộ"
               onChange={() => {
@@ -319,17 +324,6 @@ function PopupCreateBook(props) {
                 });
               }}
               checked={dataCreate.isPrivate}
-            />
-          </div>
-        </div>
-        <div className="row">
-          <div className="col">
-            <div className="col__label toe-font-label">File</div>
-
-            <input
-              type="file"
-              accept={ACCEPT_FILE_PDF}
-              onChange={onBasicUpload}
             />
           </div>
         </div>

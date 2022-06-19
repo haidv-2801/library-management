@@ -18,16 +18,25 @@ namespace TOE.TOEIC.Infrastructure
     /// CREATED BY: DVHAI (07/07/2021)
     public class LibraryCardRepository : BaseRepository<LibraryCard>, ILibraryCardRepository
     {
+
         #region Constructer
         public LibraryCardRepository(IConfiguration configuration) : base(configuration)
         {
 
         }
-
-        public async Task<long> GetTotalLibraryCard() => await _dbConnection.QueryFirstOrDefaultAsync<long>("Proc_GetTotalMemberCard", commandType: CommandType.StoredProcedure);
-        
         #endregion
+
         #region Methods
+        public async Task<long> GetTotalLibraryCard() => await _dbConnection.QueryFirstOrDefaultAsync<long>("Proc_GetTotalMemberCard", commandType: CommandType.StoredProcedure);
+
+        public async Task<LibraryCard> GetLibraryCardByAccountID(Guid accountID)
+        {
+            var parameter = new DynamicParameters();
+            parameter.Add("v_AccountID", accountID.ToString());
+            return await _dbConnection.QueryFirstOrDefaultAsync<LibraryCard>("Proc_GetLibraryCardByAccountID", param: parameter, commandType: CommandType.StoredProcedure);
+        }
+
+        public async Task<string> GetNextCardCode() => await _dbConnection.QueryFirstOrDefaultAsync<string>("Proc_GetNextCardCode", commandType: CommandType.StoredProcedure);
 
         #endregion
     }

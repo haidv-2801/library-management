@@ -236,8 +236,7 @@ function Layout(props) {
                 location.pathname.indexOf(item.url) >= 0 && 'active',
               ])}
               onClick={() => {
-                history(item.url);
-                setMenuItemIndexSelected(item.url);
+                item?.url && history(item.url);
               }}
             >
               <div className="admin-menu-item__icon">

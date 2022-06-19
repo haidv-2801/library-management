@@ -12,6 +12,7 @@ import baseApi from '../../../../api/baseApi';
 import {
   BOOK_FORMAT,
   BUTTON_TYPE,
+  GUID_NULL,
   KEY_CODE,
   MAXIMUM_PAGESIZE,
   OPERATOR,
@@ -71,29 +72,35 @@ function BooksPageSeeAllPrivate(props) {
     pageIndex: 1,
     pageSize: 20,
     filterValue: '',
+    categoryID: GUID_NULL,
   });
   const textSearchRef = useRef('');
   const [totalRecords, setTotalRecords] = useState(0);
   const [dataTable, setDataTable] = useState([]);
 
   useEffect(() => {
-    const { slug } = params;
     callApiGetCategory();
-    callApiGetBook();
   }, []);
 
   useEffect(() => {
-    let moreFilter = [];
-    if (cateParam != -1 && cateParam != null && cateParam != 'null') {
-      moreFilter = [['CategoryID', OPERATOR.EQUAL, cateParam]];
-    }
+    callApiGetBook();
+    console.log('obje :>> ');
+  }, [paging]);
 
-    if (textSearchRef.current?.trim()) {
-      if (moreFilter.length) moreFilter.push(OPERATOR.AND);
-      moreFilter.push(['bookName', OPERATOR.CONTAINS, textSearchRef.current]);
-    }
-
-    callApiGetBook(moreFilter);
+  useEffect(() => {
+    // let moreFilter = [];
+    // if (cateParam != -1 && cateParam != null && cateParam != 'null') {
+    //   moreFilter = [['CategoryID', OPERATOR.EQUAL, cateParam]];
+    // }
+    // if (textSearchRef.current?.trim()) {
+    //   if (moreFilter.length) moreFilter.push(OPERATOR.AND);
+    //   moreFilter.push([
+    //     'bookName',
+    //     OPERATOR.CONTAINS,
+    //     encodeURIComponent(textSearchRef.current),
+    //   ]);
+    // }
+    // callApiGetBook(moreFilter);
   }, [cateParam, searchParam]);
 
   const callApiGetBook = (body = []) => {
@@ -110,21 +117,25 @@ function BooksPageSeeAllPrivate(props) {
       let _value = paging.filterValue?.trim();
       _filter.push(OPERATOR.AND);
       _filter.push([
-        ['BookCode', OPERATOR.CONTAINS, encodeURI(_value)],
+        ['BookCode', OPERATOR.CONTAINS, encodeURIComponent(_value)],
         OPERATOR.OR,
-        ['BookName', OPERATOR.CONTAINS, encodeURI(_value)],
+        ['BookName', OPERATOR.CONTAINS, encodeURIComponent(_value)],
         OPERATOR.OR,
-        ['Description', OPERATOR.CONTAINS, encodeURI(_value)],
+        ['Description', OPERATOR.CONTAINS, encodeURIComponent(_value)],
         OPERATOR.OR,
-        ['Publisher', OPERATOR.CONTAINS, encodeURI(_value)],
+        ['Publisher', OPERATOR.CONTAINS, encodeURIComponent(_value)],
       ]);
+    }
+
+    if (paging.categoryID !== GUID_NULL) {
+      _filter.push(OPERATOR.AND);
+      _filter.push([['CategoryID', OPERATOR.EQUAL, paging.categoryID]]);
     }
 
     baseApi.post(
       (res) => {
         let _data = res.data.pageData;
-        // setDataTable(_data.map((_) => ({ ..._, key: _.bookID })));
-        setDataTable(books.map((_) => ({ ..._, key: _.bookID })));
+        setDataTable(_data.map((_) => ({ ..._, key: _.bookID })));
         setIsLoading(false);
         setTotalRecords(res.data.totalRecord);
       },
@@ -139,7 +150,7 @@ function BooksPageSeeAllPrivate(props) {
       {
         filter: btoa(JSON.stringify(_filter)),
         pageSize: paging.pageSize,
-        pageIndex: paging.page,
+        pageIndex: paging.pageIndex,
         sort: JSON.stringify([['ModifiedDate', SORT_TYPE.DESC]]),
       },
       null
@@ -172,8 +183,7 @@ function BooksPageSeeAllPrivate(props) {
   };
 
   const handleViewDetail = (bookID) => {
-    debugger;
-    navigate(bookID);
+    navigate(bookID + '?private=true');
   };
 
   const renderReport = (title) => {
@@ -224,10 +234,6 @@ function BooksPageSeeAllPrivate(props) {
                 <span className="toe-font-label">Nhà xuất bản:</span>
                 <span className="toe-font-body">{item?.publisher}</span>
               </div>
-              {/* <div className="toe-book-see-all-page__body-content__item-info__row">
-                <span className="toe-font-label">Thông tin xếp giá:</span>
-                <span className="toe-font-body">C1</span>
-              </div> */}
             </div>
           )}
         </div>
@@ -260,23 +266,23 @@ function BooksPageSeeAllPrivate(props) {
       setSearchParams({ categoryID });
     } else {
       setSearchParams({
-        search: searchParam ?? textSearchRef.current,
+        search: decodeURIComponent(searchParam ?? textSearchRef.current),
         categoryID,
       });
     }
   };
 
   const renderSkeleton = (number) => {
-    return (
-      <div className="skeleton-list">
-        {' '}
-        {Array.from(Array(number)).map((item, _) => (
-          <div className="skeleton-book">
-            <Skeleton key={_} height="200px" width="150px" />
-          </div>
-        ))}
-      </div>
-    );
+    let arr = [];
+    for (let i = 0; i < number; i++) {
+      arr.push(
+        <div className="skeleton-book" key={i}>
+          <Skeleton key={i} height="200px" width="150px" />
+        </div>
+      );
+    }
+
+    return <div className="skeleton-list"> {arr}</div>;
   };
 
   const handleSetSearch = () => {
@@ -310,12 +316,11 @@ function BooksPageSeeAllPrivate(props) {
                     <Input
                       placeholder={'Tìm kiếm sách'}
                       className="input-filter-book"
-                      onChange={(e) => (textSearchRef.current = e)}
-                      onKeyDown={(e) => {
-                        if (e.keyCode === KEY_CODE.ENTER) {
-                          handleSetSearch();
-                        }
+                      onChange={(e) => {
+                        setPaging({ ...paging, filterValue: e?.trim() });
                       }}
+                      delay={400}
+                      onKeyDown={(e) => {}}
                     />
                     <div
                       className="button-search__icon"
@@ -324,10 +329,11 @@ function BooksPageSeeAllPrivate(props) {
                       <SearchOutlined />
                     </div>
                   </div>
-                  {categories.map((item) => (
+                  {categories.map((item, _) => (
                     <div
                       onClick={() => {
                         handleFilterByCate(item);
+                        setPaging({ ...paging, categoryID: item.categoryID });
                         setCateSelected(item.categoryID);
                       }}
                       key={item.categoryID}
@@ -367,12 +373,18 @@ function BooksPageSeeAllPrivate(props) {
               </div>
             </div>
           </div>
-          {data.length > Math.min(...PAGEGING) ? (
+          {data.length > Math.min(...PAGEGING) || 1 ? (
             <Paginator
               hasShowLeftInfo={false}
               hasChangePageSize={false}
-              totalRecords={totalRecord}
-              onChange={(data) => {}}
+              page={paging.pageIndex}
+              totalRecords={totalRecords}
+              onChange={(data) => {
+                setPaging({
+                  ...paging,
+                  pageIndex: data.page,
+                });
+              }}
               pageSize={20}
             />
           ) : null}

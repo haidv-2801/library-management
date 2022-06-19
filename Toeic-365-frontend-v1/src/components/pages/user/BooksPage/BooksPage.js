@@ -206,7 +206,7 @@ function BooksPage(props) {
           key={book.bookID}
           className="toe-book-page__body-content__book"
           bookTitle={book.bookName}
-          bookAuthor={ParseJson(book.author)?.[0]}
+          bookAuthor={book.author}
           bookType={book.bookFormat}
           onClick={() => {
             navigate(section + '/' + book.bookID);
@@ -253,11 +253,14 @@ function BooksPage(props) {
   };
 
   const renderSkeleton = (number) => {
-    return Array.from(Array(number)).map((item, _) => (
-      <div className="skeleton-book">
-        <Skeleton key={_} height="200px" width="150px" />
-      </div>
-    ));
+    let arr = [];
+    for (let i = 0; i < number; i++) {
+      arr.push(
+        <div className="skeleton-book" key={i}>
+          <Skeleton key={i} height="200px" width="150px" />
+        </div>
+      );
+    }
   };
 
   const handleSearch = () => {
@@ -358,7 +361,6 @@ function BooksPage(props) {
                   autoFocus
                   onChange={(e) => {
                     setCommonSearchValue(e);
-                    // if (isPressBtnSearch && !e) setIsPressBtnSearch(false);
                   }}
                   placeholder={'Tìm kiếm sách, tin tức, thông báo, tài liệu...'}
                 />

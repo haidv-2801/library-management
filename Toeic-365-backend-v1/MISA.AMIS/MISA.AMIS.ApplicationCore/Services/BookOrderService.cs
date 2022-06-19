@@ -19,6 +19,8 @@ using Newtonsoft.Json;
 using TOE.TOEIC.ApplicationCore.Helpers;
 using TOE.TOEIC.ApplicationCore.Enums;
 using Newtonsoft.Json.Linq;
+using Microsoft.IdentityModel.Protocols;
+using Microsoft.Extensions.Configuration;
 
 namespace TOE.TOEIC.ApplicationCore.Interfaces
 {
@@ -26,18 +28,24 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
     {
         #region Declare
         IBookOrderRepository _bookOrderRepository;
+        IBookRepository _bookRepository;
         IBaseRepository<BookItem> _baseRepository;
         IBookService _bookService;
         IBaseRepository<Notification> _notificationRepository;
+        IAccountService _accountService;
+        IConfiguration _config;
         #endregion
 
         #region Constructer
-        public BookOrderService(IBookOrderRepository bookRepository, IBookService bookService, IBaseRepository<BookItem> baseRepository, IBaseRepository<Notification> notificationRepository) : base(bookRepository)
+        public BookOrderService(IBookOrderRepository bookOrderRepository, IBookService bookService, IBaseRepository<BookItem> baseRepository, IBaseRepository<Notification> notificationRepository, IBookRepository bookRepository, IConfiguration config, IAccountService accountService) : base(bookOrderRepository)
         {
-            _bookOrderRepository = bookRepository;
+            _bookOrderRepository = bookOrderRepository;
             _bookService = bookService;
             _baseRepository = baseRepository;
             _notificationRepository = notificationRepository;
+            _bookRepository = bookRepository;
+            _config = config;
+            _accountService = accountService;
         }
         #endregion
 
@@ -101,7 +109,23 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         public async Task<ServiceResult> InsertBookOrder(BookOrder bookOrder)
         {
             var bookOrderInformations = (List<BookOrderInformationDTO>)JsonConvert.DeserializeObject<List<BookOrderInformationDTO>>(bookOrder.BookOrderInformation);
-            var validationMessages = new List<string>();
+            var totalLoans = bookOrderInformations.Select(item => item.quantity).Sum();
+
+            //get user current borrow
+            var user = await _accountService.GetEntityById(bookOrder.AccountID);
+
+            if(user == null)
+            {
+                _serviceResult.TOECode = TOECode.InValid;
+                _serviceResult.Messasge = "Tài khoản không tồn tại";
+                return _serviceResult;
+            }
+
+            //validate total loans
+            bool isValid = bookOrderInformations.Any(item => !ValidateBookLoanAmount(1, item.BookType, totalLoans));
+            
+            
+            //validate exits book
             var bookIDs = bookOrderInformations.Select(book => "'" + book.id + "'").ToList();
             var query = "SELECT * FROM BOOK WHERE BookID IN";
             if (bookIDs.Count > 0)
@@ -164,6 +188,31 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
             return _serviceResult;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="memberType"></param>
+        /// <param name="totalLoans"></param>
+        /// <returns></returns>
+        private bool ValidateBookLoanAmount(int memberType, int bookType, long totalLoans)
+        {
+            string key = string.Empty;
+
+            if (memberType == MemberType.GUEST)
+            {
+            }
+            else if (memberType == MemberType.LECTURER)
+            {
+                key = bookType == BookType.SYLLABUS ? AppSettingKey.LECTURER_MAXIMUM_SYLLABUS_BOOK_BORROWED_EACH_TIME : AppSettingKey.LECTURE_MAXIMUM_REFERENCE_BOOK_BORROWED_EACH_TIME;
+            }
+            else if (memberType == MemberType.STUDENT)
+            {
+                key = bookType == BookType.SYLLABUS ? AppSettingKey.STUDENT_MAXIMUM_SYLLABUS_BOOK_BORROWED_EACH_TIME : AppSettingKey.STUDENT_MAXIMUM_SYLLABUS_BOOK_BORROWED_EACH_TIME;
+            }
+
+            return totalLoans <= long.Parse(_config[key]);
+        }
+
         public async Task<string> GetNextBookOrderCode() => FunctionHelper.NextRecordCode(await _bookOrderRepository.GetNextBookOrderCode());
 
         public async Task<long> GetTotalBookOrdered()
@@ -174,13 +223,41 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
             return sum;
         }
 
+        public async Task<IEnumerable<BookOrderTopReportDTO>> TopBookBorrowed()
+        {
+            var bookOrders = await _bookOrderRepository.GetEntities();
+            var bookOrderInfoArray = bookOrders.Select(book => JsonConvert.DeserializeObject<List<BookOrderInformationDTO>>(book.BookOrderInformation));
+            var flattenArray = new List<BookOrderInformationDTO>();
+            foreach (var item in bookOrderInfoArray)
+            {
+                flattenArray.AddRange(item);
+            }
+
+            var res = flattenArray.GroupBy(x => x.id).Select(p => new BookOrderTopReportDTO { BookName = p.First().BookName, BookCode = p.First().BookCode, Quantity = p.Sum(i => i.quantity) }).ToList<BookOrderTopReportDTO>();
+
+            return res;
+        }
+
         private long GetTotalBookOrderJArray(JArray array)
         {
             var castEnum = array.AsEnumerable();
-            long sum = castEnum.Sum(item => ((JToken)(item))["quantity"] as dynamic );
+            long sum = castEnum.Sum(item => ((JToken)(item))["quantity"] as dynamic);
             return sum;
         }
 
+
+        private List<object> GetBookJArray(JArray array)
+        {
+            var castEnum = array.AsEnumerable();
+            var ids = castEnum.Select(item => new { id = ((JToken)(item))["bookID"].Values<string>().First(), quantity = ((JToken)item)["quantity"].Values<long>().First() }).ToList<object>();
+            return ids;
+        }
+
+        public async Task<long> CountTotalBookUserLoanByOrderStatus(List<string> orderStatus, Guid accountID)
+        {
+            string joinText = $"|{string.Join("|", orderStatus)}|";
+            return await _bookOrderRepository.CountTotalBookUserLoanByOrderStatus(joinText, accountID);
+        }
         #endregion
     }
 }

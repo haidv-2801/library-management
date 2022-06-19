@@ -17,6 +17,7 @@ using TOE.TOEIC.ApplicationCore.Helpers;
 using TOE.TOEIC.ApplicationCore.MiddleWare;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace TOE.TOEIC.Web.Controllers
 {
@@ -89,9 +90,9 @@ namespace TOE.TOEIC.Web.Controllers
         /// CreatedBy: DVHAI 07/07/2021
         [EnableCors("AllowCROSPolicy")]
         [HttpGet("{id}")]
-        public IActionResult Get(string id)
+        public async Task<IActionResult> Get(string id)
         {
-            var entity = _baseService.GetEntityById(Guid.Parse(id));
+            var entity = await _baseService.GetEntityById(Guid.Parse(id));
 
             if (entity == null)
                 return NotFound();
@@ -126,8 +127,48 @@ namespace TOE.TOEIC.Web.Controllers
                 _logger.LogError($"Lỗi Insert {typeof(TEntity).Name}: " + ex.Message);
                 return StatusCode(500, ex.Message);
             }
+        }
 
-            return StatusCode(201, serviceResult);
+        [EnableCors("AllowCROSPolicy")]
+        [HttpPatch("PatchUpdate/{id}")]
+        public async Task<IActionResult> Patch(Guid id,
+    [FromBody] JsonPatchDocument patchDoc)
+        {
+            if (patchDoc is null)
+            {
+                throw new ArgumentNullException(nameof(patchDoc));
+            }
+
+            try
+            {
+                var serviceResult = new ServiceResult();
+                if (patchDoc != null)
+                {
+                    var entity = await _baseService.GetEntityById(id);
+                    if (entity == null) return NotFound();
+                    else
+                    {
+                        patchDoc.ApplyTo(entity);
+                        serviceResult = await _baseService.Update(id, entity);
+
+                        if (serviceResult.TOECode == TOECode.InValid)
+                            return BadRequest(serviceResult);
+                        else if (serviceResult.TOECode == TOECode.Exception)
+                            return StatusCode(500, serviceResult);
+
+                        return Ok(serviceResult);
+                    }
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+            return BadRequest();
         }
 
         /// <summary>
@@ -139,13 +180,13 @@ namespace TOE.TOEIC.Web.Controllers
         /// CreatedBy: DVHAI 07/07/2021
         [EnableCors("AllowCROSPolicy")]
         [HttpPut("{id}")]
-        public IActionResult Put([FromRoute] string id, [FromBody] TEntity entity)
+        public async Task<IActionResult> Put([FromRoute] string id, [FromBody] TEntity entity)
         {
             try
             {
                 _logger.LogInformation($"Body put {typeof(TEntity).Name}:" + JsonConvert.SerializeObject(entity));
                 //Sử lí kiểu id động ở đây
-                var serviceResult = _baseService.Update(Guid.Parse(id), entity);
+                var serviceResult = await _baseService.Update(Guid.Parse(id), entity);
                 _logger.LogInformation($"ServiceResult Body put {typeof(TEntity).Name}:" + JsonConvert.SerializeObject(serviceResult));
 
                 if (serviceResult.TOECode == TOECode.InValid)

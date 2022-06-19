@@ -32,6 +32,6 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
     /// </summary>
     /// <param name="userRequest"></param>
     /// <returns></returns>
-    ServiceResult ChangePassword(Guid entityId, AccountPasswordChangeDTO entity);
+    Task<ServiceResult> ChangePassword(Guid entityId, AccountPasswordChangeDTO entity);
   }
 }

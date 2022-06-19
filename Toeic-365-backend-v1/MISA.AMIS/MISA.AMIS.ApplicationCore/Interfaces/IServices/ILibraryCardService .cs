@@ -11,5 +11,9 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
   public interface ILibraryCardService : IBaseService<LibraryCard>
   {
         Task<long> GetTotalLibraryCard();
-  }
+
+        Task<LibraryCard> GetLibraryCardByAccountID(Guid accountID);
+
+        Task<string> GetNextCardCode();
+    }
 }

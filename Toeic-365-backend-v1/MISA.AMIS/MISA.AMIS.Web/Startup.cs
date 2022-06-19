@@ -27,6 +27,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Net.Http.Headers;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Mvc.Formatters;
 
 namespace TOE.TOEIC.Web
 {
@@ -59,9 +61,13 @@ namespace TOE.TOEIC.Web
 
             services.AddHttpContextAccessor();
 
-            services.AddControllersWithViews().AddNewtonsoftJson(options =>
-    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-);
+
+            services.AddControllersWithViews(options => {
+                options.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
+            }).AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
 
             // Config authenication
             services.AddAuthentication(x =>
@@ -226,6 +232,23 @@ namespace TOE.TOEIC.Web
             });
 
             app.UseMiddleware<AdminSafeListMiddleware>(Configuration["AdminSafeList"]);
+        }
+
+
+        private static NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter()
+        {
+            var builder = new ServiceCollection()
+                .AddLogging()
+                .AddMvc()
+                .AddNewtonsoftJson()
+                .Services.BuildServiceProvider();
+
+            return builder
+                .GetRequiredService<IOptions<MvcOptions>>()
+                .Value
+                .InputFormatters
+                .OfType<NewtonsoftJsonPatchInputFormatter>()
+                .First();
         }
     }
 }

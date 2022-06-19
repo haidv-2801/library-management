@@ -119,6 +119,17 @@ const END_POINT = (function () {
      * *Endpoint report
      */
     TOE_SCORE_CARD: host + 'api/scorecard',
+    TOE_BOOK_BORROWED: host + 'api/top-book-borrowed',
+
+    /**
+     * *Endpoint librarycard
+     */
+    TOE_INSERT_LIBRARY_CARD: host + 'api/LibraryCard',
+    TOE_UPDATE_LIBRARY_CARD: host + 'api/LibraryCard/{0}',
+    TOE_DELETE_LIBRARY_CARD: host + 'api/LibraryCard/{0}',
+    TOE_LIBRARY_CARD_FILTER: host + 'api/LibraryCard/Filter',
+    TOE_GET_CATEGORY_BY_ID: host + 'api/LibraryCard/{0}',
+    TOE_GET_NEXT_CARD_CODE: host + 'api/LibraryCard/NextCardCode',
   };
 })();
 

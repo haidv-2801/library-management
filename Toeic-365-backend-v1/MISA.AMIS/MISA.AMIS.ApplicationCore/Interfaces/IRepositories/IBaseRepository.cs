@@ -35,7 +35,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         /// <param name="entityId">Id của bản ghi</param>
         /// <returns>Bản ghi thông tin 1 bản ghi</return
         /// CREATED BY: DVHAI (07/07/2021)
-        TEntity GetEntityById(Guid entityId);
+        Task<TEntity> GetEntityById(Guid entityId);
 
         /// <summary>
         /// Thêm bản ghi
@@ -45,6 +45,15 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         /// CREATED BY: DVHAI (07/07/2021)
         int Insert(TEntity enitity);
 
+
+        /// <summary>
+        /// Update thông tin bản ghi
+        /// </summary>
+        /// <param name="enitity">Thông tin bản ghi</param>
+        /// <returns>Số bản ghi</returns>
+        /// CREATED BY: DVHAI (07/07/2021)
+        int PatchUpdate(TEntity enitity);
+
         /// <summary>
         /// Cập nhập thông tin bản ghi
         /// </summary>
@@ -52,7 +61,8 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         /// <param name="entity">Thông tin bản ghi</param>
         /// <returns>Số bản ghi bị ảnh hưởng</returns>
         /// CREATED BY: DVHAI (07/07/2021)
-        int Update(Guid entityId, TEntity entity);
+        
+        Task<int> Update(Guid entityId, TEntity entity);
 
         /// <summary>
         /// Xóa bản ghi

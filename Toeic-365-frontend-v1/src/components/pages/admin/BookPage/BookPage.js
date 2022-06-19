@@ -1,15 +1,18 @@
-import { PlusOutlined } from '@ant-design/icons';
-import { Tooltip } from 'antd';
+import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import { Tag, Tooltip } from 'antd';
+import FileSaver from 'file-saver';
 import moment from 'moment';
 import { Chip } from 'primereact/chip';
 import { Skeleton } from 'primereact/skeleton';
 import { Toast } from 'primereact/toast';
 import PropTypes from 'prop-types';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'react-string-format';
 import baseApi from '../../../../api/baseApi';
-import { useDispatch, useSelector } from 'react-redux';
+import { uploadFiles } from '../../../../api/firebase';
+import { getUserName } from '../../../../constants/commonAuth';
 import {
   ADMIN_BOOK_PAGE_BOLUMN_SEARCH,
   BOOK_FORMAT,
@@ -19,7 +22,6 @@ import {
   GUID_NULL,
   LOCAL_STORATE_KEY,
   MAXIMUM_PAGESIZE,
-  MENU_TYPE,
   OPERATOR,
   TEXT_FALL_BACK,
 } from '../../../../constants/commonConstant';
@@ -29,25 +31,19 @@ import {
   ParseJson,
 } from '../../../../constants/commonFunction';
 import END_POINT from '../../../../constants/endpoint';
+import { getLocalStorage } from '../../../../contexts/authContext';
 import Button from '../../../atomics/base/Button/Button';
 import Input from '../../../atomics/base/Input/Input';
+import Overlay from '../../../atomics/base/Overlay/Overlay';
+import SideBar from '../../../atomics/base/SideBar/SideBar';
 import SmartText from '../../../atomics/base/SmartText/SmartText';
-import TreeSelect from '../../../atomics/base/TreeSelect/TreeSelect';
+import Spinner from '../../../atomics/base/Spinner/Spinner';
+import FilterEngine from '../../../molecules/FilterEngine/FilterEngine';
 import Paginator from '../../../molecules/Paginator/Paginator';
 import Table from '../../../molecules/Table/Table';
 import Layout from '../../../sections/Admin/Layout/Layout';
-import PopupCreateBook from './PopupCreateBook/PopupCreateBook';
-import FilterEngine from '../../../molecules/FilterEngine/FilterEngine';
-import SideBar from '../../../atomics/base/SideBar/SideBar';
-import { SearchOutlined } from '@ant-design/icons';
-import { getUserName } from '../../../../constants/commonAuth';
-import { uploadFiles } from '../../../../api/firebase';
-import fileDownload from 'js-file-download';
-import FileSaver, { saveAs } from 'file-saver';
-import Spinner from '../../../atomics/base/Spinner/Spinner';
 import './bookPage.scss';
-import Overlay from '../../../atomics/base/Overlay/Overlay';
-import { getLocalStorage } from '../../../../contexts/authContext';
+import PopupCreateBook from './PopupCreateBook/PopupCreateBook';
 
 BookPage.propTypes = {
   id: PropTypes.string,
@@ -100,7 +96,6 @@ function BookPage(props) {
     },
     {
       field: 'description',
-      sortable: true,
       header: 'Mô tả',
       filterField: 'description',
       body: (row) => {
@@ -118,7 +113,6 @@ function BookPage(props) {
     },
     {
       field: 'bookFormat',
-      sortable: true,
       header: 'Loại tài liệu',
       filterField: 'bookFormat',
       body: (row) => renderBookFormat(row),
@@ -126,23 +120,20 @@ function BookPage(props) {
     },
     {
       field: 'image',
-      sortable: true,
       header: 'Hình ảnh',
       filterField: 'image',
       body: (row) => renderBookImage(row),
       style: { width: 200, maxWidth: 200 },
     },
     {
-      field: 'categoryID',
-      sortable: true,
-      header: 'Thể loại',
-      filterField: 'categoryID',
-      body: (row) => renderBookCategory(row),
+      field: 'isPrivate',
+      header: 'Phạm vi truy cập',
+      filterField: 'isPrivate',
+      body: (row) => renderAccessScope(row),
       style: { width: 200, maxWidth: 200 },
     },
     {
       field: 'status',
-      sortable: true,
       header: 'Trạng thái',
       filterField: 'status',
       body: (row) => {
@@ -198,9 +189,12 @@ function BookPage(props) {
   const [filterValue, setFilterValue] = useState(DEFAULT_FILTER_VALUE);
   const [filterCount, setFilterCount] = useState(0);
   const [showFilter, setShowFilter] = useState(false);
-  const refreshFilterKey = useRef(0);
   const [dataCategory, setDataCategory] = useState(DEFAULT_DATA_CATE);
-  const [dataCreate, setDataCreate] = useState({});
+  const [dataCreate, setDataCreate] = useState({
+    languageCode: 'vi',
+    bookFormat: BOOK_FORMAT.EBOOK,
+  });
+  const refreshFilterKey = useRef(0);
 
   const OPTIONS = [
     {
@@ -701,10 +695,19 @@ function BookPage(props) {
     );
   }
 
-  function renderBookCategory(row) {
+  function renderAccessScope(row) {
     if (isLoading) return <Skeleton></Skeleton>;
     return (
-      <SmartText innnerClassName="toe-font-label">{row.categoryID}</SmartText>
+      <div className="flex align-items-center">
+        <Tag color={row.isPrivate ? '#FF8800' : '#28a745'}>
+          {row.isPrivate ? 'Private' : 'Public'}
+        </Tag>
+        {row.isPrivate ? (
+          <Tooltip title={'Tài liệu chỉ cho phép truy cập nội bộ'}>
+            <i className="pi pi-info-circle"></i>
+          </Tooltip>
+        ) : null}
+      </div>
     );
   }
   //#endregion
@@ -823,6 +826,7 @@ function BookPage(props) {
             onChange={(data) => {
               setDataCreate({ ...dataCreate, ...data });
             }}
+            defaultValue={dataCreate}
             dataCategory={dataCategory}
             {...getPopupCreateUserPops()}
           />

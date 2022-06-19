@@ -14,7 +14,10 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
 
         Task<string> GetNextBookOrderCode();
 
-
         Task<long> GetTotalBookOrdered();
+
+        Task<IEnumerable<BookOrderTopReportDTO>> TopBookBorrowed();
+
+        Task<long> CountTotalBookUserLoanByOrderStatus(List<string> orderStatus, Guid accountID);
     }
 }

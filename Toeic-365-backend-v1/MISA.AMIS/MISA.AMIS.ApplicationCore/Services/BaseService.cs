@@ -206,9 +206,9 @@ namespace TOE.TOEIC.ApplicationCore
         /// <param name="entityId">Id của bản ghi</param>
         /// <returns>Bản ghi duy nhất</returns>
         /// CREATED BY: DVHAI (11/07/2021)
-        public TEntity GetEntityById(Guid entityId)
+        public async Task<TEntity> GetEntityById(Guid entityId)
         {
-            var entity = _baseRepository.GetEntityById(entityId);
+            var entity = await _baseRepository.GetEntityById(entityId);
             return entity;
         }
 
@@ -258,7 +258,7 @@ namespace TOE.TOEIC.ApplicationCore
         /// <param name="entity">Thông tin bản ghi</param>
         /// <returns>Số bản ghi bị ảnh hưởng</returns>
         /// CREATED BY: DVHAI (11/07/2021)
-        public ServiceResult Update(Guid entityId, TEntity entity)
+        public async Task<ServiceResult> Update(Guid entityId, TEntity entity)
         {
             //0.Custom lại giá trị khi update
             entity = CustomValueWhenUpdate(entity);
@@ -270,7 +270,7 @@ namespace TOE.TOEIC.ApplicationCore
             var isValid = Validate(entity);
             if (isValid)
             {
-                int rowAffects = _baseRepository.Update(entityId, entity);
+                int rowAffects = await _baseRepository.Update(entityId, entity);
                 _serviceResult.Data = rowAffects;
                 if (rowAffects > 0)
                 {

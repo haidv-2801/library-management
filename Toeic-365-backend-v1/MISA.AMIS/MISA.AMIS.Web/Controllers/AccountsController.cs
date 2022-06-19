@@ -93,12 +93,12 @@ namespace TOE.TOEIC.Web.Controllers
         [EnableCors("AllowCROSPolicy")]
         [AllowAnonymous]
         [HttpPut("/api/Accounts/ChangePassword/{id}")]
-        public IActionResult ChangePassword([FromRoute][Required] string id, [FromBody][Required] AccountPasswordChangeDTO entity)
+        public async Task<IActionResult> ChangePassword([FromRoute][Required] string id, [FromBody][Required] AccountPasswordChangeDTO entity)
         {
             var res = new ServiceResult();
             try
             {
-                res = _accountService.ChangePassword(Guid.Parse(id), entity);
+                res = await _accountService.ChangePassword(Guid.Parse(id), entity);
                 if (res.TOECode == TOECode.InValid || res.TOECode == TOECode.Fail)
                     return BadRequest(res);
                 return Ok(res);
@@ -107,7 +107,6 @@ namespace TOE.TOEIC.Web.Controllers
             {
                 return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
             }
-            return Ok(null);
         }
         #endregion
     }

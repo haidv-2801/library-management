@@ -59,7 +59,7 @@ import ToastConfirmDelete from '../../../molecules/ToastConfirmDelete/ToastConfi
 import ScoreCard from '../../../molecules/ScoreCard/ScoreCard';
 import { ImBook } from 'react-icons/im';
 import { FaUserFriends, FaReceipt, FaNewspaper } from 'react-icons/fa';
-import { MdAssignmentReturned } from 'react-icons/md';
+import MostBorrowedBookChart from './Control/MostBorrowedBookChart/MostBorrowedBookChart';
 
 DashBoardPage.propTypes = {
   id: PropTypes.string,
@@ -81,10 +81,12 @@ function DashBoardPage(props) {
   //#region state
   const [isLoading, setIsLoading] = useState(false);
   const [dataScoreCard, setDataScoreCard] = useState({});
+  const [topBookBorrowed, setTopBookBorrowed] = useState([]);
   //#endregion
 
   useEffect(() => {
     callApiGetDataScoreCard();
+    getTopBookBorrowed();
   }, []);
 
   //#region
@@ -107,6 +109,34 @@ function DashBoardPage(props) {
       END_POINT.TOE_SCORE_CARD,
       null,
       null
+    );
+  };
+
+  const getTopBookBorrowed = () => {
+    baseApi.get(
+      (res) => {
+        setTopBookBorrowed(res);
+        setIsLoading(false);
+      },
+      (err) => {
+        setIsLoading(false);
+      },
+      () => {
+        setIsLoading(true);
+      },
+      END_POINT.TOE_BOOK_BORROWED,
+      null,
+      null
+    );
+  };
+
+  const renderNoData = () => {
+    return (
+      <img
+        width={200}
+        src={require('../../../../assets/images/nodata/nodata-chart.jpg')}
+        alt="nodata"
+      />
     );
   };
   //#endregion
@@ -143,6 +173,27 @@ function DashBoardPage(props) {
             value={dataScoreCard?.totalLibraryCards ?? 0}
             isLoading={isLoading}
           />
+        </div>
+        <div className="toe-dashboard-page__section chart">
+          <div className="top-most-borrowed-book">
+            <div className="top-most-borrowed-book__title toe-font-title">
+              Sách mượn nhiều
+            </div>
+            <div className="top-most-borrowed-book__chart">
+              {!topBookBorrowed.length && !isLoading ? (
+                renderNoData()
+              ) : (
+                <MostBorrowedBookChart
+                  data={topBookBorrowed.map((item) => ({
+                    label: item.bookCode,
+                    value: item.quantity,
+                    name: item.bookName,
+                  }))}
+                />
+              )}
+            </div>
+          </div>
+          <div className="top-most-borrowed-book"></div>
         </div>
       </div>
     </Layout>

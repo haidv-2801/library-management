@@ -20,6 +20,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
+using TOE.TOEIC.ApplicationCore.Helpers;
 
 namespace TOE.TOEIC.ApplicationCore.Interfaces
 {
@@ -37,10 +38,21 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
             _config = config;
         }
 
-        public async Task<long> GetTotalLibraryCard() => await _libraryCardRepository.GetTotalLibraryCard();
         #endregion
 
         #region Methods
+        public async Task<LibraryCard> GetLibraryCardByAccountID(Guid accountID) => await _libraryCardRepository.GetLibraryCardByAccountID(accountID);
+
+        public async Task<long> GetTotalLibraryCard() => await _libraryCardRepository.GetTotalLibraryCard();
+
+        public async Task<string> GetNextBookOrderCode() => FunctionHelper.NextRecordCode(await _libraryCardRepository.GetNextCardCode());
+
+        public async Task<string> GetNextCardCode()
+        {
+            var code = await _libraryCardRepository.GetNextCardCode();
+            if (code == null) return "LC000001";
+            else return FunctionHelper.NextRecordCode(code);
+        }
         #endregion
     }
 }

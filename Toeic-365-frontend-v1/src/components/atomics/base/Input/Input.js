@@ -94,7 +94,7 @@ function Input(props) {
     onBlur,
   } = props;
   const ref = useRef('');
-  const [delayValue, setDelayValue] = useState(value);
+  const [delayValue, setDelayValue] = useState(defaultValue);
 
   useEffect(() => {
     let timeOutId = null;

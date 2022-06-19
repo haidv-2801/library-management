@@ -55,7 +55,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         /// <param name="entityId"></param>
         /// <returns></returns>
         /// CREATED BY: DVHAI (11/07/2021)
-        public TEntity GetEntityById(Guid entityId)
+        public async Task<TEntity> GetEntityById(Guid entityId)
         {
             //1. Lấy tên của khóa chính
             var keyName = GetKeyProperty().Name;
@@ -64,7 +64,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
             dynamicParams.Add($"@v_{keyName}", entityId);
 
             //2. Tạo kết nối và truy vấn
-            var entity = _dbConnection.Query<TEntity>($"Proc_Get{_tableName}ById", param: dynamicParams, commandType: CommandType.StoredProcedure).FirstOrDefault();
+            var entity = await _dbConnection.QueryFirstOrDefaultAsync<TEntity>($"Proc_Get{_tableName}ById", param: dynamicParams, commandType: CommandType.StoredProcedure);
 
             //3. Trả về dữ liệu
             return entity;
@@ -143,7 +143,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         /// <param name="entity"></param>
         /// <returns></returns>
         /// CREATED BY: DVHAI (11/07/2021)
-        public int Update(Guid entityId, TEntity entity)
+        public async Task<int> Update(Guid entityId, TEntity entity)
         {
             var rowAffects = 0;
             _dbConnection.Open();
@@ -161,7 +161,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
 
 
                     //3. Kết nối tới CSDL:
-                    rowAffects = _dbConnection.Execute($"Proc_Update{_tableName}", param: parameters, transaction: transaction, commandType: CommandType.StoredProcedure);
+                    rowAffects = await _dbConnection.ExecuteAsync($"Proc_Update{_tableName}", param: parameters, transaction: transaction, commandType: CommandType.StoredProcedure);
 
                     transaction.Commit();
                 }
@@ -333,6 +333,11 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         }
 
         public async Task<IEnumerable<TEntity>> QueryUsingCommandTextAsync(string commandText) => (await _dbConnection.QueryAsync<TEntity>(commandText, commandType: CommandType.Text)).ToList();
+
+        public int PatchUpdate(TEntity enitity)
+        {
+            throw new NotImplementedException();
+        }
 
         #endregion
     }

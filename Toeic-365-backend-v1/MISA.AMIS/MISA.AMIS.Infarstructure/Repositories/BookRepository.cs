@@ -27,6 +27,13 @@ namespace TOE.TOEIC.Infrastructure
         #endregion
 
         #region Method
+        public async Task<List<BookItem>> GetBooksByIDs(string ids)
+        {
+            var dynamicParams = new DynamicParameters();
+            dynamicParams.Add("@v_bookids", ids, DbType.String);
+            return (await _dbConnection.QueryAsync<BookItem>("Proc_GetBooksByIDs", param: dynamicParams, commandType: CommandType.StoredProcedure)).ToList();
+        }
+
         public async Task<string> GetNextBookCode() => await _dbConnection.QueryFirstOrDefaultAsync<string>("Proc_NextBookCode", commandType: CommandType.StoredProcedure);
 
         public async Task<long> GetTotalBook() => await _dbConnection.QueryFirstOrDefaultAsync<long>("Proc_GetTotalBook", commandType: CommandType.StoredProcedure);

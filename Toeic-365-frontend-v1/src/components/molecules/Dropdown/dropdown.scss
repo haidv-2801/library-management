@@ -6,6 +6,10 @@
   border-color: #bbbbbb !important;
   --main-color: #0d4e96;
 
+  &.p-disabled {
+    background-color: #e9ebee;
+  }
+
   &__wrapper {
     width: 100%;
   }

@@ -97,7 +97,7 @@ export const OPERATOR = {
   NOT_EQUAL: '<>',
 };
 
-export const PAGEGING = [10, 20, 50];
+export const PAGEGING = [5, 10, 20, 50];
 
 export const POST_TYPE = {
   NEWS: 0,
@@ -108,6 +108,11 @@ export const POST_TYPE = {
 export const BOOK_FORMAT = {
   EBOOK: 0, //Tài liệu điện tử
   PAPER_BACK: 1, //Tài liệu giấy
+};
+
+export const BOOK_TYPE = {
+  SYLLABUS: false, //Giáo trình
+  REFERENCE_BOOK: true, //Tài liệu tham khảo
 };
 
 export const GUID_NULL = '00000000-0000-0000-0000-000000000000';
@@ -157,15 +162,6 @@ export const STATUS_CODE = {
   BAD_REQUEST: 300,
 };
 
-/**
- * !Loại bạn đọc
- */
-export const MEMBER_TYPE = {
-  GUEST: 2,
-  STUDENT: 1,
-  LECTURER: 0,
-};
-
 export const DAYS_OF_WEEK = [
   '',
   'Thứ Hai',
@@ -194,7 +190,7 @@ export const ACCEPT_FILE_PDF = 'application/pdf';
 
 export const LANGUAGE = [
   {
-    LanguageName: 'Vietnamese',
+    LanguageName: 'Việt Nam',
     LanguageCode: 'vi',
     CriterionID: 1040,
   },
@@ -498,6 +494,8 @@ export const LOCAL_STORATE_KEY = {
   BOOK_CODE_FROM_BOOK_LENDING: 'BOOK_CODE_FROM_BOOK_LENDING',
   REMEMBER_ME: 'REMEMBER_ME',
   AVATAR: 'AVATAR',
+  MEMBER_INFO: 'MEMBER_INFO',
+  USER_INFO: 'USER_INFO',
 };
 
 export const FILTER_TIME_VALUE = {
@@ -515,3 +513,14 @@ export const FILTER_TIME_VALUE = {
 };
 
 export const COLUMN_NOT_EXPORT = ['checkbox', 'option'];
+
+export const WEB_MAIL = 'thuvien365@gmail.com';
+
+/**
+ * !Loại bạn đọc
+ */
+export const MEMBER_TYPE = {
+  GUEST: 2,
+  STUDENT: 1,
+  LECTURER: 0,
+};

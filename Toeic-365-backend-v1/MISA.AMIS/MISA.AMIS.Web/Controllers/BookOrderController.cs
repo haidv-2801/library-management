@@ -24,7 +24,7 @@ namespace TOE.TOEIC.Web.Controllers
     [ApiController]
     public class BookOrderController : BaseEntityController<BookOrder>
     {
-        #region DeclareIBookOrderService _bookOrderService;
+        #region Declare
         IBookOrderService _bookOrderService;
         IBaseService<BookOrderViewDTO> _bookOrderViewService;
         ILogger<BookOrder> _logger;

@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { WEB_MAIL } from '../../../../constants/commonConstant';
 import { buildClass } from '../../../../constants/commonFunction';
 import Button from '../../../atomics/base/Button/Button';
 import Input from '../../../atomics/base/Input/Input';
@@ -66,14 +67,14 @@ function Footer(props) {
           {' '}
           Email hỗ trợ:
         </span>
-        <Input style={{ width: 400 }} placeholder={'thuvien365@gmail.com'} />
+        <Input style={{ width: 400 }} placeholder={WEB_MAIL} />
         <Button className="footer-bottom__btn-send" name={'Gửi'} />
       </div>
       <div className="footer-copyright">
         © 2021 Copyright:
         <Link className="text-white" to="#">
           {' '}
-          Thuvien365@gmail.com
+          {WEB_MAIL}
         </Link>
       </div>
     </footer>

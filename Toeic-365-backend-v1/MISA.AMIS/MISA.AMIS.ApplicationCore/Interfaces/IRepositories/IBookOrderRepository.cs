@@ -12,7 +12,8 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
     /// CREATED BY: DVHAI (07/07/2021)
     public interface IBookOrderRepository : IBaseRepository<BookOrder>
     {
-
         Task<string> GetNextBookOrderCode();
+
+        Task<long> CountTotalBookUserLoanByOrderStatus(string orderStatus, Guid accountID);
     }
 }
