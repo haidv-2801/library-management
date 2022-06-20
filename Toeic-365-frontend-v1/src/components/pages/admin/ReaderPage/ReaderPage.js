@@ -59,50 +59,69 @@ function ReaderPage(props) {
       headerStyle: { width: '4em' },
     },
     {
-      field: 'title',
+      field: 'cardCode',
       sortable: true,
-      header: <SmartText>Tiêu đề</SmartText>,
-      filterField: 'title',
+      header: <SmartText>Mã thẻ</SmartText>,
+      filterField: 'cardCode',
       body: (row) => {
-        return <SmartText maxWidth={300}>{row?.title}</SmartText>;
+        return <SmartText maxWidth={150}>{row?.cardCode}</SmartText>;
       },
-      style: { width: 300, maxWidth: 300 },
+      style: { width: 150, maxWidth: 150 },
     },
     {
-      field: 'description',
+      field: 'joinDate',
       sortable: true,
-      header: <SmartText>Mô tả</SmartText>,
-      filterField: 'description',
+      header: <SmartText>Ngày tham gia</SmartText>,
+      filterField: 'joinDate',
       body: (row) => {
+        if (isLoading) return <Skeleton></Skeleton>;
+
         return (
           <div className="toe-font-body">
-            {<SmartText rows={4}>{row?.description}</SmartText>}
-          </div>
-        );
-      },
-      style: { width: 400, maxWidth: 400 },
-    },
-    {
-      field: 'slug',
-      sortable: true,
-      header: 'Alias',
-      filterField: 'slug',
-      body: (row) => {
-        return (
-          <div className="toe-font-body">
-            {<SmartText rows={4}>{row?.slug}</SmartText>}
+            {moment(row?.joinDate).format(DATE_FORMAT.TYPE_1)}
           </div>
         );
       },
       style: { width: 200, maxWidth: 200 },
     },
     {
-      field: 'viewCount',
+      field: 'expiredDate',
       sortable: true,
-      header: 'Lượt truy cập',
-      filterField: 'viewCount',
+      header: 'Ngày hết hạn',
+      filterField: 'expiredDate',
       body: (row) => {
-        return <div className="toe-font-body">{row?.viewCount}</div>;
+        if (isLoading) return <Skeleton></Skeleton>;
+
+        return (
+          <div className="toe-font-body">
+            {moment(row?.expiredDate).format(DATE_FORMAT.TYPE_1)}
+          </div>
+        );
+      },
+      style: { width: 200, maxWidth: 200 },
+    },
+    {
+      field: 'memberType',
+      sortable: true,
+      header: 'Loại thành viên',
+      filterField: 'memberType',
+      body: (row) => {
+        if (isLoading) return <Skeleton></Skeleton>;
+        let text = 'Không xác định';
+        switch (row?.memberType) {
+          case MEMBER_TYPE.GUEST:
+            text = 'Khách';
+            break;
+          case MEMBER_TYPE.LECTURER:
+            text = 'Giảng viên';
+            break;
+          case MEMBER_TYPE.GUEST:
+            text = 'Sinh viên';
+            break;
+          default:
+            break;
+        }
+        return <div className="toe-font-body">{text}</div>;
       },
       style: { width: 200, maxWidth: 200 },
     },
@@ -114,7 +133,7 @@ function ReaderPage(props) {
       body: (row) => {
         return <div className="toe-font-body">{renderStatus(row?.status)}</div>;
       },
-      style: { width: 300, maxWidth: 300 },
+      style: { width: 150, maxWidth: 150 },
     },
     {
       field: 'createdDate',
@@ -183,6 +202,7 @@ function ReaderPage(props) {
     menuID: -1,
   });
   const [dataMenus, setDataMenus] = useState([]);
+  const isMountedRef = useRef(false);
 
   const OPTIONS = [
     {
@@ -219,7 +239,9 @@ function ReaderPage(props) {
         </div>
       ),
       value: 3,
-      onClick: ({ key }) => handleRemove(key),
+      onClick: ({ key }) => {
+        handleRemove(key);
+      },
     },
   ];
 
@@ -228,7 +250,7 @@ function ReaderPage(props) {
      * *Config
      */
     resizableColumns: false,
-    dataKey: 'postID',
+    dataKey: 'cardID',
     selectionMode: isLoading ? null : 'checkbox',
     sortField: lazyParams?.sortField,
     sortOrder: lazyParams?.sortOrder,
@@ -254,13 +276,16 @@ function ReaderPage(props) {
   };
 
   useEffect(() => {
-    getPostsFilter();
+    isMountedRef.current = true;
     getMenus();
+
+    return () => {
+      isMountedRef.current = false;
+    };
   }, []);
 
   useEffect(() => {
-    if (isLoading) return;
-    getPostsFilter();
+    getLibraryCardFilter();
   }, [paging]);
 
   const getPopupCreateUserPops = () => {
@@ -291,38 +316,29 @@ function ReaderPage(props) {
     }
   };
 
-  const getPostsFilter = () => {
+  const getLibraryCardFilter = () => {
     let _filter = [['IsDeleted', OPERATOR.EQUAL, '0']];
     if (paging.filterValue?.trim() != '') {
       _filter.push(OPERATOR.AND);
       _filter.push([
-        ['Title', OPERATOR.CONTAINS, encodeURI(paging.filterValue)],
-        OPERATOR.OR,
-        ['Slug', OPERATOR.CONTAINS, encodeURI(paging.filterValue)],
-        OPERATOR.OR,
-        ['Description', OPERATOR.CONTAINS, encodeURI(paging.filterValue)],
+        ['CardCode', OPERATOR.CONTAINS, encodeURI(paging.filterValue)],
       ]);
-    }
-
-    if (paging.menuID != -1) {
-      _filter.push(OPERATOR.AND);
-      _filter.push(['MenuID', OPERATOR.EQUAL, paging.menuID]);
     }
 
     baseApi.post(
       (res) => {
-        let _data = res.data.pageData
-          .sort((a, b) => {
-            const time = (date) => new Date(date).getTime();
-            if (time(b?.createdDate) - time(a?.modifiedDate) > 0) {
-              return time(b?.createdDate) - time(a?.createdDate);
-            } else {
-              return time(b?.modifiedDate) - time(a?.modifiedDate);
-            }
-          })
-          .filter((menu) => menu.parentID !== GUID_NULL);
+        if (!isMountedRef.current) return;
 
-        setDataTable(_data.map((_) => ({ ..._, key: _.postId })));
+        let _data = res.data.pageData.sort((a, b) => {
+          const time = (date) => new Date(date).getTime();
+          if (time(b?.createdDate) - time(a?.modifiedDate) > 0) {
+            return time(b?.createdDate) - time(a?.createdDate);
+          } else {
+            return time(b?.modifiedDate) - time(a?.modifiedDate);
+          }
+        });
+
+        setDataTable(_data.map((_) => ({ ..._, key: _.cardID })));
         setIsLoading(false);
         setTotalRecords(res.data.totalRecord);
         requestDoneRef.current = true;
@@ -335,7 +351,7 @@ function ReaderPage(props) {
         setIsLoading(true);
         requestDoneRef.current = false;
       },
-      END_POINT.TOE_GET_POSTS_FILTER,
+      END_POINT.TOE_LIBRARY_CARD_FILTER,
       {
         filter: btoa(JSON.stringify(_filter)),
         pageSize: paging.pageSize,
@@ -350,7 +366,7 @@ function ReaderPage(props) {
   };
 
   const handleActive = (key) => {
-    let _body = dataTable.filter((item) => item?.postID === key);
+    let _body = dataTable.filter((item) => item?.cardID === key);
     if (_body.length) {
       _body = _body[0];
       _body['status'] = !_body['status'];
@@ -365,7 +381,7 @@ function ReaderPage(props) {
               detail: 'Sửa thành công',
               life: 3000,
             });
-            getPostsFilter();
+            getLibraryCardFilter();
           }
         },
         (err) => {
@@ -377,7 +393,7 @@ function ReaderPage(props) {
           });
         },
         () => {},
-        format(END_POINT.TOE_UPDATE_POST, _body?.postID),
+        format(END_POINT.TOE_UPDATE_LIBRARY_CARD, _body?.cardID),
         _body,
         null
       );
@@ -387,6 +403,8 @@ function ReaderPage(props) {
   const getMenus = () => {
     baseApi.get(
       (res) => {
+        if (!isMountedRef.current) return;
+
         let _data = res.data.data.map((item) => ({
           ...item,
           key: item?.MenuID,
@@ -419,8 +437,10 @@ function ReaderPage(props) {
   };
 
   const handleRemove = (key) => {
+    debugger;
     baseApi.delete(
       (res) => {
+        if (!isMountedRef.current) return;
         if (res.data > 0) {
           toast.current.show({
             severity: 'success',
@@ -428,7 +448,7 @@ function ReaderPage(props) {
             detail: 'Xóa thành công',
             life: 3000,
           });
-          getPostsFilter();
+          getLibraryCardFilter();
         } else {
           toast.current.show({
             severity: 'error',
@@ -447,7 +467,7 @@ function ReaderPage(props) {
         });
       },
       () => {},
-      format(END_POINT.TOE_DELETE_POST, key)
+      format(END_POINT.TOE_DELETE_LIBRARY_CARD, key)
     );
   };
 
@@ -491,7 +511,7 @@ function ReaderPage(props) {
 
   return (
     <Layout
-      title="Quản lý bài đăng"
+      title="Quản lý thẻ thư viện"
       rightButtons={[
         <Button
           onClick={() => {
@@ -499,7 +519,7 @@ function ReaderPage(props) {
           }}
           leftIcon={<PlusOutlined />}
           type={BUTTON_TYPE.LEFT_ICON}
-          name="Thêm bài đăng"
+          name="Thêm thẻ thư viện"
         />,
       ]}
     >
@@ -532,16 +552,6 @@ function ReaderPage(props) {
                 setPaging((pre) => ({ ...pre, menuID: data.value }));
               }}
             />
-
-            {/* <Dropdown
-              className="dropdown-filter-by-menu"
-              defaultValue={paging.type}
-              options={DROPDOWN_TYPE_OPTIONS}
-              hasSubLabel
-              prefixValue={'Loại Menu'}
-              scrollHeight={350}
-              onChange={({ value }) => setPaging({ ...paging, type: value })}
-            /> */}
           </div>
           {selected?.length ? (
             <Tooltip placement="bottomLeft" title="Xóa bản ghi">

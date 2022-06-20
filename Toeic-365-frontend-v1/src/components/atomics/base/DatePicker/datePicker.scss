@@ -1,6 +1,11 @@
 .toe-datepicker {
   width: 100%;
 
+  &.p-calendar-disabled {
+    background-color: #e9ebee;
+    border-radius: 8px;
+  }
+
   &__input {
     height: 40px;
     padding: 0;

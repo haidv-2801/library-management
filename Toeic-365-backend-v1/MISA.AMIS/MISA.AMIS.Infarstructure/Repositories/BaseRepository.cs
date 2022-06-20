@@ -119,7 +119,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
                 {
                     //1.Duyệt các thuộc tính trên bản ghi và tạo parameters
                     var parameters = MappingDbType(entity);
-                    parameters.RemoveUnused = true;
+                    //parameters.RemoveUnused = true;
 
                     //2.Thực hiện thêm bản ghi
                     rowAffects = _dbConnection.Execute($"Proc_Insert{_tableName}", param: parameters, transaction: transaction, commandType: CommandType.StoredProcedure);

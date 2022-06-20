@@ -1,15 +1,16 @@
 import { CameraOutlined, SaveOutlined } from '@ant-design/icons';
 import { Tag, Tooltip } from 'antd';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, isArray, isEmpty } from 'lodash';
 import moment from 'moment';
 import { Badge } from 'primereact/badge';
 import { Skeleton } from 'primereact/skeleton';
 import { Toast } from 'primereact/toast';
 import PropTypes from 'prop-types';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useDebugValue, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { format } from 'react-string-format';
 import baseApi from '../../../../api/baseApi';
+import { uploadFiles } from '../../../../api/firebase';
 import {
   getAccountName,
   getFullName,
@@ -21,7 +22,6 @@ import {
   BUTTON_TYPE,
   COMMON_AVATAR,
   DATE_FORMAT,
-  GUID_NULL,
   LOCAL_STORATE_KEY,
   MAXIMUM_PAGESIZE,
   MEMBER_TYPE,
@@ -59,10 +59,8 @@ import Book from '../../../molecules/Book/Book';
 import Dropdown from '../../../molecules/Dropdown/Dropdown';
 import Table from '../../../molecules/Table/Table';
 import Layout from '../../../sections/User/Layout/Layout';
-import { getBookFormat, getBookType } from '../function';
-import { isArray, isEmpty } from 'lodash';
+import { getBookFormat } from '../function';
 import './userProfile.scss';
-import { uploadFiles } from '../../../../api/firebase';
 
 UserProfile.propTypes = {
   titlePage: PropTypes.string,
@@ -123,6 +121,7 @@ function UserProfile(props) {
   const cancelRequestRef = useRef(false);
   const toast = useRef(null);
   const inputFile = useRef(null);
+  const isMountedRef = useRef(false);
   const authCtx = useContext(AuthContext);
   const cartCtx = useContext(CartContext);
   const navigate = useNavigate();
@@ -132,6 +131,7 @@ function UserProfile(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [bookCheckout, setBookCheckout] = useState(DEFAULT_BOOK_CHECKOUT);
   const [isRequestBorrowing, setIsRequestBorrowing] = useState(false);
+  const [shouldMember, setShouldMember] = useState(false);
   const [image, setImage] = useState(
     getLocalStorage(LOCAL_STORATE_KEY.AVATAR) ?? COMMON_AVATAR
   );
@@ -280,80 +280,53 @@ function UserProfile(props) {
   const [cart, setCart] = useState([]);
 
   useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
+  useEffect(() => {
     switch (currentView) {
       case slugify(MENU_NAME.ACCOUNT):
         setIsLoading(true);
 
-        getUserByID(getUserID())
-          .then((res) => {
-            let dataAccount = res?.data?.pageData;
-            let dataMember = {},
-              dataDetail = {};
+        let detail = {};
 
-            if (dataAccount?.length) {
-              dataAccount = dataAccount[0];
-              dataDetail = { ...dataAccount };
-              dataMember =
-                ParseJson(
-                  ParseJson(getLocalStorage(LOCAL_STORATE_KEY.MEMBER_INFO))
-                ) || {};
-              setDataDetail(dataDetail);
-              baseApi.get(
-                (res) => {
-                  // debugger;
-                  setDataDetail({ ...dataDetail, cardCode: res });
-                },
-                null,
-                null,
-                END_POINT.TOE_GET_NEXT_CARD_CODE,
-                null,
-                null
-              );
-            }
+        getUserByID()
+          .then((dataDetail) => {
+            let dataAccount = dataDetail?.data?.pageData;
 
-            if (dataMember?.CardID)
-              getLibraryCardByID(dataMember?.CardID)
-                .then((dataLCard) => {
-                  let detail = dataAccount;
-                  let optionParser = ParseJson(dataLCard.option) || {};
+            if (!dataAccount?.length) return;
 
-                  getGeotarget().then((res) => {
-                    if (optionParser?.districts) {
-                      getGeotarget(
-                        GEOTARGET_ENDPOINT.VN_DISTRICT,
-                        optionParser?.province_city_s
-                      ).then((res) => {
-                        getGeotarget(
-                          GEOTARGET_ENDPOINT.VN_WARD_COMMUNE,
-                          optionParser?.districts
-                        ).then((res) => {});
-                      });
-                    }
+            setImage(dataAccount[0].avatar);
+            setLocalStorage(LOCAL_STORATE_KEY.AVATAR, dataAccount[0].avatar);
+            detail = dataAccount[0];
+
+            getLibraryCardByID(detail.accountID)
+              .then((dataLCard) => {
+                let data = dataLCard?.data?.pageData;
+
+                if (!data?.length) return;
+                data = data[0];
+                let optionParser = ParseJson(data.option) || {};
+                detail = { ...detail, ...data, option: optionParser };
+              })
+              .finally(() => {
+                if (!detail?.cardCode) {
+                  getNextCode().then((nextCode) => {
+                    detail = { ...detail, cardCode: nextCode };
+                    setDataDetail(detail);
                   });
-
-                  dataDetail = {
-                    ...detail,
-                    ...dataLCard,
-                    option: optionParser,
-                  };
-
-                  setImage(detail.avatar);
-                  setLocalStorage(LOCAL_STORATE_KEY.AVATAR, detail.avatar);
-                })
-                .catch((err) => {})
-                .finally(() => {
-                  setDataDetail(dataDetail);
-                });
-            setIsLoading(false);
+                } else {
+                  setDataDetail(detail);
+                }
+              });
           })
-          .catch((err) => {
+          .finally(() => {
             setIsLoading(false);
-            const user = window.localStorage.getItem(
-              ParseJson(decodeURIComponent(LOCAL_STORATE_KEY.USER_INFO))
-            );
-          })
-          .finally(() => {});
-        // getGeotarget();
+          });
+
         break;
       case slugify(MENU_NAME.SECURITY):
         break;
@@ -363,7 +336,6 @@ function UserProfile(props) {
         getBooksLendingFilter();
         break;
       case slugify(MENU_NAME.CART):
-        // getBooks();
         break;
       default:
         setIsLoading(false);
@@ -428,6 +400,17 @@ function UserProfile(props) {
     ));
   };
 
+  const getNextCode = () => {
+    return baseApi.get(
+      null,
+      null,
+      null,
+      END_POINT.TOE_GET_NEXT_CARD_CODE,
+      null,
+      null
+    );
+  };
+
   function getGeotarget(endpoint = null, code = null) {
     let completeEndpoint = endpoint ?? GEOTARGET_ENDPOINT.VN_CITY_PROVINCE;
     if (endpoint && code) {
@@ -438,13 +421,6 @@ function UserProfile(props) {
       (res) => {
         switch (endpoint) {
           case GEOTARGET_ENDPOINT.VN_DISTRICT:
-            // setDataGeotarget({
-            //   ...dataGeotarget,
-            //   districts: res.districts.map((item) => ({
-            //     label: item.name,
-            //     value: item.code,
-            //   })),
-            // });
             setDistricts(
               res.districts.map((item) => ({
                 label: item.name,
@@ -453,13 +429,6 @@ function UserProfile(props) {
             );
             break;
           case GEOTARGET_ENDPOINT.VN_WARD_COMMUNE:
-            // setDataGeotarget({
-            //   ...dataGeotarget,
-            //   ward_commune_s: res.wards.map((item) => ({
-            //     label: item.name,
-            //     value: item.code,
-            //   })),
-            // });
             setWardCommnune(
               res.wards.map((item) => ({
                 label: item.name,
@@ -469,14 +438,6 @@ function UserProfile(props) {
             break;
           case null:
           default:
-            // setDataGeotarget({
-            //   ...dataGeotarget,
-            //   province_city_s: res.map((item) => ({
-            //     label: item.name,
-            //     value: item.code,
-            //   })),
-            // });
-
             setProvinceCity(
               res.map((item) => ({
                 label: item.name,
@@ -494,7 +455,8 @@ function UserProfile(props) {
     );
   }
 
-  const getUserByID = (id) => {
+  const getUserByID = () => {
+    const id = getUserID();
     setIsLoading(true);
     const filter = [
       ['IsDeleted', OPERATOR.EQUAL, '0'],
@@ -504,8 +466,8 @@ function UserProfile(props) {
       ['AccountID', OPERATOR.EQUAL, id],
     ];
     return baseApi.post(
-      null,
-      null,
+      (res) => {},
+      (err) => {},
       null,
       END_POINT.TOE_USER_FILTER,
       {
@@ -520,15 +482,52 @@ function UserProfile(props) {
   };
 
   const getLibraryCardByID = (id) => {
-    return baseApi.get(
-      null,
-      null,
-      null,
-      format(END_POINT.TOE_GET_CATEGORY_BY_ID, id),
-      null,
+    if (!id) return Promise.reject();
+    const filter = [
+      ['IsDeleted', OPERATOR.EQUAL, '0'],
+      OPERATOR.AND,
+      ['Status', OPERATOR.EQUAL, '1'],
+      OPERATOR.AND,
+      ['AccountID', OPERATOR.EQUAL, id],
+    ];
+
+    return baseApi.post(
+      (dataLCard) => {
+        let data = dataLCard?.data?.pageData;
+
+        if (!data?.length) return;
+        data = data[0];
+
+        let optionParser = ParseJson(data.option) || {};
+
+        getGeotarget().then((res) => {
+          if (!isMountedRef.current) return;
+          if (optionParser?.districts) {
+            getGeotarget(
+              GEOTARGET_ENDPOINT.VN_DISTRICT,
+              optionParser?.province_city_s
+            ).then((res) => {
+              getGeotarget(
+                GEOTARGET_ENDPOINT.VN_WARD_COMMUNE,
+                optionParser?.districts
+              );
+            });
+          }
+        });
+      },
+      (err) => {},
+      () => {},
+      format(END_POINT.TOE_LIBRARY_CARD_FILTER),
+      {
+        filter: btoa(JSON.stringify(filter)),
+        pageIndex: 1,
+        pageSize: 1,
+      },
       null
     );
   };
+
+  console.log('dataDetail', dataDetail);
 
   const handleChangeMenuView = (value) => {
     if (isLoading) return <Spinner show />;
@@ -584,8 +583,6 @@ function UserProfile(props) {
     fullAddress = fullAddress.filter(Boolean);
     return fullAddress.join(', ');
   };
-
-  console.log('authCtx.isMember()', authCtx.isMember());
 
   var fullAddressText = getFullAddress();
   const accountView = () => {
@@ -666,6 +663,7 @@ function UserProfile(props) {
                       setDataDetail({ ...dataDetail, phoneNumber: e });
                     }}
                     defaultValue={dataDetail?.phoneNumber || null}
+                    disabled={dataDetail?.cardID}
                   />
                   <div className="_col">
                     <div
@@ -687,7 +685,8 @@ function UserProfile(props) {
                         });
                       }}
                       max={new Date()}
-                      defaultValue={dataDetail?.option?.birthDay}
+                      defaultValue={dataDetail?.option?.birthDay || undefined}
+                      disabled={dataDetail?.cardID}
                     />
                   </div>
                 </div>
@@ -706,6 +705,7 @@ function UserProfile(props) {
                       });
                     }}
                     defaultValue={dataDetail?.option?.identityNumber || null}
+                    disabled={dataDetail?.cardID}
                   />
                   <div className="_col">
                     <div
@@ -720,7 +720,7 @@ function UserProfile(props) {
                         setDataDetail({ ...dataDetail, memberType: value })
                       }
                       defaultValue={dataDetail?.memberType}
-                      disabled={authCtx.isMember()}
+                      disabled={!!dataDetail?.cardID}
                     />
                   </div>
                 </div>
@@ -835,7 +835,7 @@ function UserProfile(props) {
             }
             onClick={handleSave}
           />
-          {authCtx.isMember() ? null : (
+          {dataDetail?.cardID || shouldMember ? null : (
             <Button
               {...CONFIG_BUTTON}
               name={'Lưu và đăng ký thành viên'}
@@ -1076,12 +1076,16 @@ function UserProfile(props) {
 
     uploadImg
       .then((imgPath) => {
-        cancelRequestRef.current = true;
         if (imgPath) {
           setImage(imgPath);
           setLocalStorage(LOCAL_STORATE_KEY.AVATAR, imgPath);
         }
         setImageToSave(null);
+        if (
+          dataDetail?.memberType === MEMBER_TYPE.LECTURER ||
+          dataDetail?.memberType === MEMBER_TYPE.GUEST
+        )
+          dataDetail['option'] = { ...dataDetail['option'], studentCode: null };
 
         let _body = {
           ...dataDetail,
@@ -1095,6 +1099,7 @@ function UserProfile(props) {
         let updatePromise = () =>
           baseApi.put(
             (res) => {
+              if (!isMountedRef.current) return;
               if (res.data > 0) {
                 toast.current.show({
                   severity: 'success',
@@ -1139,26 +1144,41 @@ function UserProfile(props) {
                 toast.current.show({
                   severity: 'success',
                   summary: 'Success',
-                  detail: 'Cập nhật thành công',
+                  detail: 'Gửi yêu cầu tạo thẻ thành công',
                   life: 3000,
                 });
-                getLocalStorage(LOCAL_STORATE_KEY.us);
+                setShouldMember(true);
+                setLocalStorage(
+                  LOCAL_STORATE_KEY.MEMBER_INFO,
+                  JSON.stringify(
+                    JSON.stringify({
+                      CardID: _body.cardID,
+                      CardCode: _body.cardCode,
+                      AccountID: _body.accountID,
+                      MemberType: _body.memberType,
+                      TotalBookCheckedOut: _body.totalBookCheckedOut,
+                      TotalBookCheckingOut: _body.totalBookCheckingOut,
+                      Option: _body.option,
+                      JoinDate: _body.joinDate,
+                      ExpiredDate: _body.expiredDate,
+                    })
+                  )
+                );
               } else {
                 toast.current.show({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Cập nhật thất bại',
+                  detail: 'Gửi yêu cầu tạo thẻ thất bại',
                   life: 3000,
                 });
               }
               setIsLoading(false);
-              cancelRequestRef.current = false;
             },
             (err) => {
               let errMessage = err?.response?.data?.data || 'Có lỗi xảy ra';
               toast.current.show({
                 severity: 'error',
-                summary: 'Cập nhật thất bại',
+                summary: 'Gửi yêu cầu tạo thẻ thất bại',
                 detail: errMessage,
                 life: 3000,
               });
@@ -1172,28 +1192,22 @@ function UserProfile(props) {
             null
           );
 
-        let registerMemberPromise = () => {
+        let updateMemberPromise = () => {
           let _endpoint = format(
             END_POINT.TOE_UPDATE_LIBRARY_CARD,
             dataDetail?.cardID
           );
+          debugger;
 
           return baseApi.put(
             (res) => {
               debugger;
             },
-            (err) => {
-              debugger;
-
-              setIsLoading(false);
-              cancelRequestRef.current = false;
-            },
+            (err) => {},
             () => {},
             _endpoint,
             {
               ..._body,
-              joinDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
-              cardCode: 'LC000001',
             },
             null,
             null
@@ -1201,13 +1215,14 @@ function UserProfile(props) {
         };
 
         Promise.all(
-          authCtx.isMember() ? registerMemberPromise() : insertCardPromise(),
+          registerMember ? insertCardPromise() : updateMemberPromise(),
           updatePromise()
         )
-          .then((res) => {
+          .then((res) => {})
+          .catch((err) => {})
+          .finally(() => {
             setIsLoading(false);
-          })
-          .catch((err) => {});
+          });
       })
       .catch((err) => {
         setIsLoading(false);
@@ -1388,6 +1403,7 @@ function UserProfile(props) {
 
     baseApi.post(
       (res) => {
+        if (!isMountedRef.current) return;
         let _data = res.data.pageData;
         setDataTable({
           isLoading: false,
@@ -1532,10 +1548,7 @@ function UserProfile(props) {
 
                 <div className="user-profile__avt-name toe-font-label">
                   Loại bạn đọc:{' '}
-                  {getMemberTypeText(
-                    ParseJson(ParseJson(LOCAL_STORATE_KEY.MEMBER_INFO))
-                      ?.MemberType || 99
-                  )}
+                  {getMemberTypeText(dataDetail?.memberType ?? 99)}
                 </div>
               </div>
               <div className="user-profile__menu toe-font-body">

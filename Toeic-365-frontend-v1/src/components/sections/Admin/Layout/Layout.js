@@ -102,7 +102,6 @@ function Layout(props) {
       label: 'Địa chỉ truy cập',
       className: buildClass(['js-admin-menu-event-safe-address']),
     },
-
     {
       url: '/admin/danh-muc/ban-doc',
       icon: 'pi pi-id-card',
