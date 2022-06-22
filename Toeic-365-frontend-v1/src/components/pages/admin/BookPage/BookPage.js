@@ -27,6 +27,7 @@ import {
 } from '../../../../constants/commonConstant';
 import {
   buildClass,
+  isValidHttpUrl,
   listToTree,
   ParseJson,
 } from '../../../../constants/commonFunction';
@@ -689,7 +690,7 @@ function BookPage(props) {
 
   function renderBookImage(row) {
     if (isLoading) return <Skeleton></Skeleton>;
-
+    if (!isValidHttpUrl(row.image)) return TEXT_FALL_BACK.TYPE_1;
     return (
       <img className="table-image" src={row.image} alt="image" width={100} />
     );

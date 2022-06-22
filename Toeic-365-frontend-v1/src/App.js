@@ -24,13 +24,14 @@ import UserProfile from './components/pages/user/UserProfile/UserProfile';
 import RequiredAuth from './components/sections/RequiredAuth/RequiredAuth';
 import {
   FIXED_MENU_ID,
+  LOCAL_STORATE_KEY,
   MAXIMUM_PAGESIZE,
   OPERATOR,
   PATH_NAME,
   UTC_WEB_TITLE,
 } from './constants/commonConstant';
 import END_POINT from './constants/endpoint';
-import { AuthContext } from './contexts/authContext';
+import { AuthContext, setLocalStorage } from './contexts/authContext';
 import { appAction } from './redux/slices/appSlice';
 import './constants/extension';
 import './main.scss';
@@ -38,6 +39,8 @@ import SafeAddressPage from './components/pages/admin/SafeAddressPage/SafeAddres
 import responsiveObserve from 'antd/lib/_util/responsiveObserve';
 import BooksPageSeeAllPrivate from './components/pages/user/BooksPageSeeAllPrivate/BooksPageSeeAllPrivate';
 import RolePage from './components/pages/admin/RolePage/RolePage';
+import { getUserID } from './constants/commonAuth';
+import { format } from 'react-string-format';
 
 // const MenuPage = React.lazy(() =>
 //   import('./components/pages/admin/MenuPage/MenuPage')
@@ -92,6 +95,7 @@ function App() {
   useEffect(() => {
     document.title = UTC_WEB_TITLE.toUpperCase();
     checkAllowedAccessPrivateDocuments();
+    getUserByID();
   }, []);
 
   const getMenus = (hasPrivateMenu = false) => {
@@ -123,6 +127,22 @@ function App() {
       },
       null
     );
+  };
+
+  const getUserByID = () => {
+    const id = getUserID();
+    if (id) {
+      baseApi.get(
+        (res) => {
+          setLocalStorage(LOCAL_STORATE_KEY.AVATAR, res.avatar);
+        },
+        (err) => {},
+        null,
+        format(END_POINT.TOE_GET_USER_BY_ID, id),
+        null,
+        null
+      );
+    }
   };
 
   const checkAllowedAccessPrivateDocuments = () => {

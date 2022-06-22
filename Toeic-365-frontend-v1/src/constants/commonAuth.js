@@ -28,10 +28,7 @@ export const getAccountName = () => {
 };
 
 export const getFullName = () => {
-  const user = JSON.parse(
-    decodeURIComponent(getLocalStorage(LOCAL_STORATE_KEY.USER_INFO))
-  );
-  return user?.fullName;
+  return getLocalStorage(LOCAL_STORATE_KEY.FULL_NAME);
 };
 
 export const getUserID = () => {

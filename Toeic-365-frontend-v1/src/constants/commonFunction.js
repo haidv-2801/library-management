@@ -6,6 +6,7 @@ import {
   RESERVATION_STATUS,
   FILTER_TIME_VALUE,
   MEMBER_TYPE,
+  CARD_STATUS,
 } from './commonConstant';
 import moment from 'moment';
 
@@ -959,8 +960,8 @@ export const DROPDOWN_STATUS = [
 
 export const requireRegisterView = (navigate) => {
   return (
-    <div className="nodata">
-      Bạn chưa là thành viên của thư viện
+    <div className="nodata" style={{ padding: 16 }}>
+      Bạn chưa là thành viên của thư viện.
       <a
         onClick={() => {
           navigate('/nguoi-dung?view=tai-khoan');
@@ -984,6 +985,24 @@ export const getMemberTypeText = (type) => {
       break;
     case MEMBER_TYPE.STUDENT:
       typeText = 'Sinh viên';
+      break;
+  }
+
+  return typeText;
+};
+
+export const getCardStatusText = (status) => {
+  let typeText = 'Không xác định';
+  switch (status) {
+    case CARD_STATUS.CONFIRMED:
+      typeText = 'Đã xác nhận';
+      break;
+    case CARD_STATUS.REFUSE_COMFIRM:
+      typeText = 'Bị từ chối';
+      break;
+    case CARD_STATUS.CONFIRMING:
+    default:
+      typeText = 'Chưa xác nhận';
       break;
   }
 

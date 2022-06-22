@@ -59,7 +59,9 @@ import Spinner from '../../../atomics/base/Spinner/Spinner';
 import TextAreaBase from '../../../atomics/base/TextArea/TextArea';
 import Book from '../../../molecules/Book/Book';
 import Dropdown from '../../../molecules/Dropdown/Dropdown';
+import LibraryCard from '../../../molecules/LibraryCard/LibraryCard';
 import Table from '../../../molecules/Table/Table';
+import ToastConfirmDelete from '../../../molecules/ToastConfirmDelete/ToastConfirmDelete';
 import Layout from '../../../sections/User/Layout/Layout';
 import { getBookFormat } from '../function';
 import './userProfile.scss';
@@ -95,7 +97,7 @@ function UserProfile(props) {
 
   const userMenu = [
     { label: MENU_NAME.CART, value: slugify(MENU_NAME.CART) },
-    { label: MENU_NAME.LIBRARY_CARD, value: slugify(MENU_NAME.LIBRARY_CARD) },
+    // { label: MENU_NAME.LIBRARY_CARD, value: slugify(MENU_NAME.LIBRARY_CARD) },
     { label: MENU_NAME.ACCOUNT, value: slugify(MENU_NAME.ACCOUNT) },
     { label: MENU_NAME.SECURITY, value: slugify(MENU_NAME.SECURITY) },
     { label: MENU_NAME.BORROW_RETURN, value: slugify(MENU_NAME.BORROW_RETURN) },
@@ -153,6 +155,7 @@ function UserProfile(props) {
     disabled: isLoading,
   };
 
+  const [isShowPopupDelete, setIsShowPopupDelete] = useState();
   //#region mượn trả
 
   const [lazyParams, setLazyParams] = useState({ page: 1, rows: 10 });
@@ -239,7 +242,17 @@ function UserProfile(props) {
 
         return <div className="toe-font-body">{renderOrderStatus(row)}</div>;
       },
-      style: { width: 180, maxWidth: 180 },
+      style: { width: 150, maxWidth: 150 },
+    },
+    {
+      field: 'delete',
+      header: '',
+      filterField: 'delete',
+      body: (row) => {
+        if (dataTable.isLoading) return <Skeleton></Skeleton>;
+        return <div className="toe-font-body">{renderAction(row)}</div>;
+      },
+      style: { width: 60, maxWidth: 60 },
     },
   ];
 
@@ -275,6 +288,7 @@ function UserProfile(props) {
     districts: [],
     ward_commune_s: [],
   });
+  const [libraryCard, setLibraryCard] = useState({});
 
   const [isShowPopupChooseTime, setIsShowPopupChooseTime] = useState(false);
 
@@ -284,6 +298,7 @@ function UserProfile(props) {
   useEffect(() => {
     isMountedRef.current = true;
     validateMember().then((res) => {
+      setLibraryCard(res);
       if (isMountedRef.current) {
         setLocalStorage(LOCAL_STORATE_KEY.MEMBER_INFO, JSON.stringify(res));
       }
@@ -563,6 +578,46 @@ function UserProfile(props) {
     return view;
   };
 
+  const renderCardStatus = () => {
+    if (libraryCard?.cardStatus == CARD_STATUS.CONFIRMED) {
+      return (
+        <span
+          className="library-card-status"
+          style={{ color: '#87d068', marginLeft: 'auto' }}
+        >
+          Đã đăng ký
+        </span>
+      );
+    } else if (libraryCard?.cardStatus == CARD_STATUS.CONFIRMING) {
+      return (
+        <span
+          className="library-card-status"
+          style={{ color: 'red', marginLeft: 'auto' }}
+        >
+          Chờ xác nhận thẻ
+        </span>
+      );
+    } else if (libraryCard?.cardStatus == CARD_STATUS.REFUSE_COMFIRM) {
+      return (
+        <span
+          className="library-card-status"
+          style={{ color: 'red', marginLeft: 'auto' }}
+        >
+          Thẻ bị từ chối xác nhận
+        </span>
+      );
+    } else {
+      return (
+        <span
+          className="library-card-status"
+          style={{ color: 'red', marginLeft: 'auto' }}
+        >
+          Chưa đăng ký
+        </span>
+      );
+    }
+  };
+
   const getFullAddress = () => {
     let option = dataDetail?.option || {};
     let fullAddress = [option?.address];
@@ -594,43 +649,61 @@ function UserProfile(props) {
     return (
       <>
         <div className="user-profile__frame-right__body toe-font-body">
-          <div className="frame-right__body-section">
-            <div className="frame-right__body-row">
-              <Input
-                label={'Email'}
-                defaultValue={dataDetail?.email}
-                disabled
-                placeholder={'Nhập email'}
-                hasRequiredLabel
-              />
-              <Input
-                label={'Tên tài khoản'}
-                disabled
-                placeholder={'Nhập tên tài khoản'}
-                defaultValue={dataDetail?.userName}
-              />
+          <span
+            className="frame-right__body-section__title toe-font-label"
+            onClick={() => {
+              setExpandedSection({
+                ...expandedSection,
+                infoAccount: !expandedSection.infoAccount,
+              });
+            }}
+          >
+            Thông tin tài khoản{' '}
+            <i
+              className={`pi pi-chevron-${
+                expandedSection.infoAccount ? 'down' : 'up'
+              }`}
+            ></i>
+          </span>
+          {expandedSection.infoAccount && (
+            <div className="frame-right__body-section">
+              <div className="frame-right__body-row">
+                <Input
+                  label={'Email'}
+                  defaultValue={dataDetail?.email}
+                  disabled
+                  placeholder={'Nhập email'}
+                  hasRequiredLabel
+                />
+                <Input
+                  label={'Tên tài khoản'}
+                  placeholder={'Nhập tên tài khoản'}
+                  defaultValue={dataDetail?.userName}
+                />
+              </div>
+              <div className="frame-right__body-row">
+                <Input
+                  label={'Ngày tham gia'}
+                  disabled
+                  placeholder={TEXT_FALL_BACK.TYPE_1}
+                  defaultValue={
+                    moment(dataDetail?.createdDate).format(
+                      DATE_FORMAT.TYPE_3
+                    ) ?? TEXT_FALL_BACK.TYPE_1
+                  }
+                />
+                <Input
+                  label={'Họ và tên'}
+                  placeholder={'Nhập họ và tên'}
+                  hasRequiredLabel
+                  onChange={(e) => {
+                    setDataDetail({ ...dataDetail, fullName: e });
+                  }}
+                  defaultValue={dataDetail?.fullName}
+                />
+              </div>
             </div>
-            <div className="frame-right__body-row">
-              <Input
-                label={'Ngày tham gia'}
-                disabled
-                placeholder={TEXT_FALL_BACK.TYPE_1}
-                defaultValue={
-                  moment(dataDetail?.createdDate).format(DATE_FORMAT.TYPE_3) ??
-                  TEXT_FALL_BACK.TYPE_1
-                }
-              />
-              <Input
-                label={'Họ và tên'}
-                placeholder={'Nhập họ và tên'}
-                hasRequiredLabel
-                onChange={(e) => {
-                  setDataDetail({ ...dataDetail, fullName: e });
-                }}
-                defaultValue={dataDetail?.fullName}
-              />
-            </div>
-          </div>
+          )}
 
           <div className="frame-right__body-section">
             <span
@@ -648,6 +721,7 @@ function UserProfile(props) {
                   expandedSection.infoRegisterCard ? 'down' : 'up'
                 }`}
               ></i>
+              {renderCardStatus()}
             </span>
             {expandedSection.infoRegisterCard && (
               <span>
@@ -745,6 +819,7 @@ function UserProfile(props) {
                         });
                       }}
                       defaultValue={dataDetail?.option?.studentCode || null}
+                      disabled={!!dataDetail?.cardID}
                     />
                   </div>
                 )}
@@ -840,7 +915,7 @@ function UserProfile(props) {
             type={BUTTON_TYPE.LEFT_ICON}
             leftIcon={<SaveOutlined />}
             theme={
-              !authCtx.isMember() ? BUTTON_THEME.THEME_3 : BUTTON_THEME.THEME_1
+              !dataDetail?.cardID ? BUTTON_THEME.THEME_3 : BUTTON_THEME.THEME_1
             }
             onClick={() => handleSave(false)}
           />
@@ -1041,7 +1116,9 @@ function UserProfile(props) {
     );
   };
 
-  const libraryCardView = () => {};
+  const libraryCardView = () => {
+    return <LibraryCard />;
+  };
 
   const borrowReturnView = () => {
     return (
@@ -1202,7 +1279,9 @@ function UserProfile(props) {
           );
 
           return baseApi.put(
-            (res) => {},
+            (res) => {
+              setLocalStorage(LOCAL_STORATE_KEY.FULL_NAME, dataDetail.fullName);
+            },
             (err) => {},
             () => {},
             _endpoint,
@@ -1213,7 +1292,7 @@ function UserProfile(props) {
             null
           );
         };
-        debugger;
+
         Promise.all(
           registerMember ? insertCardPromise() : updateMemberPromise(),
           updatePromise()
@@ -1474,12 +1553,30 @@ function UserProfile(props) {
     }
   }
 
+  function renderAction(row) {
+    if (
+      ![RESERVATION_STATUS.LENDING, RESERVATION_STATUS.PENDING].includes(
+        row.orderStatus
+      )
+    ) {
+      return (
+        <div
+          className="row remove toe-font-label"
+          style={{ color: 'red', fontSize: 13 }}
+          onClick={() => setIsShowPopupDelete(row)}
+        >
+          <i className="pi pi-trash"></i>
+        </div>
+      );
+    }
+  }
+
   function renderOrderStatus(row) {
     let status = row?.orderStatus;
     if (isLoading) return <Skeleton></Skeleton>;
     let statusObject = getOrderStatus(status);
     return (
-      <div>
+      <div style={{ display: 'flex' }}>
         <Tag color={statusObject.color}>{statusObject.label}</Tag>
         {status === RESERVATION_STATUS.CANCELED && (
           <Tooltip title={row.note ?? TEXT_FALL_BACK.TYPE_1}>
@@ -1490,6 +1587,41 @@ function UserProfile(props) {
       </div>
     );
   }
+
+  const handleRemoveBookOrder = (key) => {
+    baseApi.delete(
+      (res) => {
+        if (res.data > 0) {
+          toast.current.show({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Xóa thành công',
+            life: 3000,
+          });
+          getBooksLendingFilter();
+        } else {
+          toast.current.show({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Xóa thất bại',
+            life: 3000,
+          });
+        }
+        setIsShowPopupDelete(null);
+      },
+      (err) => {
+        toast.current.show({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Xóa thất bại',
+          life: 3000,
+        });
+        setIsShowPopupDelete(null);
+      },
+      () => {},
+      format(END_POINT.TOE_DELETE_BOOK_ORDER, key)
+    );
+  };
 
   return (
     <Layout>
@@ -1545,12 +1677,13 @@ function UserProfile(props) {
                     getAccountName() ??
                     TEXT_FALL_BACK.TYPE_1}
                 </div>
-
-                <div className="user-profile__avt-name toe-font-label">
-                  <Tag color={'#f50'}>
-                    {getMemberTypeText(dataDetail?.memberType ?? 99)}
-                  </Tag>
-                </div>
+                {libraryCard?.cardStatus === CARD_STATUS.CONFIRMED && (
+                  <div className="user-profile__avt-name toe-font-label">
+                    <Tag color={'#f50'}>
+                      {getMemberTypeText(dataDetail?.memberType ?? 99)}
+                    </Tag>
+                  </div>
+                )}
               </div>
               <div className="user-profile__menu toe-font-body">
                 {renderMenu()}
@@ -1648,26 +1781,19 @@ function UserProfile(props) {
                   });
                 }}
                 defaultValue={bookCheckout.to || new Date()}
-                // disabled={!bookCheckout?.from}
-                // min={
-                //   new Date(
-                //     moment(bookCheckout?.from)
-                //       .add(1, 'days')
-                //       .startOf('day')
-                //       .toString()
-                //   )
-                // }
-                // max={
-                //   new Date(
-                //     moment(bookCheckout?.from).add(10, 'days').startOf('day')
-                //   )
-                // }
               />
             </div>
           </div>
         </div>
       </Modal>
-
+      {isShowPopupDelete ? (
+        <ToastConfirmDelete
+          onClose={() => setIsShowPopupDelete(null)}
+          onAccept={() => {
+            handleRemoveBookOrder(isShowPopupDelete.bookOrderID);
+          }}
+        />
+      ) : null}
       <Toast ref={toast}></Toast>
     </Layout>
   );

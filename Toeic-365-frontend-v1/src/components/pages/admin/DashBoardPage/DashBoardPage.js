@@ -193,7 +193,25 @@ function DashBoardPage(props) {
               )}
             </div>
           </div>
-          <div className="top-most-borrowed-book"></div>
+          <div className="top-most-borrowed-book">
+            {' '}
+            <div className="top-most-borrowed-book__title toe-font-title">
+              Tình trạng mượn trả
+            </div>
+            <div className="top-most-borrowed-book__chart">
+              {!topBookBorrowed.length && !isLoading ? (
+                renderNoData()
+              ) : (
+                <MostBorrowedBookChart
+                  data={topBookBorrowed.map((item) => ({
+                    label: item.bookCode,
+                    value: item.quantity,
+                    name: item.bookName,
+                  }))}
+                />
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </Layout>

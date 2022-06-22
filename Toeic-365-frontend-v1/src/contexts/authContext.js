@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import cookie from 'js-cookie';
-import { LOCAL_STORATE_KEY } from '../constants/commonConstant';
+import { CARD_STATUS, LOCAL_STORATE_KEY } from '../constants/commonConstant';
 import { ROLES } from '../constants/commonAuth';
 
 const TOKEN_KEY = 'TOKEN_KEY';
@@ -51,6 +51,7 @@ const AuthContextProvider = (props) => {
   const userIsLoggedIn = !!token;
 
   const loginHandler = (token, user) => {
+    setLocalStorage(LOCAL_STORATE_KEY.FULL_NAME, user.userInfo.fullName);
     setToken(token);
     setLocalStorage(LOCAL_STORATE_KEY.USER_INFO, JSON.stringify(user.userInfo));
     setLocalStorage(
@@ -73,8 +74,11 @@ const AuthContextProvider = (props) => {
   };
 
   const isMember = () => {
-    const memberInfo = getLocalStorage(LOCAL_STORATE_KEY.MEMBER_INFO);
-    return memberInfo && memberInfo != 'null';
+    const memberInfo = JSON.parse(
+      getLocalStorage(LOCAL_STORATE_KEY.MEMBER_INFO)
+    );
+
+    return memberInfo && memberInfo?.cardStatus === CARD_STATUS.CONFIRMED;
   };
 
   const isGuest = () => {

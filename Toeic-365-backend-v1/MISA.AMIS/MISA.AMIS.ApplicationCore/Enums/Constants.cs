@@ -79,6 +79,7 @@ namespace TOE.TOEIC.ApplicationCore.Enums
     {
         CONFIRMING = 1,
         CONFIRMED = 2,
+        REFUSE_COMFIRM = 3,
     }
 
     public enum SafeAddressType

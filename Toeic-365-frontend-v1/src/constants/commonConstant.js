@@ -84,6 +84,7 @@ export const DATE_FORMAT = {
   TYPE_1: 'DD-MM-YYYY HH:mm:ss',
   TYPE_2: 'HH:mm DD-MM-YYYY',
   TYPE_3: 'DD-MM-YYYY',
+  TYPE_4: 'DD/MM/YYYY',
 };
 
 export const OPERATOR = {
@@ -496,6 +497,7 @@ export const LOCAL_STORATE_KEY = {
   AVATAR: 'AVATAR',
   MEMBER_INFO: 'MEMBER_INFO',
   USER_INFO: 'USER_INFO',
+  FULL_NAME: 't_full_name',
 };
 
 export const FILTER_TIME_VALUE = {
@@ -538,4 +540,10 @@ export const LOANS = {
 export const CARD_STATUS = {
   CONFIRMING: 1,
   CONFIRMED: 2,
+  REFUSE_COMFIRM: 3,
+};
+
+export const EXTERNAL_LINK = {
+  UTC: 'https://www.utc.edu.vn/',
+  UTC_CONTACT: 'https://www.utc.edu.vn/lich-cong-tac#footer',
 };

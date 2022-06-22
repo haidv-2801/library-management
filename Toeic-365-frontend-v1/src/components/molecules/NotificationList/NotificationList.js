@@ -48,6 +48,7 @@ function NotificationList(props) {
                   isLoading={isLoading}
                   imgSrc={noti.image}
                   slug={noti.slug}
+                  viewCount={noti.viewCount}
                   onClick={() => handleSeeDetail(noti)}
                 />
               </React.Fragment>

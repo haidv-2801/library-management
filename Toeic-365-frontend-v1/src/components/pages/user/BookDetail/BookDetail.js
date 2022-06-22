@@ -11,11 +11,13 @@ import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { format } from 'react-string-format';
 import baseApi from '../../../../api/baseApi';
-import { getUserID } from '../../../../constants/commonAuth';
+import { getUserID, validateMember } from '../../../../constants/commonAuth';
 import {
   BUTTON_SHAPE,
   BUTTON_THEME,
   BUTTON_TYPE,
+  CARD_STATUS,
+  LOCAL_STORATE_KEY,
   PATH_NAME,
   REQUIRED_FILEDS_BORROWING_BOOK,
   TEXT_FALL_BACK,
@@ -26,7 +28,7 @@ import {
   requireRegisterView,
 } from '../../../../constants/commonFunction';
 import END_POINT from '../../../../constants/endpoint';
-import { AuthContext } from '../../../../contexts/authContext';
+import { AuthContext, setLocalStorage } from '../../../../contexts/authContext';
 import { CartContext } from '../../../../contexts/cartContext';
 import { appAction } from '../../../../redux/slices/appSlice';
 import Button from '../../../atomics/base/Button/Button';
@@ -68,9 +70,19 @@ function BookDetail(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [bookBlob, setBookBlob] = useState(null);
   const [errorLoadPdf, setErrorLoadPdf] = useState(false);
+  const [hasCardMember, setHasCardMember] = useState(false);
 
   useEffect(() => {
     getDetailBook(params?.id);
+
+    validateMember()
+      .then((res) => {
+        setHasCardMember(res?.cardStatus == CARD_STATUS.CONFIRMED);
+        setLocalStorage(LOCAL_STORATE_KEY.MEMBER_INFO, JSON.stringify(res));
+      })
+      .catch((err) => {
+        setHasCardMember(false);
+      });
 
     return () => {
       if (cancelRequestRef.current?.Cancel) {
@@ -253,7 +265,7 @@ function BookDetail(props) {
                   <div className="toe-book-detail-page__item-info__row title toe-font-label">
                     Thao tác
                   </div>
-                  {!context.isMember() ? (
+                  {!hasCardMember ? (
                     requireRegisterView(navigate)
                   ) : (
                     <div className="toe-book-detail-page__item-info__row">
@@ -266,9 +278,9 @@ function BookDetail(props) {
                       >
                         Đặt mượn
                       </a>
-                      <span className="toe-font-hint">
+                      {/* <span className="toe-font-hint">
                         (Yêu cầu có hiệu lực 2 ngày từ khi đặt mượn)
-                      </span>
+                      </span> */}
                     </div>
                   )}
                 </div>

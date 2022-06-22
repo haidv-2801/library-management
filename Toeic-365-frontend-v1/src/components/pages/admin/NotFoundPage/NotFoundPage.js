@@ -7,9 +7,12 @@ const NotFoundPage = () => {
 
   return (
     <div className="toe-not-found-page">
-      <a onClick={() => navigate('/')} className="toe-not-found-page__back">
-        Quay về trang chủ
-      </a>
+      <div>
+        <h1>Bạn không có quyền truy cập trang này</h1>
+        <a onClick={() => navigate('/')} className="toe-not-found-page__back">
+          Quay về trang chủ
+        </a>
+      </div>
     </div>
   );
 };

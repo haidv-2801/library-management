@@ -1,13 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react';
+import moment from 'moment';
+import { Skeleton } from 'primereact/skeleton';
 import PropTypes from 'prop-types';
 import { DATE_FORMAT } from '../../../constants/commonConstant';
 import { buildClass } from '../../../constants/commonFunction';
-import { Card } from 'primereact/card';
-import { Image } from 'primereact/image';
 import SmartText from '../../atomics/base/SmartText/SmartText';
-import { Skeleton } from 'primereact/skeleton';
 import './notificationItem.scss';
-import moment from 'moment';
 
 NotificationItem.propTypes = {
   id: PropTypes.string,
@@ -19,6 +16,7 @@ NotificationItem.propTypes = {
   description: PropTypes.any,
   date: PropTypes.any,
   isLoading: PropTypes.bool,
+  viewCount: PropTypes.number,
 };
 
 NotificationItem.defaultProps = {
@@ -32,6 +30,7 @@ NotificationItem.defaultProps = {
   width: '20em',
   isLoading: false,
   date: null,
+  viewCount: 0,
 };
 
 function NotificationItem(props) {
@@ -45,6 +44,7 @@ function NotificationItem(props) {
     description,
     date,
     isLoading,
+    viewCount,
   } = props;
 
   return (
@@ -79,7 +79,7 @@ function NotificationItem(props) {
           </div>
           <div className="toe-notification-item__date toe-font-hint">
             Ngày tạo: {moment(date).format(DATE_FORMAT.TYPE_1)} - Lượt xem:{' '}
-            {1100}
+            {viewCount}
           </div>
           <div className="toe-notification-item__desc">
             <SmartText rows={2}>{description}</SmartText>

@@ -22,9 +22,6 @@ namespace TOE.TOEIC.ApplicationCore.Entities
         [Display(Name = "Loại tài liệu")]
         public int BookFormat { get; set; }
 
-        [Display(Name = "Ngày mượn")]
-        public DateTime BorrowedDate { get; set; }
-
         [Display(Name = "Thời gian xuất bản")]
         public DateTime PublicationDate { get; set; }
 

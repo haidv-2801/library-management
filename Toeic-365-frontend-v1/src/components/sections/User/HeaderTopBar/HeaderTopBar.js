@@ -1,8 +1,7 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PATH_NAME } from '../../../../constants/commonConstant';
+import { EXTERNAL_LINK, PATH_NAME } from '../../../../constants/commonConstant';
 import { AuthContext } from '../../../../contexts/authContext';
-import UserInfo from '../../UserInfo/UserInfo';
 import './headerTopBar.scss';
 
 const HeaderTopBar = () => {
@@ -10,6 +9,7 @@ const HeaderTopBar = () => {
     {
       value: 1,
       label: 'Trang UTC',
+      link: EXTERNAL_LINK.UTC,
     },
     {
       value: 2,
@@ -30,6 +30,7 @@ const HeaderTopBar = () => {
     {
       value: 6,
       label: 'Liên hệ',
+      link: 'https://www.utc.edu.vn/lich-cong-tac#footer',
     },
   ];
 
@@ -59,7 +60,13 @@ const HeaderTopBar = () => {
 
   const renderOptions = () => {
     return OPTIONS.map((item) => (
-      <div className="toe-header-top-bar__item" key={item.value}>
+      <div
+        className="toe-header-top-bar__item"
+        key={item.value}
+        onClick={() => {
+          window.open(item.link, '_blank');
+        }}
+      >
         {item.label}
       </div>
     ));

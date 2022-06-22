@@ -15,8 +15,14 @@ import {
   OPERATOR,
   PATH_NAME,
   MEMBER_TYPE,
+  CARD_STATUS,
 } from '../../../../constants/commonConstant';
-import { buildClass, listToTree } from '../../../../constants/commonFunction';
+import {
+  buildClass,
+  getCardStatusText,
+  getMemberTypeText,
+  listToTree,
+} from '../../../../constants/commonFunction';
 import END_POINT from '../../../../constants/endpoint';
 import Button from '../../../atomics/base/Button/Button';
 import Input from '../../../atomics/base/Input/Input';
@@ -27,7 +33,7 @@ import Layout from '../../../sections/Admin/Layout/Layout';
 import PopupCreateUser from '../UserPage/PopupCreateUser/PopupCreateUser';
 import { Skeleton } from 'primereact/skeleton';
 import moment from 'moment';
-import { Tooltip } from 'antd';
+import { Tooltip, Tag } from 'antd';
 import { format } from 'react-string-format';
 import './readerPage.scss';
 import Dropdown from '../../../molecules/Dropdown/Dropdown';
@@ -75,10 +81,9 @@ function ReaderPage(props) {
       filterField: 'joinDate',
       body: (row) => {
         if (isLoading) return <Skeleton></Skeleton>;
-
         return (
           <div className="toe-font-body">
-            {moment(row?.joinDate).format(DATE_FORMAT.TYPE_1)}
+            {moment(row?.joinDate).format(DATE_FORMAT.TYPE_4)}
           </div>
         );
       },
@@ -94,7 +99,7 @@ function ReaderPage(props) {
 
         return (
           <div className="toe-font-body">
-            {moment(row?.expiredDate).format(DATE_FORMAT.TYPE_1)}
+            {moment(row?.expiredDate).format(DATE_FORMAT.TYPE_4)}
           </div>
         );
       },
@@ -126,6 +131,23 @@ function ReaderPage(props) {
       style: { width: 200, maxWidth: 200 },
     },
     {
+      field: 'cardStatus',
+      sortable: true,
+      header: 'Trạng thái thẻ',
+      filterField: 'cardStatus',
+      body: (row) => {
+        if (isLoading) return <Skeleton></Skeleton>;
+        let color = '#f50';
+        if (row?.cardStatus === CARD_STATUS.CONFIRMED) color = '#87d068';
+        return (
+          <div className="toe-font-body">
+            <Tag color={color}>{getCardStatusText(row?.cardStatus)}</Tag>
+          </div>
+        );
+      },
+      style: { width: 180, maxWidth: 180 },
+    },
+    {
       field: 'status',
       sortable: true,
       header: 'Trạng thái',
@@ -134,21 +156,6 @@ function ReaderPage(props) {
         return <div className="toe-font-body">{renderStatus(row?.status)}</div>;
       },
       style: { width: 150, maxWidth: 150 },
-    },
-    {
-      field: 'createdDate',
-      sortable: true,
-      header: 'Ngày tạo',
-      filterField: 'createdDate',
-      body: (row) => {
-        if (isLoading) return <Skeleton></Skeleton>;
-        return (
-          <div className="toe-font-body">
-            {moment(row?.createdDate).format(DATE_FORMAT.TYPE_1)}
-          </div>
-        );
-      },
-      style: { width: 180, maxWidth: 180 },
     },
   ];
 
@@ -208,15 +215,6 @@ function ReaderPage(props) {
     {
       label: (
         <div className="table-option__menu-item">
-          <i className="pi pi-eye"></i>Xem chi tiết
-        </div>
-      ),
-      value: 1,
-      onClick: (e) => console.log('first', e),
-    },
-    {
-      label: (
-        <div className="table-option__menu-item">
           <i className="pi pi-pencil"></i>Sửa
         </div>
       ),
@@ -230,7 +228,48 @@ function ReaderPage(props) {
         </div>
       ),
       value: 4,
-      onClick: ({ key }) => handleActive(key),
+      onClick: ({ key }) => {
+        let _body = dataTable.filter((item) => item?.cardID === key);
+        _body = _body[0];
+        _body['status'] = !_body['status'];
+        handleModifiy(_body);
+      },
+    },
+    {
+      label: (
+        <div className="table-option__menu-item">
+          <i className="pi pi-check"></i>Xác nhận
+        </div>
+      ),
+      value: 5,
+      onClick: (item) => {
+        debugger;
+        let _body = dataTable.filter((it) => it?.cardID === item.key);
+        _body = _body[0];
+        _body['cardStatus'] = CARD_STATUS.CONFIRMED;
+
+        if (_body.cardStatus !== CARD_STATUS.CONFIRMED) {
+          _body['joinDate'] = new Date(Date.now() + 7 * 60 * 60 * 1000);
+          _body['expiredDate'] = new Date(moment().add(4, 'years').valueOf());
+        }
+
+        handleModifiy(_body);
+      },
+    },
+    {
+      label: (
+        <div className="table-option__menu-item">
+          <i className="pi pi-exclamation-circle"></i>Từ chối
+        </div>
+      ),
+      value: 5,
+      onClick: ({ key }) => {
+        let _body = dataTable.filter((item) => item?.cardID === key);
+        _body = _body[0];
+        _body['cardStatus'] = CARD_STATUS.REFUSE_COMFIRM;
+
+        handleModifiy(_body);
+      },
     },
     {
       label: (
@@ -365,39 +404,33 @@ function ReaderPage(props) {
     navigate(key);
   };
 
-  const handleActive = (key) => {
-    let _body = dataTable.filter((item) => item?.cardID === key);
-    if (_body.length) {
-      _body = _body[0];
-      _body['status'] = !_body['status'];
-      _body['modifiedDate'] = new Date(Date.now() + 7 * 60 * 60 * 1000);
-
-      baseApi.put(
-        (res) => {
-          if (res.data > 0) {
-            toast.current.show({
-              severity: 'success',
-              summary: 'Success',
-              detail: 'Sửa thành công',
-              life: 3000,
-            });
-            getLibraryCardFilter();
-          }
-        },
-        (err) => {
+  const handleModifiy = (body = {}) => {
+    body['modifiedDate'] = new Date(Date.now() + 7 * 60 * 60 * 1000);
+    baseApi.put(
+      (res) => {
+        if (res.data > 0) {
           toast.current.show({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Sửa thất thất bại',
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Sửa thành công',
             life: 3000,
           });
-        },
-        () => {},
-        format(END_POINT.TOE_UPDATE_LIBRARY_CARD, _body?.cardID),
-        _body,
-        null
-      );
-    }
+          getLibraryCardFilter();
+        }
+      },
+      (err) => {
+        toast.current.show({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Sửa thất thất bại',
+          life: 3000,
+        });
+      },
+      () => {},
+      format(END_POINT.TOE_UPDATE_LIBRARY_CARD, body?.cardID),
+      body,
+      null
+    );
   };
 
   const getMenus = () => {
@@ -537,13 +570,13 @@ function ReaderPage(props) {
                   filterValue: value,
                 });
               }}
-              placeholder={'Tìm kiếm Tiêu đề, Alias, Mô tả...'}
+              placeholder={'Tìm kiếm...'}
               value={paging.filterValue}
               leftIcon={<i className="pi pi-search"></i>}
               delay={300}
             />
 
-            <TreeSelect
+            {/* <TreeSelect
               placeholder="Nhấp để chọn"
               value={paging.menuID}
               options={dataMenus}
@@ -551,7 +584,7 @@ function ReaderPage(props) {
               onChange={(data) => {
                 setPaging((pre) => ({ ...pre, menuID: data.value }));
               }}
-            />
+            /> */}
           </div>
           {selected?.length ? (
             <Tooltip placement="bottomLeft" title="Xóa bản ghi">

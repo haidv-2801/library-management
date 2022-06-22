@@ -127,8 +127,6 @@ function Table(props) {
           {...configs}
           value={data}
           rowHover
-          // scrollable
-          // scrollDirection="both"
           responsiveLayout="scroll"
           paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
           paginatorClassName="toe-font-label toe-pagination"

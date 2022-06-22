@@ -62,7 +62,19 @@ function HtmlRenderPage(props) {
   const getPostByID = (id) => {
     baseApi.get(
       (res) => {
+        let body = { ...res };
+        body['viewCount'] = +body['viewCount'] + 1;
         setPostDetail(res);
+
+        baseApi.put(
+          (res) => {},
+          (err) => {},
+          () => {},
+          format(END_POINT.TOE_UPDATE_POST, id),
+          body,
+          null,
+          null
+        );
       },
       (err) => {
         if (err.status == 404) {

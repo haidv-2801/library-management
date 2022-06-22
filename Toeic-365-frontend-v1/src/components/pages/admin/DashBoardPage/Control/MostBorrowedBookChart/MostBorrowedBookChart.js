@@ -92,7 +92,10 @@ function MostBorrowedBookChart(props) {
           ]}
         />
         <Bar barSize={40} dataKey={KEY.VALUE} fill="#8884d8">
-          <LabelList dataKey={KEY.VALUE} content={renderCustomizedLabel} />
+          <LabelList
+            dataKey={KEY.VALUE}
+            content={(data) => renderCustomizedLabel(data)}
+          />
         </Bar>
       </BarChart>
     </ResponsiveContainer>

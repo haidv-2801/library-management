@@ -167,6 +167,9 @@
             gap: 8px;
             cursor: pointer;
             margin-bottom: 8px;
+            color: #267b58;
+            border-bottom: 1px solid #bbbbbb;
+            padding-bottom: 16px;
 
             .pi {
               font-size: 13px;
@@ -361,6 +364,9 @@
     .ant-tooltip {
       z-index: 9999;
     }
+  }
+
+  .library-card-status {
   }
 }
 
