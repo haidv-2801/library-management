@@ -27,6 +27,8 @@ namespace TOE.TOEIC.ApplicationCore.Entities
         [Display(Name = "Tổng số sách đang mượn")]
         public int TotalBookCheckingOut { get; set; } = 0;
 
+        public CardStatus CardStatus { get; set; } = CardStatus.CONFIRMING;
+
         public string Option { get; set; }
 
         public DateTime JoinDate { get; set; }

@@ -11,7 +11,6 @@ namespace TOE.TOEIC.ApplicationCore.Enums
         public static readonly int GUEST = 2;
         public static readonly int LECTURER = 0;
     }
-
     public static class DataType
     {
         public static readonly string DATE_TIME = "DateTime";
@@ -74,6 +73,12 @@ namespace TOE.TOEIC.ApplicationCore.Enums
         RESERVED = 3,
         LOANED = 2,
         LOST = 0
+    }
+
+    public enum CardStatus
+    {
+        CONFIRMING = 1,
+        CONFIRMED = 2,
     }
 
     public enum SafeAddressType

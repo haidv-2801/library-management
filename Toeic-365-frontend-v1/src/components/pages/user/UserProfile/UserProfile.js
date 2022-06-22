@@ -16,10 +16,12 @@ import {
   getFullName,
   getUserID,
   getUserName,
+  validateMember,
 } from '../../../../constants/commonAuth';
 import {
   BUTTON_THEME,
   BUTTON_TYPE,
+  CARD_STATUS,
   COMMON_AVATAR,
   DATE_FORMAT,
   LOCAL_STORATE_KEY,
@@ -281,6 +283,11 @@ function UserProfile(props) {
 
   useEffect(() => {
     isMountedRef.current = true;
+    validateMember().then((res) => {
+      if (isMountedRef.current) {
+        setLocalStorage(LOCAL_STORATE_KEY.MEMBER_INFO, JSON.stringify(res));
+      }
+    });
     return () => {
       isMountedRef.current = false;
     };
@@ -527,8 +534,6 @@ function UserProfile(props) {
     );
   };
 
-  console.log('dataDetail', dataDetail);
-
   const handleChangeMenuView = (value) => {
     if (isLoading) return <Spinner show />;
     let view = accountView();
@@ -685,8 +690,8 @@ function UserProfile(props) {
                         });
                       }}
                       max={new Date()}
-                      defaultValue={dataDetail?.option?.birthDay || undefined}
-                      disabled={dataDetail?.cardID}
+                      defaultValue={dataDetail?.option?.birthDay || new Date()}
+                      // disabled={dataDetail?.cardID}
                     />
                   </div>
                 </div>
@@ -748,6 +753,7 @@ function UserProfile(props) {
                     options={provinceCity}
                     label={'Tỉnh/Thành phố'}
                     filter={true}
+                    onfo
                     defaultValue={dataDetail?.option?.province_city_s}
                     onChange={({ value }) => {
                       setDataDetail({
@@ -761,6 +767,9 @@ function UserProfile(props) {
                       });
                       if (value)
                         getGeotarget(GEOTARGET_ENDPOINT.VN_DISTRICT, value);
+                    }}
+                    onShow={() => {
+                      if (!provinceCity.length) getGeotarget();
                     }}
                   />
                   <Dropdown
@@ -833,7 +842,7 @@ function UserProfile(props) {
             theme={
               !authCtx.isMember() ? BUTTON_THEME.THEME_3 : BUTTON_THEME.THEME_1
             }
-            onClick={handleSave}
+            onClick={() => handleSave(false)}
           />
           {dataDetail?.cardID || shouldMember ? null : (
             <Button
@@ -1032,13 +1041,7 @@ function UserProfile(props) {
     );
   };
 
-  const libraryCardView = () => {
-    const cardInfo = getLocalStorage(LOCAL_STORATE_KEY.MEMBER_INFO);
-    if (!cardInfo) {
-      return requireRegisterView(navigate);
-    }
-    return null;
-  };
+  const libraryCardView = () => {};
 
   const borrowReturnView = () => {
     return (
@@ -1197,12 +1200,9 @@ function UserProfile(props) {
             END_POINT.TOE_UPDATE_LIBRARY_CARD,
             dataDetail?.cardID
           );
-          debugger;
 
           return baseApi.put(
-            (res) => {
-              debugger;
-            },
+            (res) => {},
             (err) => {},
             () => {},
             _endpoint,
@@ -1213,7 +1213,7 @@ function UserProfile(props) {
             null
           );
         };
-
+        debugger;
         Promise.all(
           registerMember ? insertCardPromise() : updateMemberPromise(),
           updatePromise()
@@ -1547,8 +1547,9 @@ function UserProfile(props) {
                 </div>
 
                 <div className="user-profile__avt-name toe-font-label">
-                  Loại bạn đọc:{' '}
-                  {getMemberTypeText(dataDetail?.memberType ?? 99)}
+                  <Tag color={'#f50'}>
+                    {getMemberTypeText(dataDetail?.memberType ?? 99)}
+                  </Tag>
                 </div>
               </div>
               <div className="user-profile__menu toe-font-body">
@@ -1583,9 +1584,7 @@ function UserProfile(props) {
             name="Hủy"
           />,
           <Button
-            disabled={
-              !bookCheckout?.from || !bookCheckout?.to || isRequestBorrowing
-            }
+            disabled={isRequestBorrowing}
             name="Xác nhận"
             onClick={handleAcceptBorrow}
             type={
@@ -1636,7 +1635,7 @@ function UserProfile(props) {
                   });
                 }}
                 min={new Date()}
-                defaultValue={bookCheckout.from}
+                defaultValue={bookCheckout.from || new Date()}
               />
             </div>
             <div className="_col">
@@ -1648,21 +1647,21 @@ function UserProfile(props) {
                     to: new Date(moment(value).startOf('day').toString()),
                   });
                 }}
-                defaultValue={bookCheckout.to}
-                disabled={!bookCheckout?.from}
-                min={
-                  new Date(
-                    moment(bookCheckout?.from)
-                      .add(1, 'days')
-                      .startOf('day')
-                      .toString()
-                  )
-                }
-                max={
-                  new Date(
-                    moment(bookCheckout?.from).add(10, 'days').startOf('day')
-                  )
-                }
+                defaultValue={bookCheckout.to || new Date()}
+                // disabled={!bookCheckout?.from}
+                // min={
+                //   new Date(
+                //     moment(bookCheckout?.from)
+                //       .add(1, 'days')
+                //       .startOf('day')
+                //       .toString()
+                //   )
+                // }
+                // max={
+                //   new Date(
+                //     moment(bookCheckout?.from).add(10, 'days').startOf('day')
+                //   )
+                // }
               />
             </div>
           </div>
@@ -1675,15 +1674,3 @@ function UserProfile(props) {
 }
 
 export default UserProfile;
-
-{
-  /* <div className="frame-right__body-row status">
-<div className="toe-font-label">Trạng thái</div>
-<div className="toe-font-label">
-  {' '}
-  <Tag color={dataDetail?.status ? '#87d068' : '#e5e5e5'}>
-    {dataDetail?.status ? 'Hoạt động' : 'Ngừng hoạt động'}
-  </Tag>
-</div>
-</div> */
-}

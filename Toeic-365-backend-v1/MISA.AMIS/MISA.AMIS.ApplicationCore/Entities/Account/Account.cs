@@ -51,8 +51,8 @@ namespace TOE.TOEIC.ApplicationCore.Entities
 
         [Display(Name = "Avatar")]
         public string Avatar { get; set; }
-
         [Display(Name = "Địa chỉ")]
+
         public string Address { get; set; }
         #endregion
     }

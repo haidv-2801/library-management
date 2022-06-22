@@ -524,3 +524,18 @@ export const MEMBER_TYPE = {
   STUDENT: 1,
   LECTURER: 0,
 };
+
+export const LOANS = {
+  StudentMaximumSyllabusBookBorrowedEachTime: 10,
+  LecturerMaximumSyllabusBookBorrowedEachTime: 7,
+  StudentMaximumReferenceBookBorrowedEachTime: 2,
+  LectureMaximumReferenceBookBorrowedEachTime: 3,
+  MaximumSyllabusBookBorrowedTime: 12960000000, //150 day
+  MaximumReferenceBookBorrowedTime: 1296000000, //15 day
+  DayCarryOutReturnBook: 864000000, //10 day
+};
+
+export const CARD_STATUS = {
+  CONFIRMING: 1,
+  CONFIRMED: 2,
+};

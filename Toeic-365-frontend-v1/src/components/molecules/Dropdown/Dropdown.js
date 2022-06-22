@@ -21,6 +21,7 @@ Dropdown.propTypes = {
   itemTemplate: PropTypes.any,
   filter: PropTypes.bool,
   onChange: PropTypes.func,
+  onShow: PropTypes.func,
   prefixItem: PropTypes.any,
   prefixValue: PropTypes.any,
   scrollHeight: PropTypes.number,
@@ -46,6 +47,7 @@ Dropdown.defaultProps = {
   itemTemplate: () => null,
   hasSubLabel: false,
   onChange: () => {},
+  onShow: () => {},
   scrollHeight: 300,
   label: null,
   panelClassName: '',
@@ -71,6 +73,7 @@ function Dropdown(props) {
     wrapperClass,
     label,
     panelClassName,
+    onShow,
   } = props;
 
   const customItemTemplate = ({ label, value, subLabel = null }) => {
@@ -142,6 +145,7 @@ function Dropdown(props) {
         itemTemplate={customItemTemplate}
         {...(defaultValue ? { valueTemplate: customValueTemplate } : {})}
         scrollHeight={scrollHeight}
+        onShow={onShow}
       />
     </div>
   );

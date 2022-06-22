@@ -74,7 +74,7 @@ const AuthContextProvider = (props) => {
 
   const isMember = () => {
     const memberInfo = getLocalStorage(LOCAL_STORATE_KEY.MEMBER_INFO);
-    return !memberInfo;
+    return memberInfo && memberInfo != 'null';
   };
 
   const isGuest = () => {
