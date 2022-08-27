@@ -24,6 +24,20 @@
   &__toolbar {
     display: flex;
 
+    &-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .pi {
+        background-color: #fff;
+        padding: 8px;
+        border-radius: 8px;
+        border: 1px solid #bbbbbb;
+      }
+    }
+
     .pi.pi-trash {
       display: flex;
       align-items: center;

@@ -53,6 +53,16 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
             if (code == null) return "LC000001";
             else return FunctionHelper.NextRecordCode(code);
         }
+
+        public async Task<int> AcceptMany(AcceptCardMany acceptCardMany)
+        {
+            string idConverted = string.Empty;
+            if(acceptCardMany.IdSelected.Count() > 0)
+            {
+                idConverted = string.Join("|", acceptCardMany.IdSelected);
+            }
+            return await _libraryCardRepository.AcceptMany(idConverted, acceptCardMany.CardStatus);
+        }
         #endregion
     }
 }

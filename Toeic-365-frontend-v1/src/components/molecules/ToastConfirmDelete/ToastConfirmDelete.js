@@ -10,14 +10,16 @@ ToastConfirmDelete.propTypes = {
   onClose: PropTypes.func,
   onAccept: PropTypes.func,
   title: PropTypes.any,
+  prefix: PropTypes.any,
 };
 
 ToastConfirmDelete.defaultProps = {
   title: '',
+  prefix: 'Bạn có chắc muốn xóa {0}?',
 };
 
 function ToastConfirmDelete(props) {
-  const { onClose, onAccept, title } = props;
+  const { onClose, onAccept, title, prefix } = props;
 
   return (
     <Modal
@@ -31,7 +33,7 @@ function ToastConfirmDelete(props) {
       onClose={onClose}
       className="toe-toast-delete toe-font-label"
     >
-      {format('Bạn có chắc muốn xóa {0}?', <b>{title}</b>)}
+      {format(prefix, <b>{title}</b>)}
     </Modal>
   );
 }

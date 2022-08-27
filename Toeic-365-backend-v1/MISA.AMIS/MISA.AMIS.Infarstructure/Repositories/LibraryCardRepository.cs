@@ -38,6 +38,14 @@ namespace TOE.TOEIC.Infrastructure
 
         public async Task<string> GetNextCardCode() => await _dbConnection.QueryFirstOrDefaultAsync<string>("Proc_GetNextCardCode", commandType: CommandType.StoredProcedure);
 
+        public async Task<int> AcceptMany(string idsText, int cardStatus)
+        {
+            var parameter = new DynamicParameters();
+            parameter.Add("v_adstext", idsText);
+            parameter.Add("v_CardStatus", cardStatus);
+            return await _dbConnection.QueryFirstOrDefaultAsync<int>("Proc_AcceptMany", param: parameter, commandType: CommandType.StoredProcedure);
+        }
+
         #endregion
     }
 }

@@ -498,6 +498,7 @@ export const LOCAL_STORATE_KEY = {
   MEMBER_INFO: 'MEMBER_INFO',
   USER_INFO: 'USER_INFO',
   FULL_NAME: 't_full_name',
+  ACCOUNT_NAME: 't_account_name',
 };
 
 export const FILTER_TIME_VALUE = {

@@ -72,7 +72,7 @@ function BooksPageSeeAllPrivate(props) {
     pageIndex: 1,
     pageSize: 20,
     filterValue: '',
-    categoryID: GUID_NULL,
+    categoryID: -1,
   });
   const textSearchRef = useRef('');
   const [totalRecords, setTotalRecords] = useState(0);
@@ -84,7 +84,6 @@ function BooksPageSeeAllPrivate(props) {
 
   useEffect(() => {
     callApiGetBook();
-    console.log('obje :>> ');
   }, [paging]);
 
   useEffect(() => {
@@ -127,7 +126,7 @@ function BooksPageSeeAllPrivate(props) {
       ]);
     }
 
-    if (paging.categoryID !== GUID_NULL) {
+    if (paging.categoryID !== -1) {
       _filter.push(OPERATOR.AND);
       _filter.push([['CategoryID', OPERATOR.EQUAL, paging.categoryID]]);
     }

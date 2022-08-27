@@ -1,23 +1,30 @@
 import { SearchOutlined } from '@ant-design/icons';
 import { Tooltip } from 'antd';
 import { Chip } from 'primereact/chip';
+import { Skeleton } from 'primereact/skeleton';
 import PropTypes from 'prop-types';
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   useLocation,
   useNavigate,
   useParams,
   useSearchParams,
 } from 'react-router-dom';
+import baseApi from '../../../../api/baseApi';
 import {
-  BOOK_FORMAT,
+  ADMIN_BOOK_PAGE_BOLUMN_SEARCH,
   BUTTON_SHAPE,
   BUTTON_THEME,
   BUTTON_TYPE,
   OPERATOR,
   SECTION_TEXT,
-  SORT_TYPE,
 } from '../../../../constants/commonConstant';
+import {
+  buildClass,
+  DOCUMENT_SECTION,
+} from '../../../../constants/commonFunction';
+import END_POINT from '../../../../constants/endpoint';
 import Button from '../../../atomics/base/Button/Button';
 import Input from '../../../atomics/base/Input/Input';
 import SideBar from '../../../atomics/base/SideBar/SideBar';
@@ -27,19 +34,7 @@ import Dropdown from '../../../molecules/Dropdown/Dropdown';
 import FilterEngine from '../../../molecules/FilterEngine/FilterEngine';
 import Footer from '../../../sections/User/Footer/Footer';
 import Layout from '../../../sections/User/Layout/Layout';
-import { useDispatch, useSelector } from 'react-redux';
-import rootState from '../../../../redux/store';
-import { filterAction } from '../../../../redux/slices/filterSlice';
-import END_POINT from '../../../../constants/endpoint';
-import baseApi from '../../../../api/baseApi';
-import {
-  buildClass,
-  DOCUMENT_SECTION,
-  ParseJson,
-  slugify,
-} from '../../../../constants/commonFunction';
-import { Skeleton } from 'primereact/skeleton';
-import { getNewPaperDocuments, getElectronicDocuments } from '../function';
+import { getElectronicDocuments, getNewPaperDocuments } from '../function';
 import './booksPage.scss';
 
 BooksPage.propTypes = {
@@ -121,6 +116,14 @@ function BooksPage(props) {
   const [searchParams, setSearchParams] = useSearchParams();
   const { pathname } = useLocation();
   const navigate = useNavigate();
+
+  //filter
+  const DEFAULT_FILTER_VALUE = { controls: [], filter: [] };
+
+  const [filterValue, setFilterValue] = useState(DEFAULT_FILTER_VALUE);
+  const [filterCount, setFilterCount] = useState(0);
+  const [showFilter, setShowFilter] = useState(false);
+  const refreshFilterKey = useRef(0);
 
   useEffect(() => {
     callGetNewPaperDocuments();
@@ -272,11 +275,12 @@ function BooksPage(props) {
   };
 
   const getBooksFilter = (body = []) => {
+    debugger;
     let _value = commonSearchValue?.trim();
     let _filter = [
       ['IsDeleted', OPERATOR.EQUAL, '0'],
       OPERATOR.AND,
-      ['Status', OPERATOR.EQUAL, '0'],
+      ['Status', OPERATOR.EQUAL, '1'],
     ];
     if (body.length) {
       _filter.push(OPERATOR.AND);
@@ -296,6 +300,7 @@ function BooksPage(props) {
 
     baseApi.post(
       (res) => {
+        debugger;
         let _data = res.data.pageData.sort((a, b) => {
           const time = (date) => new Date(date).getTime();
           if (time(b?.createdDate) - time(a?.modifiedDate) > 0) {
@@ -336,6 +341,12 @@ function BooksPage(props) {
 
   const getSearchString = useMemo(() => commonSearchValue, [isPressBtnSearch]);
 
+  const handleFilter = () => {
+    setIsPressBtnSearch(true);
+    setFilterCount(filterValue.controls.length);
+    getBooksFilter(filterValue.filter);
+  };
+
   return (
     <Layout>
       <div className="toe-book-page">
@@ -370,14 +381,35 @@ function BooksPage(props) {
                   name={'Tìm kiếm'}
                   onClick={handleSearch}
                 />
-                <Tooltip title="Bộ lọc">
-                  <div
-                    className="btn-show-advanced-filter"
-                    onClick={() => setShowFilterEngine(true)}
-                  >
-                    <i className="pi pi-filter"></i>
-                  </div>
-                </Tooltip>
+                <div className="toe-admin-book-page__filter">
+                  <Tooltip title="Bộ lọc">
+                    <div
+                      className="btn-show-advanced-filter"
+                      onClick={() => setShowFilter(true)}
+                    >
+                      <i className="pi pi-filter"></i>
+                    </div>
+                  </Tooltip>
+
+                  {filterCount ? (
+                    <div className="toe-admin-book-page__filter-count toe-font-hint">
+                      {filterCount}
+                    </div>
+                  ) : null}
+
+                  {filterCount ? (
+                    <div
+                      onClick={() => {
+                        setFilterValue(DEFAULT_FILTER_VALUE);
+                        getBooksFilter([]);
+                        setFilterCount(0);
+                      }}
+                      className="toe-admin-book-page__filter-remove toe-font-hint"
+                    >
+                      Xóa tất cả lọc
+                    </div>
+                  ) : null}
+                </div>
               </div>
               <div className="toe-book-page__search-engine"></div>
               {isPressBtnSearch ? (
@@ -421,29 +453,40 @@ function BooksPage(props) {
         </div>
         <Footer />
       </div>
-      <SideBar
-        show={showFilterEngine}
-        onClose={() => setShowFilterEngine(false)}
-        title={'Bộ lọc nâng cao'}
-        bottomRightButtons={[
-          <Button
-            name={'Hủy'}
-            theme={BUTTON_THEME.THEME_6}
-            onClick={() => setShowFilterEngine(false)}
-          />,
-          <Button name={'Tìm kiếm'} />,
-        ]}
-      >
-        <FilterEngine
-          defaultControls={selector.controls}
-          defaultFilter={selector.filter}
-          onChange={({ filter, controls }) => {
-            dispatch(
-              filterAction.changeBooksPageFilterEnige({ controls, filter })
-            );
+      {showFilter ? (
+        <SideBar
+          show={showFilter}
+          onClose={() => setShowFilter(false)}
+          title={'Bộ lọc nâng cao'}
+          onClickRefreshButton={() => {
+            setFilterValue({ filter: [], controls: [] });
+            refreshFilterKey.current++;
           }}
-        />
-      </SideBar>
+          bottomRightButtons={[
+            <Button
+              name={'Hủy'}
+              theme={BUTTON_THEME.THEME_6}
+              onClick={() => setShowFilter(false)}
+            />,
+            <Button
+              type={BUTTON_TYPE.LEFT_ICON}
+              leftIcon={<SearchOutlined />}
+              name={'Tìm kiếm'}
+              onClick={handleFilter}
+            />,
+          ]}
+        >
+          <FilterEngine
+            key={refreshFilterKey.current}
+            defaultControls={selector.controls}
+            defaultFilter={selector.filter}
+            filterTypeOptions={ADMIN_BOOK_PAGE_BOLUMN_SEARCH}
+            onChange={({ filter, controls }) => {
+              setFilterValue({ filter, controls });
+            }}
+          />
+        </SideBar>
+      ) : null}
     </Layout>
   );
 }

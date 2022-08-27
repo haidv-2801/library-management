@@ -42,6 +42,10 @@ import {
   requireRegisterView,
   slugify,
 } from '../../../../constants/commonFunction';
+import {
+  validateEmail,
+  validatePhonenumber,
+} from '../../../../constants/commonValidation';
 import END_POINT, { GEOTARGET_ENDPOINT } from '../../../../constants/endpoint';
 import {
   AuthContext,
@@ -673,6 +677,12 @@ function UserProfile(props) {
                   defaultValue={dataDetail?.email}
                   disabled
                   placeholder={'Nhập email'}
+                  bottomMessage={
+                    dataDetail?.email
+                      ? 'Email không được trống'
+                      : 'Email không đúng định dạng'
+                  }
+                  valid={validateEmail(dataDetail?.email)}
                   hasRequiredLabel
                 />
                 <Input
@@ -742,7 +752,6 @@ function UserProfile(props) {
                       setDataDetail({ ...dataDetail, phoneNumber: e });
                     }}
                     defaultValue={dataDetail?.phoneNumber || null}
-                    disabled={dataDetail?.cardID}
                   />
                   <div className="_col">
                     <div
@@ -765,7 +774,6 @@ function UserProfile(props) {
                       }}
                       max={new Date()}
                       defaultValue={dataDetail?.option?.birthDay || new Date()}
-                      // disabled={dataDetail?.cardID}
                     />
                   </div>
                 </div>
@@ -784,7 +792,7 @@ function UserProfile(props) {
                       });
                     }}
                     defaultValue={dataDetail?.option?.identityNumber || null}
-                    disabled={dataDetail?.cardID}
+                    disabled={dataDetail?.cardStatus === CARD_STATUS.CONFIRMED}
                   />
                   <div className="_col">
                     <div
@@ -799,7 +807,9 @@ function UserProfile(props) {
                         setDataDetail({ ...dataDetail, memberType: value })
                       }
                       defaultValue={dataDetail?.memberType}
-                      disabled={!!dataDetail?.cardID}
+                      disabled={
+                        dataDetail?.cardStatus === CARD_STATUS.CONFIRMED
+                      }
                     />
                   </div>
                 </div>
@@ -819,7 +829,23 @@ function UserProfile(props) {
                         });
                       }}
                       defaultValue={dataDetail?.option?.studentCode || null}
-                      disabled={!!dataDetail?.cardID}
+                      disabled={
+                        dataDetail?.cardStatus === CARD_STATUS.CONFIRMED
+                      }
+                    />
+                    <Input
+                      label={'Lớp/Khóa'}
+                      placeholder={'Nhập lớp/khóa'}
+                      onChange={(e) => {
+                        setDataDetail({
+                          ...dataDetail,
+                          option: {
+                            ...(dataDetail?.option || {}),
+                            studentClass: e,
+                          },
+                        });
+                      }}
+                      defaultValue={dataDetail?.option?.studentClass || null}
                     />
                   </div>
                 )}
@@ -884,7 +910,7 @@ function UserProfile(props) {
 
                 <div className="frame-right__body-row">
                   <TextAreaBase
-                    label="Địa chỉ"
+                    label="Thông tin thêm"
                     value={dataDetail?.option?.address}
                     placeholder={'Nhập địa chỉ VD: quận huyện..'}
                     onChange={(e) => {
@@ -915,11 +941,13 @@ function UserProfile(props) {
             type={BUTTON_TYPE.LEFT_ICON}
             leftIcon={<SaveOutlined />}
             theme={
-              !dataDetail?.cardID ? BUTTON_THEME.THEME_3 : BUTTON_THEME.THEME_1
+              dataDetail?.cardStatus !== CARD_STATUS.CONFIRMED
+                ? BUTTON_THEME.THEME_3
+                : BUTTON_THEME.THEME_1
             }
             onClick={() => handleSave(false)}
           />
-          {dataDetail?.cardID || shouldMember ? null : (
+          {dataDetail?.cardStatus === CARD_STATUS.CONFIRMED ? null : (
             <Button
               {...CONFIG_BUTTON}
               name={'Lưu và đăng ký thành viên'}
@@ -1273,6 +1301,7 @@ function UserProfile(props) {
           );
 
         let updateMemberPromise = () => {
+          if (!dataDetail?.cardID) return Promise.resolve();
           let _endpoint = format(
             END_POINT.TOE_UPDATE_LIBRARY_CARD,
             dataDetail?.cardID
@@ -1441,7 +1470,7 @@ function UserProfile(props) {
     );
   };
 
-  const totalBorrowingDay = Math.abs(
+  let totalBorrowingDay = Math.abs(
     moment(bookCheckout?.from).diff(moment(bookCheckout?.to), 'days')
   );
 

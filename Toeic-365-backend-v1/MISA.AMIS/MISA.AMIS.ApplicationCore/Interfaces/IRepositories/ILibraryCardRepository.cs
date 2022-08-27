@@ -13,5 +13,7 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
         Task<LibraryCard> GetLibraryCardByAccountID(Guid accountID);
 
         Task<string> GetNextCardCode();
+
+        Task<int> AcceptMany(string idsText, int cardStatus);
     }
 }

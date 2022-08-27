@@ -46,6 +46,14 @@ namespace TOE.TOEIC.Web.Controllers
         {
             return Ok(await _libraryCardService.GetNextCardCode());
         }
+
+        [EnableCors("AllowCROSPolicy")]
+        [AllowAnonymous]
+        [HttpPost("/api/LibraryCard/AcceptMany")]
+        public async Task<IActionResult> AcceptMany(AcceptCardMany acceptMany)
+        {
+            return Ok(await _libraryCardService.AcceptMany(acceptMany));
+        }
         #endregion
     }
 }

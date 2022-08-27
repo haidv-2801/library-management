@@ -31,6 +31,9 @@ namespace TOE.TOEIC.ApplicationCore.Entities
         /// Id bài viết
         /// </summary>
         public Guid MenuID { get; set; } = Guid.Empty;
+        
+
+        public Guid AccountID { get; set; }
 
         /// <summary>
         /// Mã bài viết

@@ -2,26 +2,23 @@ import { SearchOutlined } from '@ant-design/icons';
 import { Tooltip } from 'antd';
 import { Chip } from 'primereact/chip';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
-  BOOK_FORMAT,
   BUTTON_SHAPE,
   BUTTON_THEME,
   BUTTON_TYPE,
 } from '../../../../constants/commonConstant';
+import { filterAction } from '../../../../redux/slices/filterSlice';
 import Button from '../../../atomics/base/Button/Button';
 import Input from '../../../atomics/base/Input/Input';
 import SideBar from '../../../atomics/base/SideBar/SideBar';
 import Banner from '../../../molecules/Banner/Banner';
-import Book from '../../../molecules/Book/Book';
 import Dropdown from '../../../molecules/Dropdown/Dropdown';
 import FilterEngine from '../../../molecules/FilterEngine/FilterEngine';
 import Footer from '../../../sections/User/Footer/Footer';
 import Layout from '../../../sections/User/Layout/Layout';
-import { useDispatch, useSelector } from 'react-redux';
-import rootState from '../../../../redux/store';
-import { filterAction } from '../../../../redux/slices/filterSlice';
 import './searchPage.scss';
 
 SearchPage.propTypes = {
@@ -69,7 +66,6 @@ function SearchPage(props) {
     (rootState) => rootState.filter.SearchPageFilterEnige
   );
   const dispatch = useDispatch();
-  const [isLoading, setIsLoading] = useState(false);
   const [showFilterEngine, setShowFilterEngine] = useState(false);
   const [defaultFilterType, setDefaultFilterType] = useState(0);
   const [commonSearchValue, setCommonSearchValue] = useState('');
@@ -137,14 +133,16 @@ function SearchPage(props) {
                   disabled={!commonSearchValue}
                   onClick={() => {}}
                 />
-                <Tooltip title="Bộ lọc">
-                  <div
-                    className="btn-show-advanced-filter"
-                    onClick={() => setShowFilterEngine(true)}
-                  >
-                    <i className="pi pi-filter"></i>
-                  </div>
-                </Tooltip>
+                <div className="toe-admin-book-page__filter">
+                  <Tooltip title="Bộ lọc">
+                    <div
+                      className="btn-show-advanced-filter"
+                      onClick={() => setShowFilterEngine(true)}
+                    >
+                      <i className="pi pi-filter"></i>
+                    </div>
+                  </Tooltip>
+                </div>
               </div>
               <div className="toe-book-page__search-engine">
                 {/* {' '}
@@ -178,7 +176,7 @@ function SearchPage(props) {
           defaultFilter={selector.filter}
           onChange={({ filter, controls }) => {
             dispatch(
-              filterAction.changeSearchPageFilterEnige({ controls, filter })
+              filterAction.changeBooksPageFilterEnige({ controls, filter })
             );
           }}
         />

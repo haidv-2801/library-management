@@ -634,11 +634,8 @@ function UserPage(props) {
                   filterValue: value?.trim(),
                 });
               }}
-              placeholder={'Tìm kiếm user theo Tiêu đề, Alias...'}
+              placeholder={'Tìm kiếm...'}
               value={paging.filterValue}
-              // label={
-              //   <div className="toe-admin-user-page__row-label">Tìm kiếm</div>
-              // }
               leftIcon={<i className="pi pi-search"></i>}
               delay={300}
             />

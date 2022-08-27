@@ -746,15 +746,6 @@ function BookPage(props) {
                 leftIcon={<i className="pi pi-search"></i>}
                 delay={300}
               />
-              {/* <TreeSelect
-                placeholder="Nhấp để chọn"
-                value={paging.bookID}
-                options={dataMenus}
-                prefixValue={'Menu'}
-                onChange={(data) => {
-                  setPaging((pre) => ({ ...pre, bookID: data.value }));
-                }}
-              /> */}
               <div className="toe-admin-book-page__filter">
                 <Tooltip title="Bộ lọc">
                   <div

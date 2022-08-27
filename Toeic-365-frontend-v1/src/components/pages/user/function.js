@@ -81,12 +81,7 @@ export const getBookType = (type) => {
 };
 
 export const getBookFormat = (type) => {
-  switch (type) {
-    case BOOK_TYPE.SYLLABUS:
-      return 'Giáo trình';
-    case BOOK_TYPE.REFERENCE_BOOK:
-      return 'Sách tham khảo';
-    default:
-      return TEXT_FALL_BACK.TYPE_1;
-  }
+  if (type == BOOK_TYPE.SYLLABUS) return 'Giáo trình';
+  else if (type == BOOK_TYPE.REFERENCE_BOOK) return 'Sách tham khảo';
+  return TEXT_FALL_BACK.TYPE_1;
 };

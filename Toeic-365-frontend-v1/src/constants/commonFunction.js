@@ -1005,6 +1005,5 @@ export const getCardStatusText = (status) => {
       typeText = 'Chưa xác nhận';
       break;
   }
-
   return typeText;
 };

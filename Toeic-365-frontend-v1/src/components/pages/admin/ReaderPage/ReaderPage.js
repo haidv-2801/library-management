@@ -38,6 +38,7 @@ import { format } from 'react-string-format';
 import './readerPage.scss';
 import Dropdown from '../../../molecules/Dropdown/Dropdown';
 import TreeSelect from '../../../atomics/base/TreeSelect/TreeSelect';
+import ToastConfirmDelete from '../../../molecules/ToastConfirmDelete/ToastConfirmDelete';
 
 ReaderPage.propTypes = {
   id: PropTypes.string,
@@ -314,6 +315,8 @@ function ReaderPage(props) {
     },
   };
 
+  const [isShowPopupDelete, setIsShowPopupDelete] = useState(false);
+
   useEffect(() => {
     isMountedRef.current = true;
     getMenus();
@@ -470,7 +473,6 @@ function ReaderPage(props) {
   };
 
   const handleRemove = (key) => {
-    debugger;
     baseApi.delete(
       (res) => {
         if (!isMountedRef.current) return;
@@ -518,6 +520,40 @@ function ReaderPage(props) {
     }
 
     return arr;
+  };
+
+  const handleAcceptMany = (cardStatus = CARD_STATUS.CONFIRMED) => {
+    const ids = selected.map((item) => item.cardID);
+    baseApi.post(
+      (res) => {
+        toast.current.show({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Thao tác thành công',
+          life: 3000,
+        });
+        getLibraryCardFilter();
+        setSelected([]);
+        setIsShowPopupDelete(false);
+      },
+      (err) => {
+        toast.current.show({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Thao tác thất bại',
+          life: 3000,
+        });
+        setIsShowPopupDelete(false);
+      },
+      () => {},
+      END_POINT.TOE_ACCEPT_MANY,
+      {
+        IdSelected: ids,
+        CardStatus: cardStatus,
+      },
+      null,
+      null
+    );
   };
 
   function renderStatus(status) {
@@ -586,14 +622,34 @@ function ReaderPage(props) {
               }}
             /> */}
           </div>
-          {selected?.length ? (
-            <Tooltip placement="bottomLeft" title="Xóa bản ghi">
+          <div className="toe-admin-post-page__toolbar-right">
+            <Tooltip placement="left" title="Từ chối">
               <i
-                style={{ color: 'red', marginLeft: 'auto' }}
-                className="pi pi-trash"
+                onClick={() => setIsShowPopupDelete(true)}
+                style={{
+                  color: 'red',
+                  cursor: 'pointer',
+                  marginLeft: 'auto',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+                className="pi pi-times"
               ></i>
             </Tooltip>
-          ) : null}
+            <Tooltip placement="left" title="Xác nhận">
+              <i
+                onClick={() => handleAcceptMany(CARD_STATUS.CONFIRMED)}
+                style={{
+                  color: 'green',
+                  cursor: 'pointer',
+                  marginLeft: 'auto',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+                className="pi pi-check"
+              ></i>
+            </Tooltip>
+          </div>
         </div>
         <Table
           data={isLoading ? renderSkeleton() : dataTable}
@@ -617,6 +673,18 @@ function ReaderPage(props) {
         />
       </div>
       <Toast ref={toast}></Toast>
+
+      {isShowPopupDelete ? (
+        <ToastConfirmDelete
+          onClose={() => setIsShowPopupDelete(false)}
+          onAccept={() => {
+            handleAcceptMany(CARD_STATUS.REFUSE_COMFIRM);
+          }}
+          prefix={`Bạn có chắc muốn từ chối ${
+            selected.length ? selected.length + ' bản ghi ' : 'tất cả'
+          }?`}
+        />
+      ) : null}
     </Layout>
   );
 }

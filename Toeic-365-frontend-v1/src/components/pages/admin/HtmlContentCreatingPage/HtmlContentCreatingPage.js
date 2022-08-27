@@ -11,7 +11,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import baseApi from '../../../../api/baseApi';
 import { uploadFiles } from '../../../../api/firebase';
-import { getUserName } from '../../../../constants/commonAuth';
+import { getUserID, getUserName } from '../../../../constants/commonAuth';
 import {
   BUTTON_THEME,
   BUTTON_TYPE,
@@ -289,6 +289,7 @@ function HtmlContentCreatingPage(props) {
       modifiedBy: getUserName(),
       status: isActive,
       isDeleted: false,
+      accountID: getUserID(),
     };
 
     baseApi.post(
@@ -306,6 +307,8 @@ function HtmlContentCreatingPage(props) {
         }
       },
       (err) => {
+        setIsLoading(false);
+
         let errMessage = err?.response?.data?.data || 'Có lỗi xảy ra';
         toast.current.show({
           severity: 'error',

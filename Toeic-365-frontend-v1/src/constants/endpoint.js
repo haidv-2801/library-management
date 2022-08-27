@@ -130,6 +130,7 @@ const END_POINT = (function () {
     TOE_LIBRARY_CARD_FILTER: host + 'api/LibraryCard/Filter',
     TOE_GET_CATEGORY_BY_ID: host + 'api/LibraryCard/{0}',
     TOE_GET_NEXT_CARD_CODE: host + 'api/LibraryCard/NextCardCode',
+    TOE_ACCEPT_MANY: host + 'api/LibraryCard/AcceptMany',
   };
 })();
 

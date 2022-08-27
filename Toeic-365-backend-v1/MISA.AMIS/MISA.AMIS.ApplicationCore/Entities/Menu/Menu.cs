@@ -62,6 +62,8 @@ namespace TOE.TOEIC.ApplicationCore.Entities
         [Display(Name = "Loại menu")]
         public int Type { get; set; }
 
+        public bool IsPrivate { get; set; } = false;
+
         #endregion
     }
 }

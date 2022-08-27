@@ -52,6 +52,7 @@ const AuthContextProvider = (props) => {
 
   const loginHandler = (token, user) => {
     setLocalStorage(LOCAL_STORATE_KEY.FULL_NAME, user.userInfo.fullName);
+    setLocalStorage(LOCAL_STORATE_KEY.ACCOUNT_NAME, user.userInfo.userName);
     setToken(token);
     setLocalStorage(LOCAL_STORATE_KEY.USER_INFO, JSON.stringify(user.userInfo));
     setLocalStorage(
