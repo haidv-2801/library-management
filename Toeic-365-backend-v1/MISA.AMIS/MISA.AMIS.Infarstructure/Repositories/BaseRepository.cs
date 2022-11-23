@@ -158,8 +158,6 @@ namespace TOE.TOEIC.ApplicationCore.Interfaces
                     //2. Duyệt các thuộc tính trên customer và tạo parameters
                     var parameters = MappingDbType(entity);
 
-
-
                     //3. Kết nối tới CSDL:
                     rowAffects = await _dbConnection.ExecuteAsync($"Proc_Update{_tableName}", param: parameters, transaction: transaction, commandType: CommandType.StoredProcedure);
 

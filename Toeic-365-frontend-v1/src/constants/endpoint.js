@@ -6,7 +6,7 @@ const host =
     ? DEV_HOST
     : PROD_HOST;
 
-const END_POINT = (function () {
+const END_POINT = (() => {
   return {
     //login
     TOE_LOGIN: host + '/auth/login',

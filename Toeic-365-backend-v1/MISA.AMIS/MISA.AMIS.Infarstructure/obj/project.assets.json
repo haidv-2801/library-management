@@ -7059,11 +7059,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.Infarstructure\\TOE.TOEIC.Infarstructure.csproj",
+      "projectUniqueName": "D:\\4namdaihoc\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.Infarstructure\\TOE.TOEIC.Infarstructure.csproj",
       "projectName": "TOE.TOEIC.Infarstructure",
-      "projectPath": "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.Infarstructure\\TOE.TOEIC.Infarstructure.csproj",
+      "projectPath": "D:\\4namdaihoc\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.Infarstructure\\TOE.TOEIC.Infarstructure.csproj",
       "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.Infarstructure\\obj\\",
+      "outputPath": "D:\\4namdaihoc\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.Infarstructure\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -7080,8 +7080,8 @@
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
           "projectReferences": {
-            "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\TOE.TOEIC.ApplicationCore.csproj": {
-              "projectPath": "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\TOE.TOEIC.ApplicationCore.csproj"
+            "D:\\4namdaihoc\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\TOE.TOEIC.ApplicationCore.csproj": {
+              "projectPath": "D:\\4namdaihoc\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\TOE.TOEIC.ApplicationCore.csproj"
             }
           }
         }

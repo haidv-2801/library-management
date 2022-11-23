@@ -7685,11 +7685,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.Web\\TOE.TOEIC.Web.csproj",
+      "projectUniqueName": "D:\\4namdaihoc\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.Web\\TOE.TOEIC.Web.csproj",
       "projectName": "TOE.TOEIC.Web",
-      "projectPath": "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.Web\\TOE.TOEIC.Web.csproj",
+      "projectPath": "D:\\4namdaihoc\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.Web\\TOE.TOEIC.Web.csproj",
       "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.Web\\obj\\",
+      "outputPath": "D:\\4namdaihoc\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.Web\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -7706,11 +7706,11 @@
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
           "projectReferences": {
-            "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\TOE.TOEIC.ApplicationCore.csproj": {
-              "projectPath": "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\TOE.TOEIC.ApplicationCore.csproj"
+            "D:\\4namdaihoc\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\TOE.TOEIC.ApplicationCore.csproj": {
+              "projectPath": "D:\\4namdaihoc\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.ApplicationCore\\TOE.TOEIC.ApplicationCore.csproj"
             },
-            "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.Infarstructure\\TOE.TOEIC.Infarstructure.csproj": {
-              "projectPath": "D:\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.Infarstructure\\TOE.TOEIC.Infarstructure.csproj"
+            "D:\\4namdaihoc\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.Infarstructure\\TOE.TOEIC.Infarstructure.csproj": {
+              "projectPath": "D:\\4namdaihoc\\nam4ki2\\DATN\\DA\\Toiec-365\\Toeic-365-backend-v1\\MISA.AMIS\\MISA.AMIS.Infarstructure\\TOE.TOEIC.Infarstructure.csproj"
             }
           }
         }
